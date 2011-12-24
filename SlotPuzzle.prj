@@ -582,6 +582,19 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
+      operation 134914 "main"
+	class_operation public explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
     end
 
     class 143490 "MenuButton"
@@ -2090,4 +2103,14 @@ ${namespace_end}"
   package_ref 128002 // Game
 
   package_ref 128130 // GameScreens
+
+  package_ref 128258 // Graphics
+
+  package_ref 128386 // Helpers
+
+  package_ref 128514 // Input
+
+  package_ref 128642 // Shaders
+
+  package_ref 128770 // Sounds
 end
