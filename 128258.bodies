@@ -1,0 +1,9 @@
+class SlotPuzzle
+!!!128514.cpp!!!	main() : int
+string mystring;
+
+cout << "!!!SlotPuzzle!!!" << endl; // prints !!!Hello World!!!
+cin >> mystring;
+cout << "You entered: " << mystring << endl;
+	
+return 0;

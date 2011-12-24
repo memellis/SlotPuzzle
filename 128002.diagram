@@ -1,0 +1,39 @@
+format 76
+
+classcanvas 128002 class_ref 128002 // GamePlayer
+  class_drawing_mode default show_context_mode default show_stereotype_properties default
+  xyz 69 228 2000
+end
+usecasecanvas 128130 usecase_ref 128002 // login
+  xyzwh 253 102 3005 64 32 label_xy 274 134
+end
+usecasecanvas 128258 usecase_ref 128130 // navigate
+  xyzwh 251 192 3005 64 32 label_xy 262 224
+end
+usecasecanvas 128514 usecase_ref 128386 // logoff
+  xyzwh 252 381 3005 64 32 label_xy 270 413
+end
+usecasecanvas 129154 usecase_ref 128514 // play
+  xyzwh 255 292 3005 64 32 label_xy 277 324
+end
+classcanvas 129410 class_ref 128130 // GameServer
+  class_drawing_mode default show_context_mode default show_stereotype_properties default
+  xyz 443 251 2000
+end
+line 128642 ----
+  from ref 128002 z 3006 to ref 128130
+line 128770 ----
+  from ref 128002 z 3006 to ref 128258
+line 129026 ----
+  from ref 128002 z 3006 to ref 128514
+line 129282 ----
+  from ref 128002 z 3006 to ref 129154
+line 129538 ----
+  from ref 128130 z 3006 to ref 129410
+line 129666 ----
+  from ref 128258 z 3006 to ref 129410
+line 129794 ----
+  from ref 129154 z 3006 to ref 129410
+line 129922 ----
+  from ref 128514 z 3006 to ref 129410
+end
