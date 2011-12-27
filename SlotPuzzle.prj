@@ -1,6 +1,6 @@
 format 76
 "SlotPuzzle"
-  revision 6
+  revision 7
   modified_by 2 "Mark Ellis"
   cpp_root_dir "C:/Users/Mark Ellis/Documents/My Develop/SlotPuzzle/source/"
 
@@ -852,48 +852,6 @@ ${inlines}
       
     end
 
-    class 145154 "Sound"
-      visibility package 
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-    end
-
-    class 145282 "MusicManager"
-      visibility package 
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-    end
-
-    class 145410 "Sample"
-      visibility package 
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-    end
-
     class 145538 "MusicItem"
       visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
@@ -1609,6 +1567,11 @@ ${namespace_end}
 #include <iostream>
 #include <string>
 using namespace std;
+
+#ifdef SLOTPUZZLE_DEBUG
+#include <cppunit/ui/text/TestRunner.h>
+#endif
+
 ${includes}
 ${namespace_start}
 ${members}
@@ -1985,75 +1948,6 @@ ${members}
 ${namespace_end}"
       associated_classes
 	class_ref 145154 // Sound
-      end
-    end
-
-    artifact 145282 "MusicManager"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-${includes}
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_classes
-	class_ref 145282 // MusicManager
-      end
-    end
-
-    artifact 145410 "Sample"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-${includes}
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_classes
-	class_ref 145410 // Sample
-      end
-    end
-
-    artifact 145538 "MusicItem"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-${includes}
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_classes
-	class_ref 145538 // MusicItem
       end
     end
 

@@ -7,7 +7,11 @@ cout << "Please enter your Christian name> ";
 cin >> christianName;
 cout << "Hi " << christianName << endl; 
 
+#ifdef SLOTPUZZLE_DEBUG
+cout << "Time for some unit testing" << endl;
+#else
 Program::startOperation();
+#endif
 !!!141442.cpp!!!	startOperation() : void
 versionHigh = 0;
 versionLow = 1;

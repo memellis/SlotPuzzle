@@ -13,7 +13,11 @@ int main()
   cin >> christianName;
   cout << "Hi " << christianName << endl; 
   
+#ifdef SLOTPUZZLE_DEBUG
+  cout << "Time for some unit testing" << endl;
+#else
   Program::startOperation();
+#endif
 }
 
 int Program::versionHigh;

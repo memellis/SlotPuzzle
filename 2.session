@@ -3,13 +3,14 @@ diagrams
   usecasediagram_ref 128002 // Game Player
     1143 681 100 4 0 0
   active  classdiagram_ref 128130 // Game
-    1434 850 100 16 24 0
+    1434 850 100 16 60 0
 end
 show_stereotypes
-selected classview_ref 128002 // Game
+selected class_ref 145410 // Sample
 open
   class_ref 128258 // SlotPuzzle
   class_ref 128386 // GameBoard
   class_ref 143362 // Program
+  class_ref 145410 // Sample
 end
 end
