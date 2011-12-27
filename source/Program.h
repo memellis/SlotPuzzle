@@ -6,5 +6,15 @@ class Program {
   public:
     static int main();
 
+
+  private:
+    static int versionHigh;
+
+    static int versionLow;
+
+
+  public:
+    static void startOperation();
+
 };
 #endif

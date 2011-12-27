@@ -1,6 +1,6 @@
 format 76
 "SlotPuzzle"
-  revision 5
+  revision 6
   modified_by 2 "Mark Ellis"
   cpp_root_dir "C:/Users/Mark Ellis/Documents/My Develop/SlotPuzzle/source/"
 
@@ -584,6 +584,40 @@ ${inlines}
       
       operation 134914 "main"
 	class_operation public explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      attribute 128002 "versionHigh"
+	class_attribute private explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 128130 "versionLow"
+	class_attribute private explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 141442 "startOperation"
+	class_operation public explicit_return_type "void"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1572,6 +1606,9 @@ ${namespace_end}
 #endif
 "
       cpp_src "${comment}
+#include <iostream>
+#include <string>
+using namespace std;
 ${includes}
 ${namespace_start}
 ${members}

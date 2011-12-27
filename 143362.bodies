@@ -1,0 +1,14 @@
+class Program
+!!!134914.cpp!!!	main() : int
+string christianName;
+
+cout << "Welcome to SlotPuzzle" << endl;
+cout << "Please enter your Christian name> ";
+cin >> christianName;
+cout << "Hi " << christianName << endl; 
+
+Program::startOperation();
+!!!141442.cpp!!!	startOperation() : void
+versionHigh = 0;
+versionLow = 1;
+cout << "Welcome to SlotPuzzle version " << versionHigh << "." << versionLow;
