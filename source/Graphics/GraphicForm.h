@@ -2,7 +2,7 @@
 #define _GRAPHICFORM_H
 
 
-#include "Form.h"
+#include "../Form.h"
 
 class GraphicForm : public Form {
 };

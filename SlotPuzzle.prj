@@ -1,6 +1,6 @@
 format 76
 "SlotPuzzle"
-  revision 7
+  revision 8
   modified_by 2 "Mark Ellis"
   cpp_root_dir "C:/Users/Mark Ellis/Documents/My Develop/SlotPuzzle/source/"
 
@@ -788,28 +788,6 @@ ${namespace_end}"
       end
     end
 
-    artifact 145154 "Sound"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-${includes}
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_classes
-	class_ref 145154 // Sound
-      end
-    end
   end
 
   package_ref 128002 // Game
