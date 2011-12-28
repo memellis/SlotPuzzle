@@ -45,6 +45,20 @@ format 76
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default show_stereotype_properties default
     associated_deployment_view deploymentview_ref 134658 // Sounds
+    class 145538 "MusicItem"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
     class 145410 "Sample"
       visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {

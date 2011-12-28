@@ -3,14 +3,28 @@ diagrams
   usecasediagram_ref 128002 // Game Player
     1143 681 100 4 0 0
   active  classdiagram_ref 128130 // Game
-    1434 850 100 16 60 0
+    1434 852 100 16 60 0
 end
 show_stereotypes
-selected class_ref 145410 // Sample
+selected 
+  package_ref 128258 // Graphics
 open
   class_ref 128258 // SlotPuzzle
-  class_ref 128386 // GameBoard
   class_ref 143362 // Program
-  class_ref 145410 // Sample
+  deploymentview_ref 128130 // Game
+  
+  package_ref 128002 // Game
+  
+  package_ref 128130 // GameScreens
+  
+  package_ref 128258 // Graphics
+  
+  package_ref 128386 // Helpers
+  
+  package_ref 128514 // Input
+  
+  package_ref 128642 // Shaders
+  
+  package_ref 128770 // Sounds
 end
 end

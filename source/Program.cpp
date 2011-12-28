@@ -2,6 +2,11 @@
 #include <iostream>
 #include <string>
 using namespace std;
+
+#ifdef SLOTPUZZLE_DEBUG
+#include <cppunit/ui/text/TestRunner.h>
+#endif
+
 #include "Program.h"
 
 int main()

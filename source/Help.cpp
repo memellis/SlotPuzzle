@@ -1,3 +1,0 @@
-
-#include "Help.h"
-

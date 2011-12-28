@@ -1,3 +1,0 @@
-
-#include "ColourHelper.h"
-
