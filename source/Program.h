@@ -16,5 +16,9 @@ class Program {
   public:
     static void startOperation();
 
+
+  private:
+    static char *versionBuildTime;
+
 };
 #endif

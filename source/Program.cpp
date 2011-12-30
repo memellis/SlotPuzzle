@@ -6,7 +6,7 @@ using namespace std;
 #ifdef SLOTPUZZLE_DEBUG
 #include <cppunit/ui/text/TestRunner.h>
 #endif
-
+#include "Version.h"
 #include "Program.h"
 
 int main()
@@ -31,8 +31,11 @@ int Program::versionLow;
 
 void Program::startOperation()
 {
-  versionHigh = 0;
-  versionLow = 1;
-  cout << "Welcome to SlotPuzzle version " << versionHigh << "." << versionLow;
+  versionHigh = SLOTPUZZLE_BUILD_NUMBER;
+  versionLow = SLOTPUZZLE_HASH_COMMIT;
+  static const char *versionBuildTime = SLOTPUZZLE_HASH_COMMIT_TIME;
+  cout << "Welcome to SlotPuzzle version " << versionHigh << "." << versionLow << " built on: " << versionBuildTime;
 }
+
+char *Program::versionBuildTime;
 

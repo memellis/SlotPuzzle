@@ -1,6 +1,6 @@
 format 76
 "SlotPuzzle"
-  revision 8
+  revision 9
   modified_by 2 "Mark Ellis"
   cpp_root_dir "C:/Users/Mark Ellis/Documents/My Develop/SlotPuzzle/source/"
 
@@ -405,6 +405,17 @@ ${inlines}
 	
 	
       end
+
+      attribute 134658 "versionBuildTime"
+	class_attribute private explicit_type "char"
+	multiplicity "*"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}char *${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
     end
 
     class 143490 "MenuButton"
@@ -661,7 +672,7 @@ using namespace std;
 #ifdef SLOTPUZZLE_DEBUG
 #include <cppunit/ui/text/TestRunner.h>
 #endif
-
+#include \"Version.h\"
 ${includes}
 ${namespace_start}
 ${members}
@@ -787,7 +798,6 @@ ${namespace_end}"
 	class_ref 144258 // SlotPuzzleForm
       end
     end
-
   end
 
   package_ref 128002 // Game
