@@ -5,7 +5,6 @@ et OS_GIT_REPO=c:\OpenSim_GIT
 PATH = C:\Program Files (x86)\Git\bin;%PATH%; 
 echo %PATH%
 ::
-echo ON
 cd %OS_GIT_REPO%
 ::
-sh.exe -x revtag.sh
+sh.exe revtag.sh
