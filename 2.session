@@ -7,24 +7,19 @@ diagrams
 end
 show_stereotypes
 selected 
-  package_ref 128258 // Graphics
+  package_ref 129 // SlotPuzzle
 open
   class_ref 128258 // SlotPuzzle
   class_ref 143362 // Program
   deploymentview_ref 128130 // Game
-  
-  package_ref 128002 // Game
-  
-  package_ref 128130 // GameScreens
+  classview_ref 141698 // Game
+  deploymentview_ref 141826 // Game
+  deploymentview_ref 141698 // GameScreens
   
   package_ref 128258 // Graphics
-  
-  package_ref 128386 // Helpers
-  
-  package_ref 128514 // Input
+  deploymentview_ref 141570 // Helpers
   
   package_ref 128642 // Shaders
-  
-  package_ref 128770 // Sounds
+  deploymentview_ref 134658 // Sounds
 end
 end

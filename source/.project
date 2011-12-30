@@ -27,7 +27,7 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildLocation</key>
-					<value>${workspace_loc:/SlotPuzzle/Debug}</value>
+					<value>${workspace_loc:/SlotPuzzle/Release}</value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.contents</key>
@@ -68,4 +68,10 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<variableList>
+		<variable>
+			<name>GIT_HOME</name>
+			<value>file:/C:/Program%20Files%20(x86)/Git</value>
+		</variable>
+	</variableList>
 </projectDescription>
