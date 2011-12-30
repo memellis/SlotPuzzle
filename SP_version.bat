@@ -7,4 +7,4 @@ PATH = C:\Program Files (x86)\Git\bin;%PATH%;
 ::
 cd %OS_GIT_REPO%
 ::
-sh.exe -x revtag.sh
+sh.exe revtag.sh

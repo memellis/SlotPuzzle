@@ -34,7 +34,8 @@ void Program::startOperation()
   versionHigh = SLOTPUZZLE_BUILD_NUMBER;
   versionLow = SLOTPUZZLE_HASH_COMMIT;
   static const char *versionBuildTime = SLOTPUZZLE_HASH_COMMIT_TIME;
-  cout << "Welcome to SlotPuzzle version " << versionHigh << "." << versionLow << " built on: " << versionBuildTime;
+  cout << "Welcome to SlotPuzzle version " << versionHigh << "." << versionLow << " (hash=" << hex << versionLow;
+  cout << ") built on: " << versionBuildTime << endl;
 }
 
 char *Program::versionBuildTime;
