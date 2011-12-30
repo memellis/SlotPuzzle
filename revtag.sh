@@ -7,7 +7,7 @@ echo " *" >> source/Version.h
 echo "*/" >> source/Version.h
 echo "" >> source/Version.h
 echo "#ifndef VERSION_H_" >> source/Version.h
-echo "define VERSION_H_" >> source/Version.h
+echo "#define VERSION_H_" >> source/Version.h
 echo "" >> source/Version.h
 echo "#define SLOTPUZZLE_HASH_COMMIT \""`git log -n 1 --pretty="format:%h"`"\"" >>source/Version.h 
 echo "#define SLOTPUZZLE_HASH_COMMIT_TIME \""`git log -n 1 --pretty="format:%ci"`"\"" >>source/Version.h 
