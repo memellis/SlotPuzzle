@@ -12,15 +12,12 @@
 
 #define IDC_STATIC -1
 
-   int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow);
-
-    LRESULT CALLBACK MainWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-    INT_PTR CALLBACK AboutDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
-
 class WinMainWindow {
   public:
+    int version;
 
+ 
+ 
+ 
 };
 #endif

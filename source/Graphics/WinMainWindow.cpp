@@ -1,12 +1,102 @@
 
-#include "WinMainWindow.h"
 #include <windows.h>
 #include <commctrl.h>
+#include "WinMainWindow.h"
 
-int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+INT_PTR CALLBACK AboutDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+  switch (uMsg)
+  {
+    case WM_COMMAND:
+    {
+      switch (LOWORD(wParam))
+      {
+        case IDOK:
+        case IDCANCEL:
+        {
+          EndDialog(hwndDlg, (INT_PTR) LOWORD(wParam));
+          return (INT_PTR) TRUE;
+        }
+      }
+      break;
+    }
+  
+    case WM_INITDIALOG:
+      return (INT_PTR) TRUE;
+  }
+  
+  return (INT_PTR) FALSE;
+}
+
+LRESULT CALLBACK MainWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+  static HINSTANCE hInstance;
+  
+  switch (msg)
+  {  
+    case WM_COMMAND:
+    {
+      switch (LOWORD(wParam))
+      {
+        case ID_HELP_ABOUT:
+        {
+          DialogBox(hInstance, MAKEINTRESOURCE(IDD_ABOUTDIALOG), hWnd, &AboutDialogProc);
+          return 0;
+        }
+  
+        case ID_FILE_EXIT:
+        {
+          DestroyWindow(hWnd);
+          return 0;
+        }
+      }
+      break;
+    }
+  
+    case WM_GETMINMAXINFO:
+    {
+      MINMAXINFO *minMax = (MINMAXINFO*) lParam;
+      minMax->ptMinTrackSize.x = 220;
+      minMax->ptMinTrackSize.y = 110;
+  
+      return 0;
+    }
+  
+    case WM_SYSCOMMAND:
+      {
+      switch (LOWORD(wParam))
+      {
+        case ID_HELP_ABOUT:
+        {
+          DialogBox(hInstance, MAKEINTRESOURCE(IDD_ABOUTDIALOG), hWnd, &AboutDialogProc);
+          return 0;
+        }
+      }
+      break;
+    }
+      
+    case WM_CREATE:
+    {
+      hInstance = ((LPCREATESTRUCT) lParam)->hInstance;
+      return 0;
+    }
+  
+    case WM_DESTROY:
+    {
+      PostQuitMessage(0);
+      return 0;
+    }
+  }
+  
+  return DefWindowProc(hWnd, msg, wParam, lParam);
+  
+}
+
+int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
   INITCOMMONCONTROLSEX icc;
   WNDCLASSEX wc;
-  LPCTSTR MainWndClass = TEXT("SlotPuzzle Application");
+  LPCTSTR MainWndClass = TEXT("MinGW Win32 Application");
   HWND hWnd;
   HACCEL hAccelerators;
   HMENU hSysMenu;
@@ -72,92 +162,5 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
   }
   
   return (int) msg.wParam;
-}
-
-LRESULT CALLBACK MainWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-  static HINSTANCE hInstance;
-  
-  switch (msg)
-  {  
-    case WM_COMMAND:
-    {
-      switch (LOWORD(wParam))
-      {
-        case ID_HELP_ABOUT:
-        {
-          DialogBox(hInstance, MAKEINTRESOURCE(IDD_ABOUTDIALOG), hWnd, &AboutDialogProc);
-          return 0;
-        }
-  
-        case ID_FILE_EXIT:
-        {
-          DestroyWindow(hWnd);
-          return 0;
-        }
-      }
-      break;
-    }
-  
-    case WM_GETMINMAXINFO:
-    {
-      MINMAXINFO *minMax = (MINMAXINFO*) lParam;
-      minMax->ptMinTrackSize.x = 220;
-      minMax->ptMinTrackSize.y = 110;
-  
-      return 0;
-    }
-  
-    case WM_SYSCOMMAND:
-      {
-      switch (LOWORD(wParam))
-      {
-        case ID_HELP_ABOUT:
-        {
-          DialogBox(hInstance, MAKEINTRESOURCE(IDD_ABOUTDIALOG), hWnd, &AboutDialogProc);
-          return 0;
-        }
-      }
-      break;
-    }
-      
-    case WM_CREATE:
-    {
-      hInstance = ((LPCREATESTRUCT) lParam)->hInstance;
-      return 0;
-    }
-  
-    case WM_DESTROY:
-    {
-      PostQuitMessage(0);
-      return 0;
-    }
-  }
-  
-  return DefWindowProc(hWnd, msg, wParam, lParam);
-  
-}
-
-INT_PTR CALLBACK AboutDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-  switch (uMsg)
-  {
-    case WM_COMMAND:
-    {
-      switch (LOWORD(wParam))
-      {
-        case IDOK:
-        case IDCANCEL:
-        {
-          EndDialog(hwndDlg, (INT_PTR) LOWORD(wParam));
-          return (INT_PTR) TRUE;
-        }
-      }
-      break;
-    }
-  
-    case WM_INITDIALOG:
-      return (INT_PTR) TRUE;
-  }
-  
-  return (INT_PTR) FALSE;
 }
 

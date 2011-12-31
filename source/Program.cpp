@@ -9,12 +9,6 @@ using namespace std;
 #include "Version.h"
 #include "Program.h"
 
-#ifdef WIN32
-#include <windows.h>
-#include <d3dx9.h>
-#include "graphics/WinMainWindow.h"
-#endif
-
 #ifndef WIN32
 int main()
 {
@@ -31,8 +25,7 @@ int main()
   Program::startOperation();
 #endif
 }
-#endif // WIN32
-
+#endif
 int Program::versionHigh;
 
 int Program::versionLow;

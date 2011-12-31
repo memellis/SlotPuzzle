@@ -10,7 +10,7 @@ MSG msg;
 
 // Initialise common controls.
 icc.dwSize = sizeof(icc);
-icc.dwICC = ICGetModuleHandle(NULL)C_WIN95_CLASSES;
+icc.dwICC = ICC_WIN95_CLASSES;
 InitCommonControlsEx(&icc);
 
 // Class for our main window.

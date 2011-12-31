@@ -361,11 +361,11 @@ ${inlines}
       operation 134914 "main"
 	class_operation public explicit_return_type "int"
 	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_visibility public 
+	cpp_def "#ifndef WIN32
+${comment}${inline}${type} ${name}${(}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
-"
+#endif"
 	
 	
 	

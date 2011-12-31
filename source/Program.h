@@ -3,10 +3,6 @@
 
 
 class Program {
-  public:
-    static int main();
-
-
   private:
     static int versionHigh;
 
