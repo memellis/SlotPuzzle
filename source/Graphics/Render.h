@@ -2,4 +2,6 @@
 #define _RENDER_H
 
 
+class Render {
+};
 #endif

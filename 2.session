@@ -1,22 +1,19 @@
-window_sizes 1920 1008 480 1440 768 82
+window_sizes 1920 1001 480 1440 768 82
 diagrams
   usecasediagram_ref 128002 // Game Player
     1143 681 100 4 0 0
   active  classdiagram_ref 128130 // Game
-    1434 852 100 16 60 0
+    1434 845 100 16 60 0
 end
 show_stereotypes
-selected 
-  package_ref 129 // SlotPuzzle
+selected class_ref 154242 // DX9Forms
 open
-  class_ref 128258 // SlotPuzzle
-  class_ref 143362 // Program
+  classview_ref 128002 // Game
   deploymentview_ref 128130 // Game
   classview_ref 141698 // Game
   deploymentview_ref 141826 // Game
   deploymentview_ref 141698 // GameScreens
-  
-  package_ref 128258 // Graphics
+  deploymentview_ref 141186 // Graphics
   deploymentview_ref 141570 // Helpers
   
   package_ref 128642 // Shaders

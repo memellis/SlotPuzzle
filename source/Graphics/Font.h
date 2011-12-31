@@ -2,4 +2,6 @@
 #define _FONT_H
 
 
+class Font {
+};
 #endif

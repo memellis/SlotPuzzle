@@ -1,6 +1,6 @@
 format 76
 "Graphics" // Graphics
-  revision 5
+  revision 6
   modified_by 2 "Mark Ellis"
   // class settings
   //class diagram settings
@@ -246,6 +246,73 @@ ${inlines}
       explicit_switch_type ""
       
     end
+
+    class 160770 "WinMainWindow"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      operation 148098 "WinMain"
+	public explicit_return_type "int"
+	nparams 4
+	  param inout name "hInstance" explicit_type "HINSTANCE"
+	  param inout name "hPrevInstance" explicit_type "HINSTANCE"
+	  param inout name "lpCmdLine" explicit_type "LPSTR"
+	  param in name "nCmdShow" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 148226 "MainWndProc"
+	public explicit_return_type "LRESULT CALLBACK"
+	nparams 4
+	  param inout name "hWnd" explicit_type "HWND"
+	  param inout name "msg" explicit_type "UINT"
+	  param inout name "wParam" explicit_type "WPARAM"
+	  param inout name "lParam" explicit_type "LPARAM"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 148354 "AboutDialogProc"
+	public explicit_return_type "INT_PTR CALLBACK"
+	nparams 4
+	  param inout name "hwndDlg" explicit_type "HWND"
+	  param inout name "uMsg" explicit_type "UINT"
+	  param inout name "wParam" explicit_type "WPARAM"
+	  param inout name "lParam" explicit_type "LPARAM"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
   end
 
   deploymentview 141186 "Graphics"
@@ -388,28 +455,6 @@ ${namespace_end}"
       end
     end
 
-    artifact 142082 "Font"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-${includes}
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_classes
-      end
-    end
-
     artifact 141954 "Model"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
@@ -430,28 +475,6 @@ ${members}
 ${namespace_end}"
       associated_classes
 	class_ref 141954 // Model
-      end
-    end
-
-    artifact 135042 "Render"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-${includes}
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_classes
       end
     end
 
@@ -544,6 +567,85 @@ ${members}
 ${namespace_end}"
       associated_classes
 	class_ref 141826 // Texture
+      end
+    end
+
+    artifact 154242 "Font"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 142082 // Font
+      end
+    end
+
+    artifact 154370 "Render"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 135170 // Render
+      end
+    end
+
+    artifact 154498 "WinMainWindow"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+#include <windows.h>
+${declarations}
+${namespace_start}
+#define IDI_APPICON                     101
+#define IDR_MAINMENU                    102
+#define IDD_ABOUTDIALOG                 103
+#define IDR_ACCELERATOR                 104
+#define ID_HELP_ABOUT                   40001
+#define ID_FILE_EXIT                    40002
+
+#define IDC_STATIC -1
+
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 160770 // WinMainWindow
       end
     end
   end
