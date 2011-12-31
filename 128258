@@ -259,16 +259,26 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      operation 148098 "WinMain"
-	public explicit_return_type "int"
-	nparams 4
-	  param inout name "hInstance" explicit_type "HINSTANCE"
-	  param inout name "hPrevInstance" explicit_type "HINSTANCE"
-	  param inout name "lpCmdLine" explicit_type "LPSTR"
-	  param in name "nCmdShow" explicit_type "int"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}${)}${const}${volatile}${throw}${abstract};
+      attribute 141314 "version"
+	public explicit_type "int"
+	init_value "0"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${throw}${staticnl}{
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 148354 "AboutDialogProc"
+	class_operation package explicit_return_type "INT_PTR CALLBACK"
+	nparams 4
+	  param inout name "hwndDlg" explicit_type "HWND"
+	  param inout name "uMsg" explicit_type "UINT"
+	  param inout name "wParam" explicit_type "WPARAM"
+	  param inout name "lParam" explicit_type "LPARAM"
+	cpp_decl " "
+	cpp_def "${comment}${inline}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -278,15 +288,14 @@ ${inlines}
       end
 
       operation 148226 "MainWndProc"
-	public explicit_return_type "LRESULT CALLBACK"
+	class_operation package explicit_return_type "LRESULT CALLBACK"
 	nparams 4
 	  param inout name "hWnd" explicit_type "HWND"
 	  param inout name "msg" explicit_type "UINT"
 	  param inout name "wParam" explicit_type "WPARAM"
 	  param inout name "lParam" explicit_type "LPARAM"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_decl " "
+	cpp_def "${comment}${inline}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -295,16 +304,15 @@ ${inlines}
 	
       end
 
-      operation 148354 "AboutDialogProc"
-	public explicit_return_type "INT_PTR CALLBACK"
+      operation 148098 "WinMain"
+	class_operation package explicit_return_type "int"
 	nparams 4
-	  param inout name "hwndDlg" explicit_type "HWND"
-	  param inout name "uMsg" explicit_type "UINT"
-	  param inout name "wParam" explicit_type "WPARAM"
-	  param inout name "lParam" explicit_type "LPARAM"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${throw}${staticnl}{
+	  param inout name "hInstance" explicit_type "HINSTANCE"
+	  param inout name "hPrevInstance" explicit_type "HINSTANCE"
+	  param inout name "lpCmdLine" explicit_type "LPSTR"
+	  param in name "nCmdShow" explicit_type "int"
+	cpp_decl " "
+	cpp_def "${comment}${inline}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -312,6 +320,7 @@ ${inlines}
 	
 	
       end
+
     end
   end
 
@@ -640,6 +649,8 @@ ${namespace_end}
 #endif
 "
       cpp_src "${comment}
+#include <windows.h>
+#include <commctrl.h>
 ${includes}
 ${namespace_start}
 ${members}
