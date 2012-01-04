@@ -6,17 +6,18 @@ diagrams
     1434 845 100 16 60 0
 end
 show_stereotypes
-selected class_ref 154242 // DX9Forms
+selected class_ref 160770 // WinMainWindow
 open
-  classview_ref 128002 // Game
+  class_ref 143362 // Program
   deploymentview_ref 128130 // Game
   classview_ref 141698 // Game
   deploymentview_ref 141826 // Game
   deploymentview_ref 141698 // GameScreens
+  class_ref 160770 // WinMainWindow
   deploymentview_ref 141186 // Graphics
   deploymentview_ref 141570 // Helpers
   
-  package_ref 128642 // Shaders
+package_ref 128642 // Shaders
   deploymentview_ref 134658 // Sounds
 end
 end

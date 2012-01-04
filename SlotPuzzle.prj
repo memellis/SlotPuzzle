@@ -1,6 +1,6 @@
 format 76
 "SlotPuzzle"
-  revision 10
+  revision 11
   modified_by 2 "Mark Ellis"
   cpp_root_dir "C:/Users/Mark Ellis/Documents/My Develop/SlotPuzzle/source/"
 
@@ -484,7 +484,6 @@ ${inlines}
 	  b parent class_ref 143106 // GameForm
       end
     end
-
   end
 
   deploymentview 128130 "Game"
