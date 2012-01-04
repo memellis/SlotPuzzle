@@ -3,21 +3,29 @@
 
 
 #include <windows.h>
-#define IDI_APPICON                     101
-#define IDR_MAINMENU                    102
-#define IDD_ABOUTDIALOG                 103
-#define IDR_ACCELERATOR                 104
-#define ID_HELP_ABOUT                   40001
-#define ID_FILE_EXIT                    40002
+#include <d3dx9.h>
 
-#define IDC_STATIC -1
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
+
+//error macro for Error Message dialog box
+#define ERROR_MESSAGE(msg){MessageBox(NULL,msg,L"Error",MB_OK|MB_ICONEXCLAMATION);}
 
 class WinMainWindow {
   public:
     int version;
 
- 
- 
- 
+	IDirect3D9 *m_pD3D;
+	IDirect3DDevice9 *m_pD3DDevice;
+
+	IDirect3DVertexBuffer9 *m_pVertexBuffer;
+
+	HRESULT initialise();
+
+	HRESULT render();
+
+	void cleanUp();
 };
+
+
 #endif
