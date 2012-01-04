@@ -1,6 +1,6 @@
 format 76
 "Graphics" // Graphics
-  revision 6
+  revision 7
   modified_by 2 "Mark Ellis"
   // class settings
   //class diagram settings
@@ -321,6 +321,77 @@ ${inlines}
 	
       end
 
+      operation 154882 "initialise"
+	public explicit_return_type "HRESULT"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 155010 "render"
+	public explicit_return_type "HRESULT"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 155138 "cleanUp"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      attribute 147842 "m_pD3D"
+	public explicit_type "IDirect3D9"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} *${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 147970 "m_pD3DDevice"
+	public explicit_type "IDirect3DDevice9"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} *${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 148098 "m_pVertexBuffer"
+	public explicit_type "IDirect3DVertexBuffer9"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} *${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
     end
   end
 
@@ -633,17 +704,15 @@ ${namespace_end}"
 ${comment}
 ${includes}
 #include <windows.h>
+#include <d3dx9.h>
+#include \"../Resources/resource.h\"
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
+
+//error macro for Error Message dialog box
+#define ERROR_MESSAGE(msg){MessageBox(NULL,msg,L\"Error\",MB_OK|MB_ICONEXCLAMATION);}
 ${declarations}
 ${namespace_start}
-#define IDI_APPICON                     101
-#define IDR_MAINMENU                    102
-#define IDD_ABOUTDIALOG                 103
-#define IDR_ACCELERATOR                 104
-#define ID_HELP_ABOUT                   40001
-#define ID_FILE_EXIT                    40002
-
-#define IDC_STATIC -1
-
 ${definition}
 ${namespace_end}
 #endif
@@ -651,7 +720,19 @@ ${namespace_end}
       cpp_src "${comment}
 #include <windows.h>
 #include <commctrl.h>
+
 ${includes}
+struct VERTEX {
+	float x,
+		  y,
+		  z,
+		  rhw;
+
+	DWORD color;
+};
+
+#define MY_FVF D3DFVF_XYZRHW | D3DFVF_DIFFUSE
+
 ${namespace_start}
 ${members}
 ${namespace_end}"
