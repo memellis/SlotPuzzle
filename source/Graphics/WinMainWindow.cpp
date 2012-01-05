@@ -6,14 +6,14 @@
 
 struct VERTEX {
 	float x,
-		  y,
-		  z,
-		  rhw;
+	      y,
+	      z;
+		  
 
 	DWORD color;
 };
 
-#define MY_FVF D3DFVF_XYZRHW | D3DFVF_DIFFUSE
+#define MY_FVF D3DFVF_XYZ | D3DFVF_DIFFUSE
 
 INT_PTR CALLBACK AboutDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -135,6 +135,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
   wc.hIconSm       = (HICON) LoadImage(hInstance, MAKEINTRESOURCE(IDI_APPICON), IMAGE_ICON, 16, 16, LR_SHARED);
     
   WinMainWindow *myWMW =  new WinMainWindow();
+  Clock *myClock = new Clock(); 
   
   // Register the window classes, or error.
   if (! RegisterClassEx(&wc))
@@ -214,6 +215,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
       ERROR_MESSAGE(L"Failed to create D3D device.");
       myWMW->cleanUp();
       delete [] myWMW;
+      delete [] myClock;
       return 0;
   }
   
@@ -222,38 +224,53 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
       ERROR_MESSAGE(L"Could not initialise.");
       myWMW->cleanUp();
       delete [] myWMW;
+      delete [] myClock;
       return 0;
   }
   
   
+  ZeroMemory(&msg, sizeof(msg));
+  
   // Main message loop.
-  while(GetMessage(&msg, NULL, 0, 0))
+  while(msg.message != WM_QUIT)
   {
       if (! TranslateAccelerator(msg.hwnd, hAccelerators, &msg)) 
       {
-      	myWMW->m_pD3DDevice->Clear(0,
-  	     	  	  	   0,
-  				   D3DCLEAR_TARGET,
-  				   D3DCOLOR_XRGB(0, 0, 0),
-  				   1.0f,
-  				   0.0f);
+          float dt = myClock->update();
   
-  	if(FAILED(myWMW->render()))
-  	{
-  	    ERROR_MESSAGE(L"Render failed.");
-  	    break;
-  	}
+          if(FAILED(myWMW->update(dt)))
+          {
+              ERROR_MESSAGE(L"Failed to update.");
+              break;
+          }
+  
+           myWMW->m_pD3DDevice->Clear(0,
+                                      0,
+                                      D3DCLEAR_TARGET,
+                                      D3DCOLOR_XRGB(0, 0, 0),
+                                      1.0f,
+                                      0.0f);
+  
+          if(FAILED(myWMW->render()))
+          {
+              ERROR_MESSAGE(L"Render failed.");
+              break;
+          }
   
   
-  	myWMW->m_pD3DDevice->Present(NULL, NULL, NULL, NULL);
+          myWMW->m_pD3DDevice->Present(NULL, NULL, NULL, NULL);
   
-  	TranslateMessage(&msg);
-  	DispatchMessage(&msg);
+          if(PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
+          {
+              TranslateMessage(&msg);
+              DispatchMessage(&msg);
+          }
       }
   }
   
   myWMW->cleanUp();
   delete [] myWMW;
+  delete [] myClock;
   
   return (int) msg.wParam;
 }
@@ -261,9 +278,9 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 HRESULT WinMainWindow::initialise() {
   VERTEX verts[] =
   {
-      {100.0f, 25.0f, 0.0f, 1.0f, D3DCOLOR_XRGB(255, 0, 0)},
-      {175.0f, 175.0f, 0.0f, 1.0f, D3DCOLOR_XRGB(0, 255, 0)},
-      {25.0f, 175.0f, 0.0f, 1.0f, D3DCOLOR_XRGB(0, 0, 255)}
+      {-1.0f, -1.0f, 0.0f, D3DCOLOR_XRGB(255, 0, 0)},
+      { 1.0f, -1.0f, 0.0f, D3DCOLOR_XRGB(0, 255, 0)},
+      { 0.0f,  2.0f, 0.0f, D3DCOLOR_XRGB(0, 0, 255)}
   };
   
   if(FAILED(m_pD3DDevice->CreateVertexBuffer(3*sizeof(VERTEX),
@@ -291,6 +308,30 @@ HRESULT WinMainWindow::initialise() {
   memcpy(pVerts, &verts, sizeof(verts));
   
   m_pVertexBuffer->Unlock();
+  
+  m_angle = 0.0f;
+  
+  m_eyeVec = D3DXVECTOR3(0,0,-3);
+  m_lookVec = D3DXVECTOR3(0,0,0);
+  m_upVec = D3DXVECTOR3(0,1,0);
+  
+  D3DXMatrixLookAtLH(&m_viewMat,
+   		   &m_eyeVec,
+  		   &m_lookVec,
+  		   &m_upVec);
+  
+  D3DXMatrixPerspectiveFovLH(&m_projectionMat,
+  			   D3DX_PI/2.0f,
+  			   WINDOW_WIDTH/WINDOW_HEIGHT,
+  			   0.1,
+  			   100);
+  
+  m_pD3DDevice->SetTransform(D3DTS_VIEW, &m_viewMat);
+  m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &m_projectionMat);
+  
+  m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
+  m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+    
   return S_OK;
 }
 
@@ -321,5 +362,31 @@ void WinMainWindow::cleanUp() {
   
   if(m_pVertexBuffer)
       m_pVertexBuffer->Release();
+}
+
+HRESULT WinMainWindow::update(float dt) {
+  m_angle+=1.0*dt;
+  
+  D3DXMATRIX rotationMat,
+             scaleMat,
+             translateMat;
+  
+  D3DXMatrixRotationZ(&rotationMat, m_angle);
+  
+  D3DXMatrixScaling(&scaleMat,
+                    0.5f*sin(m_angle)+0.5f,
+                    0.5f*sin(m_angle)+0.5f,
+                    1);
+  
+  D3DXMatrixTranslation(&translateMat,
+                        sin(m_angle),
+                        0,
+                        0);
+  
+  m_worldMat = rotationMat * scaleMat * translateMat;
+  
+  m_pD3DDevice->SetTransform(D3DTS_WORLD, &m_worldMat);
+  
+  return S_OK;
 }
 

@@ -1,6 +1,6 @@
 format 76
 "Graphics" // Graphics
-  revision 7
+  revision 8
   modified_by 2 "Mark Ellis"
   // class settings
   //class diagram settings
@@ -392,6 +392,100 @@ ${inlines}
 	python_decl ""
 	idl_decl ""
       end
+
+      attribute 148610 "m_angle"
+	private explicit_type "float"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 148738 "m_worldMat"
+	private explicit_type "D3DXMATRIX"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 148866 "m_viewMat"
+	private explicit_type "D3DXMATRIX"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 148994 "m_projectionMat"
+	private explicit_type "D3DXMATRIX"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 149122 "m_eyeVec"
+	private explicit_type "D3DXVECTOR3"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 149250 "m_lookVec"
+	private explicit_type "D3DXVECTOR3"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 149378 "m_upVec"
+	private explicit_type "D3DXVECTOR3"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 155650 "update"
+	public explicit_return_type "HRESULT"
+	nparams 1
+	  param in name "dt" explicit_type "float"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 148994 // <dependency>
+	relation 148866 -_->
+	  stereotype "instantiate"
+	  a package
+	    cpp default "#include in source"
+	    classrelation_ref 148994 // <dependency>
+	  b parent class_ref 167298 // Clock
+      end
     end
   end
 
@@ -706,6 +800,7 @@ ${includes}
 #include <windows.h>
 #include <d3dx9.h>
 #include \"../Resources/resource.h\"
+#include \"../Helpers/Clock.h\"
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
 
@@ -724,14 +819,14 @@ ${namespace_end}
 ${includes}
 struct VERTEX {
 	float x,
-		  y,
-		  z,
-		  rhw;
+	      y,
+	      z;
+		  
 
 	DWORD color;
 };
 
-#define MY_FVF D3DFVF_XYZRHW | D3DFVF_DIFFUSE
+#define MY_FVF D3DFVF_XYZ | D3DFVF_DIFFUSE
 
 ${namespace_start}
 ${members}

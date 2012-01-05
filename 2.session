@@ -3,10 +3,10 @@ diagrams
   usecasediagram_ref 128002 // Game Player
     1143 681 100 4 0 0
   active  classdiagram_ref 128130 // Game
-    1434 845 100 16 60 0
+    1434 845 100 16 108 34
 end
 show_stereotypes
-selected class_ref 160770 // WinMainWindow
+selected operation_ref 155394 // update
 open
   class_ref 143362 // Program
   deploymentview_ref 128130 // Game
@@ -15,9 +15,10 @@ open
   deploymentview_ref 141698 // GameScreens
   class_ref 160770 // WinMainWindow
   deploymentview_ref 141186 // Graphics
+  class_ref 167298 // Clock
   deploymentview_ref 141570 // Helpers
   
-package_ref 128642 // Shaders
+  package_ref 128642 // Shaders
   deploymentview_ref 134658 // Sounds
 end
 end
