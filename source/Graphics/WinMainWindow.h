@@ -2,16 +2,38 @@
 #define _WINMAINWINDOW_H
 
 
-#include <windows.h>
 #include <d3dx9.h>
+#include <windows.h>
+#include <commctrl.h>
 #include "../Resources/resource.h"
-#include "../Helpers/Clock.h"
+
+#define MY_FVF D3DFVF_XYZ | D3DFVF_DIFFUSE
+#define CYLINDER_LENGTH 50
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
-
 //error macro for Error Message dialog box
 #define ERROR_MESSAGE(msg){MessageBox(NULL,msg,L"Error",MB_OK|MB_ICONEXCLAMATION);}
+
+LPDIRECT3DTEXTURE9 g_pTexture = NULL; // Our texture
+
+// A structure for our custom vertex type. We added texture coordinates
+struct CUSTOMVERTEX
+{
+    D3DXVECTOR3 position; // The position
+    D3DCOLOR color; // The color
+#ifndef SHOW_HOW_TO_USE_TCI
+    FLOAT tu, tv; // The texture coordinates
+#endif
+};
+
+// Our custom FVF, which describes our custom vertex structure
+#ifdef SHOW_HOW_TO_USE_TCI
+#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ|D3DFVF_DIFFUSE)
+#else
+#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1)
+#endif
 class Clock;
+class Reel;
 
 class WinMainWindow {
   public:

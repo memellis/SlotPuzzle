@@ -1,19 +1,7 @@
 
-#include <windows.h>
-#include <commctrl.h>
-
 #include "WinMainWindow.h"
-
-struct VERTEX {
-	float x,
-	      y,
-	      z;
-		  
-
-	DWORD color;
-};
-
-#define MY_FVF D3DFVF_XYZ | D3DFVF_DIFFUSE
+#include "../Helpers/Clock.h"
+#include "Reel.h"
 
 INT_PTR CALLBACK AboutDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -276,77 +264,87 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 }
 
 HRESULT WinMainWindow::initialise() {
-  VERTEX verts[] =
-  {
-      {-1.0f, -1.0f, 0.0f, D3DCOLOR_XRGB(255, 0, 0)},
-      { 1.0f, -1.0f, 0.0f, D3DCOLOR_XRGB(0, 255, 0)},
-      { 0.0f,  2.0f, 0.0f, D3DCOLOR_XRGB(0, 0, 255)}
-  };
+  Reel *reel = new Reel();
   
-  if(FAILED(m_pD3DDevice->CreateVertexBuffer(3*sizeof(VERTEX),
-  					   NULL,
-  					   MY_FVF,
-  					   D3DPOOL_DEFAULT,
-  					   &m_pVertexBuffer,
-  					   NULL)))
+  // Create the vertex buffer.
+  
+  if(FAILED(m_pD3DDevice->CreateVertexBuffer(CYLINDER_LENGTH*2*sizeof(CUSTOMVERTEX),
+                                               0, D3DFVF_CUSTOMVERTEX,
+                                               D3DPOOL_DEFAULT, &m_pVertexBuffer, NULL)))
   {
       ERROR_MESSAGE(L"Failed to create vertex buffer.");
       return E_FAIL;
   }
   
-  void* pVerts;
-  if(FAILED(m_pVertexBuffer->Lock(0,
-       			        sizeof(verts),
-  				(void **)&pVerts,
-  				NULL)))
+  // Fill the vertex buffer. We are setting the tu and tv texture
+  // coordinates, which range from 0.0 to 1.0
   
-  {
-      ERROR_MESSAGE(L"Failed to lock vertex buffer.");
+  CUSTOMVERTEX* pVertices;
+  
+  if( FAILED( m_pVertexBuffer->Lock( 0, 0, (void**)&pVertices, 0 ) ) )
       return E_FAIL;
+  
+  for( DWORD i=0; i<CYLINDER_LENGTH; i++ )
+  {
+      FLOAT theta = (2*D3DX_PI*i)/(CYLINDER_LENGTH-1);
+  
+      pVertices[2*i+0].position = D3DXVECTOR3( 0.25, 1.0f*cosf(theta), 1.0f*sinf(theta) );
+      pVertices[2*i+0].color    = 0xffffffff;
+  
+#ifndef SHOW_HOW_TO_USE_TCI
+      pVertices[2*i+0].tu       = ((FLOAT)i)/(CYLINDER_LENGTH-1);
+      pVertices[2*i+0].tv       = 1.0f;
+#endif
+  
+      pVertices[2*i+1].position = D3DXVECTOR3( -0.25f, 1.0f*cosf(theta), 1.0f*sinf(theta) );
+      pVertices[2*i+1].color    = 0xff0fffff;
+  
+#ifndef SHOW_HOW_TO_USE_TCI
+      pVertices[2*i+1].tu       = ((FLOAT)i)/(CYLINDER_LENGTH-1);
+      pVertices[2*i+1].tv       = 0.0f;
+#endif
+  
   }
-  
-  memcpy(pVerts, &verts, sizeof(verts));
-  
+    
   m_pVertexBuffer->Unlock();
   
-  m_angle = 0.0f;
-  
-  m_eyeVec = D3DXVECTOR3(0,0,-3);
-  m_lookVec = D3DXVECTOR3(0,0,0);
-  m_upVec = D3DXVECTOR3(0,1,0);
-  
-  D3DXMatrixLookAtLH(&m_viewMat,
-   		   &m_eyeVec,
-  		   &m_lookVec,
-  		   &m_upVec);
-  
-  D3DXMatrixPerspectiveFovLH(&m_projectionMat,
-  			   D3DX_PI/2.0f,
-  			   WINDOW_WIDTH/WINDOW_HEIGHT,
-  			   0.1,
-  			   100);
-  
-  m_pD3DDevice->SetTransform(D3DTS_VIEW, &m_viewMat);
-  m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &m_projectionMat);
-  
   m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
-  m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-    
+  // Turn on the zbuffer
+  m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, TRUE );
+      
+  // Use D3DX to create a texture from a file based image
+  if( FAILED( D3DXCreateTextureFromFile( m_pD3DDevice, L"C://Users//Mark Ellis//Documents//My Develop//SlotPuzzle//source//Debug//reel2.jpg", &g_pTexture ) ) )
+  {
+    // If texture is not in current folder, try parent folder
+    ERROR_MESSAGE(L"Could not find reel texture.");
+    return E_FAIL;
+  }
   return S_OK;
 }
 
 HRESULT WinMainWindow::render() {
   if(SUCCEEDED(m_pD3DDevice->BeginScene()))
   {
+      // Setup our texture. Using textures introduces the texture stage states,
+      // which govern how textures get blended together (in the case of multiple
+      // textures) and lighting information. In this case, we are modulating
+      // (blending) our texture with the diffuse color of the vertices.
+  
+      m_pD3DDevice->SetTexture( 0, g_pTexture );
+      m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
+      m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+      m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+      m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
+  
       m_pD3DDevice->SetStreamSource(0,
-      				  m_pVertexBuffer,
-  				  0,
-  				  sizeof(VERTEX));
-  
-      m_pD3DDevice->SetFVF(MY_FVF);
-      m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 1);
+                                    m_pVertexBuffer,
+        				  0,
+        				  sizeof(CUSTOMVERTEX));
+    
+      m_pD3DDevice->SetFVF(D3DFVF_CUSTOMVERTEX);
+      m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2*CYLINDER_LENGTH-2);
       m_pD3DDevice->EndScene();
-  
+    
       return S_OK;
   
   }
@@ -365,27 +363,48 @@ void WinMainWindow::cleanUp() {
 }
 
 HRESULT WinMainWindow::update(float dt) {
-  m_angle+=1.0*dt;
+  D3DXMATRIXA16 matWorld;
   
-  D3DXMATRIX rotationMat,
-             scaleMat,
-             translateMat;
+  // WORLDMATRIX
+  // Set up the rotation matrix to generate 1 full rotation (2*PI radians)
+  // every 1000 ms. To avoid the loss of precision inherent in very high
+  // floating point numbers, the system time is modulated by the rotation
+  // period before conversion to a radian angle.
   
-  D3DXMatrixRotationZ(&rotationMat, m_angle);
+  UINT  iTime  = timeGetTime() % 5000;
   
-  D3DXMatrixScaling(&scaleMat,
-                    0.5f*sin(m_angle)+0.5f,
-                    0.5f*sin(m_angle)+0.5f,
-                    1);
+  float fAngle = iTime * (2.0f * D3DX_PI) / 5000.0f;
+  D3DXMatrixRotationYawPitchRoll(&matWorld,0,-fAngle,0);
   
-  D3DXMatrixTranslation(&translateMat,
-                        sin(m_angle),
-                        0,
-                        0);
+  m_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld );
   
-  m_worldMat = rotationMat * scaleMat * translateMat;
+  // VIEWMATRIX
+  // Set up our view matrix. A view matrix can be defined given an eye point,
+  // a point to lookat, and a direction for which way is up. Here, we set the
+  // eye five units back along the z-axis and up three units, look at the
+  // origin, and define "up" to be in the y-direction.
   
-  m_pD3DDevice->SetTransform(D3DTS_WORLD, &m_worldMat);
+  D3DXVECTOR3 vEyePt(0.0f, 2.0f,-5.0f );
+  D3DXVECTOR3 vLookatPt(0.0f, 0.0f, 0.0f );
+  D3DXVECTOR3 vUpVec(0.0f, 1.0f, 0.0f );
+  
+  D3DXMATRIXA16 matView;
+  D3DXMatrixLookAtLH(&matView, &vEyePt, &vLookatPt, &vUpVec);
+  m_pD3DDevice->SetTransform(D3DTS_VIEW, &matView);
+  
+  // PROJECTION MATRIX
+  // For the projection matrix, we set up a perspective transform (which
+  // transforms geometry from 3D view space to 2D viewport space, with
+  // a perspective divide making objects smaller in the distance). To build
+  // a perpsective transform, we need the field of view (1/4 pi is common),
+  // the aspect ratio, and the near and far clipping planes (which define at
+  // what distances geometry should be no longer be rendered).
+  
+  D3DXMATRIXA16 matProj;
+  
+  D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI/4, 1.0f, 1.0f, 100.0f);
+  
+  m_pD3DDevice->SetTransform( D3DTS_PROJECTION, &matProj);
   
   return S_OK;
 }
