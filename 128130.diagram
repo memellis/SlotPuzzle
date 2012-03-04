@@ -186,11 +186,15 @@ classcanvas 135810 class_ref 160770 // WinMainWindow
 end
 classcanvas 135938 class_ref 167298 // Clock
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-  xyz 636 547 2000
+  xyz 704 556 2000
 end
 classcanvas 136194 class_ref 173826 // Reel
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
   xyz 640 680 2000
+end
+classcanvas 136450 class_ref 180354 // D3D9Device
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 585 390 2005
 end
 relationcanvas 128258 relation_ref 128002 // <dependency>
   from ref 128130 z 2001 stereotype "<<plays>>" xyz 1080 130 3000 to ref 128002
@@ -255,12 +259,17 @@ relationcanvas 133506 relation_ref 142338 // <generalisation>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 136066 relation_ref 148866 // <dependency>
-  from ref 135810 z 2001 stereotype "<<instantiate>>" xyz 467 521 3000 to ref 135938
+  from ref 135810 z 2001 stereotype "<<instantiate>>" xyz 501 529 3000 to ref 135938
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 136322 relation_ref 155394 // <dependency>
-  from ref 135810 z 2001 stereotype "<<instantiate>>" xyz 462 598 3000 to ref 136194
+  from ref 135810 z 2001 stereotype "<<instantiate>>" xyz 462 601.5 3000 to ref 136194
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 136578 relation_ref 161922 // <dependency>
+  from ref 135810 z 2006 stereotype "<<instantiate>>" xyz 444 457.5 3000 to ref 136450
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
