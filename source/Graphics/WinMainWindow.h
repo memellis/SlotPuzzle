@@ -34,9 +34,12 @@ struct CUSTOMVERTEX
 #endif
 class Clock;
 class Reel;
+class D3D9Device;
 
 class WinMainWindow {
   public:
+    WinMainWindow(IDirect3DDevice9* pD3DDevice);
+
     int version;
 
  

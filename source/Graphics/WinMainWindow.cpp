@@ -2,6 +2,11 @@
 #include "WinMainWindow.h"
 #include "../Helpers/Clock.h"
 #include "Reel.h"
+#include "D3D9Device.h"
+
+WinMainWindow::WinMainWindow(IDirect3DDevice9* pD3DDevice) {
+  m_pD3DDevice = pD3DDevice;
+}
 
 INT_PTR CALLBACK AboutDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -96,7 +101,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 {
   INITCOMMONCONTROLSEX icc;
   WNDCLASSEX wc;
-  LPCTSTR MainWndClass = TEXT("MinGW Win32 Application");
+  LPCTSTR MainWndClass = TEXT("SlotPuzzle");
   HWND hWnd;
   HACCEL hAccelerators;
   HMENU hSysMenu;
@@ -122,7 +127,6 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
   wc.lpszClassName = MainWndClass;
   wc.hIconSm       = (HICON) LoadImage(hInstance, MAKEINTRESOURCE(IDI_APPICON), IMAGE_ICON, 16, 16, LR_SHARED);
     
-  WinMainWindow *myWMW =  new WinMainWindow();
   Clock *myClock = new Clock(); 
   
   // Register the window classes, or error.
@@ -161,9 +165,6 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
   if (! hWnd)
   {
     ERROR_MESSAGE(L"Error creating main window.");
-    myWMW->cleanUp();
-    delete [] myWMW;
-  
     return 0;
   }
     
@@ -180,32 +181,12 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
   UpdateWindow(hWnd);
   SetForegroundWindow(hWnd);
   SetFocus(hWnd);
-    
-  D3DPRESENT_PARAMETERS d3dpp;
-  ZeroMemory(&d3dpp, sizeof(d3dpp));
-  d3dpp.Windowed = true;
-  d3dpp.hDeviceWindow = hWnd;
-  d3dpp.BackBufferCount = 1;
-  d3dpp.BackBufferWidth = WINDOW_WIDTH;
-  d3dpp.BackBufferHeight = WINDOW_HEIGHT;
-  d3dpp.BackBufferFormat = D3DFMT_X8R8G8B8;
-  d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
   
-  myWMW->m_pD3D = Direct3DCreate9(D3D_SDK_VERSION);
+  D3D9Device *d3d9Device = new D3D9Device(hWnd);
+   
+  d3d9Device->createDevice();
   
-  if (FAILED(myWMW->m_pD3D->CreateDevice(D3DADAPTER_DEFAULT,
-  	  	  	  	       D3DDEVTYPE_HAL,
-  		  	  	       hWnd,
-  		  	  	       D3DCREATE_SOFTWARE_VERTEXPROCESSING,
-  		  	  	       &d3dpp,
-  		  	  	       &myWMW->m_pD3DDevice)))
-  {
-      ERROR_MESSAGE(L"Failed to create D3D device.");
-      myWMW->cleanUp();
-      delete [] myWMW;
-      delete [] myClock;
-      return 0;
-  }
+  WinMainWindow *myWMW =  new WinMainWindow(d3d9Device->getD3D9Device());
   
   if(FAILED(myWMW->initialise()))
   {
@@ -352,9 +333,6 @@ HRESULT WinMainWindow::render() {
 }
 
 void WinMainWindow::cleanUp() {
-  if(m_pD3D)
-      m_pD3D->Release();
-  
   if(m_pD3DDevice)
       m_pD3DDevice->Release();
   
