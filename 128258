@@ -1,6 +1,6 @@
 format 76
 "Graphics" // Graphics
-  revision 9
+  revision 11
   modified_by 2 "Mark Ellis"
   // class settings
   //class diagram settings
@@ -259,6 +259,21 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
+      operation 169474 "WinMainWindow"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "pD3DDevice" explicit_type "IDirect3DDevice9"
+	cpp_decl "    ${comment}${inline}${name}${(}${t0}* ${p0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${t0}* ${p0}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       attribute 141314 "version"
 	public explicit_type "int"
 	init_value "0"
@@ -495,6 +510,15 @@ ${inlines}
 	    classrelation_ref 155522 // <dependency>
 	  b parent class_ref 173826 // Reel
       end
+
+      classrelation 162050 // <dependency>
+	relation 161922 -_->
+	  stereotype "instantiate"
+	  a package
+	    cpp default "#include in source"
+	    classrelation_ref 162050 // <dependency>
+	  b parent class_ref 180354 // D3D9Device
+      end
     end
 
     class 173826 "Reel"
@@ -563,6 +587,120 @@ ${inlines}
 
       attribute 156162 "texture"
 	private explicit_type "LPDIRECT3DTEXTURE9"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 180354 "D3D9Device"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      operation 168962 "D3D9Device"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "focusWindow" explicit_type "HWND"
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${t0} ${p0}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 169346 "~D3D9Device"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      attribute 162690 "m_pD3D"
+	protected explicit_type "IDirect3D9"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} *${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 162818 "m_pD3DDevice"
+	protected explicit_type "IDirect3DDevice9"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} *${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 168834 "getD3D9Device"
+	public explicit_return_type "IDirect3DDevice9"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type}* ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type}* ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 169090 "createDevice"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 169218 "releaseDevice"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      attribute 162946 "m_focusWindow"
+	private explicit_type "HWND"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -966,6 +1104,33 @@ ${members}
 ${namespace_end}"
       associated_classes
 	class_ref 173826 // Reel
+      end
+    end
+
+    artifact 174082 "D3D9Device"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+#include <d3dx9.h>
+
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 180354 // D3D9Device
       end
     end
   end

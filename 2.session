@@ -1,12 +1,12 @@
-window_sizes 1920 1001 480 1440 768 82
+window_sizes 1654 943 378 1270 768 82
 diagrams
   usecasediagram_ref 128002 // Game Player
     1143 681 100 4 0 0
   active  classdiagram_ref 128130 // Game
-    1434 845 100 16 108 34
+    1270 787 100 16 180 0
 end
 show_stereotypes
-selected operation_ref 155394 // update
+selected artifact_ref 167554 // Reel
 open
   class_ref 143362 // Program
   deploymentview_ref 128130 // Game
@@ -14,6 +14,7 @@ open
   deploymentview_ref 141826 // Game
   deploymentview_ref 141698 // GameScreens
   class_ref 160770 // WinMainWindow
+  class_ref 173826 // Reel
   deploymentview_ref 141186 // Graphics
   class_ref 167298 // Clock
   deploymentview_ref 141570 // Helpers
