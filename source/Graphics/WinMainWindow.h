@@ -77,5 +77,9 @@ class WinMainWindow {
   public:
     HRESULT update(float dt);
 
+
+  private:
+    Reel *reel;
+
 };
 #endif

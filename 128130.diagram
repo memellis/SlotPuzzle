@@ -259,17 +259,17 @@ relationcanvas 133506 relation_ref 142338 // <generalisation>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 136066 relation_ref 148866 // <dependency>
-  from ref 135810 z 2001 stereotype "<<instantiate>>" xyz 501 529 3000 to ref 135938
+  from ref 135810 z 2001 stereotype "<<instantiate>>" xyz 501 533.5 3000 to ref 135938
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 136322 relation_ref 155394 // <dependency>
-  from ref 135810 z 2001 stereotype "<<instantiate>>" xyz 462 601.5 3000 to ref 136194
+  from ref 135810 z 2001 stereotype "<<instantiate>>" xyz 462 610 3000 to ref 136194
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 136578 relation_ref 161922 // <dependency>
-  from ref 135810 z 2006 stereotype "<<instantiate>>" xyz 444 457.5 3000 to ref 136450
+  from ref 135810 z 2006 stereotype "<<instantiate>>" xyz 444 461 3000 to ref 136450
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

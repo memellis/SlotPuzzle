@@ -367,3 +367,6 @@ D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI/4, 1.0f, 1.0f, 100.0f);
 m_pD3DDevice->SetTransform( D3DTS_PROJECTION, &matProj);
 
 return S_OK;
+!!!154882.cpp!!!	initialise() : HRESULT
+reel = new Reel(m_pD3DDevice, CYLINDER_LENGTH, 1, 0.25);
+

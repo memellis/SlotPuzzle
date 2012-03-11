@@ -1,6 +1,6 @@
 format 76
 "Graphics" // Graphics
-  revision 11
+  revision 12
   modified_by 2 "Mark Ellis"
   // class settings
   //class diagram settings
@@ -519,6 +519,16 @@ ${inlines}
 	    classrelation_ref 162050 // <dependency>
 	  b parent class_ref 180354 // D3D9Device
       end
+
+      attribute 169730 "reel"
+	private type class_ref 173826 // Reel
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} *${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
     end
 
     class 173826 "Reel"
@@ -545,28 +555,14 @@ ${inlines}
 
       operation 162178 "Reel"
 	public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
-"
-	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 162306 "initialise"
-	public explicit_return_type "HRESULT"
 	nparams 4
-	  param in name "reelResolution" explicit_type "int"
+	  param in name "p_d3d9Device" explicit_type "IDirect3DDevice9"
+	  param in name "reelResolution" explicit_type "DWORD"
 	  param in name "reelDiameter" explicit_type "float"
 	  param in name "reelWidth" explicit_type "float"
-	  param inout name "d3dDevice" explicit_type "IDirect3DDevice9"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} *& ${p3}${v3}${)}${const}${volatile}${throw}${abstract};
+	cpp_decl "    ${comment}${inline}${name}${(}${t0}* ${p0}, const ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} *& ${p3}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${class}::${name}${(}${t0}* ${p0}, const ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${volatile}${throw} {
   ${body}}
 "
 	
@@ -585,7 +581,17 @@ ${inlines}
 	idl_decl ""
       end
 
-      attribute 156162 "texture"
+      attribute 163074 "m_pd3d9Device"
+	private explicit_type "IDirect3DDevice9"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type}* ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 163202 "m_pTexture"
 	private explicit_type "LPDIRECT3DTEXTURE9"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -593,6 +599,34 @@ ${inlines}
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+      end
+
+      operation 176002 "getVertexBuffer"
+	public explicit_return_type "IDirect3DVertexBuffer9"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type}* ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type}* ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 176130 "getTexture"
+	public explicit_return_type "LPDIRECT3DTEXTURE9"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
       end
     end
 

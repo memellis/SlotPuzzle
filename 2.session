@@ -6,7 +6,7 @@ diagrams
     1270 787 100 16 180 0
 end
 show_stereotypes
-selected artifact_ref 167554 // Reel
+selected class_ref 173826 // Reel
 open
   class_ref 143362 // Program
   deploymentview_ref 128130 // Game
@@ -15,6 +15,7 @@ open
   deploymentview_ref 141698 // GameScreens
   class_ref 160770 // WinMainWindow
   class_ref 173826 // Reel
+  class_ref 180354 // D3D9Device
   deploymentview_ref 141186 // Graphics
   class_ref 167298 // Clock
   deploymentview_ref 141570 // Helpers

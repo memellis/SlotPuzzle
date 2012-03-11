@@ -27,15 +27,21 @@ class Reel {
 
 
   public:
-    Reel();
-
-    HRESULT initialise(int reelResolution, float reelDiameter, float reelWidth, IDirect3DDevice9 *& d3dDevice);
+    Reel(IDirect3DDevice9* p_d3d9Device, const DWORD reelResolution, float reelDiameter, float reelWidth);
 
 
   private:
     IDirect3DVertexBuffer9 *vertexBuffer;
 
-    LPDIRECT3DTEXTURE9 texture;
+    IDirect3DDevice9* m_pd3d9Device;
+
+    LPDIRECT3DTEXTURE9 m_pTexture;
+
+
+  public:
+    IDirect3DVertexBuffer9* getVertexBuffer();
+
+    LPDIRECT3DTEXTURE9 getTexture();
 
 };
 #endif

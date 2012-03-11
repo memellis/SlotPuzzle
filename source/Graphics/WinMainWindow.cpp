@@ -245,62 +245,8 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 }
 
 HRESULT WinMainWindow::initialise() {
-  Reel *reel = new Reel();
+  reel = new Reel(m_pD3DDevice, CYLINDER_LENGTH, 1, 0.25);
   
-  // Create the vertex buffer.
-  
-  if(FAILED(m_pD3DDevice->CreateVertexBuffer(CYLINDER_LENGTH*2*sizeof(CUSTOMVERTEX),
-                                               0, D3DFVF_CUSTOMVERTEX,
-                                               D3DPOOL_DEFAULT, &m_pVertexBuffer, NULL)))
-  {
-      ERROR_MESSAGE(L"Failed to create vertex buffer.");
-      return E_FAIL;
-  }
-  
-  // Fill the vertex buffer. We are setting the tu and tv texture
-  // coordinates, which range from 0.0 to 1.0
-  
-  CUSTOMVERTEX* pVertices;
-  
-  if( FAILED( m_pVertexBuffer->Lock( 0, 0, (void**)&pVertices, 0 ) ) )
-      return E_FAIL;
-  
-  for( DWORD i=0; i<CYLINDER_LENGTH; i++ )
-  {
-      FLOAT theta = (2*D3DX_PI*i)/(CYLINDER_LENGTH-1);
-  
-      pVertices[2*i+0].position = D3DXVECTOR3( 0.25, 1.0f*cosf(theta), 1.0f*sinf(theta) );
-      pVertices[2*i+0].color    = 0xffffffff;
-  
-#ifndef SHOW_HOW_TO_USE_TCI
-      pVertices[2*i+0].tu       = ((FLOAT)i)/(CYLINDER_LENGTH-1);
-      pVertices[2*i+0].tv       = 1.0f;
-#endif
-  
-      pVertices[2*i+1].position = D3DXVECTOR3( -0.25f, 1.0f*cosf(theta), 1.0f*sinf(theta) );
-      pVertices[2*i+1].color    = 0xff0fffff;
-  
-#ifndef SHOW_HOW_TO_USE_TCI
-      pVertices[2*i+1].tu       = ((FLOAT)i)/(CYLINDER_LENGTH-1);
-      pVertices[2*i+1].tv       = 0.0f;
-#endif
-  
-  }
-    
-  m_pVertexBuffer->Unlock();
-  
-  m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
-  // Turn on the zbuffer
-  m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, TRUE );
-      
-  // Use D3DX to create a texture from a file based image
-  if( FAILED( D3DXCreateTextureFromFile( m_pD3DDevice, L"C://Users//Mark Ellis//Documents//My Develop//SlotPuzzle//source//Debug//reel2.jpg", &g_pTexture ) ) )
-  {
-    // If texture is not in current folder, try parent folder
-    ERROR_MESSAGE(L"Could not find reel texture.");
-    return E_FAIL;
-  }
-  return S_OK;
 }
 
 HRESULT WinMainWindow::render() {
@@ -311,16 +257,16 @@ HRESULT WinMainWindow::render() {
       // textures) and lighting information. In this case, we are modulating
       // (blending) our texture with the diffuse color of the vertices.
   
-      m_pD3DDevice->SetTexture( 0, g_pTexture );
-      m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
-      m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-      m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-      m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
+      m_pD3DDevice->SetTexture(0, reel->getTexture());
+      m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_MODULATE);
+      m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+      m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+      m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);
   
       m_pD3DDevice->SetStreamSource(0,
-                                    m_pVertexBuffer,
-        				  0,
-        				  sizeof(CUSTOMVERTEX));
+                                    reel->getVertexBuffer(),
+                                    0,
+                                    sizeof(CUSTOMVERTEX));
     
       m_pD3DDevice->SetFVF(D3DFVF_CUSTOMVERTEX);
       m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2*CYLINDER_LENGTH-2);
