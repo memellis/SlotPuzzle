@@ -14,6 +14,7 @@ hash git 2>/dev/null || { echo >&2 "I require git but it's not installed.  Abort
 INTERACTIVE_MODE="No"
 SOURCE_URL="git@github.com:memellis/SlotPuzzle.git"
 SOURCE="SlotPuzzle"
+NOW_TIMESTAMP=`date`
 
 # Source general-purpose functions
 if [ -f ${HOME}/bin/my_functions.sh ]
@@ -80,7 +81,7 @@ mkdir -p bin
 cp ${HOME}/bin/*.sh bin
 pushd bin 
 
-# Add files to git
+# Add shell scripts to git repository
 
 for f in `ls`
 do
@@ -88,15 +89,39 @@ do
     git add ${f}
 done
 
+# Copy Ogre tutorial framework to git repository
+
+popd > /dev/null
+
+cp -r ${BUILD_DIR}/ogre_tutorial_framework ${BUILD_DIR}/${SOURCE}
+
+pushd ${BUILD_DIR}/${SOURCE}/ogre_tutorial_framework > /dev/null
+pushd patch > /dev/null
+
+git add ogre_cmake_project_cegui_include.patch
+git add ogre_cmake_project_debug.patch
+git add ogre_cmake_project_findcegui.patch
+git add ogre_cmake_project_install_cg_dll.patch
+git add ogre_cmake_project_link_boost.patch
+git add ogre_cmake_project_resourcecfg.patch
+
+popd > /dev/null
+
+pushd scripts/cmake_modules > /dev/null
+
+git add findCEGUI.cmake
+git add FindPkgMacros.cmake
+git add PreprocessorUtils.cmake
+
+popd > /dev/null
+
+pushd src /dev/null
+
+git add TutorialApplication.h
+git add TutorialApplication.cpp
+
 # Commit changes
-git commit -m "Sync script changes"
+git commit -m "Sync script changes as of ${NOW_TIMESTAMP}"
 
 # Push changes to remote system
 git push -u origin master
-
-
- 
-
-
-
-

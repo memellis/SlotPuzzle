@@ -1,0 +1,24 @@
+diff -rupN clean_ogre_cmake_project/CMakeLists.txt clean_ogre_cmake_project.new/CMakeLists.txt
+--- clean_ogre_cmake_project/CMakeLists.txt	2013-08-23 20:12:22 +0100
++++ clean_ogre_cmake_project.new/CMakeLists.txt	2013-08-23 20:11:26 +0100
+@@ -67,7 +67,7 @@ endif()
+ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules")
+ find_package(CEGUI REQUIRED COMPONENTS OGRE)
+ include_directories(${CEGUI_INCLUDE_DIR}/..)
+-set(OGRE_LIBRARIES ${OGRE_LIBRARIES} ${CEGUI_LIBRARY}) 
++set(OGRE_LIBRARIES ${OGRE_LIBRARIES} ${CEGUI_LIBRARY} ${CEGUI_OgreRenderer_LIBRARY}) 
+  
+ # Find Boost
+ if (NOT OGRE_BUILD_PLATFORM_IPHONE)
+@@ -120,6 +120,11 @@ add_executable(OgreApp WIN32 ${HDRS} ${S
+ set_target_properties(OgreApp PROPERTIES DEBUG_POSTFIX _d)
+  
+ target_link_libraries(OgreApp ${OGRE_LIBRARIES} ${OIS_LIBRARIES})
++
++if (CMAKE_COMPILER_IS_GNUCXX)
++  set ( CMAKE_CXX_FLAGS_DEBUG "-g -DDEBUG -D_DEBUG"
++        CACHE STRING "g++ Compiler Flags for Debug Builds" FORCE)
++endif ()
+  
+ file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin)
+ file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/media)

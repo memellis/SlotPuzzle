@@ -1,0 +1,12 @@
+diff -rupN clean_ogre_cmake_project/CMakeLists.txt clean_ogre_cmake_project.new/CMakeLists.txt
+--- clean_ogre_cmake_project/CMakeLists.txt	2013-09-28 10:57:05 +0100
++++ clean_ogre_cmake_project.new/CMakeLists.txt	2013-09-28 10:59:36 +0100
+@@ -97,7 +97,7 @@ if (NOT OGRE_BUILD_PLATFORM_IPHONE)
+ 	# Set up referencing of Boost
+ 	include_directories(${Boost_INCLUDE_DIR})
+ 	add_definitions(-DBOOST_ALL_NO_LIB)
+-	set(OGRE_LIBRARIES ${OGRE_LIBRARIES} ${Boost_LIBRARIES})
++	set(OGRE_LIBRARIES ${OGRE_LIBRARIES} ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_DATE_TIME_LIBRARY})
+ endif()
+  
+ set(HDRS

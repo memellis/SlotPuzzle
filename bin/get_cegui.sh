@@ -36,7 +36,7 @@ then
 	if [ $? -ne 0 ]
 	then
 	    echo ""
-	    echo "Usage: $0 [-h] [-d] [-r] [-i]"
+	    echo "Usage: ${FULL_SCRIPT_NAME##*/} [-h] [-d] [-r] [-i]"
 		echo "  -h      Prints this usage message."
 		echo "  -d      Build Debug version of CEGUI. This is the default build type."
 		echo "  -r      Build Release version of CEGUI."
@@ -53,7 +53,7 @@ then
             ;;
 	     h)
   	        echo ""
-	        echo "Usage: $0 [-h] [-d] [-r] [-i]"
+	        echo "Usage: ${FULL_SCRIPT_NAME##*/} [-h] [-d] [-r] [-i]"
 		    echo "  -h      Prints this usage message."
 		    echo "  -d      Build Debug version of CEGUI. This is the default build type."
 		    echo "  -r      Build Release version of CEGUI."

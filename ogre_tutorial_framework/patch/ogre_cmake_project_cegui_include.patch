@@ -1,0 +1,12 @@
+diff -rupN clean_ogre_cmake_project/CMakeLists.txt clean_ogre_cmake_project.new//CMakeLists.txt
+--- clean_ogre_cmake_project/CMakeLists.txt	2013-08-23 14:24:29 +0100
++++ clean_ogre_cmake_project.new//CMakeLists.txt	2013-08-23 14:29:54 +0100
+@@ -66,7 +66,7 @@ endif()
+ # Find CEGUI 
+ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules")
+ find_package(CEGUI REQUIRED COMPONENTS OGRE)
+-include_directories(CEGUI.h_DIR)
++include_directories(${CEGUI_INCLUDE_DIR}/..)
+ set(OGRE_LIBRARIES ${OGRE_LIBRARIES} ${CEGUI_LIBRARY}) 
+  
+ # Find Boost

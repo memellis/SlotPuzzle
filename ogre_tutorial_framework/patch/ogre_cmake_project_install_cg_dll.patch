@@ -1,0 +1,19 @@
+diff -rupN clean_ogre_cmake_project/CMakeLists.txt clean_ogre_cmake_project.new/CMakeLists.txt
+--- clean_ogre_cmake_project/CMakeLists.txt	2013-09-28 11:10:11 +0100
++++ clean_ogre_cmake_project.new/CMakeLists.txt	2013-09-28 11:11:48 +0100
+@@ -170,6 +170,7 @@ if(WIN32)
+ 		${OGRE_PLUGIN_DIR_REL}/RenderSystem_Direct3D9.dll
+ 		${OGRE_PLUGIN_DIR_REL}/RenderSystem_GL.dll
+ 		${OGRE_PLUGIN_DIR_REL}/OIS.dll
++		${OGRE_PLUGIN_DIR_REL}/cg.dll
+ 		DESTINATION bin
+ 		CONFIGURATIONS Release RelWithDebInfo
+ 	)
+@@ -178,6 +179,7 @@ if(WIN32)
+ 		${OGRE_PLUGIN_DIR_DBG}/RenderSystem_Direct3D9_d.dll
+ 		${OGRE_PLUGIN_DIR_DBG}/RenderSystem_GL_d.dll
+ 		${OGRE_PLUGIN_DIR_DBG}/OIS_d.dll
++		${OGRE_PLUGIN_DIR_DBG}/cg.dll
+ 		DESTINATION bin
+ 		CONFIGURATIONS Debug
+ 	)
