@@ -1,10 +1,10 @@
 #!/bin/bash
 #
-# Build libCURL for MinGW
+# Build openssl for MinGW
 #
 
-SOURCE_URL=http://curl.haxx.se/download/curl-7.32.0.tar.gz
-SOURCE_ARCHIVE=curl-7.32.0.tar.gz
+SOURCE_URL=http://www.openssl.org/source/
+SOURCE_ARCHIVE=openssl-1.0.1e.tar.gz
 SOURCE="${SOURCE_ARCHIVE%.*.*}"
 
 hash wget 2>/dev/null || { echo >&2 "I require wget but it's not installed.  Aborting."; exit 1; }
@@ -14,7 +14,7 @@ hash cmake 2>/dev/null || { echo >&2 "I require cmake but it's not installed.  A
 
 INTERACTIVE_MODE="NO"
 FULL_SCRIPT_NAME="${0}"
-CURL_DIR=curl
+OPENSSL_DIR=openssl
 
 # Check for environment variables set, if not, set default value
 [ -z "${BUILD_DIR}" ] && { BUILD_DIR=${HOME}/build; }
@@ -71,23 +71,18 @@ if [ "${INTERACTIVE_MODE}" = "Yes" ]
 then
     if ask "Remove previous ${BUILD_DIR}/${CURL_DIR} build"
     then
-      rm -fr ${BUILD_DIR}/${CURL_DIR}  
+      rm -fr ${BUILD_DIR}/${OPENSSL_DIR}  
     fi
 else
-    rm -fr ${BUILD_DIR}/${CURL_DIR}
+    rm -fr ${BUILD_DIR}/${OPENSSL_DIR}
 fi
-mkdir -p ${BUILD_DIR}/${CURL_DIR}/build
-pushd ${BUILD_DIR}/${CURL_DIR} > /dev/null
+
+pushd ${BUILD_DIR}/${OPENSSL_DIR} > /dev/null
 
 tar zxvf ${BUILD_DIR}/${SOURCE_ARCHIVE}
-pushd build > /dev/null
+pushd ${SOURCE} > /dev/null
 
-CURRENT_WORKING_PATH=${PATH}
-PATH=${MINGW_HOME}:${MINGW_HOME}/bin:${MINGW_HOME}/opt/bin.
-cmake ../${SOURCE} -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_DIR} -DCMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} -DOPENSSL_ROOT_DIR:PATH=${INSTALL_DIR} -G"Eclipse CDT4 - MinGW Makefiles"
-mingw32-make -j${NUMBER_OF_PROCESSORS}
-mingw32-make install
-
-PATH=${CURRENT_WORKING_PATH}
-# Workaround libcurl.dll reported as missing
-cp ${INSTALL_DIR}/lib/libcurl.dll ${INSTALL_DIR}/bin
+./config --prefix=${MINGW_HOME}/opt --openssldir=${MINGW_HOME}/opt shared
+make clean
+make 
+make install

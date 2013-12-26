@@ -98,6 +98,7 @@ cp -r ${BUILD_DIR}/ogre_tutorial_framework ${BUILD_DIR}/${SOURCE}
 pushd ${BUILD_DIR}/${SOURCE}/ogre_tutorial_framework > /dev/null
 pushd patch > /dev/null
 
+git add ogre_basic_tutorial3_terrain_library.patch
 git add ogre_cmake_project_cegui_include.patch
 git add ogre_cmake_project_debug.patch
 git add ogre_cmake_project_findcegui.patch
@@ -119,6 +120,8 @@ pushd src /dev/null
 
 git add TutorialApplication.h
 git add TutorialApplication.cpp
+git add BasicTutorial3Application.h
+git add BasicTutorial3Application.cpp
 
 # Commit changes
 git commit -m "Sync script changes as of ${NOW_TIMESTAMP}"

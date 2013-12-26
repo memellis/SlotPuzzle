@@ -1,0 +1,14 @@
+diff -rupN clean_ogre_cmake_project/CMakeLists.txt clean_ogre_cmake_project.new//CMakeLists.txt
+--- clean_ogre_cmake_project/CMakeLists.txt	2013-12-22 14:27:03 +0000
++++ clean_ogre_cmake_project.new//CMakeLists.txt	2013-12-22 14:15:05 +0000
+@@ -67,7 +67,9 @@ endif()
+ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules")
+ find_package(CEGUI REQUIRED COMPONENTS OGRE)
+ include_directories(${CEGUI_INCLUDE_DIR}/..)
+-set(OGRE_LIBRARIES ${OGRE_LIBRARIES} ${CEGUI_LIBRARY} ${CEGUI_OgreRenderer_LIBRARY}) 
++set(OGRE_LIBRARIES ${OGRE_LIBRARIES} ${OGRE_Terrain_LIBRARY} ${CEGUI_LIBRARY} ${CEGUI_OgreRenderer_LIBRARY} ) 
++ 
++message ("OGRE_LIBRARIES=${OGRE_LIBRARIES}")
+  
+ # Find Boost
+ if (NOT OGRE_BUILD_PLATFORM_IPHONE)

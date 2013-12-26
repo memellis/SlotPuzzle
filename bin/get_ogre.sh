@@ -19,7 +19,7 @@ INTERACTIVE_MODE="No"
  
 # Check for environment variables set, if not, set default value
 [ -z "${BUILD_DIR}" ] && { BUILD_DIR=${HOME}/build; }
-[ -z "${MINGW_HOME}" ] && { MINGW_HOME=/MinGW; }
+[ -z "${MINGW_HOME}" ] && { MINGW_HOME=/h/MinGW_1; }
 [ -z "${INSTALL_DIR}" ] && { INSTALL_DIR=${MINGW_HOME}/opt; }
 [ -z "${OGRE_DEPENDENCIES_DIR}" ] && { OGRE_DEPENDENCIES_DIR=${BUILD_DIR}/${OGREDEPS_DIR}/dependencies; }
 [ -z "${DXSDK_DIR}" ] && { DXSDK_DIR="H:/Program Files (x86)/Microsoft DirectX SDK (June 2010)"; export DXSDK_DIR; }
@@ -93,7 +93,7 @@ pushd ${OGREDEPS_DIR} > /dev/null
 echo "Fetching ogredeps source code..."
 hg clone https://bitbucket.org/cabalistic/ogredeps
 pushd build > /dev/null
-PATH=${MINGW_HOME}:${MINGW_HOME}/bin:${MINGW_HOME}/opt/bin.
+PATH=${MINGW_HOME}:${MINGW_HOME}/bin:${MINGW_HOME}/opt/bin:.
 echo "Building ogredeps source..."
 cmake ../${OGREDEPS_DIR} -DCMAKE_INSTALL_PREFIX:PATH=${OGRE_DEPENDENCIES_DIR} -DCMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} -G"Eclipse CDT4 - MinGW Makefiles"
 mingw32-make -j${NUMBER_OF_PROCESSORS}
