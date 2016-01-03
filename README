@@ -29,10 +29,9 @@ https://github.com/libgdx/libgdx/wiki/Gradle-and-Eclipse
 
 - To see the state of the game running, in Eclipse, navigate to:
 
-	SlotPuzzle2d-desktop/src/
-							com.ellzone.slotpuzzle2d.desktop
-															DesktopLauncher.java
+	SlotPuzzle2d-desktop/src/com.ellzone.slotpuzzle2d.desktop/DesktopLauncher.java
 															
 - Right click on DesktopLauncher.java and select Run As -> Java Application
 
 - You should see the application running on your Desktop.
+
