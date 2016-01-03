@@ -1,7 +1,10 @@
 package com.ellzone.slotpuzzle2d.screens;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
@@ -170,9 +173,9 @@ public class IntroScreen implements Screen {
 		FileHandle exoFile = Gdx.files.local("generated-fonts/LiberationMono-Regular.ttf");
 		
 		try {
-	        FileUtils.copyFile(exoFileInternal.file(), exoFile.file());
+	        FileUtils.copyFile(exoFileInternal, exoFile);
 		} catch (IOException ex) {
-			System.out.println("Could not copy " + exoFileInternal.file().getAbsolutePath() + " to file " + exoFile.file().getAbsolutePath());
+			System.out.println("Could not copy " + exoFileInternal.file().getPath() + " to file " + exoFile.file().getAbsolutePath());
 			System.out.println("Error=" + ex.getMessage());
 		}
 		
