@@ -1,11 +1,9 @@
 package com.ellzone.slotpuzzle2d;
 
-import java.util.Random;
-
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.ellzone.slotpuzzle2d.screens.IntroScreen;
+import com.ellzone.slotpuzzle2d.screens.PlayScreen;
+import com.ellzone.slotpuzzle2d.screens.SplashScreen;
 
 
 public class SlotPuzzle extends Game
@@ -16,9 +14,8 @@ public class SlotPuzzle extends Game
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
-		setScreen(new IntroScreen(this));
+		setScreen(new SplashScreen(this));
 	}
-	
 
 	@Override
 	public void render() {        

@@ -1,8 +1,12 @@
 package com.ellzone.utils;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.PixmapIO;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
+import com.ellzone.slotpuzzle2d.screens.IntroScreen;
 
 public class PixmapProcessors {
 	public static Pixmap rotatePixmap(Pixmap src, float angle){
@@ -92,6 +96,50 @@ public class PixmapProcessors {
 			}
 		}
 	}
+	
+	public static Pixmap createDynamicVerticalFontText(BitmapFont font, String text, Pixmap src) {
+		final int width = src.getWidth();
+	    final int height = src.getHeight();
+	    
+	    Pixmap verticalFontText = new Pixmap(width, height, src.getFormat());
+	    BitmapFont.BitmapFontData fontData = font.getData();
+	    if (fontData == null) {
+	    	Gdx.app.log(SlotPuzzle.SLOT_PUZZLE, "fontData is null :(");
+	    }
+	    Gdx.app.log(SlotPuzzle.SLOT_PUZZLE, fontData.getImagePath(0));
+	    Pixmap fontPixmap = new Pixmap(Gdx.files.internal(fontData.getImagePath(0)));
+	    BitmapFont.Glyph glyph;
+	    
+        verticalFontText.setColor(Color.BLACK);
+		verticalFontText.fillRectangle(0, 0, width, height);
+		verticalFontText.setColor(Color.WHITE);
+		
+	    for(int i = 0; i < text.length(); i++) {
+	    	glyph = fontData.getGlyph(text.charAt(i));
+	    	verticalFontText.drawPixmap(fontPixmap, 
+	    							    (verticalFontText.getWidth() - glyph.width) / 2, 
+	    							    (i * (int) (font.getLineHeight() - 7)),
+	    							    glyph.srcX, glyph.srcY, glyph.width, glyph.height);
+	    }   
+		return verticalFontText;
+	}
 
+	public static Pixmap createDynamicScrollAnimatedVerticalText(Pixmap textToAnimate, int textHeight, String text, int fontSize, int scrollStep) {
+		Pixmap scrollAnimatedVerticalText = new Pixmap(fontSize * (text.length() * 5 - 1), text.length() * textHeight, textToAnimate.getFormat());
+			
+		PixmapProcessors.copyPixmapVertically(textToAnimate, scrollAnimatedVerticalText, 0);
+
+		Pixmap scrolledText = new Pixmap(textToAnimate.getWidth(), textToAnimate.getHeight(), textToAnimate.getFormat());
+		PixmapProcessors.copyPixmapVertically(textToAnimate, scrolledText, 0);
+		
+		for (int i = 0; i < text.length() * 5 - 2; i++) {
+			scrolledText = PixmapProcessors.scrollPixmapWrap(scrolledText, scrollStep);
+			PixmapProcessors.copyPixmapVertically(scrolledText, scrollAnimatedVerticalText, scrolledText.getWidth() * (i + 1));
+		}
+		
+		return scrollAnimatedVerticalText;
+	}
+
+	
 }
 

@@ -14,6 +14,8 @@ import com.ellzone.slotpuzzle2d.screens.IntroScreen;
 
 public class ReelLetter extends Sprite {
 	
+	public static int instanceCount = 0;
+	
 	private float x, y;
 	private Animation reelLetterAnimationFast;
 	private Texture reelText;
@@ -21,15 +23,17 @@ public class ReelLetter extends Sprite {
 	private int reelTextCols;
 	private float frameRate;
 	private TextureRegion[] reelFrames;
-	private IntroScreen screen;
+	private Screen screen;
 	private float stateTime;
 	private float endStateTime;
 	private float reelSpinTime;
 	private Random random;
 	private int endReel;
 	private int initialRow;
+	private boolean animationCompleted;
 
-	public ReelLetter(IntroScreen screen, Texture reelText, int reelTextRows, int reelTextCols, float frameRate, float x, float y, int endReel) {
+	public ReelLetter(Screen screen, Texture reelText, int reelTextRows, int reelTextCols, float frameRate, float x, float y, int endReel) {
+		ReelLetter.instanceCount++;
 		this.screen = screen;
 		this.reelText = reelText;
 		this.reelTextRows = reelTextRows;
@@ -67,6 +71,8 @@ public class ReelLetter extends Sprite {
 		int initialFrame = random.nextInt(reelFrames.length);
 		setBounds(this.x, this.y, reelFrames[initialFrame].getRegionWidth(), reelFrames[initialFrame].getRegionHeight());
 		setRegion(reelFrames[initialFrame]);
+		
+		animationCompleted = false;
 	}
 	
 	// Have a method to implement reel friction
@@ -84,6 +90,10 @@ public class ReelLetter extends Sprite {
 				setRegion(reelLetterAnimationFast.getKeyFrame(stateTime, true));
 			} else {
 				setRegion(reelLetterAnimationFast.getKeyFrame(endStateTime + ((reelTextRows - initialRow + endReel) * reelTextCols) * frameRate, true));
+				if (!animationCompleted) {
+					animationCompleted = true;
+					ReelLetter.instanceCount--;
+				}
 			}
 		}
 	}
