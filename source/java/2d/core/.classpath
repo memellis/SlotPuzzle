@@ -3,6 +3,5 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
-	<classpathentry kind="lib" path="H:/MinGW_Qt/home/mark/build/SlotPuzzle/source/java/2d/gdx-game/libs/gdx-freetype.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
