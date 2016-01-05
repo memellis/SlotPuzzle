@@ -107,9 +107,8 @@ public class PixmapProcessors {
 	    	Gdx.app.log(SlotPuzzle.SLOT_PUZZLE, "fontData is null :(");
 	    }
 	    Gdx.app.log(SlotPuzzle.SLOT_PUZZLE, fontData.getImagePath(0));
-	    Pixmap fontPixmap = new Pixmap(Gdx.files.internal(fontData.getImagePath(0)));
+	    Pixmap fontPixmap = new Pixmap(Gdx.files.local(fontData.getImagePath(0)));
 	    BitmapFont.Glyph glyph;
-	    
         verticalFontText.setColor(Color.BLACK);
 		verticalFontText.fillRectangle(0, 0, width, height);
 		verticalFontText.setColor(Color.WHITE);
