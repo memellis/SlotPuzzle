@@ -2,6 +2,7 @@ package com.ellzone.slotpuzzle2d;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.ellzone.slotpuzzle2d.screens.IntroScreen;
 import com.ellzone.slotpuzzle2d.screens.PlayScreen;
 import com.ellzone.slotpuzzle2d.screens.SplashScreen;
 

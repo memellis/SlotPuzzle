@@ -13,10 +13,15 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.utils.FileUtils;
 
+import aurelienribon.tweenengine.TweenManager;
+
 public class MenuScreen implements Screen {
 	private SlotPuzzle game;
 	private Viewport viewport;
 	private Stage stage;
+ 	private final TweenManager tweenManager = new TweenManager();
+	private boolean isLoaded = false;
+
 	
 	public MenuScreen(SlotPuzzle game) {
 		this.game = game;

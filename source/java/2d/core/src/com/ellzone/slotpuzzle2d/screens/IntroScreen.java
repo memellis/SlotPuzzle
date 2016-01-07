@@ -89,7 +89,7 @@ public class IntroScreen implements Screen {
     private Label label;
     private Skin skin;
     private TextureAtlas buttonAtlas;
-	private final TweenManager tweenManager = new TweenManager();
+	private TweenManager tweenManager = new TweenManager();
 	private Sprite universal;
 	private Sprite tween;
 	private Sprite engine;
@@ -100,7 +100,6 @@ public class IntroScreen implements Screen {
 	private Sprite veil;
 	private TextureRegion gdxTex;
 	private boolean isLoaded = false;
-
 	
 	public class MyInputProcessor implements InputProcessor {
 
@@ -164,6 +163,10 @@ public class IntroScreen implements Screen {
                
         // FIXME 1: Resizing window needs to generate resized Smartfont
         // FIXME 2: Position co-ordinates of screen are different when compare to Play and EndOfGame screens
+        
+		Tween.setWaypointsLimit(10);
+		Tween.setCombinedAttributesLimit(3);
+		Tween.registerAccessor(Sprite.class, new SpriteAccessor());
         
 		SmartFontGenerator fontGen = new SmartFontGenerator();
 		FileHandle exoFileInternal = Gdx.files.internal("LiberationMono-Regular.ttf");
@@ -263,6 +266,33 @@ public class IntroScreen implements Screen {
 
         stage.addActor(table);
         viewport.update(800, 480);
+        
+		Timeline.createSequence()
+			.push(Tween.set(introScreenLetters.get(0), SpriteAccessor.POS_XY).target(-20f, -20f))
+			.push(Tween.set(introScreenLetters.get(1), SpriteAccessor.POS_XY).target(-20f,  00f))
+			.push(Tween.set(introScreenLetters.get(2), SpriteAccessor.POS_XY).target(-20f,  20f))
+			.push(Tween.set(introScreenLetters.get(3), SpriteAccessor.POS_XY).target(-20f,  40f))
+			.push(Tween.set(introScreenLetters.get(4), SpriteAccessor.POS_XY).target(-20f,  60f))
+			.push(Tween.set(introScreenLetters.get(5), SpriteAccessor.POS_XY).target(-20f,  80f))
+			.push(Tween.set(introScreenLetters.get(6), SpriteAccessor.POS_XY).target(-20f,  100f))
+			.push(Tween.set(introScreenLetters.get(7), SpriteAccessor.POS_XY).target(-20f,  120f))
+			.push(Tween.set(introScreenLetters.get(8), SpriteAccessor.POS_XY).target(-20f,  140f))
+			.push(Tween.set(introScreenLetters.get(9), SpriteAccessor.POS_XY).target(-20f,  160f))
+			.push(Tween.set(introScreenLetters.get(10), SpriteAccessor.POS_XY).target(-20f,  180f))
+			.pushPause(1.0f)
+			.push(Tween.to(introScreenLetters.get(0), SpriteAccessor.POS_XY, 0.8f).target(250f, 280f))
+			.push(Tween.to(introScreenLetters.get(1), SpriteAccessor.POS_XY, 0.8f).target(280f, 280f))
+			.push(Tween.to(introScreenLetters.get(2), SpriteAccessor.POS_XY, 0.8f).target(310f, 280f))
+			.push(Tween.to(introScreenLetters.get(3), SpriteAccessor.POS_XY, 0.8f).target(340f, 280f))
+			.push(Tween.to(introScreenLetters.get(4), SpriteAccessor.POS_XY, 0.8f).target(370f, 280f))
+			.push(Tween.to(introScreenLetters.get(5), SpriteAccessor.POS_XY, 0.8f).target(400f, 280f))
+			.push(Tween.to(introScreenLetters.get(6), SpriteAccessor.POS_XY, 0.8f).target(430f, 280f))
+			.push(Tween.to(introScreenLetters.get(7), SpriteAccessor.POS_XY, 0.8f).target(460f, 280f))
+			.push(Tween.to(introScreenLetters.get(8), SpriteAccessor.POS_XY, 0.8f).target(490f, 280f))
+			.push(Tween.to(introScreenLetters.get(9), SpriteAccessor.POS_XY, 0.8f).target(520f, 280f))
+			.push(Tween.to(introScreenLetters.get(10), SpriteAccessor.POS_XY, 0.8f).target(550f, 280f))
+			.pushPause(0.3f)
+			.start(tweenManager);
 	}
 		
 	@Override
@@ -272,6 +302,7 @@ public class IntroScreen implements Screen {
 	}
 	
 	public void update(float dt) {
+		tweenManager.update(dt);
 		for(ReelLetter reel : introScreenLetters) {
 			reel.update(dt);
 		}
