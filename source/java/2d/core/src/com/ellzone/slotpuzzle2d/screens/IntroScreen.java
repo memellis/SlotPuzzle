@@ -162,7 +162,6 @@ public class IntroScreen implements Screen {
         stage = new Stage(viewport, game.batch);
                
         // FIXME 1: Resizing window needs to generate resized Smartfont
-        // FIXME 2: Position co-ordinates of screen are different when compare to Play and EndOfGame screens
         
 		Tween.setWaypointsLimit(10);
 		Tween.setCombinedAttributesLimit(3);
@@ -178,13 +177,14 @@ public class IntroScreen implements Screen {
 		try {
 	        FileUtils.copyFile(exoFileInternal, exoFile);
 		} catch (IOException ex) {
-			System.out.println("Could not copy " + exoFileInternal.file().getPath() + " to file " + exoFile.file().getAbsolutePath());
-			System.out.println("Error=" + ex.getMessage());
+			Gdx.app.error(SlotPuzzle.SLOT_PUZZLE, "Could not copy " + exoFileInternal.file().getPath() + " to file " + exoFile.file().getAbsolutePath() + " " + ex.getMessage());
 		}
 		
 		fontSmall = fontGen.createFont(exoFile, "exo-small", 24);
 		fontMedium = fontGen.createFont(exoFile, "exo-medium", 48);
 		fontLarge = fontGen.createFont(exoFile, "exo-large", 64);
+		
+		ReelLetter.instanceCount = 0;
 		
 		if (Gdx.files.local("SlotPuzzleTextFontTile.png").exists()) {
 			texture = new Texture(Gdx.files.local("SlotPuzzleTextFontTile.png"));

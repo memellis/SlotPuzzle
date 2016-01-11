@@ -118,7 +118,6 @@ public class SmartFontGenerator {
 
 		String[] pageRefs = BitmapFontWriter.writePixmaps(packer.getPages(), pixmapDir, fontName);
 		Gdx.app.debug(TAG, String.format("Saving font [%s]: fontfile: %s, pixmapDir: %s\n", fontName, fontFile, pixmapDir));
-		Gdx.app.log(TAG, String.format("Saving font [%s]: fontfile: %s, pixmapDir: %s\n", fontName, fontFile, pixmapDir));
 		// here we must add the png dir to the page refs
 		for (int i = 0; i < pageRefs.length; i++) {
 			pageRefs[i] = fontName + "/" + pageRefs[i];

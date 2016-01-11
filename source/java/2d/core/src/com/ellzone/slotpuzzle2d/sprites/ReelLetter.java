@@ -16,6 +16,7 @@ public class ReelLetter extends Sprite {
 	
 	public static int instanceCount = 0;
 	
+	private int reelId;
 	private float x, y;
 	private Animation reelLetterAnimationFast;
 	private Texture reelText;
@@ -33,6 +34,7 @@ public class ReelLetter extends Sprite {
 	private boolean animationCompleted;
 
 	public ReelLetter(Screen screen, Texture reelText, int reelTextRows, int reelTextCols, float frameRate, float x, float y, int endReel) {
+		reelId = ReelLetter.instanceCount;
 		ReelLetter.instanceCount++;
 		this.screen = screen;
 		this.reelText = reelText;
@@ -86,13 +88,14 @@ public class ReelLetter extends Sprite {
 			if (endStateTime == 0 ) {
 				endStateTime = stateTime;
 			}
-			if (stateTime < endStateTime + ((reelTextRows - initialRow + endReel) * reelTextCols) * frameRate) {
+			if (stateTime <= endStateTime + ((reelTextRows - initialRow + endReel) * reelTextCols) * frameRate) {
 				setRegion(reelLetterAnimationFast.getKeyFrame(stateTime, true));
 			} else {
 				setRegion(reelLetterAnimationFast.getKeyFrame(endStateTime + ((reelTextRows - initialRow + endReel) * reelTextCols) * frameRate, true));
 				if (!animationCompleted) {
 					animationCompleted = true;
 					ReelLetter.instanceCount--;
+					Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "Reel stopped spinning - instanceCount="+String.valueOf(ReelLetter.instanceCount + " reelId=" + reelId));
 				}
 			}
 		}
