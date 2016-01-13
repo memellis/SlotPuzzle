@@ -196,7 +196,7 @@ public class IntroScreen implements Screen {
 
 			slotReelPixmap = new Pixmap(IntroScreen.EXO_FONT_SMALL_SIZE, IntroScreen.SLOT_PUZZLE_REEL_TEXT.length() * IntroScreen.SCROLL_HEIGHT, Pixmap.Format.RGBA8888);		
 			slotReelPixmap = PixmapProcessors.createDynamicVerticalFontText(fontSmall, IntroScreen.SLOT_PUZZLE_REEL_TEXT, slotReelPixmap);
-			slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedVerticalText(slotReelPixmap, 20, IntroScreen.SLOT_PUZZLE_REEL_TEXT, IntroScreen.EXO_FONT_SMALL_SIZE, IntroScreen.SCROLL_STEP);
+			slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedVerticalText(slotReelPixmap, IntroScreen.SCROLL_HEIGHT, IntroScreen.SLOT_PUZZLE_REEL_TEXT, IntroScreen.EXO_FONT_SMALL_SIZE, IntroScreen.SCROLL_STEP);
 			slotReelTexture = new Texture(slotReelPixmap);
 
 			for (int i = 0; i < IntroScreen.SLOT_PUZZLE_REEL_TEXT.length(); i++) {
@@ -211,7 +211,7 @@ public class IntroScreen implements Screen {
 			slotReelTexture = new Texture(slotReelPixmap);
 
 			for (int i = 0; i < IntroScreen.BY_TEXT.length(); i++) {
-				introScreenLetters.add(new ReelLetter(this, slotReelTexture, IntroScreen.BY_TEXT.length(), 11, SIXTY_FPS, (i * IntroScreen.TEXT_SPACING_SIZE) + viewport.getWorldWidth() / 2.2f, viewport.getWorldHeight() / 2.0f, i));	
+				introScreenLetters.add(new ReelLetter(this, slotReelTexture, IntroScreen.BY_TEXT.length(), IntroScreen.BY_TEXT.length() * 5 - 1, SIXTY_FPS, (i * IntroScreen.TEXT_SPACING_SIZE) + viewport.getWorldWidth() / 2.2f, viewport.getWorldHeight() / 2.0f, i));	
 			}
 
 			slotReelPixmap = new Pixmap(IntroScreen.EXO_FONT_SMALL_SIZE, IntroScreen.AUTHOR_TEXT.length() * IntroScreen.SCROLL_HEIGHT, Pixmap.Format.RGBA8888);;
