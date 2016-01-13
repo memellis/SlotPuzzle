@@ -26,7 +26,7 @@ import aurelienribon.tweenengine.equations.Back;
 import aurelienribon.tweenengine.equations.Quart;
 
 public class PlayScreen implements Screen {
-	private static final int PX_PER_METER = 1600;
+	private static final int PX_PER_METER = 600;
 	private SlotPuzzle game;
 	private final OrthographicCamera camera = new OrthographicCamera();
 	private Viewport viewport;
@@ -95,13 +95,28 @@ public class PlayScreen implements Screen {
 		Timeline.createSequence()
 			.push(Tween.set(cherry, SpriteAccessor.POS_XY).targetRelative(-1, 0))
 			.push(Tween.set(cheesecake, SpriteAccessor.POS_XY).targetRelative(1, 0))
+			.push(Tween.set(grapes, SpriteAccessor.POS_XY).targetRelative(1, 0))
+			.push(Tween.set(lemon, SpriteAccessor.POS_XY).targetRelative(1, 0))
+			.push(Tween.set(peach, SpriteAccessor.POS_XY).targetRelative(1, 0))
+			.push(Tween.set(pear, SpriteAccessor.POS_XY).targetRelative(1, 0))
+			.push(Tween.set(tomato, SpriteAccessor.POS_XY).targetRelative(1, 0))
 			.pushPause(0.5f)
 			.push(Tween.to(cherry, SpriteAccessor.POS_XY, 0.5f).targetRelative(1, 0).ease(Quart.OUT))
 			.push(Tween.to(cheesecake, SpriteAccessor.POS_XY, 0.5f).targetRelative(-1, 0).ease(Quart.OUT))
+			.push(Tween.to(grapes, SpriteAccessor.POS_XY, 0.5f).targetRelative(-1, 0).ease(Quart.OUT))
+			.push(Tween.to(lemon, SpriteAccessor.POS_XY, 0.5f).targetRelative(-1, 0).ease(Quart.OUT))
+			.push(Tween.to(peach, SpriteAccessor.POS_XY, 0.5f).targetRelative(-1, 0).ease(Quart.OUT))
+			.push(Tween.to(pear, SpriteAccessor.POS_XY, 0.5f).targetRelative(-1, 0).ease(Quart.OUT))
+			.push(Tween.to(tomato, SpriteAccessor.POS_XY, 0.5f).targetRelative(-1, 0).ease(Quart.OUT))
 			.pushPause(0.3f)
 			.beginParallel()
 				.push(Tween.to(cherry, SpriteAccessor.POS_XY, 0.5f).targetRelative(1, 0).ease(Back.IN))
 				.push(Tween.to(cheesecake, SpriteAccessor.POS_XY, 0.5f).targetRelative(1, 0).ease(Back.IN))
+				.push(Tween.to(grapes, SpriteAccessor.POS_XY, 0.5f).targetRelative(1, 0).ease(Back.IN))
+				.push(Tween.to(lemon, SpriteAccessor.POS_XY, 0.5f).targetRelative(1, 0).ease(Back.IN))
+				.push(Tween.to(peach, SpriteAccessor.POS_XY, 0.5f).targetRelative(1, 0).ease(Back.IN))
+				.push(Tween.to(pear, SpriteAccessor.POS_XY, 0.5f).targetRelative(1, 0).ease(Back.IN))
+				.push(Tween.to(tomato, SpriteAccessor.POS_XY, 0.5f).targetRelative(1, 0).ease(Back.IN))
 			.end()
 			.pushPause(-0.3f)
 			.start(tweenManager);
@@ -148,7 +163,11 @@ public class PlayScreen implements Screen {
 			game.batch.setProjectionMatrix(camera.combined);
 			game.batch.begin();
 			cherry.draw(game.batch);
-			cheesecake.draw(game.batch);
+			grapes.draw(game.batch);
+			lemon.draw(game.batch);
+			peach.draw(game.batch);
+			pear.draw(game.batch);
+			tomato.draw(game.batch);
 		game.batch.end();
 		} else {
 			if (Assets.inst().getProgress() < 1) {

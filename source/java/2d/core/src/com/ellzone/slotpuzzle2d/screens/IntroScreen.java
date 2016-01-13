@@ -255,7 +255,7 @@ public class IntroScreen implements Screen {
         });
 
         Label.LabelStyle font = new Label.LabelStyle(fontSmall, Color.WHITE);
-        Label buttonPressLabel = new Label("Press BLUE button to Play", font);
+        Label buttonPressLabel = new Label("LAUNCH", font);
         
         Table table = new Table();
         table.bottom();
