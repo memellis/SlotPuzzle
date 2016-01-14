@@ -138,6 +138,10 @@ public class PixmapProcessors {
 		
 		return scrollAnimatedVerticalText;
 	}
+	
+	private static Pixmap createDynamicScrollAnimatedPixmap(Pixmap[] pixmaps, int scrollStep) {
+		return null;
+	}
 
 	
 }
