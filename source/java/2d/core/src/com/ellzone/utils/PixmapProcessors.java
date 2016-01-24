@@ -1,14 +1,18 @@
 package com.ellzone.utils;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
-import com.ellzone.slotpuzzle2d.screens.IntroScreen;
 
 public class PixmapProcessors {
+	private static int counter = 0;
+	
 	public static Pixmap rotatePixmap(Pixmap src, float angle){
 	    final int width = src.getWidth();
 	    final int height = src.getHeight();
@@ -139,10 +143,53 @@ public class PixmapProcessors {
 		return scrollAnimatedVerticalText;
 	}
 	
-	private static Pixmap createDynamicScrollAnimatedPixmap(Pixmap[] pixmaps, int scrollStep) {
-		return null;
+	public static Pixmap createDynamicScrollAnimatedPixmap(Sprite[] sprites, int scrollStep) {
+		Pixmap pixmap = getPixmapFromSprite(sprites[0]);
+		Pixmap pixmapToAnimate = new Pixmap(pixmap.getWidth(), pixmap.getHeight() * sprites.length, pixmap.getFormat());
+
+		for (int i = 0; i < sprites.length; i++) {
+			pixmap = getPixmapFromSprite(sprites[i]);
+			PixmapProcessors.copyPixmapHorizontally(pixmap, pixmapToAnimate, (int) i * pixmap.getHeight());
+		}
+		
+		Pixmap scrolledPixmap = new Pixmap(pixmapToAnimate.getWidth(), pixmapToAnimate.getHeight(), pixmapToAnimate.getFormat());
+		PixmapProcessors.copyPixmapVertically(pixmapToAnimate, scrolledPixmap, 0);
+		
+		Pixmap scrollAnimatedVerticalPixmap = new Pixmap(pixmap.getWidth() * sprites.length * 5 - 1, sprites.length * pixmap.getWidth(), pixmap.getFormat());
+		for (int i = 0; i < sprites.length * 5 - 2; i++) {
+			scrolledPixmap = PixmapProcessors.scrollPixmapWrap(scrolledPixmap, scrollStep);
+			PixmapProcessors.copyPixmapVertically(scrolledPixmap, scrollAnimatedVerticalPixmap, scrolledPixmap.getWidth() * (i +1));
+		}
+		savePixmap(scrollAnimatedVerticalPixmap);
+		return scrollAnimatedVerticalPixmap;
 	}
 
+	public static void savePixmap(Pixmap pixmap) {
+		try {
+            FileHandle fh;
+            do {
+                fh = new FileHandle(Gdx.files.getLocalStoragePath() + "pixmap" + counter++ + ".png");
+            } while (fh.exists());
+            PixmapIO.writePNG(fh, pixmap);
+            pixmap.dispose();
+        } catch (Exception e){
+        	Gdx.app.error(SlotPuzzle.SLOT_PUZZLE, "Could not save pixmap to PNG file " + e.getMessage());
+        }
+	}
 	
+	private static Pixmap getPixmapFromSprite(Sprite sprite) {
+		Texture texture = sprite.getTexture();
+		if (!texture.getTextureData().isPrepared()) {
+		    texture.getTextureData().prepare();
+		}
+		Pixmap pixmap = texture.getTextureData().consumePixmap();
+		Pixmap destinationPixmap = new Pixmap(sprite.getRegionWidth(), sprite.getRegionHeight(), pixmap.getFormat());
+		for (int x = 0; x < sprite.getRegionWidth(); x++) {
+		    for (int y = 0; y < sprite.getRegionHeight(); y++) {
+		        destinationPixmap.drawPixel(x, y, pixmap.getPixel(sprite.getRegionX() + x, sprite.getRegionY() + y));
+		    }
+		}
+		return destinationPixmap;
+	}
 }
 

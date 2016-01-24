@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -18,6 +19,7 @@ import com.ellzone.effects.ParticleAccessor;
 import com.ellzone.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.utils.Assets;
+import com.ellzone.utils.PixmapProcessors;
 
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
@@ -82,6 +84,8 @@ public class PlayScreen implements Screen {
 			sp.setSize(sp.getWidth()/PX_PER_METER, sp.getHeight()/PX_PER_METER);
 			sp.setOrigin(sp.getWidth()/2, sp.getHeight()/2);
 		}
+		
+		PixmapProcessors.createDynamicScrollAnimatedPixmap(sprites, 5);
 
 		cherry.setPosition(-0.325f, 0.028f);
 		cheesecake.setPosition(-0.320f, -0.066f);
