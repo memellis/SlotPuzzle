@@ -135,7 +135,7 @@ public class PixmapProcessors {
 		Pixmap scrolledText = new Pixmap(textToAnimate.getWidth(), textToAnimate.getHeight(), textToAnimate.getFormat());
 		PixmapProcessors.copyPixmapVertically(textToAnimate, scrolledText, 0);
 		
-		for (int i = 0; i < text.length() * 5 - 2; i++) {
+		for (int i = 0; i < text.length() * 5; i++) {
 			scrolledText = PixmapProcessors.scrollPixmapWrap(scrolledText, scrollStep);
 			PixmapProcessors.copyPixmapVertically(scrolledText, scrollAnimatedVerticalText, scrolledText.getWidth() * (i + 1));
 		}
@@ -155,12 +155,16 @@ public class PixmapProcessors {
 		Pixmap scrolledPixmap = new Pixmap(pixmapToAnimate.getWidth(), pixmapToAnimate.getHeight(), pixmapToAnimate.getFormat());
 		PixmapProcessors.copyPixmapVertically(pixmapToAnimate, scrolledPixmap, 0);
 		
-		Pixmap scrollAnimatedVerticalPixmap = new Pixmap(pixmap.getWidth() * sprites.length * 5 - 1, sprites.length * pixmap.getWidth(), pixmap.getFormat());
-		for (int i = 0; i < sprites.length * 5 - 2; i++) {
+		Pixmap scrollAnimatedVerticalPixmap = new Pixmap(pixmap.getWidth() * sprites.length * scrollStep, sprites.length * pixmap.getHeight(), pixmap.getFormat());
+		PixmapProcessors.copyPixmapVertically(pixmapToAnimate, scrollAnimatedVerticalPixmap, 0);
+
+		for (int i = 0; i < sprites.length * scrollStep ; i++) {
 			scrolledPixmap = PixmapProcessors.scrollPixmapWrap(scrolledPixmap, scrollStep);
-			PixmapProcessors.copyPixmapVertically(scrolledPixmap, scrollAnimatedVerticalPixmap, scrolledPixmap.getWidth() * (i +1));
+			PixmapProcessors.copyPixmapVertically(scrolledPixmap, scrollAnimatedVerticalPixmap, scrolledPixmap.getWidth() * (i + 1));
 		}
 		savePixmap(scrollAnimatedVerticalPixmap);
+		
+		Gdx.app.log(SlotPuzzle.SLOT_PUZZLE, "pixmap.width = " + pixmap.getWidth());
 		return scrollAnimatedVerticalPixmap;
 	}
 

@@ -85,7 +85,8 @@ public class PlayScreen implements Screen {
 			sp.setOrigin(sp.getWidth()/2, sp.getHeight()/2);
 		}
 		
-		PixmapProcessors.createDynamicScrollAnimatedPixmap(sprites, 5);
+		// Fixme calculate scrollStep as a 1/4 of the sprite width
+		PixmapProcessors.createDynamicScrollAnimatedPixmap(sprites, 8);
 
 		cherry.setPosition(-0.325f, 0.028f);
 		cheesecake.setPosition(-0.320f, -0.066f);

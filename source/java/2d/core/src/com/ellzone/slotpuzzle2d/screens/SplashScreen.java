@@ -103,7 +103,10 @@ public class SplashScreen implements Screen {
 		veil.setSize(wpw, wph);
 		veil.setPosition(-wpw/2, -wph/2);
 		veil.setColor(1, 1, 1, 0);
-
+		
+		// Fixme: Allow for keyboard/mouse/touch events to interrupt splash screen
+		// Fixme: Allow for keyboard sequence to select next screen
+		
 		Timeline.createSequence()
 			.push(Tween.set(slot, SpriteAccessor.POS_XY).targetRelative(-1,0))
 			.push(Tween.set(puzzle, SpriteAccessor.POS_XY).targetRelative(1,0))			
