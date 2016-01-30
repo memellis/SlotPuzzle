@@ -1,6 +1,9 @@
 package com.ellzone.slotpuzzle2d.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -39,6 +42,9 @@ public class SplashScreen implements Screen {
 	private Sprite gdx;
 	private Sprite veil;
 	private TextureRegion gdxTex;
+	private boolean endOfSplashScreen = false;
+	private enum NextScreen {SPLASHSCREEN, INTROSCREEN, PLAYSCREEN, ENDOFGAMESCREEN, CREDITSSCREEN};
+	private NextScreen nextScreen;
 	
 	public SplashScreen(SlotPuzzle game) {
 		this.game = game;			
@@ -47,6 +53,8 @@ public class SplashScreen implements Screen {
 
 	private void defineSplashScreen() {
 		isLoaded = false;
+		endOfSplashScreen = false;
+		nextScreen = NextScreen.INTROSCREEN;
 		Tween.setWaypointsLimit(10);
 		Tween.setCombinedAttributesLimit(3);
 		Tween.registerAccessor(Sprite.class, new SpriteAccessor());
@@ -176,6 +184,7 @@ public class SplashScreen implements Screen {
 					game.setScreen(new IntroScreen(game));
 				}})
 			.start(tweenManager);
+		Gdx.input.setInputProcessor(splashScreenInputProcessor);
 
 	}
 	
@@ -187,7 +196,31 @@ public class SplashScreen implements Screen {
 	
 	private void update(float dt) {
 		tweenManager.update(dt);
-		if (gdx.getRotation() > 360*15-20) gdx.setRegion(gdxTex);		
+		if (gdx.getRotation() > 360*15-20) gdx.setRegion(gdxTex);
+		if (endOfSplashScreen) {
+			switch (nextScreen) {
+			case SPLASHSCREEN:
+					game.setScreen(new SplashScreen(game));
+					break;
+			case INTROSCREEN:
+					game.setScreen(new IntroScreen(game));
+					break;
+			case PLAYSCREEN:
+			    	game.setScreen(new PlayScreen(game));
+					break;
+			case ENDOFGAMESCREEN:
+			    	game.setScreen(new EndOfGameScreen(game));
+					break;
+			case CREDITSSCREEN:
+					game.setScreen(new CreditsScreen(game));
+					break;
+			default: 
+					game.setScreen(new IntroScreen(game));
+					break;				
+			}
+			dispose();
+			
+		}
 	}
 
 	@Override
@@ -247,5 +280,29 @@ public class SplashScreen implements Screen {
 	public void dispose() {
 		if (tweenManager != null) tweenManager.killAll();
 	}
-
+	
+	private final InputProcessor splashScreenInputProcessor = new InputAdapter() {
+		 @Override
+		   public boolean touchDown (int x, int y, int pointer, int button) {
+		      endOfSplashScreen = true;
+		      return true; // return true to indicate the event was handled
+		   }
+		 @Override
+			public boolean keyDown(int keycode) {
+			 switch (keycode) {
+			 	 case Keys.S: nextScreen = NextScreen.SPLASHSCREEN;
+			 	 			  break;
+			 	 case Keys.I: nextScreen = NextScreen.INTROSCREEN;
+			 				  break;
+			 	 case Keys.P: nextScreen = NextScreen.PLAYSCREEN;
+			 	 			  break;
+			 	 case Keys.C: nextScreen = NextScreen.CREDITSSCREEN;
+			 	 			  break;
+			 	 default: nextScreen = NextScreen.INTROSCREEN;
+			 	 			  break;
+			 }
+			 	endOfSplashScreen = true;
+				return true;
+			}
+	};
 }

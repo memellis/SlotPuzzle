@@ -164,7 +164,6 @@ public class PixmapProcessors {
 		}
 		savePixmap(scrollAnimatedVerticalPixmap);
 		
-		Gdx.app.log(SlotPuzzle.SLOT_PUZZLE, "pixmap.width = " + pixmap.getWidth());
 		return scrollAnimatedVerticalPixmap;
 	}
 

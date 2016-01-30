@@ -1,8 +1,13 @@
 package com.ellzone.slotpuzzle2d.screens;
 
 import com.badlogic.gdx.Screen;
+import com.ellzone.slotpuzzle2d.SlotPuzzle;
 
 public class CreditsScreen implements Screen {
+	
+	public CreditsScreen(SlotPuzzle game) {
+		
+	}
 
 	@Override
 	public void show() {
