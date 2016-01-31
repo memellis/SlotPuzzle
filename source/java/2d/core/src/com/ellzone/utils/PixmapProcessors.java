@@ -174,7 +174,6 @@ public class PixmapProcessors {
                 fh = new FileHandle(Gdx.files.getLocalStoragePath() + "pixmap" + counter++ + ".png");
             } while (fh.exists());
             PixmapIO.writePNG(fh, pixmap);
-            pixmap.dispose();
         } catch (Exception e){
         	Gdx.app.error(SlotPuzzle.SLOT_PUZZLE, "Could not save pixmap to PNG file " + e.getMessage());
         }

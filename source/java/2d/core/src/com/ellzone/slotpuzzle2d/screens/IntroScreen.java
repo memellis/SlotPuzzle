@@ -202,8 +202,6 @@ public class IntroScreen implements Screen {
 			for (int i = 0; i < IntroScreen.SLOT_PUZZLE_REEL_TEXT.length(); i++) {
 				introScreenLetters.add(new ReelLetter(this, slotReelTexture, IntroScreen.SLOT_PUZZLE_REEL_TEXT.length(), IntroScreen.SLOT_PUZZLE_REEL_TEXT.length() * 5 - 1, SIXTY_FPS, (i * IntroScreen.TEXT_SPACING_SIZE) + viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + IntroScreen.TEXT_SPACING_SIZE + 10, i));
 			}
-
-			// FIXME Weird disappearing columns when scrolling
 			
 			slotReelPixmap = new Pixmap(IntroScreen.EXO_FONT_SMALL_SIZE, IntroScreen.BY_TEXT.length() * IntroScreen.SCROLL_HEIGHT, Pixmap.Format.RGBA8888);;
 			slotReelPixmap = PixmapProcessors.createDynamicVerticalFontText(fontSmall, IntroScreen.BY_TEXT, slotReelPixmap);
