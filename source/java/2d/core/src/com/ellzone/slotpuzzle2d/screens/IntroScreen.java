@@ -3,7 +3,6 @@ package com.ellzone.slotpuzzle2d.screens;
 import java.io.IOException;
 import org.jrenner.smartfont.SmartFontGenerator;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -14,7 +13,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -39,11 +37,8 @@ public class IntroScreen implements Screen {
 	private static final int TEXT_SPACING_SIZE = 30;
 	private static final float SIXTY_FPS = 1/60f;
 	private static final int EXO_FONT_SMALL_SIZE = 24;
-	private static final int EXO_FONT_MEDIUM_SIZE = 48;
-	private static final int EXO_FONT_LARGE_SIZE = 64;
 	private static final int SCROLL_STEP = 4;
 	private static final int SCROLL_HEIGHT = 20;
-	private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz. ";
 	private static final String SLOT_PUZZLE_REEL_TEXT = "Slot Puzzle";
 	private static final String BY_TEXT = "by";
 	private static final String AUTHOR_TEXT = "Mark Ellis";
@@ -51,12 +46,8 @@ public class IntroScreen implements Screen {
 	
 	private SlotPuzzle game;
 	private Texture texture;
-	private Texture reelSheet;
-	private TextureRegion[] reelFrames;
-	private TextureRegion currentFrame;
 	private Pixmap slotReelPixmap;
 	private Texture slotReelTexture;
-	private final OrthographicCamera camera = new OrthographicCamera();
 	private Viewport viewport;
 	private Stage stage;
 	private BitmapFont fontSmall;
@@ -66,72 +57,10 @@ public class IntroScreen implements Screen {
 	private boolean endOfIntroScreen;
 	private TextButton button;
     private TextButtonStyle textButtonStyle;
-    private Label label;
     private Skin skin;
     private TextureAtlas buttonAtlas;
 	private TweenManager tweenManager = new TweenManager();
-	private Sprite universal;
-	private Sprite tween;
-	private Sprite engine;
-	private Sprite logo;
-	private Sprite strip;
-	private Sprite powered;
-	private Sprite gdx;
-	private Sprite veil;
-	private TextureRegion gdxTex;
-	private boolean isLoaded = false;
 	
-	public class MyInputProcessor implements InputProcessor {
-
-		@Override
-		public boolean keyDown(int keycode) {
-			endOfIntroScreen = true;
-			return true;
-		}
-
-		@Override
-		public boolean keyUp(int keycode) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean keyTyped(char character) {
-			endOfIntroScreen = true;
-			return true;
-		}
-
-		@Override
-		public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-			endOfIntroScreen = true;
-			return false;
-		}
-
-		@Override
-		public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean touchDragged(int screenX, int screenY, int pointer) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean mouseMoved(int screenX, int screenY) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean scrolled(int amount) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-	}
-
 	public IntroScreen(SlotPuzzle game) {
 		this.game = game;			
 		defineIntroScreen();
@@ -213,7 +142,6 @@ public class IntroScreen implements Screen {
 		
 		endOfIntroScreen = false;
 		
-		MyInputProcessor inputProcessor = new MyInputProcessor();
 		Gdx.input.setInputProcessor(stage);
 		
 		skin = new Skin();
