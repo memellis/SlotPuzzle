@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -51,7 +54,9 @@ public class PlayScreen implements Screen {
 	private Pixmap slotReelPixmap;
 	private Texture slotReelTexture;
 	private Array<ReelSlotTile> slotReels;
-
+	private TmxMapLoader mapLoader;
+	private TiledMap map;
+	private OrthogonalTiledMapRenderer renderer; 
 	
 	public PlayScreen(SlotPuzzle game) {
 		this.game = game;
@@ -71,6 +76,10 @@ public class PlayScreen implements Screen {
 		Assets.inst().finishLoading();
 		isLoaded = true;
 
+		mapLoader = new TmxMapLoader();
+		map = mapLoader.load("levels/level 1.tmx");
+		renderer = new OrthogonalTiledMapRenderer(map);
+		
 		TextureAtlas atlas = Assets.inst().get("reel/reels.pack.atlas", TextureAtlas.class);
 		cherry = atlas.createSprite("cherry");
 		cheesecake = atlas.createSprite("cheesecake");
