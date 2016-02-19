@@ -68,7 +68,7 @@ public class PlayScreen implements Screen {
 		Tween.setCombinedAttributesLimit(3);
 		Tween.registerAccessor(Sprite.class, new SpriteAccessor());
 
-		viewport = new FitViewport(800, 480, new OrthographicCamera());
+		viewport = new FitViewport(800, 480, camera);
         stage = new Stage(viewport, game.batch);
         
 		Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
@@ -166,6 +166,7 @@ public class PlayScreen implements Screen {
 		for (ReelSlotTile reel : slotReels) {
 			reel.update(delta);
 		}
+		renderer.setView(camera);
 	}
 
 	@Override
@@ -184,6 +185,7 @@ public class PlayScreen implements Screen {
 				reel.draw(game.batch);
 			}
 			game.batch.end();
+			renderer.render();
 		} else {
 			if (Assets.inst().getProgress() < 1) {
 				Assets.inst().update();
