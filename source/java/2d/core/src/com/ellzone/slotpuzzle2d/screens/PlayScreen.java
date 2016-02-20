@@ -65,7 +65,8 @@ public class PlayScreen implements Screen {
 	private TmxMapLoader mapLoader;
 	private TiledMap map;
 	private Random random;
-	private OrthogonalTiledMapRenderer renderer; 
+	private OrthogonalTiledMapRenderer renderer;
+	private boolean gameOver = false;
 	
 	public PlayScreen(SlotPuzzle game) {
 		this.game = game;
@@ -142,20 +143,22 @@ public class PlayScreen implements Screen {
 			.pushPause(0.3f)
 			.start(tweenManager);
 
-        Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
+        if (gameOver) {
+        	Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
 
-        Table table = new Table();
-        table.center();
-        table.setFillParent(true);
+        	Table table = new Table();
+        	table.center();
+        	table.setFillParent(true);
 
-        Label gameOverLabel = new Label("PLAY SCREEN", font);
-        Label playAgainLabel = new Label("Click to Play Again", font);
+        	Label gameOverLabel = new Label("PLAY SCREEN", font);
+        	Label playAgainLabel = new Label("Click to Play Again", font);
 
-        table.add(gameOverLabel).expandX();
-        table.row();
-        table.add(playAgainLabel).expandX().padTop(10f);
-
-        stage.addActor(table);		
+        	table.add(gameOverLabel).expandX();
+        	table.row();
+        	table.add(playAgainLabel).expandX().padTop(10f);
+        
+        	stage.addActor(table);
+        }
    	}
 
 	@Override
