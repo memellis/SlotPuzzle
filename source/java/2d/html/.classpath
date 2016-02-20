@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
-	<classpathentry exported="true" kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER" exported="true"/>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER" exported="true"/>
+	<classpathentry kind="src" path="/SlotPuzzle2d-core" exported="true"/>
+	<classpathentry sourcepath="C:/Users/mark/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-gwt/1.7.1/8bfe6deb0fea16186ead56444a65e85cd34ad453/gdx-backend-gwt-1.7.1-sources.jar" kind="lib" path="C:/Users/mark/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-gwt/1.7.1/141af799388ee31daa41bd39347f5f51d2078a33/gdx-backend-gwt-1.7.1.jar" exported="true"/>
+	<classpathentry sourcepath="C:/Users/mark/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-gwt/1.7.1/8bfe6deb0fea16186ead56444a65e85cd34ad453/gdx-backend-gwt-1.7.1-sources.jar" kind="lib" path="C:/Users/mark/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-gwt/1.7.1/8bfe6deb0fea16186ead56444a65e85cd34ad453/gdx-backend-gwt-1.7.1-sources.jar" exported="true"/>
+	<classpathentry sourcepath="C:/Users/mark/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.7.1/a1fd092a4cdeb029ddb205805143a26545de1e6b/gdx-1.7.1-sources.jar" kind="lib" path="C:/Users/mark/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.7.1/a1fd092a4cdeb029ddb205805143a26545de1e6b/gdx-1.7.1-sources.jar" exported="true"/>
+	<classpathentry sourcepath="C:/Users/mark/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.7.1/a1fd092a4cdeb029ddb205805143a26545de1e6b/gdx-1.7.1-sources.jar" kind="lib" path="C:/Users/mark/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.7.1/2179cc613447c297623a4a6d2ba6692c3aaff804/gdx-1.7.1.jar" exported="true"/>
+	<classpathentry sourcepath="C:/Users/mark/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-box2d/1.7.1/13f2241b3ab821dbad64292ad7180d5d14a32ed1/gdx-box2d-1.7.1-sources.jar" kind="lib" path="C:/Users/mark/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-box2d/1.7.1/13f2241b3ab821dbad64292ad7180d5d14a32ed1/gdx-box2d-1.7.1-sources.jar" exported="true"/>
+	<classpathentry sourcepath="C:/Users/mark/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-box2d/1.7.1/13f2241b3ab821dbad64292ad7180d5d14a32ed1/gdx-box2d-1.7.1-sources.jar" kind="lib" path="C:/Users/mark/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-box2d/1.7.1/fd23897393900f8f888222795e3229eff600fb3d/gdx-box2d-1.7.1.jar" exported="true"/>
+	<classpathentry sourcepath="C:/Users/mark/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-box2d-gwt/1.7.1/6c16effba95b2d7885dafda3eb099edfd76f3619/gdx-box2d-gwt-1.7.1-sources.jar" kind="lib" path="C:/Users/mark/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-box2d-gwt/1.7.1/6c16effba95b2d7885dafda3eb099edfd76f3619/gdx-box2d-gwt-1.7.1-sources.jar" exported="true"/>
+	<classpathentry sourcepath="C:/Users/mark/.gradle/caches/modules-2/files-2.1/com.google.gwt/gwt-servlet/2.6.0/7a59cc91e16f255d22b692dcc5839d3eb1d606c6/gwt-servlet-2.6.0-sources.jar" kind="lib" path="C:/Users/mark/.gradle/caches/modules-2/files-2.1/com.google.gwt/gwt-servlet/2.6.0/d1e40c23bf78192482ee76c93619a10b4ea649f7/gwt-servlet-2.6.0.jar" exported="true"/>
+	<classpathentry sourcepath="C:/Users/mark/.gradle/caches/modules-2/files-2.1/com.google.gwt/gwt-user/2.6.1/c32cc6470243fe2703e807e1025ec3354fba0ef8/gwt-user-2.6.1-sources.jar" kind="lib" path="C:/Users/mark/.gradle/caches/modules-2/files-2.1/com.google.gwt/gwt-user/2.6.1/c078b1b8cc0281214b0eb458d2c283d039374fad/gwt-user-2.6.1.jar" exported="true"/>
+	<classpathentry sourcepath="C:/Users/mark/.gradle/caches/modules-2/files-2.1/com.google.gwt/gwt-codeserver/2.6.0/9be1bd733a55fd4c2cc42b7d377dc9a4296e2d64/gwt-codeserver-2.6.0-sources.jar" kind="lib" path="C:/Users/mark/.gradle/caches/modules-2/files-2.1/com.google.gwt/gwt-codeserver/2.6.0/c88f4d9a43a8161317a77c721a75aa3a78952e37/gwt-codeserver-2.6.0.jar" exported="true"/>
 </classpath>
