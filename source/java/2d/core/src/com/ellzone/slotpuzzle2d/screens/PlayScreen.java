@@ -1,5 +1,7 @@
 package com.ellzone.slotpuzzle2d.screens;
 
+import java.util.Random;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -10,9 +12,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -37,6 +42,8 @@ import aurelienribon.tweenengine.equations.Quart;
 public class PlayScreen implements Screen {
 	private static final int PX_PER_METER = 600;
 	private static final float SIXTY_FPS = 1/60f;
+	private static final int TILE_WIDTH = 32;
+	private static final int TILE_HEIGHT = 32;
 	private SlotPuzzle game;
 	private final OrthographicCamera camera = new OrthographicCamera();
 	private Viewport viewport;
@@ -54,8 +61,10 @@ public class PlayScreen implements Screen {
 	private Pixmap slotReelPixmap;
 	private Texture slotReelTexture;
 	private Array<ReelSlotTile> slotReels;
+	private Array<ReelSlotTile> levelReelSlotTiles;
 	private TmxMapLoader mapLoader;
 	private TiledMap map;
+	private Random random;
 	private OrthogonalTiledMapRenderer renderer; 
 	
 	public PlayScreen(SlotPuzzle game) {
@@ -64,6 +73,7 @@ public class PlayScreen implements Screen {
 	}
 	
 	private void createPlayScreen() {
+		random = new Random();
 		Tween.setWaypointsLimit(10);
 		Tween.setCombinedAttributesLimit(3);
 		Tween.registerAccessor(Sprite.class, new SpriteAccessor());
@@ -90,31 +100,27 @@ public class PlayScreen implements Screen {
 		pear = atlas.createSprite("pear");
 		tomato = atlas.createSprite("tomato");
 
-		//float wpw = 1f;
-		//float wph = wpw * Gdx.graphics.getHeight() / Gdx.graphics.getWidth();
-
-		//camera.viewportWidth = wpw;
-		//camera.viewportHeight = wph;
-		//viewport.update(800, 480);
-
 		Sprite[] sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
-		//for (Sprite sp : sprites) {
-		//	sp.setSize(sp.getWidth()/PX_PER_METER, sp.getHeight()/PX_PER_METER);
-		//	sp.setOrigin(sp.getWidth()/2, sp.getHeight()/2);
-		//}
 		
 		// Fixme calculate scrollStep as a 1/4 of the sprite width
 		slotReels = new Array<ReelSlotTile>();
 
-		slotReelPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);		
-		slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedPixmap(sprites, 8);
+		slotReelPixmap = new Pixmap(PlayScreen.TILE_WIDTH, PlayScreen.TILE_HEIGHT, Pixmap.Format.RGBA8888);		
+		slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedPixmap(sprites, sprites.length);
 		slotReelTexture = new Texture(slotReelPixmap);
 
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < sprites.length; i++) {
 			slotReels.add(new ReelSlotTile(this, slotReelTexture, sprites.length, sprites.length * sprites.length, SIXTY_FPS, (i * 32 + viewport.getWorldWidth()) / 3.2f, viewport.getWorldHeight() / 2.0f + 32 + 10, i));
 			
 		}
-						
+
+		levelReelSlotTiles = new Array<ReelSlotTile>();
+	
+		for (MapObject mapObject : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)) {
+			Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
+			levelReelSlotTiles.add(new ReelSlotTile(this, slotReelTexture, sprites.length, sprites.length * sprites.length, SIXTY_FPS, mapRectangle.getX(), mapRectangle.getY(), random.nextInt(sprites.length + 1)));
+		}
+
 		Timeline.createSequence()
 			.push(Tween.set(slotReels.get(0), SpriteAccessor.POS_XY).target(-60f, -20f))
 			.push(Tween.set(slotReels.get(1), SpriteAccessor.POS_XY).target(-60f,  12f))
@@ -163,7 +169,10 @@ public class PlayScreen implements Screen {
 	
 	private void update(float delta) {
 		tweenManager.update(delta);
-		for (ReelSlotTile reel : slotReels) {
+		//for (ReelSlotTile reel : slotReels) {
+		//	reel.update(delta);
+		//}
+		for (ReelSlotTile reel : levelReelSlotTiles) {
 			reel.update(delta);
 		}
 		renderer.setView(camera);
@@ -180,12 +189,15 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		if(isLoaded) {
 			//game.batch.setProjectionMatrix(camera.combined);
+			renderer.render();
 			game.batch.begin();
-			for (ReelSlotTile reel : slotReels) {
+			//for (ReelSlotTile reel : slotReels) {
+			//	reel.draw(game.batch);
+			//}
+			for (ReelSlotTile reel : levelReelSlotTiles) {
 				reel.draw(game.batch);
 			}
 			game.batch.end();
-			renderer.render();
 		} else {
 			if (Assets.inst().getProgress() < 1) {
 				Assets.inst().update();

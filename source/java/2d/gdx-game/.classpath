@@ -5,4 +5,5 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" exported="true" path="libs/gdx.jar"/>
 	<classpathentry kind="lib" exported="true" path="libs/gdx-freetype.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/tween-engine-api.jar"/>
 </classpath>
