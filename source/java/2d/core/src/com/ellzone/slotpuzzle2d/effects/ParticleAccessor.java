@@ -1,4 +1,4 @@
-package com.ellzone.effects;
+package com.ellzone.slotpuzzle2d.effects;
 
 import aurelienribon.tweenengine.TweenAccessor;
 

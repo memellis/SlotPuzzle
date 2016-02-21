@@ -10,9 +10,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.ellzone.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
-import com.ellzone.utils.Assets;
+import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
+import com.ellzone.slotpuzzle2d.utils.Assets;
 
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Timeline;

@@ -1,4 +1,4 @@
-package com.ellzone.utils;
+package com.ellzone.slotpuzzle2d.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;

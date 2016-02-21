@@ -1,4 +1,4 @@
-package com.ellzone.effects;
+package com.ellzone.slotpuzzle2d.effects;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;

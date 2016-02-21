@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
-import com.ellzone.utils.FileUtils;
+import com.ellzone.slotpuzzle2d.utils.FileUtils;
 
 import aurelienribon.tweenengine.TweenManager;
 

@@ -24,8 +24,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.slotpuzzle2d.sprites.ReelLetter;
-import com.ellzone.utils.FileUtils;
-import com.ellzone.utils.PixmapProcessors;
+import com.ellzone.slotpuzzle2d.utils.FileUtils;
+import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
 public class EndOfGameScreen implements Screen {
 	private static final int TEXT_SPACING_SIZE = 30;

@@ -24,11 +24,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.ellzone.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
+import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.sprites.ReelLetter;
-import com.ellzone.utils.FileUtils;
-import com.ellzone.utils.PixmapProcessors;
+import com.ellzone.slotpuzzle2d.utils.FileUtils;
+import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
