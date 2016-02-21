@@ -2,6 +2,7 @@ package com.ellzone.slotpuzzle2d.tesrpuzzlegrid;
 
 import static org.junit.Assert.*;
 
+import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.puzzlegrid.*;
 import org.junit.Test;
 
@@ -72,6 +73,62 @@ public class TestPuzzleGrid {
 		resultGrid = puzzleGrid.matchColumnSlots(testGrid);
 		puzzleGrid.printGrid(resultGrid);
 		assertTrueGridsAreEqual(resultGrid, expectedColumnGrid);
+	}
+	
+	@Test
+	public void testGetMatchedSlots() {
+		PuzzleGrid puzzleGrid = new PuzzleGrid();
+		int[][] testGrid = { 
+				{  3,  0,  0,  0},
+				{  3,  1,  4,  4},
+				{  3,  3,  4,  5},
+				{  3,  3,  4,  5},
+		};
+		int[][] expectedRowGrid = {
+				{  1,  3,  3,  3},
+				{  1,  1,  2,  2},
+				{  2,  2,  1,  1},
+				{  2,  2,  1,  1},
+		};
+		int[][] expectedColumnGrid = {
+				{  4,  1,  1,  1},
+				{  4,  1,  3,  1},
+				{  4,  2,  3,  2},
+				{  4,  2,  3,  2},
+		};
+		Array<Tuple> matchedSlots = new Array<Tuple>();
+		Array<Tuple> expectedMatchedSlots = new Array<Tuple>();
+		expectedMatchedSlots.add(new Tuple(0, 1, 3));
+		expectedMatchedSlots.add(new Tuple(0, 2, 3));
+		expectedMatchedSlots.add(new Tuple(0, 3, 3));
+		expectedMatchedSlots.add(new Tuple(1, 2, 2));
+		expectedMatchedSlots.add(new Tuple(1, 3, 2));		
+		expectedMatchedSlots.add(new Tuple(2, 0, 2));
+		expectedMatchedSlots.add(new Tuple(2, 1, 2));
+		expectedMatchedSlots.add(new Tuple(3, 0, 2));
+		expectedMatchedSlots.add(new Tuple(3, 1, 2));
+		expectedMatchedSlots.add(new Tuple(0, 0, 4));
+		expectedMatchedSlots.add(new Tuple(1, 0, 4));
+		expectedMatchedSlots.add(new Tuple(2, 0, 4));
+		expectedMatchedSlots.add(new Tuple(3, 0, 4));
+		expectedMatchedSlots.add(new Tuple(2, 1, 2));
+		expectedMatchedSlots.add(new Tuple(3, 1, 2));
+		expectedMatchedSlots.add(new Tuple(1, 2, 3));
+		expectedMatchedSlots.add(new Tuple(2, 2, 3));
+		expectedMatchedSlots.add(new Tuple(3, 2, 3));
+		expectedMatchedSlots.add(new Tuple(2, 3, 2));
+		expectedMatchedSlots.add(new Tuple(3, 3, 2));
+		
+		matchedSlots = puzzleGrid.matchGridSlots(testGrid);
+		for (int i = 0; i < matchedSlots.size; i++) {
+			assertTrue(matchedSlots.get(i).getX() == expectedMatchedSlots.get(i).getX());
+			assertTrue(matchedSlots.get(i).getY() == expectedMatchedSlots.get(i).getY());
+			assertTrue(matchedSlots.get(i).getValue() == expectedMatchedSlots.get(i).getValue());
+			System.out.print(matchedSlots.get(i).getX() + " " + expectedMatchedSlots.get(i).getX()+" ");
+			System.out.print(matchedSlots.get(i).getY() + " " + expectedMatchedSlots.get(i).getY()+" ");			
+			System.out.println(matchedSlots.get(i).getValue() + " " + expectedMatchedSlots.get(i).getValue());			
+		}
+		
 	}
 	
 	private void assertTrueGridsAreEqual(int[][] first, int[][] second) {

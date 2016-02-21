@@ -1,8 +1,9 @@
 package com.ellzone.slotpuzzle2d.puzzlegrid;
 
+import com.badlogic.gdx.utils.Array;
+
 public class PuzzleGrid {
-	public PuzzleGrid() {
-		
+	public PuzzleGrid() {		
 	}
 	
 	public int[][] matchRowSlots(int[][] puzzleGrid) {
@@ -51,7 +52,6 @@ public class PuzzleGrid {
 		while(y < arraySizeY) {
 			int x = 0;
 			while (x < arraySizeX) {
-				System.out.println("Processing puzzleGrid["+x+"]["+y+"]="+puzzleGrid[x][y]);
 				if(puzzleGrid[x][y] >= 0) {
 					int c = x + 1;
 					boolean match = true;
@@ -77,6 +77,46 @@ public class PuzzleGrid {
 		}		
 		return workingGrid;
 	}
+	
+	public Array matchGridSlots(int[][] puzzleGrid) {
+		int[][] matchedGridRows = matchRowSlots(puzzleGrid);
+		int[][] matchedGridCols = matchColumnSlots(puzzleGrid);
+		Array<Tuple> matchedSlots = new Array<Tuple>();
+		
+		matchedSlots = getMatchedRowSlots(matchedGridRows, matchedSlots);
+		matchedSlots = getMatchedColSlots(matchedGridCols, matchedSlots);
+		
+		return matchedSlots;
+	}
+	
+	private Array<Tuple> getMatchedRowSlots(int[][] puzzleGrid, Array<Tuple> matchedSlots) {
+		int arraySizeX = puzzleGrid.length;
+		int arraySizeY = puzzleGrid[0].length;
+		
+		for(int x = 0; x < arraySizeX; x++) {
+			for(int y = 0; y < arraySizeY; y++) {
+				if(puzzleGrid[x][y] > 1) {
+					matchedSlots.add(new Tuple(x, y, puzzleGrid[x][y]));
+				}
+			}
+		}
+		return matchedSlots;
+	}
+
+	private Array<Tuple> getMatchedColSlots(int[][] puzzleGrid, Array<Tuple> matchedSlots) {
+		int arraySizeX = puzzleGrid.length;
+		int arraySizeY = puzzleGrid[0].length;
+		
+		for(int y = 0; y < arraySizeY; y++) {
+			for(int x = 0; x < arraySizeX; x++) {
+				if(puzzleGrid[x][y] > 1) {
+					matchedSlots.add(new Tuple(x, y, puzzleGrid[x][y]));
+				}
+			}
+		}
+		return matchedSlots;
+	}
+
 	
 	public int[][] initialiseGrid(int[][] puzzleGrid) {
 		for (int x = 0; x < puzzleGrid.length; x++) {
