@@ -44,6 +44,35 @@ public class TestPuzzleGrid {
 		puzzleGrid.printGrid(resultGrid);
 		assertTrueGridsAreEqual(resultGrid, expectedGrid);
 	}
+
+	@Test
+	public void testMatchRowsColumns() {
+		PuzzleGrid puzzleGrid = new PuzzleGrid();
+		int[][] testGrid = { 
+				{  3,  0,  0,  0},
+				{  3,  1,  4,  4},
+				{  3,  3,  4,  5},
+				{  3,  3,  4,  5},
+		};
+		int[][] expectedRowGrid = {
+				{  1,  3,  3,  3},
+				{  1,  1,  2,  2},
+				{  2,  2,  1,  1},
+				{  2,  2,  1,  1},
+		};
+		int[][] expectedColumnGrid = {
+				{  4,  1,  1,  1},
+				{  4,  1,  3,  1},
+				{  4,  2,  3,  2},
+				{  4,  2,  3,  2},
+		};
+		int[][] resultGrid = puzzleGrid.matchRowSlots(testGrid);
+		puzzleGrid.printGrid(resultGrid);
+		assertTrueGridsAreEqual(resultGrid, expectedRowGrid);
+		resultGrid = puzzleGrid.matchColumnSlots(testGrid);
+		puzzleGrid.printGrid(resultGrid);
+		assertTrueGridsAreEqual(resultGrid, expectedColumnGrid);
+	}
 	
 	private void assertTrueGridsAreEqual(int[][] first, int[][] second) {
 		for (int x = 0; x < first.length; x++) {
