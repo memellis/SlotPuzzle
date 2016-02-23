@@ -114,37 +114,14 @@ public class PlayScreen implements Screen {
 			levelReelSlotTiles.add(new ReelSlotTile(this, slotReelTexture, sprites.length, sprites.length * sprites.length, SIXTY_FPS, mapRectangle.getX(), mapRectangle.getY(), random.nextInt(sprites.length + 1)));
 		}
 
-		Timeline sequence = Timeline.createSequence();
-		
+		Timeline sequence = Timeline.createSequence();		
 		for(int i=0; i < levelReelSlotTiles.size; i++) {
 			sequence = sequence.push(Tween.set(levelReelSlotTiles.get(i), SpriteAccessor.POS_XY).target(-60f, -20f + 32*i));
 		}
-
 		sequence = sequence.pushPause(0.5f);
-		//	.push(Tween.set(slotReels.get(0), SpriteAccessor.POS_XY).target(-60f, -20f))
-		//	.push(Tween.set(slotReels.get(1), SpriteAccessor.POS_XY).target(-60f,  12f))
-		//	.push(Tween.set(slotReels.get(2), SpriteAccessor.POS_XY).target(-60f,  44f))
-		//	.push(Tween.set(slotReels.get(3), SpriteAccessor.POS_XY).target(-60f,  76f))
-		//	.push(Tween.set(slotReels.get(4), SpriteAccessor.POS_XY).target(-60f, 108f))
-		//	.push(Tween.set(slotReels.get(5), SpriteAccessor.POS_XY).target(-60f, 140f))
-		//	.push(Tween.set(slotReels.get(6), SpriteAccessor.POS_XY).target(-60f, 172f))
-		//	.push(Tween.set(slotReels.get(7), SpriteAccessor.POS_XY).target(-60f, 204f))			
-		//	.pushPause(0.5f)
-		
 		for(int i=0; i < levelReelSlotTiles.size; i++) {
 			sequence = sequence.push(Tween.to(levelReelSlotTiles.get(i), SpriteAccessor.POS_XY, 0.8f).target(levelReelSlotTiles.get(i).getX(), levelReelSlotTiles.get(i).getY()));
-		}
-		
-		
-			
-		//	.push(Tween.to(slotReels.get(1), SpriteAccessor.POS_XY, 0.8f).target(298f, 280f))
-		//	.push(Tween.to(slotReels.get(2), SpriteAccessor.POS_XY, 0.8f).target(330f, 280f))
-		//	.push(Tween.to(slotReels.get(3), SpriteAccessor.POS_XY, 0.8f).target(362f, 280f))
-		//	.push(Tween.to(slotReels.get(4), SpriteAccessor.POS_XY, 0.8f).target(394f, 280f))
-		//	.push(Tween.to(slotReels.get(5), SpriteAccessor.POS_XY, 0.8f).target(426f, 280f))
-		//	.push(Tween.to(slotReels.get(6), SpriteAccessor.POS_XY, 0.8f).target(458f, 280f))
-		//	.push(Tween.to(slotReels.get(7), SpriteAccessor.POS_XY, 0.8f).target(490f, 280f))
-		
+		}		
 		sequence = sequence.pushPause(0.3f).start(tweenManager);
 
         if (gameOver) {
