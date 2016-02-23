@@ -1,7 +1,6 @@
 package com.ellzone.slotpuzzle2d.screens;
 
 import java.util.Random;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -25,22 +24,15 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
-import com.ellzone.slotpuzzle2d.effects.Particle;
-import com.ellzone.slotpuzzle2d.effects.ParticleAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
-import com.ellzone.slotpuzzle2d.sprites.ReelLetter;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTile;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
-
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
-import aurelienribon.tweenengine.equations.Back;
-import aurelienribon.tweenengine.equations.Quart;
 
 public class PlayScreen implements Screen {
-	private static final int PX_PER_METER = 600;
 	private static final float SIXTY_FPS = 1/60f;
 	private static final int TILE_WIDTH = 32;
 	private static final int TILE_HEIGHT = 32;
@@ -122,26 +114,38 @@ public class PlayScreen implements Screen {
 			levelReelSlotTiles.add(new ReelSlotTile(this, slotReelTexture, sprites.length, sprites.length * sprites.length, SIXTY_FPS, mapRectangle.getX(), mapRectangle.getY(), random.nextInt(sprites.length + 1)));
 		}
 
-		Timeline.createSequence()
-			.push(Tween.set(slotReels.get(0), SpriteAccessor.POS_XY).target(-60f, -20f))
-			.push(Tween.set(slotReels.get(1), SpriteAccessor.POS_XY).target(-60f,  12f))
-			.push(Tween.set(slotReels.get(2), SpriteAccessor.POS_XY).target(-60f,  44f))
-			.push(Tween.set(slotReels.get(3), SpriteAccessor.POS_XY).target(-60f,  76f))
-			.push(Tween.set(slotReels.get(4), SpriteAccessor.POS_XY).target(-60f, 108f))
-			.push(Tween.set(slotReels.get(5), SpriteAccessor.POS_XY).target(-60f, 140f))
-			.push(Tween.set(slotReels.get(6), SpriteAccessor.POS_XY).target(-60f, 172f))
-			.push(Tween.set(slotReels.get(7), SpriteAccessor.POS_XY).target(-60f, 204f))			
-			.pushPause(0.5f)
-			.push(Tween.to(slotReels.get(0), SpriteAccessor.POS_XY, 0.8f).target(266f, 280f))
-			.push(Tween.to(slotReels.get(1), SpriteAccessor.POS_XY, 0.8f).target(298f, 280f))
-			.push(Tween.to(slotReels.get(2), SpriteAccessor.POS_XY, 0.8f).target(330f, 280f))
-			.push(Tween.to(slotReels.get(3), SpriteAccessor.POS_XY, 0.8f).target(362f, 280f))
-			.push(Tween.to(slotReels.get(4), SpriteAccessor.POS_XY, 0.8f).target(394f, 280f))
-			.push(Tween.to(slotReels.get(5), SpriteAccessor.POS_XY, 0.8f).target(426f, 280f))
-			.push(Tween.to(slotReels.get(6), SpriteAccessor.POS_XY, 0.8f).target(458f, 280f))
-			.push(Tween.to(slotReels.get(7), SpriteAccessor.POS_XY, 0.8f).target(490f, 280f))
-			.pushPause(0.3f)
-			.start(tweenManager);
+		Timeline sequence = Timeline.createSequence();
+		
+		for(int i=0; i < levelReelSlotTiles.size; i++) {
+			sequence = sequence.push(Tween.set(levelReelSlotTiles.get(i), SpriteAccessor.POS_XY).target(-60f, -20f + 32*i));
+		}
+
+		sequence = sequence.pushPause(0.5f);
+		//	.push(Tween.set(slotReels.get(0), SpriteAccessor.POS_XY).target(-60f, -20f))
+		//	.push(Tween.set(slotReels.get(1), SpriteAccessor.POS_XY).target(-60f,  12f))
+		//	.push(Tween.set(slotReels.get(2), SpriteAccessor.POS_XY).target(-60f,  44f))
+		//	.push(Tween.set(slotReels.get(3), SpriteAccessor.POS_XY).target(-60f,  76f))
+		//	.push(Tween.set(slotReels.get(4), SpriteAccessor.POS_XY).target(-60f, 108f))
+		//	.push(Tween.set(slotReels.get(5), SpriteAccessor.POS_XY).target(-60f, 140f))
+		//	.push(Tween.set(slotReels.get(6), SpriteAccessor.POS_XY).target(-60f, 172f))
+		//	.push(Tween.set(slotReels.get(7), SpriteAccessor.POS_XY).target(-60f, 204f))			
+		//	.pushPause(0.5f)
+		
+		for(int i=0; i < levelReelSlotTiles.size; i++) {
+			sequence = sequence.push(Tween.to(levelReelSlotTiles.get(i), SpriteAccessor.POS_XY, 0.8f).target(levelReelSlotTiles.get(i).getX(), levelReelSlotTiles.get(i).getY()));
+		}
+		
+		
+			
+		//	.push(Tween.to(slotReels.get(1), SpriteAccessor.POS_XY, 0.8f).target(298f, 280f))
+		//	.push(Tween.to(slotReels.get(2), SpriteAccessor.POS_XY, 0.8f).target(330f, 280f))
+		//	.push(Tween.to(slotReels.get(3), SpriteAccessor.POS_XY, 0.8f).target(362f, 280f))
+		//	.push(Tween.to(slotReels.get(4), SpriteAccessor.POS_XY, 0.8f).target(394f, 280f))
+		//	.push(Tween.to(slotReels.get(5), SpriteAccessor.POS_XY, 0.8f).target(426f, 280f))
+		//	.push(Tween.to(slotReels.get(6), SpriteAccessor.POS_XY, 0.8f).target(458f, 280f))
+		//	.push(Tween.to(slotReels.get(7), SpriteAccessor.POS_XY, 0.8f).target(490f, 280f))
+		
+		sequence = sequence.pushPause(0.3f).start(tweenManager);
 
         if (gameOver) {
         	Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
