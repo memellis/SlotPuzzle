@@ -174,86 +174,31 @@ public class IntroScreen implements Screen {
         stage.addActor(table);
         viewport.update(800, 480);
         
-		Timeline.createSequence()
-			.push(Tween.set(introScreenLetters.get(0), SpriteAccessor.POS_XY).target(-20f, -20f))
-			.push(Tween.set(introScreenLetters.get(1), SpriteAccessor.POS_XY).target(-20f,  00f))
-			.push(Tween.set(introScreenLetters.get(2), SpriteAccessor.POS_XY).target(-20f,  20f))
-			.push(Tween.set(introScreenLetters.get(3), SpriteAccessor.POS_XY).target(-20f,  40f))
-			.push(Tween.set(introScreenLetters.get(4), SpriteAccessor.POS_XY).target(-20f,  60f))
-			.push(Tween.set(introScreenLetters.get(5), SpriteAccessor.POS_XY).target(-20f,  80f))
-			.push(Tween.set(introScreenLetters.get(6), SpriteAccessor.POS_XY).target(-20f,  100f))
-			.push(Tween.set(introScreenLetters.get(7), SpriteAccessor.POS_XY).target(-20f,  120f))
-			.push(Tween.set(introScreenLetters.get(8), SpriteAccessor.POS_XY).target(-20f,  140f))
-			.push(Tween.set(introScreenLetters.get(9), SpriteAccessor.POS_XY).target(-20f,  160f))
-			.push(Tween.set(introScreenLetters.get(10), SpriteAccessor.POS_XY).target(-20f,  180f))
-			.push(Tween.set(introScreenLetters.get(11), SpriteAccessor.POS_XY).target(-20f,  200f))
-			.push(Tween.set(introScreenLetters.get(12), SpriteAccessor.POS_XY).target(-20f,  220f))
-			.push(Tween.set(introScreenLetters.get(13), SpriteAccessor.POS_XY).target(-20f,  240f))
-			.push(Tween.set(introScreenLetters.get(14), SpriteAccessor.POS_XY).target(-20f,  260f))
-			.push(Tween.set(introScreenLetters.get(15), SpriteAccessor.POS_XY).target(-20f,  280f))
-			.push(Tween.set(introScreenLetters.get(16), SpriteAccessor.POS_XY).target(-20f,  300f))
-			.push(Tween.set(introScreenLetters.get(17), SpriteAccessor.POS_XY).target(-20f,  320f))
-			.push(Tween.set(introScreenLetters.get(18), SpriteAccessor.POS_XY).target(-20f,  340f))
-			.push(Tween.set(introScreenLetters.get(19), SpriteAccessor.POS_XY).target(-20f,  360f))
-			.push(Tween.set(introScreenLetters.get(20), SpriteAccessor.POS_XY).target(-20f,  400f))
-			.push(Tween.set(introScreenLetters.get(21), SpriteAccessor.POS_XY).target(-20f,  420f))
-			.push(Tween.set(introScreenLetters.get(22), SpriteAccessor.POS_XY).target(-20f,  440f))
-			.push(Tween.set(introScreenLetters.get(23), SpriteAccessor.POS_XY).target(-20f,  460f))			
-			.push(Tween.set(introScreenLetters.get(24), SpriteAccessor.POS_XY).target(-20f,  480f))			
-			.push(Tween.set(introScreenLetters.get(25), SpriteAccessor.POS_XY).target(-20f,  500f))			
-			.push(Tween.set(introScreenLetters.get(26), SpriteAccessor.POS_XY).target(-20f,  520f))			
-			.push(Tween.set(introScreenLetters.get(27), SpriteAccessor.POS_XY).target(-20f,  540f))			
-			.push(Tween.set(introScreenLetters.get(28), SpriteAccessor.POS_XY).target(-20f,  560f))			
-			.push(Tween.set(introScreenLetters.get(29), SpriteAccessor.POS_XY).target(-20f,  580f))			
-			.push(Tween.set(introScreenLetters.get(30), SpriteAccessor.POS_XY).target(-20f,  600f))			
-			.push(Tween.set(introScreenLetters.get(31), SpriteAccessor.POS_XY).target(-20f,  620f))			
-			.push(Tween.set(introScreenLetters.get(32), SpriteAccessor.POS_XY).target(-20f,  640f))			
-			.push(Tween.set(introScreenLetters.get(33), SpriteAccessor.POS_XY).target(-20f,  660f))			
-			.push(Tween.set(introScreenLetters.get(34), SpriteAccessor.POS_XY).target(-20f,  680f))			
-			.push(Tween.set(introScreenLetters.get(35), SpriteAccessor.POS_XY).target(-20f,  700f))			
-			.push(Tween.set(introScreenLetters.get(36), SpriteAccessor.POS_XY).target(-20f,  720f))			
-			.push(Tween.set(introScreenLetters.get(37), SpriteAccessor.POS_XY).target(-20f,  740f))			
-			.push(Tween.set(introScreenLetters.get(38), SpriteAccessor.POS_XY).target(-20f,  760f))			
-			.pushPause(1.0f)
-			.push(Tween.to(introScreenLetters.get(0), SpriteAccessor.POS_XY, 0.8f).target(250f, 280f))
-			.push(Tween.to(introScreenLetters.get(1), SpriteAccessor.POS_XY, 0.8f).target(280f, 280f))
-			.push(Tween.to(introScreenLetters.get(2), SpriteAccessor.POS_XY, 0.8f).target(310f, 280f))
-			.push(Tween.to(introScreenLetters.get(3), SpriteAccessor.POS_XY, 0.8f).target(340f, 280f))
-			.push(Tween.to(introScreenLetters.get(4), SpriteAccessor.POS_XY, 0.8f).target(370f, 280f))
-			.push(Tween.to(introScreenLetters.get(5), SpriteAccessor.POS_XY, 0.8f).target(400f, 280f))
-			.push(Tween.to(introScreenLetters.get(6), SpriteAccessor.POS_XY, 0.8f).target(430f, 280f))
-			.push(Tween.to(introScreenLetters.get(7), SpriteAccessor.POS_XY, 0.8f).target(460f, 280f))
-			.push(Tween.to(introScreenLetters.get(8), SpriteAccessor.POS_XY, 0.8f).target(490f, 280f))
-			.push(Tween.to(introScreenLetters.get(9), SpriteAccessor.POS_XY, 0.8f).target(520f, 280f))
-			.push(Tween.to(introScreenLetters.get(10), SpriteAccessor.POS_XY, 0.8f).target(550f, 280f))
-			.push(Tween.to(introScreenLetters.get(11), SpriteAccessor.POS_XY, 0.8f).target(375f, 240f))
-			.push(Tween.to(introScreenLetters.get(12), SpriteAccessor.POS_XY, 0.8f).target(400f, 240f))
-			.push(Tween.to(introScreenLetters.get(13), SpriteAccessor.POS_XY, 0.8f).target(270f, 200f))
-			.push(Tween.to(introScreenLetters.get(14), SpriteAccessor.POS_XY, 0.8f).target(300f, 200f))
-			.push(Tween.to(introScreenLetters.get(15), SpriteAccessor.POS_XY, 0.8f).target(330f, 200f))
-			.push(Tween.to(introScreenLetters.get(16), SpriteAccessor.POS_XY, 0.8f).target(360f, 200f))
-			.push(Tween.to(introScreenLetters.get(17), SpriteAccessor.POS_XY, 0.8f).target(390f, 200f))
-			.push(Tween.to(introScreenLetters.get(18), SpriteAccessor.POS_XY, 0.8f).target(420f, 200f))
-			.push(Tween.to(introScreenLetters.get(19), SpriteAccessor.POS_XY, 0.8f).target(450f, 200f))
-			.push(Tween.to(introScreenLetters.get(20), SpriteAccessor.POS_XY, 0.8f).target(480f, 200f))
-			.push(Tween.to(introScreenLetters.get(21), SpriteAccessor.POS_XY, 0.8f).target(510f, 200f))
-			.push(Tween.to(introScreenLetters.get(22), SpriteAccessor.POS_XY, 0.8f).target(540f, 200f))
-			.push(Tween.to(introScreenLetters.get(23), SpriteAccessor.POS_XY, 0.8f).target(180f,  90f))			
-			.push(Tween.to(introScreenLetters.get(24), SpriteAccessor.POS_XY, 0.8f).target(210f,  90f))			
-			.push(Tween.to(introScreenLetters.get(25), SpriteAccessor.POS_XY, 0.8f).target(240f,  90f))			
-			.push(Tween.to(introScreenLetters.get(26), SpriteAccessor.POS_XY, 0.8f).target(270f,  90f))			
-			.push(Tween.to(introScreenLetters.get(27), SpriteAccessor.POS_XY, 0.8f).target(300f,  90f))			
-			.push(Tween.to(introScreenLetters.get(28), SpriteAccessor.POS_XY, 0.8f).target(330f,  90f))			
-			.push(Tween.to(introScreenLetters.get(29), SpriteAccessor.POS_XY, 0.8f).target(360f,  90f))			
-			.push(Tween.to(introScreenLetters.get(30), SpriteAccessor.POS_XY, 0.8f).target(390f,  90f))			
-			.push(Tween.to(introScreenLetters.get(31), SpriteAccessor.POS_XY, 0.8f).target(420f,  90f))			
-			.push(Tween.to(introScreenLetters.get(32), SpriteAccessor.POS_XY, 0.8f).target(450f,  90f))			
-			.push(Tween.to(introScreenLetters.get(33), SpriteAccessor.POS_XY, 0.8f).target(480f,  90f))			
-			.push(Tween.to(introScreenLetters.get(34), SpriteAccessor.POS_XY, 0.8f).target(510f,  90f))			
-			.push(Tween.to(introScreenLetters.get(35), SpriteAccessor.POS_XY, 0.8f).target(540f,  90f))			
-			.push(Tween.to(introScreenLetters.get(36), SpriteAccessor.POS_XY, 0.8f).target(570f,  90f))			
-			.push(Tween.to(introScreenLetters.get(37), SpriteAccessor.POS_XY, 0.8f).target(600f,  90f))			
-			.push(Tween.to(introScreenLetters.get(38), SpriteAccessor.POS_XY, 0.8f).target(630f,  90f))			
+        Timeline introSeq = Timeline.createSequence();
+        
+        for (int i = 0; i < introScreenLetters.size; i++) {
+        	introSeq = introSeq.push(Tween.set(introScreenLetters.get(i), SpriteAccessor.POS_XY).target(-20f, -20f + i *20f));
+        }
+        
+		introSeq = introSeq.pushPause(1.0f);
+
+        for (int i = 0; i < 11; i++) {
+        	introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.8f).target(250f + i * 30f, 280f));
+        }
+
+        for (int i = 11; i < 13; i++) {
+        	introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.8f).target(60f + i * 30f, 240f));
+        }
+
+        for (int i = 13; i < 23; i++) {
+        	introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.8f).target(-120f + i * 30f, 200f));
+        }
+        
+        for (int i = 23; i < 39; i++) {
+        	introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.8f).target(-520f + i * 30f, 90f));
+        }
+
+        introSeq = introSeq
 			.pushPause(0.3f)
 			.start(tweenManager);
 	}
