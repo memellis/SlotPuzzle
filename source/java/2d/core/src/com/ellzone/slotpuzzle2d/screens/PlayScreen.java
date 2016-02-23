@@ -120,7 +120,7 @@ public class PlayScreen implements Screen {
 		}
 		sequence = sequence.pushPause(0.5f);
 		for(int i=0; i < levelReelSlotTiles.size; i++) {
-			sequence = sequence.push(Tween.to(levelReelSlotTiles.get(i), SpriteAccessor.POS_XY, 0.8f).target(levelReelSlotTiles.get(i).getX(), levelReelSlotTiles.get(i).getY()));
+			sequence = sequence.push(Tween.to(levelReelSlotTiles.get(i), SpriteAccessor.POS_XY, 0.2f).target(levelReelSlotTiles.get(i).getX(), levelReelSlotTiles.get(i).getY()));
 		}		
 		sequence = sequence.pushPause(0.3f).start(tweenManager);
 
