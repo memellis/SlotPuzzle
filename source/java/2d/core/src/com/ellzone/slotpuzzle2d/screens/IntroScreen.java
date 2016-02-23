@@ -183,19 +183,19 @@ public class IntroScreen implements Screen {
 		introSeq = introSeq.pushPause(1.0f);
 
         for (int i = 0; i < 11; i++) {
-        	introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.8f).target(250f + i * 30f, 280f));
+        	introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.4f).target(250f + i * 30f, 280f));
         }
 
         for (int i = 11; i < 13; i++) {
-        	introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.8f).target(60f + i * 30f, 240f));
+        	introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.4f).target(60f + i * 30f, 240f));
         }
 
         for (int i = 13; i < 23; i++) {
-        	introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.8f).target(-120f + i * 30f, 200f));
+        	introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.4f).target(-120f + i * 30f, 200f));
         }
         
         for (int i = 23; i < 39; i++) {
-        	introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.8f).target(-520f + i * 30f, 90f));
+        	introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.4f).target(-520f + i * 30f, 90f));
         }
 
         introSeq = introSeq
