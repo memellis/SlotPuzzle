@@ -26,7 +26,11 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTile;
+import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileEvent;
+import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileListener;
+import com.ellzone.slotpuzzle2d.sprites.ReelStoppedSpinningReelSlotTileEvent;
 import com.ellzone.slotpuzzle2d.utils.Assets;
+import com.ellzone.slotpuzzle2d.utils.Command;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
@@ -111,7 +115,19 @@ public class PlayScreen implements Screen {
 	
 		for (MapObject mapObject : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)) {
 			Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
-			levelReelSlotTiles.add(new ReelSlotTile(this, slotReelTexture, sprites.length, sprites.length * sprites.length, SIXTY_FPS, mapRectangle.getX(), mapRectangle.getY(), random.nextInt(sprites.length + 1)));
+			ReelSlotTile reelSlotTile = new ReelSlotTile(this, slotReelTexture, sprites.length, sprites.length * sprites.length, SIXTY_FPS, mapRectangle.getX(), mapRectangle.getY(), random.nextInt(sprites.length + 1)); 
+			reelSlotTile.addListener(new ReelSlotTileListener() {
+
+				@Override
+				public void actionPerformed(ReelSlotTileEvent event) {
+					if (event instanceof ReelStoppedSpinningReelSlotTileEvent) {
+						System.out.println("ReelStopped");
+					}
+					
+				}
+			});
+			levelReelSlotTiles.add(reelSlotTile);
+			
 		}
 
 		Timeline sequence = Timeline.createSequence();		
@@ -119,7 +135,7 @@ public class PlayScreen implements Screen {
 			sequence = sequence.push(Tween.set(levelReelSlotTiles.get(i), SpriteAccessor.POS_XY).target(-60f, -20f + 32*i));
 		}
 		sequence = sequence.pushPause(0.5f);
-		for(int i=0; i < levelReelSlotTiles.size; i++) {
+		for(int i = 0; i < levelReelSlotTiles.size; i++) {
 			sequence = sequence.push(Tween.to(levelReelSlotTiles.get(i), SpriteAccessor.POS_XY, 0.2f).target(levelReelSlotTiles.get(i).getX(), levelReelSlotTiles.get(i).getY()));
 		}		
 		sequence = sequence.pushPause(0.3f).start(tweenManager);
@@ -189,7 +205,6 @@ public class PlayScreen implements Screen {
 				isLoaded = true;
 			}
 		}
-
         stage.draw();
 	}
 
