@@ -3,82 +3,80 @@ package com.ellzone.slotpuzzle2d.puzzlegrid;
 import com.badlogic.gdx.utils.Array;
 
 public class PuzzleGrid {
-	public PuzzleGrid() {		
-	}
 	
 	public int[][] matchRowSlots(int[][] puzzleGrid) {
-		int arraySizeX = puzzleGrid.length;
-		int arraySizeY = puzzleGrid[0].length;
-		int [][] workingGrid = new int[arraySizeX][arraySizeY];
+		int arraySizeR = puzzleGrid.length;
+		int arraySizeC = puzzleGrid[0].length;
+		int [][] workingGrid = new int[arraySizeR][arraySizeC];
 		
 		initialiseGrid(workingGrid);
-		int x = 0; 
-		while(x < arraySizeX) {
-			int y = 0;
-			while (y < arraySizeY) {
-				if(puzzleGrid[x][y] >= 0) {
-					int c = y + 1;
+		int r = 0; 
+		while(r < arraySizeR) {
+			int c = 0;
+			while (c < arraySizeC) {
+				if(puzzleGrid[r][c] >= 0) {
+					int co = c + 1;
 					boolean match = true;
 					while (match == true) {
-						if (!(c < arraySizeY)) {
+						if (!(co < arraySizeC)) {
 							match = false;
 						} else {
-							if (puzzleGrid[x][y] == puzzleGrid[x][c]) {
-								c++;
+							if (puzzleGrid[r][c] == puzzleGrid[r][co]) {
+								co++;
 							} else {
 								match = false;
 							}
 						}
 					}
-					for (int i = y; i < c; i++) {
-						workingGrid[x][i] = c - y;
+					for (int i = c; i < co; i++) {
+						workingGrid[r][i] = co - c;
 					}
-					y = c - 1;
+					c = co - 1;
 				}
-				y++;
+				c++;
 			}
-			x++;
+			r++;
 		}
 		return workingGrid;
 	}
 	
 	public int[][] matchColumnSlots(int[][] puzzleGrid) {
-		int arraySizeX = puzzleGrid.length;
-		int arraySizeY = puzzleGrid[0].length;
-		int [][] workingGrid = new int[arraySizeX][arraySizeY];
+		int arraySizeR = puzzleGrid.length;
+		int arraySizeC = puzzleGrid[0].length;
+		int [][] workingGrid = new int[arraySizeR][arraySizeC];
 			
 		initialiseGrid(workingGrid);
-		int y = 0; 
-		while(y < arraySizeY) {
-			int x = 0;
-			while (x < arraySizeX) {
-				if(puzzleGrid[x][y] >= 0) {
-					int c = x + 1;
+		int c = 0; 
+		while(c < arraySizeC) {
+			int r = 0;
+			while (r < arraySizeR) {
+				if(puzzleGrid[r][c] >= 0) {
+					int co = r + 1;
 					boolean match = true;
 					while (match == true) {
-						if (!(c < arraySizeX)) {
+						if (!(co < arraySizeR)) {
 							match = false;
 						} else {
-							if (puzzleGrid[x][y] == puzzleGrid[c][y]) {
-								c++;
+							if (puzzleGrid[r][c] == puzzleGrid[co][c]) {
+								co++;
 							} else {
 								match = false;
 							}
 						}
 					}
-					for (int i = x; i < c; i++) {
-						workingGrid[i][y] = c - x;
+					for (int i = r; i < co; i++) {
+						workingGrid[i][c] = co - r;
 					}
-					x = c - 1;;
+					r = co - 1;;
 				}
-				x++;
+				r++;
 			}
-			y++;
+			c++;
 		}		
 		return workingGrid;
 	}
 	
-	public Array matchGridSlots(int[][] puzzleGrid) {
+	public Array<Tuple> matchGridSlots(int[][] puzzleGrid) {
 		int[][] matchedGridRows = matchRowSlots(puzzleGrid);
 		int[][] matchedGridCols = matchColumnSlots(puzzleGrid);
 		Array<Tuple> matchedSlots = new Array<Tuple>();
@@ -90,13 +88,13 @@ public class PuzzleGrid {
 	}
 	
 	private Array<Tuple> getMatchedRowSlots(int[][] puzzleGrid, Array<Tuple> matchedSlots) {
-		int arraySizeX = puzzleGrid.length;
-		int arraySizeY = puzzleGrid[0].length;
+		int arraySizeR = puzzleGrid.length;
+		int arraySizeC = puzzleGrid[0].length;
 		
-		for(int x = 0; x < arraySizeX; x++) {
-			for(int y = 0; y < arraySizeY; y++) {
-				if(puzzleGrid[x][y] > 1) {
-					matchedSlots.add(new Tuple(x, y, puzzleGrid[x][y]));
+		for(int r = 0; r < arraySizeR; r++) {
+			for(int c = 0; c < arraySizeC; c++) {
+				if(puzzleGrid[r][c] > 1) {
+					matchedSlots.add(new Tuple(r, c, puzzleGrid[r][c]));
 				}
 			}
 		}
@@ -104,13 +102,13 @@ public class PuzzleGrid {
 	}
 
 	private Array<Tuple> getMatchedColSlots(int[][] puzzleGrid, Array<Tuple> matchedSlots) {
-		int arraySizeX = puzzleGrid.length;
-		int arraySizeY = puzzleGrid[0].length;
+		int arraySizeR = puzzleGrid.length;
+		int arraySizeC = puzzleGrid[0].length;
 		
-		for(int y = 0; y < arraySizeY; y++) {
-			for(int x = 0; x < arraySizeX; x++) {
-				if(puzzleGrid[x][y] > 1) {
-					matchedSlots.add(new Tuple(x, y, puzzleGrid[x][y]));
+		for(int c = 0; c < arraySizeC; c++) {
+			for(int r = 0; r < arraySizeR; r++) {
+				if(puzzleGrid[r][c] > 1) {
+					matchedSlots.add(new Tuple(r, c, puzzleGrid[r][c]));
 				}
 			}
 		}
@@ -119,9 +117,9 @@ public class PuzzleGrid {
 
 	
 	public int[][] initialiseGrid(int[][] puzzleGrid) {
-		for (int x = 0; x < puzzleGrid.length; x++) {
-			for (int y = 0; y < puzzleGrid[x].length; y++) {
-				puzzleGrid[x][y] = -1;
+		for (int r = 0; r < puzzleGrid.length; r++) {
+			for (int c = 0; c < puzzleGrid[r].length; c++) {
+				puzzleGrid[r][c] = -1;
 			}
 		}
 		return puzzleGrid;
@@ -131,12 +129,12 @@ public class PuzzleGrid {
 		if (first.length != second.length) {
 			return false;
 		}
-		for (int x = 0; x < first.length; x++) {
-			if (first[x].length != second[x].length) {
+		for (int r = 0; r < first.length; r++) {
+			if (first[r].length != second[r].length) {
 				return false;
 			}
-			for (int y = 0; y < first[x].length; y++) {
-				if(first[x][y] != second[x][y]) {
+			for (int c = 0; c < first[r].length; c++) {
+				if(first[r][c] != second[r][c]) {
 					return false;
 				}
 			}
@@ -144,12 +142,18 @@ public class PuzzleGrid {
 		return true;
 	}
 	
-	public void printGrid(int[][] puzzleGrid){
-		for(int x = 0; x < puzzleGrid.length; x++){
-			for (int y = 0; y < puzzleGrid[x].length; y++) {
-				System.out.print(puzzleGrid[x][y] + " ");
+	public static void printGrid(int[][] puzzleGrid){
+		for(int r = 0; r < puzzleGrid.length; r++){
+			for (int c = 0; c < puzzleGrid[r].length; c++) {
+				System.out.print(puzzleGrid[r][c] + " ");
 			}
 			System.out.println();
+		}
+	}
+	
+	public static void printMatchedSlots(Array<Tuple> tuples) {
+		for (int i = 0; i < tuples.size; i++) {
+			System.out.println(i + "=[" + tuples.get(i).getR() + "," + tuples.get(i).getC() + "]=" + tuples.get(i).getValue());
 		}
 	}
 }

@@ -1,5 +1,7 @@
 package com.ellzone.slotpuzzle2d.screens;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -25,12 +27,13 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
+import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGrid;
+import com.ellzone.slotpuzzle2d.puzzlegrid.Tuple;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTile;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileEvent;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileListener;
 import com.ellzone.slotpuzzle2d.sprites.ReelStoppedSpinningReelSlotTileEvent;
 import com.ellzone.slotpuzzle2d.utils.Assets;
-import com.ellzone.slotpuzzle2d.utils.Command;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
@@ -40,6 +43,7 @@ public class PlayScreen implements Screen {
 	private static final float SIXTY_FPS = 1/60f;
 	private static final int TILE_WIDTH = 32;
 	private static final int TILE_HEIGHT = 32;
+	private static final int SLOT_REEL_OBJECT_LAYER = 3;
 	private SlotPuzzle game;
 	private final OrthographicCamera camera = new OrthographicCamera();
 	private Viewport viewport;
@@ -106,24 +110,24 @@ public class PlayScreen implements Screen {
 		slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedPixmap(sprites, sprites.length);
 		slotReelTexture = new Texture(slotReelPixmap);
 
-		for (int i = 0; i < sprites.length; i++) {
-			slotReels.add(new ReelSlotTile(this, slotReelTexture, sprites.length, sprites.length * sprites.length, SIXTY_FPS, (i * 32 + viewport.getWorldWidth()) / 3.2f, viewport.getWorldHeight() / 2.0f + 32 + 10, i));
-			
-		}
-
 		levelReelSlotTiles = new Array<ReelSlotTile>();
 	
-		for (MapObject mapObject : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)) {
+		for (MapObject mapObject : map.getLayers().get(SLOT_REEL_OBJECT_LAYER).getObjects().getByType(RectangleMapObject.class)) {
 			Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
-			ReelSlotTile reelSlotTile = new ReelSlotTile(this, slotReelTexture, sprites.length, sprites.length * sprites.length, SIXTY_FPS, mapRectangle.getX(), mapRectangle.getY(), random.nextInt(sprites.length + 1)); 
+			ReelSlotTile reelSlotTile = new ReelSlotTile(this, slotReelTexture, sprites.length, sprites.length * sprites.length, SIXTY_FPS, mapRectangle.getX(), mapRectangle.getY(), random.nextInt(sprites.length)); 
 			reelSlotTile.addListener(new ReelSlotTileListener() {
 
 				@Override
 				public void actionPerformed(ReelSlotTileEvent event) {
 					if (event instanceof ReelStoppedSpinningReelSlotTileEvent) {
-						System.out.println("ReelStopped");
+						if (ReelSlotTile.reelsSpinning == 1) {
+							PuzzleGrid puzzleGrid = new PuzzleGrid();
+							int[][] grid = populateMatchGrid(levelReelSlotTiles);
+							Array<Tuple> matchedSlots;
+							PuzzleGrid.printGrid(grid);
+							matchedSlots = puzzleGrid.matchGridSlots(grid);
+						}
 					}
-					
 				}
 			});
 			levelReelSlotTiles.add(reelSlotTile);
@@ -157,6 +161,18 @@ public class PlayScreen implements Screen {
         	stage.addActor(table);
         }
    	}
+	
+	private int[][] populateMatchGrid(Array<ReelSlotTile> slotReelTiles) {
+		int[][] matchGrid = new int[9][9];
+		int r, c;
+		
+		for (int i = 0; i < slotReelTiles.size; i++) {
+			c = (int) (slotReelTiles.get(i).getX()  - 192.0) / 32;
+			r = (int) (8 - (slotReelTiles.get(i).getY() - 96.0) / 32);
+			matchGrid[r][c] = slotReelTiles.get(i).getEndReel();
+		}
+		return matchGrid;
+	}
 
 	@Override
 	public void show() {
@@ -169,9 +185,6 @@ public class PlayScreen implements Screen {
 	
 	private void update(float delta) {
 		tweenManager.update(delta);
-		//for (ReelSlotTile reel : slotReels) {
-		//	reel.update(delta);
-		//}
 		for (ReelSlotTile reel : levelReelSlotTiles) {
 			reel.update(delta);
 		}
@@ -188,12 +201,8 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		if(isLoaded) {
-			//game.batch.setProjectionMatrix(camera.combined);
 			renderer.render();
 			game.batch.begin();
-			//for (ReelSlotTile reel : slotReels) {
-			//	reel.draw(game.batch);
-			//}
 			for (ReelSlotTile reel : levelReelSlotTiles) {
 				reel.draw(game.batch);
 			}

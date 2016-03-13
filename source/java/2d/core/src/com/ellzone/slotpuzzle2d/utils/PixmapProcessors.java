@@ -8,7 +8,9 @@ import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
+import java.io.File;
 
 public class PixmapProcessors {
 	private static int counter = 0;
@@ -163,6 +165,8 @@ public class PixmapProcessors {
 			PixmapProcessors.copyPixmapVertically(scrolledPixmap, scrollAnimatedVerticalPixmap, scrolledPixmap.getWidth() * (i + 1));
 		}
 		
+		savePixmap(scrollAnimatedVerticalPixmap);
+		
 		return scrollAnimatedVerticalPixmap;
 	}
 
@@ -176,6 +180,41 @@ public class PixmapProcessors {
         } catch (Exception e){
         	Gdx.app.error(SlotPuzzle.SLOT_PUZZLE, "Could not save pixmap to PNG file " + e.getMessage());
         }
+	}
+	
+	public static void savePixmap(Pixmap pixmap, File file) {
+		try {
+			FileHandle fh;
+            do {
+                fh = new FileHandle(file);
+            } while (fh.exists());
+            PixmapIO.writePNG(fh, pixmap);
+        } catch (Exception e){
+        	Gdx.app.error(SlotPuzzle.SLOT_PUZZLE, "Could not save pixmap to PNG file " + e.getMessage());
+        }
+	}
+	
+	public static void saveTextureRegion(TextureRegion textureRegion) {
+		savePixmap(getPixmapFromtextureRegion(textureRegion));		
+	}
+	
+	public static void saveTextureRegion(TextureRegion textureRegion, File file) {
+		savePixmap(getPixmapFromtextureRegion(textureRegion), file);		
+	}
+	
+	private static Pixmap getPixmapFromtextureRegion(TextureRegion textureRegion) {
+		Texture texture = textureRegion.getTexture();
+		if (!texture.getTextureData().isPrepared()) {
+		    texture.getTextureData().prepare();
+		}
+		Pixmap pixmap = texture.getTextureData().consumePixmap();
+		Pixmap destinationPixmap = new Pixmap(textureRegion.getRegionWidth(), textureRegion.getRegionHeight(), pixmap.getFormat());
+		for (int x = 0; x < textureRegion.getRegionWidth(); x++) {
+		    for (int y = 0; y < textureRegion.getRegionHeight(); y++) {
+		        destinationPixmap.drawPixel(x, y, pixmap.getPixel(textureRegion.getRegionX() + x, textureRegion.getRegionY() + y));
+		    }
+		}
+		return destinationPixmap;
 	}
 	
 	private static Pixmap getPixmapFromSprite(Sprite sprite) {
