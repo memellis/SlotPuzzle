@@ -202,7 +202,7 @@ public class PixmapProcessors {
 		savePixmap(getPixmapFromtextureRegion(textureRegion), file);		
 	}
 	
-	private static Pixmap getPixmapFromtextureRegion(TextureRegion textureRegion) {
+	public static Pixmap getPixmapFromtextureRegion(TextureRegion textureRegion) {
 		Texture texture = textureRegion.getTexture();
 		if (!texture.getTextureData().isPrepared()) {
 		    texture.getTextureData().prepare();
@@ -217,7 +217,7 @@ public class PixmapProcessors {
 		return destinationPixmap;
 	}
 	
-	private static Pixmap getPixmapFromSprite(Sprite sprite) {
+	public static Pixmap getPixmapFromSprite(Sprite sprite) {
 		Texture texture = sprite.getTexture();
 		if (!texture.getTextureData().isPrepared()) {
 		    texture.getTextureData().prepare();

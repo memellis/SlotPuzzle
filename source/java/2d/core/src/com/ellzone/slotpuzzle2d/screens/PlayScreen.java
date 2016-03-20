@@ -13,6 +13,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -28,7 +30,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGrid;
+import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGridType;
 import com.ellzone.slotpuzzle2d.puzzlegrid.Tuple;
+import com.ellzone.slotpuzzle2d.puzzlegrid.TupleValueIndex;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTile;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileEvent;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileListener;
@@ -66,6 +70,7 @@ public class PlayScreen implements Screen {
 	private TiledMap map;
 	private Random random;
 	private OrthogonalTiledMapRenderer renderer;
+	private ShapeRenderer shapeRenderer; 
 	private boolean gameOver = false;
 	
 	public PlayScreen(SlotPuzzle game) {
@@ -90,6 +95,7 @@ public class PlayScreen implements Screen {
 		mapLoader = new TmxMapLoader();
 		map = mapLoader.load("levels/level 1.tmx");
 		renderer = new OrthogonalTiledMapRenderer(map);
+		shapeRenderer = new ShapeRenderer();
 		
 		TextureAtlas atlas = Assets.inst().get("reel/reels.pack.atlas", TextureAtlas.class);
 		cherry = atlas.createSprite("cherry");
@@ -121,11 +127,11 @@ public class PlayScreen implements Screen {
 				public void actionPerformed(ReelSlotTileEvent event) {
 					if (event instanceof ReelStoppedSpinningReelSlotTileEvent) {
 						if (ReelSlotTile.reelsSpinning == 1) {
-							PuzzleGrid puzzleGrid = new PuzzleGrid();
-							int[][] grid = populateMatchGrid(levelReelSlotTiles);
-							Array<Tuple> matchedSlots;
-							PuzzleGrid.printGrid(grid);
+							PuzzleGridType puzzleGrid = new PuzzleGridType();
+							TupleValueIndex[][] grid = populateMatchGrid(levelReelSlotTiles);
+							Array<TupleValueIndex> matchedSlots;
 							matchedSlots = puzzleGrid.matchGridSlots(grid);
+							flashMatchedSlots(matchedSlots);
 						}
 					}
 				}
@@ -162,14 +168,14 @@ public class PlayScreen implements Screen {
         }
    	}
 	
-	private int[][] populateMatchGrid(Array<ReelSlotTile> slotReelTiles) {
-		int[][] matchGrid = new int[9][9];
+	private TupleValueIndex[][] populateMatchGrid(Array<ReelSlotTile> slotReelTiles) {
+		TupleValueIndex[][] matchGrid = new TupleValueIndex[9][9];
 		int r, c;
 		
 		for (int i = 0; i < slotReelTiles.size; i++) {
 			c = (int) (slotReelTiles.get(i).getX()  - 192.0) / 32;
 			r = (int) (8 - (slotReelTiles.get(i).getY() - 96.0) / 32);
-			matchGrid[r][c] = slotReelTiles.get(i).getEndReel();
+			matchGrid[r][c] = new TupleValueIndex(r, c, i, slotReelTiles.get(i).getEndReel());
 		}
 		return matchGrid;
 	}
@@ -204,7 +210,9 @@ public class PlayScreen implements Screen {
 			renderer.render();
 			game.batch.begin();
 			for (ReelSlotTile reel : levelReelSlotTiles) {
-				reel.draw(game.batch);
+				if (!reel.deleteReelTile()) {
+					reel.draw(game.batch);
+				}
 			}
 			game.batch.end();
 		} else {
@@ -225,13 +233,11 @@ public class PlayScreen implements Screen {
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -245,6 +251,14 @@ public class PlayScreen implements Screen {
 		// TODO Auto-generated method stub
 		stage.dispose();
 		
+	}
+	
+	private void flashMatchedSlots(Array<TupleValueIndex> matchedSlots) {
+		int r, c, index;
+		for (int i = 0; i < matchedSlots.size; i++) {
+			index = matchedSlots.get(i).getIndex();
+			levelReelSlotTiles.get(index).setFlashMode(true);
+		}
 	}
 
 }
