@@ -163,10 +163,7 @@ public class PixmapProcessors {
 		for (int i = 0; i < sprites.length * scrollStep ; i++) {
 			scrolledPixmap = PixmapProcessors.scrollPixmapWrap(scrolledPixmap, scrollStep);
 			PixmapProcessors.copyPixmapVertically(scrolledPixmap, scrollAnimatedVerticalPixmap, scrolledPixmap.getWidth() * (i + 1));
-		}
-		
-		savePixmap(scrollAnimatedVerticalPixmap);
-		
+		}		
 		return scrollAnimatedVerticalPixmap;
 	}
 

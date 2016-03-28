@@ -21,6 +21,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -36,6 +37,7 @@ import com.ellzone.slotpuzzle2d.puzzlegrid.TupleValueIndex;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTile;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileEvent;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileListener;
+import com.ellzone.slotpuzzle2d.sprites.ReelStoppedFlashingReelSlotTileEvent;
 import com.ellzone.slotpuzzle2d.sprites.ReelStoppedSpinningReelSlotTileEvent;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
@@ -72,6 +74,8 @@ public class PlayScreen implements Screen {
 	private OrthogonalTiledMapRenderer renderer;
 	private ShapeRenderer shapeRenderer; 
 	private boolean gameOver = false;
+	private int touchX, touchY;
+	private boolean initialFlashingStopped;
 	
 	public PlayScreen(SlotPuzzle game) {
 		this.game = game;
@@ -117,12 +121,12 @@ public class PlayScreen implements Screen {
 		slotReelTexture = new Texture(slotReelPixmap);
 
 		levelReelSlotTiles = new Array<ReelSlotTile>();
+		initialFlashingStopped = false;
 	
 		for (MapObject mapObject : map.getLayers().get(SLOT_REEL_OBJECT_LAYER).getObjects().getByType(RectangleMapObject.class)) {
 			Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
 			ReelSlotTile reelSlotTile = new ReelSlotTile(this, slotReelTexture, sprites.length, sprites.length * sprites.length, SIXTY_FPS, mapRectangle.getX(), mapRectangle.getY(), random.nextInt(sprites.length)); 
 			reelSlotTile.addListener(new ReelSlotTileListener() {
-
 				@Override
 				public void actionPerformed(ReelSlotTileEvent event) {
 					if (event instanceof ReelStoppedSpinningReelSlotTileEvent) {
@@ -134,10 +138,12 @@ public class PlayScreen implements Screen {
 							flashMatchedSlots(matchedSlots);
 						}
 					}
+					if (event instanceof ReelStoppedFlashingReelSlotTileEvent) {
+						initialFlashingStopped = true;
+					}
 				}
 			});
 			levelReelSlotTiles.add(reelSlotTile);
-			
 		}
 
 		Timeline sequence = Timeline.createSequence();		
@@ -186,7 +192,23 @@ public class PlayScreen implements Screen {
 	}
 	
 	public void handleInput(float dt) {
-		//if (Gdx.input.isKeyJustPressed(key))
+		if (Gdx.input.justTouched()) {
+			if (initialFlashingStopped){
+				touchX = Gdx.input.getX();
+				touchY = Gdx.input.getY();
+				Vector2 newPoints = new Vector2(touchX, touchY);
+				newPoints = viewport.unproject(newPoints);
+				System.out.println("touchX="+newPoints.x+" touchY="+newPoints.y);
+				int c = (int) (newPoints.x - 190.0) / 32;
+				int r = (int) (8 - (newPoints.y - 96) / 32);
+				System.out.println("Input r=" + r + " c=" + c);
+				TupleValueIndex[][] grid = populateMatchGrid(levelReelSlotTiles);
+				ReelSlotTile rst = levelReelSlotTiles.get(grid[r][c].index);
+				if (!rst.deleteReelTile()) {
+					rst.setSpinning(true);
+				}
+			}
+		}
 	}
 	
 	private void update(float delta) {
@@ -200,10 +222,7 @@ public class PlayScreen implements Screen {
 	@Override
 	public void render(float delta) {
 		update(delta);
-		if(Gdx.input.justTouched()) {
-            game.setScreen(new EndOfGameScreen(game));
-            dispose();
-        }
+		handleInput(delta);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		if(isLoaded) {
@@ -260,5 +279,4 @@ public class PlayScreen implements Screen {
 			levelReelSlotTiles.get(index).setFlashMode(true);
 		}
 	}
-
 }
