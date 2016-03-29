@@ -198,10 +198,9 @@ public class PlayScreen implements Screen {
 				touchY = Gdx.input.getY();
 				Vector2 newPoints = new Vector2(touchX, touchY);
 				newPoints = viewport.unproject(newPoints);
-				System.out.println("touchX="+newPoints.x+" touchY="+newPoints.y);
-				int c = (int) (newPoints.x - 190.0) / 32;
-				int r = (int) (8 - (newPoints.y - 96) / 32);
-				System.out.println("Input r=" + r + " c=" + c);
+				int c = (int) (newPoints.x - 192.0) / 32;
+				int r = (int) ((newPoints.y - 96.0) / 32);
+				r = 8 - r;
 				TupleValueIndex[][] grid = populateMatchGrid(levelReelSlotTiles);
 				ReelSlotTile rst = levelReelSlotTiles.get(grid[r][c].index);
 				if (!rst.deleteReelTile()) {
