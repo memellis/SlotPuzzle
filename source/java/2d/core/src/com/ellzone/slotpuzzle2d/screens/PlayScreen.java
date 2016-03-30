@@ -201,10 +201,12 @@ public class PlayScreen implements Screen {
 				int c = (int) (newPoints.x - 192.0) / 32;
 				int r = (int) ((newPoints.y - 96.0) / 32);
 				r = 8 - r;
-				TupleValueIndex[][] grid = populateMatchGrid(levelReelSlotTiles);
-				ReelSlotTile rst = levelReelSlotTiles.get(grid[r][c].index);
-				if (!rst.deleteReelTile()) {
-					rst.setSpinning(true);
+				if (r >= 0 & r <= 8 & c>=0 & c <=8) {
+					TupleValueIndex[][] grid = populateMatchGrid(levelReelSlotTiles);
+					ReelSlotTile rst = levelReelSlotTiles.get(grid[r][c].index);
+					if (!rst.deleteReelTile()) {
+						rst.setSpinning(true);
+					}
 				}
 			}
 		}
