@@ -181,7 +181,11 @@ public class PlayScreen implements Screen {
 		for (int i = 0; i < slotReelTiles.size; i++) {
 			c = (int) (slotReelTiles.get(i).getX()  - 192.0) / 32;
 			r = (int) (8 - (slotReelTiles.get(i).getY() - 96.0) / 32);
-			matchGrid[r][c] = new TupleValueIndex(r, c, i, slotReelTiles.get(i).getEndReel());
+			if (slotReelTiles.get(i).deleteReelTile()) {
+				matchGrid[r][c] = new TupleValueIndex(r, c, i, -1);
+			} else {
+				matchGrid[r][c] = new TupleValueIndex(r, c, i, slotReelTiles.get(i).getEndReel());
+			}
 		}
 		return matchGrid;
 	}
@@ -205,7 +209,14 @@ public class PlayScreen implements Screen {
 					TupleValueIndex[][] grid = populateMatchGrid(levelReelSlotTiles);
 					ReelSlotTile rst = levelReelSlotTiles.get(grid[r][c].index);
 					if (!rst.deleteReelTile()) {
-						rst.setSpinning(true);
+						System.out.println(" Spin ");						
+						if (!rst.isSpinning()) {
+							System.out.println("Not spinning");							
+							rst.setSpinning(true);	
+						} else {
+							System.out.println("Spinning");
+							rst.setEndReel(rst.getCurrentReel());
+						}
 					}
 				}
 			}

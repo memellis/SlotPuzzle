@@ -164,6 +164,9 @@ public class PixmapProcessors {
 			scrolledPixmap = PixmapProcessors.scrollPixmapWrap(scrolledPixmap, scrollStep);
 			PixmapProcessors.copyPixmapVertically(scrolledPixmap, scrollAnimatedVerticalPixmap, scrolledPixmap.getWidth() * (i + 1));
 		}		
+		
+		savePixmap(scrollAnimatedVerticalPixmap);
+		
 		return scrollAnimatedVerticalPixmap;
 	}
 
