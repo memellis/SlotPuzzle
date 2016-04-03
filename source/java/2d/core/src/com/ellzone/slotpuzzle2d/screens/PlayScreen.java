@@ -76,6 +76,9 @@ public class PlayScreen implements Screen {
 	private boolean gameOver = false;
 	private int touchX, touchY;
 	private boolean initialFlashingStopped;
+	private boolean displaySpinHelp;
+	private int displaySpinHelpSprite;
+	private Sprite[] sprites;
 	
 	public PlayScreen(SlotPuzzle game) {
 		this.game = game;
@@ -111,7 +114,7 @@ public class PlayScreen implements Screen {
 		pear = atlas.createSprite("pear");
 		tomato = atlas.createSprite("tomato");
 
-		Sprite[] sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
+		sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
 		
 		// Fixme calculate scrollStep as a 1/4 of the sprite width
 		slotReels = new Array<ReelSlotTile>();
@@ -122,6 +125,7 @@ public class PlayScreen implements Screen {
 
 		levelReelSlotTiles = new Array<ReelSlotTile>();
 		initialFlashingStopped = false;
+		displaySpinHelp = false;
 	
 		for (MapObject mapObject : map.getLayers().get(SLOT_REEL_OBJECT_LAYER).getObjects().getByType(RectangleMapObject.class)) {
 			Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
@@ -209,13 +213,12 @@ public class PlayScreen implements Screen {
 					TupleValueIndex[][] grid = populateMatchGrid(levelReelSlotTiles);
 					ReelSlotTile rst = levelReelSlotTiles.get(grid[r][c].index);
 					if (!rst.deleteReelTile()) {
-						System.out.println(" Spin ");						
 						if (!rst.isSpinning()) {
-							System.out.println("Not spinning");							
 							rst.setSpinning(true);	
 						} else {
-							System.out.println("Spinning");
-							rst.setEndReel(rst.getCurrentReel());
+							displaySpinHelp = true;
+							displaySpinHelpSprite = rst.getCurrentReel();
+							rst.setEndReel(displaySpinHelpSprite);
 						}
 					}
 				}
@@ -244,6 +247,9 @@ public class PlayScreen implements Screen {
 				if (!reel.deleteReelTile()) {
 					reel.draw(game.batch);
 				}
+			}
+			if(displaySpinHelp) {
+				sprites[displaySpinHelpSprite].draw(game.batch);
 			}
 			game.batch.end();
 		} else {
