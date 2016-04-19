@@ -1,7 +1,5 @@
 package com.ellzone.slotpuzzle2d.screens;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -50,6 +48,7 @@ public class PlayScreen implements Screen {
 	private static final int TILE_WIDTH = 32;
 	private static final int TILE_HEIGHT = 32;
 	private static final int SLOT_REEL_OBJECT_LAYER = 3;
+	private static final int HIDDEN_PATTERN_LAYER = 0;  
 	private SlotPuzzle game;
 	private final OrthographicCamera camera = new OrthographicCamera();
 	private Viewport viewport;
@@ -139,7 +138,16 @@ public class PlayScreen implements Screen {
 							TupleValueIndex[][] grid = populateMatchGrid(levelReelSlotTiles);
 							Array<TupleValueIndex> matchedSlots;
 							matchedSlots = puzzleGrid.matchGridSlots(grid);
-							flashMatchedSlots(matchedSlots);
+							if (matchedSlots.size > 0) {
+								flashMatchedSlots(matchedSlots);
+								if(hiddenPatternRevealed(grid)) {
+									System.out.println("hidden pattern revealed");
+								} else {
+									System.out.println("hidden pattern not revealed yet");									
+								}
+							} else {
+								System.out.println("No more matched slots end of level");
+							}
 						}
 					}
 					if (event instanceof ReelStoppedFlashingReelSlotTileEvent) {
@@ -224,6 +232,20 @@ public class PlayScreen implements Screen {
 				}
 			}
 		}
+	}
+	
+	private boolean hiddenPatternRevealed(TupleValueIndex[][] grid) {
+		boolean hiddenPattern = true;
+		for (MapObject mapObject : map.getLayers().get(HIDDEN_PATTERN_LAYER).getObjects().getByType(RectangleMapObject.class)) {
+			Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
+			int c = (int) (mapRectangle.getX() - 192.0) / 32;
+			int r = (int) ((mapRectangle.getY() - 96.0) / 32);
+			System.out.println("r="+r+",c="+c);
+			if (!levelReelSlotTiles.get(grid[r][c].getIndex()).deleteReelTile()) {
+				hiddenPattern = false;
+			}
+		}
+		return hiddenPattern;
 	}
 	
 	private void update(float delta) {

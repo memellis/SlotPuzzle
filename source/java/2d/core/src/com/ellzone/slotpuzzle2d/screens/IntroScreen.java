@@ -44,7 +44,7 @@ public class IntroScreen implements Screen {
 	private static final String SLOT_PUZZLE_REEL_TEXT = "Slot Puzzle";
 	private static final String BY_TEXT = "by";
 	private static final String AUTHOR_TEXT = "Mark Ellis";
-	private static final String COPYRIGHT_YEAR_AUTHOR_TEXT = "©2015 Mark Ellis";
+	private static final String COPYRIGHT_YEAR_AUTHOR_TEXT = "2015 Mark Ellis";
 	
 	private SlotPuzzle game;
 	private Texture texture;
@@ -142,6 +142,8 @@ public class IntroScreen implements Screen {
 				introScreenLetters.add(new ReelLetter(this, slotReelTexture, IntroScreen.COPYRIGHT_YEAR_AUTHOR_TEXT.length(), IntroScreen.COPYRIGHT_YEAR_AUTHOR_TEXT.length() * 5 - 1 , SIXTY_FPS, (i * IntroScreen.TEXT_SPACING_SIZE) + viewport.getWorldWidth() / 4.5f, viewport.getWorldHeight() / 2.0f - 5 * IntroScreen.TEXT_SPACING_SIZE - 10, i));	
 			}
 		}
+
+		System.out.println("introScreenLetters.size="+ introScreenLetters.size);
 		
 		endOfIntroScreen = false;
 		
@@ -186,19 +188,25 @@ public class IntroScreen implements Screen {
         
 		introSeq = introSeq.pushPause(1.0f);
 
-        for (int i = 0; i < 11; i++) {
+        for (int i = 0; i < SLOT_PUZZLE_REEL_TEXT.length(); i++) {
         	introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.4f).target(250f + i * 30f, 280f));
         }
 
-        for (int i = 11; i < 13; i++) {
+        int startOfText = SLOT_PUZZLE_REEL_TEXT.length();
+        int endOfText = SLOT_PUZZLE_REEL_TEXT.length() + BY_TEXT.length();
+        for (int i = startOfText; i < endOfText; i++) {
         	introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.4f).target(60f + i * 30f, 240f));
         }
 
-        for (int i = 13; i < 23; i++) {
+        startOfText = endOfText;
+        endOfText = startOfText + AUTHOR_TEXT.length();
+        for (int i = startOfText; i < endOfText; i++) {
         	introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.4f).target(-120f + i * 30f, 200f));
         }
         
-        for (int i = 23; i < 39; i++) {
+        startOfText = endOfText;
+        endOfText = startOfText + COPYRIGHT_YEAR_AUTHOR_TEXT.length(); 
+        for (int i = startOfText; i < endOfText; i++) {
         	introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.4f).target(-520f + i * 30f, 90f));
         }
 

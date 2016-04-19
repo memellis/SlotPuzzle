@@ -112,20 +112,25 @@ public class PixmapProcessors {
 	    if (fontData == null) {
 	    	Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "fontData is null :(");
 	    }
-	    Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, fontData.getImagePath(0));
-	    Pixmap fontPixmap = new Pixmap(Gdx.files.local(fontData.getImagePath(0)));
-	    BitmapFont.Glyph glyph;
-        verticalFontText.setColor(Color.BLACK);
-		verticalFontText.fillRectangle(0, 0, width, height);
-		verticalFontText.setColor(Color.WHITE);
-		
-	    for(int i = 0; i < text.length(); i++) {
-	    	glyph = fontData.getGlyph(text.charAt(i));
-	    	verticalFontText.drawPixmap(fontPixmap, 
-	    							    (verticalFontText.getWidth() - glyph.width) / 2, 
-	    							    (i * (int) (font.getLineHeight() - 7)),
-	    							    glyph.srcX, glyph.srcY, glyph.width, glyph.height);
-	    }   
+
+		if (fontData.imagePaths.length == 0) {
+			System.out.println("Doh! The length of the imagepaths is zero");
+		} else {
+			Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, fontData.getImagePath(0));
+			Pixmap fontPixmap = new Pixmap(Gdx.files.local(fontData.getImagePath(0)));
+			BitmapFont.Glyph glyph;
+			verticalFontText.setColor(Color.BLACK);
+			verticalFontText.fillRectangle(0, 0, width, height);
+			verticalFontText.setColor(Color.WHITE);
+
+			for (int i = 0; i < text.length(); i++) {
+				glyph = fontData.getGlyph(text.charAt(i));
+				verticalFontText.drawPixmap(fontPixmap,
+						(verticalFontText.getWidth() - glyph.width) / 2,
+						(i * (int) (font.getLineHeight() - 7)),
+						glyph.srcX, glyph.srcY, glyph.width, glyph.height);
+			}
+		}
 		return verticalFontText;
 	}
 
