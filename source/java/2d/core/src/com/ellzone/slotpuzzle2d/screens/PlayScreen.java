@@ -32,6 +32,7 @@ import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGrid;
 import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGridType;
 import com.ellzone.slotpuzzle2d.puzzlegrid.Tuple;
 import com.ellzone.slotpuzzle2d.puzzlegrid.TupleValueIndex;
+import com.ellzone.slotpuzzle2d.sprites.ReelLetter;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTile;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileEvent;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileListener;
@@ -134,25 +135,21 @@ public class PlayScreen implements Screen {
 				public void actionPerformed(ReelSlotTileEvent event) {
 					if (event instanceof ReelStoppedSpinningReelSlotTileEvent) {
 						if (ReelSlotTile.reelsSpinning == 1) {
-							PuzzleGridType puzzleGrid = new PuzzleGridType();
-							TupleValueIndex[][] grid = populateMatchGrid(levelReelSlotTiles);
-							Array<TupleValueIndex> matchedSlots;
-							matchedSlots = puzzleGrid.matchGridSlots(grid);
-							if (matchedSlots.size > 0) {
-								flashMatchedSlots(matchedSlots);
-								if(hiddenPatternRevealed(grid)) {
-									System.out.println("hidden pattern revealed");
-								} else {
-									System.out.println("hidden pattern not revealed yet");									
-								}
-							} else {
-								System.out.println("No more matched slots end of level");
+							if (testForHiddenPatternRevealed(levelReelSlotTiles)) {
+								gameOver = true;
 							}
 						}
 					}
-					if (event instanceof ReelStoppedFlashingReelSlotTileEvent) {
-						initialFlashingStopped = true;
+					if ((event instanceof ReelStoppedFlashingReelSlotTileEvent) & (initialFlashingStopped)) {
+						if (testForHiddenPatternRevealed(levelReelSlotTiles)) {
+							gameOver = true;
+						}
 					}
+
+					if ((event instanceof ReelStoppedFlashingReelSlotTileEvent) & (!initialFlashingStopped)) {
+						initialFlashingStopped = true;				
+					}
+						
 				}
 			});
 			levelReelSlotTiles.add(reelSlotTile);
@@ -167,6 +164,8 @@ public class PlayScreen implements Screen {
 			sequence = sequence.push(Tween.to(levelReelSlotTiles.get(i), SpriteAccessor.POS_XY, 0.2f).target(levelReelSlotTiles.get(i).getX(), levelReelSlotTiles.get(i).getY()));
 		}		
 		sequence = sequence.pushPause(0.3f).start(tweenManager);
+		
+		clearSlotReels(levelReelSlotTiles);
 
         if (gameOver) {
         	Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
@@ -186,6 +185,16 @@ public class PlayScreen implements Screen {
         }
    	}
 	
+	boolean testForHiddenPatternRevealed(Array<ReelSlotTile> levelReelSlotTiles) {
+		PuzzleGridType puzzleGrid = new PuzzleGridType();
+		TupleValueIndex[][] grid = populateMatchGrid(levelReelSlotTiles);
+		Array<TupleValueIndex> matchedSlots;
+		matchedSlots = puzzleGrid.matchGridSlots(grid);
+		flashMatchedSlots(matchedSlots);
+		return hiddenPatternRevealed(grid);	
+	}
+
+	
 	private TupleValueIndex[][] populateMatchGrid(Array<ReelSlotTile> slotReelTiles) {
 		TupleValueIndex[][] matchGrid = new TupleValueIndex[9][9];
 		int r, c;
@@ -193,7 +202,7 @@ public class PlayScreen implements Screen {
 		for (int i = 0; i < slotReelTiles.size; i++) {
 			c = (int) (slotReelTiles.get(i).getX()  - 192.0) / 32;
 			r = (int) (8 - (slotReelTiles.get(i).getY() - 96.0) / 32);
-			if (slotReelTiles.get(i).deleteReelTile()) {
+			if (slotReelTiles.get(i).isReelTileDeleted()) {
 				matchGrid[r][c] = new TupleValueIndex(r, c, i, -1);
 			} else {
 				matchGrid[r][c] = new TupleValueIndex(r, c, i, slotReelTiles.get(i).getEndReel());
@@ -220,7 +229,7 @@ public class PlayScreen implements Screen {
 				if (r >= 0 & r <= 8 & c>=0 & c <=8) {
 					TupleValueIndex[][] grid = populateMatchGrid(levelReelSlotTiles);
 					ReelSlotTile rst = levelReelSlotTiles.get(grid[r][c].index);
-					if (!rst.deleteReelTile()) {
+					if (!rst.isReelTileDeleted()) {
 						if (!rst.isSpinning()) {
 							rst.setSpinning(true);	
 						} else {
@@ -240,9 +249,11 @@ public class PlayScreen implements Screen {
 			Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
 			int c = (int) (mapRectangle.getX() - 192.0) / 32;
 			int r = (int) ((mapRectangle.getY() - 96.0) / 32);
-			System.out.println("r="+r+",c="+c);
-			if (!levelReelSlotTiles.get(grid[r][c].getIndex()).deleteReelTile()) {
-				hiddenPattern = false;
+			r = 8 - r;
+			if ((r>=0) & (r<=9) & (c>=0) & (c<=9)) {
+				if (!levelReelSlotTiles.get(grid[r][c].getIndex()).isReelTileDeleted()) {
+					hiddenPattern = false;
+				}
 			}
 		}
 		return hiddenPattern;
@@ -254,6 +265,10 @@ public class PlayScreen implements Screen {
 			reel.update(delta);
 		}
 		renderer.setView(camera);
+		if (gameOver) {
+			game.setScreen(new EndOfGameScreen(game));
+			dispose();
+		}
 	}
 
 	@Override
@@ -266,7 +281,7 @@ public class PlayScreen implements Screen {
 			renderer.render();
 			game.batch.begin();
 			for (ReelSlotTile reel : levelReelSlotTiles) {
-				if (!reel.deleteReelTile()) {
+				if (!reel.isReelTileDeleted()) {
 					reel.draw(game.batch);
 				}
 			}
@@ -317,6 +332,12 @@ public class PlayScreen implements Screen {
 		for (int i = 0; i < matchedSlots.size; i++) {
 			index = matchedSlots.get(i).getIndex();
 			levelReelSlotTiles.get(index).setFlashMode(true);
+		}
+	}
+	
+	private void clearSlotReels(Array<ReelSlotTile> levelReelSlotTiles) {
+		for (int i=0; i<60; i++) {
+			levelReelSlotTiles.get(i).deleteReelTile();
 		}
 	}
 }
