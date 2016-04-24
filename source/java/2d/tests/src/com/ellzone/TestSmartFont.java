@@ -41,7 +41,6 @@ public class TestSmartFont {
 		fontGen = new SmartFontGenerator();
 		exoFileInternal = Gdx.files.internal("LiberationMono-Regular.ttf");
 		generatedFontDir = Gdx.files.local("generated-fonts/");
-		System.out.println("generatedFontDir="+generatedFontDir.file().getAbsolutePath());
 		generatedFontDir.mkdirs();
 		exoFile = Gdx.files.local("generated-fonts/LiberationMono-Regular.ttf");
 		
@@ -54,7 +53,7 @@ public class TestSmartFont {
 
 	@After
 	public void tearDown() throws Exception {
-		//generatedFontDir.deleteDirectory();
+		generatedFontDir.deleteDirectory();
 	}
 
 	@Test
@@ -63,5 +62,19 @@ public class TestSmartFont {
 		fontMedium = fontGen.createFont(exoFile, "exo-medium", 48);
 		fontLarge = fontGen.createFont(exoFile, "exo-large", 64);
 		assertTrue(fontSmall != null);
+		FileHandle exoSmallFontFile = Gdx.files.local("generated-fonts/exo-small.fnt");
+		FileHandle exoSmallFontPngFile = Gdx.files.local("generated-fonts/exo-small/exo-small.png");
+		FileHandle exoMediumFontFile = Gdx.files.local("generated-fonts/exo-medium.fnt");
+		FileHandle exoMediumFontPngFile = Gdx.files.local("generated-fonts/exo-medium/exo-medium.png");
+		FileHandle exoLargeFontFile = Gdx.files.local("generated-fonts/exo-large.fnt");
+		FileHandle exoLargeFontPngFile0 = Gdx.files.local("generated-fonts/exo-large/exo-large_0.png");
+		FileHandle exoLargeFontPngFile1 = Gdx.files.local("generated-fonts/exo-large/exo-large_1.png");
+		assertTrue(exoSmallFontFile.exists());
+		assertTrue(exoSmallFontPngFile.exists());
+		assertTrue(exoMediumFontFile.exists());
+		assertTrue(exoMediumFontPngFile.exists());
+		assertTrue(exoLargeFontFile.exists());
+		assertTrue(exoLargeFontPngFile0.exists());
+		assertTrue(exoLargeFontPngFile1.exists());
 	}
 }
