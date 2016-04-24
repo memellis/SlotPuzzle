@@ -148,8 +148,7 @@ public class PlayScreen implements Screen {
 
 					if ((event instanceof ReelStoppedFlashingReelSlotTileEvent) & (!initialFlashingStopped)) {
 						initialFlashingStopped = true;				
-					}
-						
+					}	
 				}
 			});
 			levelReelSlotTiles.add(reelSlotTile);
