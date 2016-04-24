@@ -34,11 +34,7 @@ public class GdxTestRunner extends BlockJUnit4ClassRunner implements Application
 	private Map<FrameworkMethod, RunNotifier> invokeInRender = new HashMap<FrameworkMethod, RunNotifier>();
 
 	public GdxTestRunner(Class<?> klass) throws InitializationError {
-		super(klass);
-		//HeadlessApplicationConfiguration conf = new HeadlessApplicationConfiguration();
-
-		//new HeadlessApplication(this, conf);
-		
+		super(klass);		
 		LwjglApplicationConfiguration conf = new LwjglApplicationConfiguration();
 		new LwjglApplication(this, conf);
 	}
