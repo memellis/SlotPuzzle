@@ -12,9 +12,12 @@ import org.junit.runner.RunWith;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
+import com.ellzone.slotpuzzle2d.screens.IntroScreen;
 import com.ellzone.slotpuzzle2d.utils.FileUtils;
+import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
 import de.tomgrill.gdxtesting.GdxTestRunner;
 
@@ -27,6 +30,10 @@ public class TestSmartFont {
 	 * 
 	 * @throws Exception
 	 */
+
+	private static final int EXO_FONT_SMALL_SIZE = 24;
+	private static final String SLOT_PUZZLE_REEL_TEXT = "Slot Puzzle";
+	private static final int SCROLL_HEIGHT = 20;
 
 	private SmartFontGenerator fontGen;
 	private FileHandle exoFileInternal;
@@ -76,5 +83,17 @@ public class TestSmartFont {
 		assertTrue(exoLargeFontFile.exists());
 		assertTrue(exoLargeFontPngFile0.exists());
 		assertTrue(exoLargeFontPngFile1.exists());
+	}
+	
+	@Test
+	/* Test for bug when first creating a font that's not been cached
+	 * Bug caused nullPointer exception in PixmapProcessors.createDynamicVerticalFontText when retrieving imagepaths from fontData
+	 * Added fix for imagepaths not being populated before font saved
+	 */
+	public void testCreateDynamicVerticalFontText() throws Exception {
+		fontSmall = fontGen.createFont(exoFile, "exo-small", 24);
+		Pixmap textPixmap = new Pixmap(TestSmartFont.EXO_FONT_SMALL_SIZE, TestSmartFont.SLOT_PUZZLE_REEL_TEXT.length() * TestSmartFont.SCROLL_HEIGHT, Pixmap.Format.RGBA8888);
+		textPixmap = PixmapProcessors.createDynamicVerticalFontText(fontSmall, TestSmartFont.SLOT_PUZZLE_REEL_TEXT, textPixmap);
+		assertTrue(textPixmap != null);
 	}
 }

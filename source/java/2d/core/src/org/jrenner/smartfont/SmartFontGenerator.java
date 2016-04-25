@@ -6,6 +6,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -120,8 +121,12 @@ public class SmartFontGenerator {
 		Gdx.app.debug(TAG, String.format("Saving font [%s]: fontfile: %s, pixmapDir: %s\n", fontName, fontFile, pixmapDir));
 		// here we must add the png dir to the page refs
 		for (int i = 0; i < pageRefs.length; i++) {
-			pageRefs[i] = fontName + "/" + pageRefs[i];
+			pageRefs[i] = generatedFontDir + fontName + "/" + pageRefs[i];
 		}
+		
+		BitmapFontData fontData = font.getData();
+		fontData.imagePaths = pageRefs; 
+		
 		BitmapFontWriter.writeFont(font.getData(), pageRefs, fontFile, new BitmapFontWriter.FontInfo(fontName, fontSize), 1, 1);
 	}
 
