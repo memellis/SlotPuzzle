@@ -48,6 +48,9 @@ public class PlayScreen implements Screen {
 	private static final int TILE_HEIGHT = 32;
 	private static final int SLOT_REEL_OBJECT_LAYER = 3;
 	private static final int HIDDEN_PATTERN_LAYER = 0;  
+	private static final float PUZZLE_GRID_START_X = 192.0f;
+	private static final float PUZZLE_GRID_START_Y = 96.0f; 
+	
 	private SlotPuzzle game;
 	private final OrthographicCamera camera = new OrthographicCamera();
 	private Viewport viewport;
@@ -125,31 +128,39 @@ public class PlayScreen implements Screen {
 		initialFlashingStopped = false;
 		displaySpinHelp = false;
 	
+		int index = 0; 
 		for (MapObject mapObject : map.getLayers().get(SLOT_REEL_OBJECT_LAYER).getObjects().getByType(RectangleMapObject.class)) {
 			Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
-			ReelSlotTile reelSlotTile = new ReelSlotTile(this, slotReelTexture, sprites.length, sprites.length * sprites.length, SIXTY_FPS, mapRectangle.getX(), mapRectangle.getY(), random.nextInt(sprites.length)); 
-			reelSlotTile.addListener(new ReelSlotTileListener() {
-				@Override
-				public void actionPerformed(ReelSlotTileEvent event) {
-					if (event instanceof ReelStoppedSpinningReelSlotTileEvent) {
-						if (ReelSlotTile.reelsSpinning == 1) {
+			int c = (int) (mapRectangle.getX() - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
+			int r = (int) (mapRectangle.getY() - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
+			r = 8 - r;
+			if ((r >= 0) & (r <= 8) & (c >= 0) & (c <= 8)) {		
+				ReelSlotTile reelSlotTile = new ReelSlotTile(this, slotReelTexture, sprites.length, sprites.length * sprites.length, SIXTY_FPS, mapRectangle.getX(), mapRectangle.getY(), random.nextInt(sprites.length)); 
+				reelSlotTile.addListener(new ReelSlotTileListener() {
+					@Override
+					public void actionPerformed(ReelSlotTileEvent event) {
+						if (event instanceof ReelStoppedSpinningReelSlotTileEvent) {
+							if (ReelSlotTile.reelsSpinning == 1) {
+								if (testForHiddenPatternRevealed(levelReelSlotTiles)) {
+									gameOver = true;
+								}
+							}
+						}
+						if ((event instanceof ReelStoppedFlashingReelSlotTileEvent) & (initialFlashingStopped)) {
 							if (testForHiddenPatternRevealed(levelReelSlotTiles)) {
 								gameOver = true;
 							}
 						}
+						if ((event instanceof ReelStoppedFlashingReelSlotTileEvent) & (!initialFlashingStopped)) {
+							initialFlashingStopped = true;				
+						}	
 					}
-					if ((event instanceof ReelStoppedFlashingReelSlotTileEvent) & (initialFlashingStopped)) {
-						if (testForHiddenPatternRevealed(levelReelSlotTiles)) {
-							gameOver = true;
-						}
-					}
-
-					if ((event instanceof ReelStoppedFlashingReelSlotTileEvent) & (!initialFlashingStopped)) {
-						initialFlashingStopped = true;				
-					}	
-				}
-			});
-			levelReelSlotTiles.add(reelSlotTile);
+				});
+				levelReelSlotTiles.add(reelSlotTile);
+			} else {
+				Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "I don't respond to grid r="+r+"c="+c+". There it won't be added to the level! Sort it out in a level editor.");				
+			}
+			index++;
 		}
 
 		Timeline sequence = Timeline.createSequence();		
@@ -197,12 +208,18 @@ public class PlayScreen implements Screen {
 		int r, c;
 		
 		for (int i = 0; i < slotReelTiles.size; i++) {
-			c = (int) (slotReelTiles.get(i).getX()  - 192.0) / 32;
-			r = (int) (8 - (slotReelTiles.get(i).getY() - 96.0) / 32);
-			if (slotReelTiles.get(i).isReelTileDeleted()) {
-				matchGrid[r][c] = new TupleValueIndex(r, c, i, -1);
+			c = (int) (slotReelTiles.get(i).getX() - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
+			r = (int) (slotReelTiles.get(i).getY() - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
+			r = 8 - r;
+			if ((r >= 0) & (r <= 8) & (c >= 0) & (c <= 8)) {
+				if (slotReelTiles.get(i).isReelTileDeleted()) {
+					matchGrid[r][c] = new TupleValueIndex(r, c, i, -1);
+				} else {
+					matchGrid[r][c] = new TupleValueIndex(r, c, i, slotReelTiles.get(i).getEndReel());
+				}
 			} else {
-				matchGrid[r][c] = new TupleValueIndex(r, c, i, slotReelTiles.get(i).getEndReel());
+				Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "I don't respond to r="+r+"c="+c);
+				matchGrid[r][c] = new TupleValueIndex(r, c, i, -1);				
 			}
 		}
 		return matchGrid;
@@ -220,10 +237,10 @@ public class PlayScreen implements Screen {
 				touchY = Gdx.input.getY();
 				Vector2 newPoints = new Vector2(touchX, touchY);
 				newPoints = viewport.unproject(newPoints);
-				int c = (int) (newPoints.x - 192.0) / 32;
-				int r = (int) ((newPoints.y - 96.0) / 32);
+				int c = (int) (newPoints.x - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
+				int r = (int) (newPoints.y - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
 				r = 8 - r;
-				if (r >= 0 & r <= 8 & c>=0 & c <=8) {
+				if ((r >= 0) & (r <= 8) & (c >= 0) & (c <= 8)) {
 					TupleValueIndex[][] grid = populateMatchGrid(levelReelSlotTiles);
 					ReelSlotTile rst = levelReelSlotTiles.get(grid[r][c].index);
 					if (!rst.isReelTileDeleted()) {
@@ -235,6 +252,8 @@ public class PlayScreen implements Screen {
 							rst.setEndReel(displaySpinHelpSprite);
 						}
 					}
+				} else {
+					Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "I don't respond to r="+r+"c="+c);
 				}
 			}
 		}
@@ -244,13 +263,17 @@ public class PlayScreen implements Screen {
 		boolean hiddenPattern = true;
 		for (MapObject mapObject : map.getLayers().get(HIDDEN_PATTERN_LAYER).getObjects().getByType(RectangleMapObject.class)) {
 			Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
-			int c = (int) (mapRectangle.getX() - 192.0) / 32;
-			int r = (int) ((mapRectangle.getY() - 96.0) / 32);
+			int c = (int) (mapRectangle.getX() - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
+			int r = (int) (mapRectangle.getY() - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
 			r = 8 - r;
-			if ((r>=0) & (r<=9) & (c>=0) & (c<=9)) {
-				if (!levelReelSlotTiles.get(grid[r][c].getIndex()).isReelTileDeleted()) {
-					hiddenPattern = false;
+			if ((r >= 0) & (r <= 8) & (c >= 0) & (c <= 8)) {
+				if (grid[r][c] != null) {
+					if (!levelReelSlotTiles.get(grid[r][c].getIndex()).isReelTileDeleted()) {
+						hiddenPattern = false;
+					}
 				}
+			} else {
+				Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "I don't respond to r="+r+"c="+c);
 			}
 		}
 		return hiddenPattern;
@@ -263,8 +286,8 @@ public class PlayScreen implements Screen {
 		}
 		renderer.setView(camera);
 		if (gameOver) {
-			game.setScreen(new EndOfGameScreen(game));
 			dispose();
+			game.setScreen(new EndOfGameScreen(game));
 		}
 	}
 
@@ -314,14 +337,17 @@ public class PlayScreen implements Screen {
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 		stage.dispose();
-		
+		for (Sprite sprite : sprites) {
+			sprite.getTexture().dispose();
+		}
+		for (ReelSlotTile reelSlotTile : levelReelSlotTiles) {
+			reelSlotTile.dispose();
+		}
 	}
 	
 	private void flashMatchedSlots(Array<TupleValueIndex> matchedSlots) {
