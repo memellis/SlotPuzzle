@@ -22,7 +22,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
@@ -143,12 +142,9 @@ public class IntroScreen implements Screen {
 			}
 		}
 
-		System.out.println("introScreenLetters.size="+ introScreenLetters.size);
-		
-		endOfIntroScreen = false;
+		endOfIntroScreen = false;	
 		
 		Gdx.input.setInputProcessor(stage);
-		
 		skin = new Skin();
         buttonAtlas = new TextureAtlas(Gdx.files.internal("ui/ui-blue.atlas"));
         skin.addRegions(buttonAtlas);
@@ -165,8 +161,6 @@ public class IntroScreen implements Screen {
             }
         });
         
-        
-
         Label.LabelStyle font = new Label.LabelStyle(fontSmall, Color.WHITE);
         Label buttonPressLabel = new Label("LAUNCH", font);
         

@@ -2,8 +2,6 @@ package com.ellzone.slotpuzzle2d;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.ellzone.slotpuzzle2d.screens.IntroScreen;
-import com.ellzone.slotpuzzle2d.screens.PlayScreen;
 import com.ellzone.slotpuzzle2d.screens.SplashScreen;
 
 
@@ -14,8 +12,33 @@ public class SlotPuzzle extends Game
 
 	@Override
 	public void create() {
+		setLogLevel();
 		batch = new SpriteBatch();
 		setScreen(new SplashScreen(this));
+	}
+	
+	private void setLogLevel() {
+		String logLevel = System.getProperty("libgdx.logLevel");
+		if (logLevel != null) {
+			if (logLevel.equals("DEBUG")) {
+				Gdx.app.setLogLevel(Application.LOG_DEBUG);	
+			} else if (logLevel.equals("INFO")) {
+				Gdx.app.setLogLevel(Application.LOG_INFO);				
+			} else if (logLevel.equals("ERROR") ) {
+				Gdx.app.setLogLevel(Application.LOG_ERROR);								
+			}
+		} else {
+			logLevel= System.getenv("LIBGDX_LOGLEVEL");
+			if (logLevel != "") {
+				if (logLevel.equals("DEBUG")) {
+					Gdx.app.setLogLevel(Application.LOG_DEBUG);	
+				} else if (logLevel.equals("INFO")) {
+					Gdx.app.setLogLevel(Application.LOG_INFO);				
+				} else if (logLevel.equals("ERROR") ) {
+					Gdx.app.setLogLevel(Application.LOG_ERROR);								
+				}
+			}
+		}
 	}
 
 	@Override

@@ -4,13 +4,11 @@ import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
-import com.ellzone.slotpuzzle2d.screens.IntroScreen;
 
 public class ReelLetter extends Sprite {
 	

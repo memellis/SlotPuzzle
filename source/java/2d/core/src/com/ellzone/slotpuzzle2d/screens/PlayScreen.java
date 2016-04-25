@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -28,9 +27,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
-import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGrid;
 import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGridType;
-import com.ellzone.slotpuzzle2d.puzzlegrid.Tuple;
 import com.ellzone.slotpuzzle2d.puzzlegrid.TupleValueIndex;
 import com.ellzone.slotpuzzle2d.sprites.ReelLetter;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTile;
@@ -44,6 +41,7 @@ import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 
+@SuppressWarnings("unused")
 public class PlayScreen implements Screen {
 	private static final float SIXTY_FPS = 1/60f;
 	private static final int TILE_WIDTH = 32;

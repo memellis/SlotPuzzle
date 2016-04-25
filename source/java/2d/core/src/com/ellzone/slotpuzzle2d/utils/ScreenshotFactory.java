@@ -2,11 +2,9 @@ package com.ellzone.slotpuzzle2d.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.Files;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.BufferUtils;
 import java.nio.ByteBuffer;
 
 
