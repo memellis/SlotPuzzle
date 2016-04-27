@@ -102,7 +102,7 @@
   <object id="29" name="Reel" x="256" y="160" width="32" height="32"/>
   <object id="30" name="Reel" x="320" y="160" width="32" height="32"/>
   <object id="31" name="Reel" x="224" y="160" width="32" height="32"/>
-  <object id="32" name="Reel" x="448" y="193" width="32" height="32"/>
+  <object id="32" name="Reel" x="449" y="193" width="32" height="32"/>
   <object id="33" name="Reel" x="352" y="192" width="32" height="32"/>
   <object id="34" name="Reel" x="192" y="192" width="32" height="32"/>
   <object id="35" name="Reel" x="384" y="192" width="32" height="32"/>
