@@ -145,8 +145,7 @@ public class PixmapProcessors {
 		for (int i = 0; i < text.length() * 5; i++) {
 			scrolledText = PixmapProcessors.scrollPixmapWrap(scrolledText, scrollStep);
 			PixmapProcessors.copyPixmapVertically(scrolledText, scrollAnimatedVerticalText, scrolledText.getWidth() * (i + 1));
-		}
-		
+		}		
 		return scrollAnimatedVerticalText;
 	}
 	
@@ -168,10 +167,7 @@ public class PixmapProcessors {
 		for (int i = 0; i < sprites.length * scrollStep ; i++) {
 			scrolledPixmap = PixmapProcessors.scrollPixmapWrap(scrolledPixmap, scrollStep);
 			PixmapProcessors.copyPixmapVertically(scrolledPixmap, scrollAnimatedVerticalPixmap, scrolledPixmap.getWidth() * (i + 1));
-		}		
-		
-		savePixmap(scrollAnimatedVerticalPixmap);
-		
+		}			
 		return scrollAnimatedVerticalPixmap;
 	}
 

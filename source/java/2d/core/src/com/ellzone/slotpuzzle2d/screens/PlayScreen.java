@@ -116,6 +116,10 @@ public class PlayScreen implements Screen {
 		tomato = atlas.createSprite("tomato");
 
 		sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
+		for (Sprite sprite : sprites) {
+			sprite.setOrigin(0, 0);
+		}
+
 		
 		// Fixme calculate scrollStep as a 1/4 of the sprite width
 		slotReels = new Array<ReelSlotTile>();
@@ -247,6 +251,7 @@ public class PlayScreen implements Screen {
 						if (!rst.isSpinning()) {
 							rst.setSpinning(true);	
 						} else {
+							System.out.println("Spin Help");
 							displaySpinHelp = true;
 							displaySpinHelpSprite = rst.getCurrentReel();
 							rst.setEndReel(displaySpinHelpSprite);
@@ -306,6 +311,7 @@ public class PlayScreen implements Screen {
 				}
 			}
 			if(displaySpinHelp) {
+				System.out.println("Display Spin Help");
 				sprites[displaySpinHelpSprite].draw(game.batch);
 			}
 			game.batch.end();
@@ -342,9 +348,6 @@ public class PlayScreen implements Screen {
 	@Override
 	public void dispose() {
 		stage.dispose();
-		for (Sprite sprite : sprites) {
-			sprite.getTexture().dispose();
-		}
 		for (ReelSlotTile reelSlotTile : levelReelSlotTiles) {
 			reelSlotTile.dispose();
 		}

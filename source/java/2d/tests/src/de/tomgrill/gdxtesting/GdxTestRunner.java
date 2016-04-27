@@ -37,6 +37,7 @@ public class GdxTestRunner extends BlockJUnit4ClassRunner implements Application
 		super(klass);		
 		LwjglApplicationConfiguration conf = new LwjglApplicationConfiguration();
 		new LwjglApplication(this, conf);
+		Gdx.app.setLogLevel(LwjglApplication.LOG_DEBUG);
 	}
 
 	@Override
