@@ -15,7 +15,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
-import com.ellzone.slotpuzzle2d.screens.IntroScreen;
 import com.ellzone.slotpuzzle2d.utils.FileUtils;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
