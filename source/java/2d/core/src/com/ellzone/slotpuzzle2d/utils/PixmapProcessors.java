@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
@@ -15,7 +16,27 @@ import java.io.File;
 public class PixmapProcessors {
 	private static int counter = 0;
 	
-	public static Pixmap rotatePixmap(Pixmap src, float angle){
+	public static boolean arePixmapsEqual(Pixmap pixmap1, Pixmap pixmap2) {
+		final int width1 = pixmap1.getWidth();
+		final int height1 = pixmap1.getHeight();
+		final int width2 = pixmap2.getWidth();
+		final int height2 = pixmap2.getHeight();
+		
+		if ((width1 == width2) & (height1 == height2)) {
+			for (int x = 0; x < width1; x++) {
+				for (int y = 0; y < height1; y++) {
+					if (pixmap1.getPixel(x, y) != pixmap2.getPixel(x, y)){
+						return false;
+					}
+				}
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public static Pixmap rotatePixmap(Pixmap src, float angle) {
 	    final int width = src.getWidth();
 	    final int height = src.getHeight();
 	    Pixmap rotated = new Pixmap(width, height, src.getFormat());
@@ -109,42 +130,69 @@ public class PixmapProcessors {
 	    
 	    Pixmap verticalFontText = new Pixmap(width, height, src.getFormat());
 	    BitmapFont.BitmapFontData fontData = font.getData();
-	    if (fontData == null) {
-	    	Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "fontData is null :(");
-	    }
 
 		if (fontData.imagePaths.length == 0) {
 			System.out.println("Doh! The length of the imagepaths is zero");
 		} else {
 			Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, fontData.getImagePath(0));
 			Pixmap fontPixmap = new Pixmap(Gdx.files.local(fontData.getImagePath(0)));
+			FileHandle pixmapFile = Gdx.files.local("fontPixmap.png");
+			if (pixmapFile.exists()) {
+				pixmapFile.delete();
+			}
+			PixmapProcessors.savePixmap(fontPixmap, pixmapFile.file());
+
 			BitmapFont.Glyph glyph;
 			verticalFontText.setColor(Color.BLACK);
 			verticalFontText.fillRectangle(0, 0, width, height);
 			verticalFontText.setColor(Color.WHITE);
 
 			for (int i = 0; i < text.length(); i++) {
-				glyph = fontData.getGlyph(text.charAt(i));
-				verticalFontText.drawPixmap(fontPixmap,
-						(verticalFontText.getWidth() - glyph.width) / 2,
-						(i * (int) (font.getLineHeight() - 7)),
+				glyph = fontData.getGlyph(text.charAt(i));				
+				int offSetX = (verticalFontText.getWidth() - glyph.width) / 2;
+				int startY = i * verticalFontText.getHeight() / text.length() + 2;
+				int offSetY = -glyph.yoffset;
+				offSetY = startY + offSetY - glyph.height;
+				
+ 				verticalFontText.drawPixmap(fontPixmap,
+						offSetX,
+						offSetY,
 						glyph.srcX, glyph.srcY, glyph.width, glyph.height);
-			}
-		}
+ 			}
+				
+		}		
 		return verticalFontText;
 	}
 
 	public static Pixmap createDynamicScrollAnimatedVerticalText(Pixmap textToAnimate, int textHeight, String text, int fontSize, int scrollStep) {
-		Pixmap scrollAnimatedVerticalText = new Pixmap(fontSize * (text.length() * 5 - 1), text.length() * textHeight, textToAnimate.getFormat());
-			
+		int xFactor = textToAnimate.getWidth() / scrollStep;
+		Pixmap scrollAnimatedVerticalText = new Pixmap(textToAnimate.getWidth() * text.length() * xFactor, textToAnimate.getHeight(), textToAnimate.getFormat());
 		PixmapProcessors.copyPixmapVertically(textToAnimate, scrollAnimatedVerticalText, 0);
+
+		FileHandle pixmapFile = Gdx.files.local("scrollAnimatedVerticalText0.png");
+		if (pixmapFile.exists()) {
+			pixmapFile.delete();
+		}
+		PixmapProcessors.savePixmap(scrollAnimatedVerticalText, pixmapFile.file());
 
 		Pixmap scrolledText = new Pixmap(textToAnimate.getWidth(), textToAnimate.getHeight(), textToAnimate.getFormat());
 		PixmapProcessors.copyPixmapVertically(textToAnimate, scrolledText, 0);
+
+		pixmapFile = Gdx.files.local("scrollAnimatedVerticalText1.png");
+		if (pixmapFile.exists()) {
+			pixmapFile.delete();
+		}
+		PixmapProcessors.savePixmap(scrolledText, pixmapFile.file());
 		
-		for (int i = 0; i < text.length() * 5; i++) {
+		for (int i = 0; i < text.length() * xFactor; i++) {
 			scrolledText = PixmapProcessors.scrollPixmapWrap(scrolledText, scrollStep);
 			PixmapProcessors.copyPixmapVertically(scrolledText, scrollAnimatedVerticalText, scrolledText.getWidth() * (i + 1));
+			pixmapFile = Gdx.files.local("scrollAnimatedVerticalTextloop" + i + ".png");
+			if (pixmapFile.exists()) {
+				pixmapFile.delete();
+			}
+			PixmapProcessors.savePixmap(scrollAnimatedVerticalText, pixmapFile.file());
+
 		}		
 		return scrollAnimatedVerticalText;
 	}
@@ -231,6 +279,22 @@ public class PixmapProcessors {
 		    }
 		}
 		return destinationPixmap;
+	}
+	
+	public static void writeTextToPixmap(Pixmap destPixmap, Pixmap fontPixmap, BitmapFont.BitmapFontData fontData, int startX, int startY, String text) {
+	    int cursor = startX;
+
+		destPixmap.setColor(Color.BLACK);
+		destPixmap.fillRectangle(0, 0, destPixmap.getWidth(), destPixmap.getHeight());
+		destPixmap.setColor(Color.WHITE);
+
+	    char[] chars = text.toCharArray();
+	    for(int i = 0; i < chars.length; i++) {
+	        BitmapFont.Glyph glyph = fontData.getGlyph(chars[i]);
+	        destPixmap.drawPixmap(fontPixmap, glyph.srcX, glyph.srcY, glyph.width, glyph.height, cursor + glyph.xoffset, startY + glyph.yoffset, glyph.width, glyph.height);
+	        cursor += glyph.xadvance;
+			System.out.println("glpgh.yoffset="+glyph.yoffset);
+	    }
 	}
 }
 

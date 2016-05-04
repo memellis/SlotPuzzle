@@ -4,22 +4,26 @@ import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
+import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
 public class ReelLetter extends Sprite {
 	
 	public static int instanceCount = 0;
-	
+	private final DelayedRemovalArray<ReelSlotTileListener> listeners = new DelayedRemovalArray<ReelSlotTileListener>(0);
 	private int reelId;
 	private float x, y;
-	private Animation reelLetterAnimationFast;
+	private Animation reelAnimationFast;
 	private Texture reelText;
-	private int reelTextRows;
-	private int reelTextCols;
+	private int reelRows;
+	private int reelCols;
 	private float frameRate;
 	private TextureRegion[] reelFrames;
 	private Screen screen;
@@ -30,14 +34,15 @@ public class ReelLetter extends Sprite {
 	private int endReel;
 	private int initialRow;
 	private boolean animationCompleted;
+	private boolean spinning;
 
-	public ReelLetter(Screen screen, Texture reelText, int reelTextRows, int reelTextCols, float frameRate, float x, float y, int endReel) {
+	public ReelLetter(Screen screen, Texture reelText, int reelRows, int reelCols, float frameRate, float x, float y, int endReel) {
 		reelId = ReelLetter.instanceCount;
 		ReelLetter.instanceCount++;
 		this.screen = screen;
 		this.reelText = reelText;
-		this.reelTextRows = reelTextRows;
-		this.reelTextCols = reelTextCols;
+		this.reelRows = reelRows;
+		this.reelCols = reelCols;
 		this.frameRate = frameRate;
 		this.x = x;
 		this.y = y;
@@ -47,31 +52,39 @@ public class ReelLetter extends Sprite {
 
 	private void defineReelLetterSprite() {		
 		random = new Random();
-		TextureRegion[][] reelGrid = TextureRegion.split(reelText, reelText.getWidth() / reelTextCols, reelText.getHeight() / reelTextRows);
-		reelFrames = new TextureRegion[reelTextCols * reelTextRows];
-		
+		TextureRegion[][] reelGrid = TextureRegion.split(reelText, reelText.getWidth() / reelCols, reelText.getHeight() / reelRows);
+		reelFrames = new TextureRegion[reelCols * reelRows];		
 		int index = 0;
-		initialRow = random.nextInt(reelTextRows);
+		initialRow = random.nextInt(reelRows);
 		
-		for (int i = initialRow; i < reelTextRows; i++) {
-			for (int j = 0; j < reelTextCols; j++) {
+		for (int i = initialRow; i < reelRows; i++) {
+			for (int j = 0; j < reelCols; j++) {
 				reelFrames[index++] = reelGrid[i][j];
 			}
 		}
 		for (int i = 0; i < initialRow; i++) {
-			for (int j = 0; j < reelTextCols; j++) {
+			for (int j = 0; j < reelCols; j++) {
 				reelFrames[index++] = reelGrid[i][j];
 			}
 		}
 
-		reelLetterAnimationFast = new Animation(frameRate, reelFrames);
+		for(int i=0; i<reelFrames.length; i++) {
+			FileHandle reelFramesPixmapFile = Gdx.files.local("reelFramesPixmap" + i + ".png");
+			if (reelFramesPixmapFile.exists()) {
+				reelFramesPixmapFile.delete();
+			}
+			PixmapProcessors.saveTextureRegion(reelFrames[i], reelFramesPixmapFile.file());			
+		}
+		
+		reelAnimationFast = new Animation(frameRate, reelFrames);
+		reelAnimationFast.setPlayMode(Animation.PlayMode.LOOP);
 		stateTime = 0f;
 		endStateTime = 0f;
-		reelSpinTime = reelLetterAnimationFast.getAnimationDuration();
+		reelSpinTime = reelAnimationFast.getAnimationDuration();
 		int initialFrame = random.nextInt(reelFrames.length);
 		setBounds(this.x, this.y, reelFrames[initialFrame].getRegionWidth(), reelFrames[initialFrame].getRegionHeight());
 		setRegion(reelFrames[initialFrame]);
-		
+		spinning = true;		
 		animationCompleted = false;
 	}
 	
@@ -81,21 +94,79 @@ public class ReelLetter extends Sprite {
 		stateTime += dt;
 		reelSpinTime -= dt;
 		if (reelSpinTime > 0) {
-			setRegion(reelLetterAnimationFast.getKeyFrame(stateTime, true));
+			setRegion(reelAnimationFast.getKeyFrame(stateTime, true));
 		} else {
-			if (endStateTime == 0 ) {
-				endStateTime = stateTime;
+			if (endStateTime == 0) {
+				float remainder = ((stateTime / frameRate) % reelCols) * frameRate;
+				endStateTime = stateTime + getEndReelFrameTime() - remainder;
 			}
-			if (stateTime <= endStateTime + ((reelTextRows - initialRow + endReel) * reelTextCols) * frameRate) {
-				setRegion(reelLetterAnimationFast.getKeyFrame(stateTime, true));
+			if (stateTime < endStateTime) {
+				setRegion(reelAnimationFast.getKeyFrame(stateTime, true));
 			} else {
-				setRegion(reelLetterAnimationFast.getKeyFrame(endStateTime + ((reelTextRows - initialRow + endReel) * reelTextCols) * frameRate, true));
+				setRegion(reelAnimationFast.getKeyFrame(endStateTime, true));
 				if (!animationCompleted) {
 					animationCompleted = true;
+					spinning = false;
 					ReelLetter.instanceCount--;
 					Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "Reel stopped spinning - instanceCount="+String.valueOf(ReelLetter.instanceCount + " reelId=" + reelId));
 				}
+				FileHandle reelLetterLastPixmapFile = Gdx.files.local("reelLetterLastPixmap" + endReel + ".png");
+				if (reelLetterLastPixmapFile.exists()) {
+					reelLetterLastPixmapFile.delete();
+				}
+				PixmapProcessors.saveTextureRegion(reelAnimationFast.getKeyFrame(getEndReelFrameTime(), true), reelLetterLastPixmapFile.file());
+				//reelLetterLastPixmapFile = Gdx.files.local("reelLetterLastPixmapFromReelFrames" + endReel + ".png");
+				//if (reelLetterLastPixmapFile.exists()) {
+				//	reelLetterLastPixmapFile.delete();
+				//}
+				//PixmapProcessors.saveTextureRegion(reelFrames[reelAnimationFast.getKeyFrameIndex(getEndReelFrameTime())], reelLetterLastPixmapFile.file());
 			}
 		}
 	}
+	
+	private float getEndReelFrameTime() {
+		int row = (initialRow > endReel) ? initialRow - endReel : endReel - initialRow;
+		int endReelFrame = ((row + 1) * reelCols) - 1;
+		return endReelFrame * frameRate;
+	}
+	
+	public boolean isSpinning() {
+		return spinning;
+	}
+	
+	public boolean addListener (ReelSlotTileListener listener) {
+		if (!listeners.contains(listener, true)) {
+			listeners.add(listener);
+			return true;
+		}
+		return false;
+	}
+
+	public boolean removeListener (ReelSlotTileListener listener) {
+		return listeners.removeValue(listener, true);
+	}
+
+	public Array<ReelSlotTileListener> getListeners () {
+		return listeners;
+	}
+	
+	private void processEvent(ReelSlotTileEvent reelSlotTileEvent) {
+		Array<ReelSlotTileListener> tempReelSlotTileListenerList = new Array<ReelSlotTileListener>();
+
+		synchronized (this) {
+			if (listeners.size == 0)
+				return;
+			for(int i = 0; i < listeners.size; i++) {
+				tempReelSlotTileListenerList.add(listeners.get(i));
+			}
+		}
+
+		for (ReelSlotTileListener listener : tempReelSlotTileListenerList) {
+			listener.actionPerformed(reelSlotTileEvent);
+		}
+	}
+		
+	public int getEndReel() {
+		return this.endReel;
+	}	
 }
