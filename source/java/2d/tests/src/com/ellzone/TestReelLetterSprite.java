@@ -98,11 +98,25 @@ public class TestReelLetterSprite {
 		
 		float dt = 0.0f;
 		int spinCount = TestReelLetterSprite.BY_TEXT.length();
-		while ((dt < 10) & (spinCount > 0)) { 
+		boolean[] spin = new boolean[spinCount];
+		for (int i=0; i<spin.length;i++) {
+			spin[i] = true;
+		}
+		boolean reelsStoppedSpinning = false;
+		while (!reelsStoppedSpinning) {
+			int index = 0;
 			for(ReelLetter reel : reelLetters) {
 				reel.update(dt);
 				if (!reel.isSpinning()) {
-					spinCount--;
+					spin[index] = false;
+					index++;
+				}
+			}
+			for (int i=0; i<spin.length;i++) {
+				if (!spin[i]) {
+					reelsStoppedSpinning = true;
+				} else {
+					reelsStoppedSpinning = false;
 				}
 			}
 			dt = dt + TestReelLetterSprite.SIXTY_FPS;
