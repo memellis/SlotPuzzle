@@ -38,12 +38,15 @@ public class IntroScreen implements Screen {
 	private static final int TEXT_SPACING_SIZE = 30;
 	private static final float SIXTY_FPS = 1/60f;
 	private static final int EXO_FONT_SMALL_SIZE = 24;
+	private static final int REEL_SIZE_WIDTH = 40;
+	private static final int REEL_SIZE_HEIGHT = 40;
 	private static final int SCROLL_STEP = 4;
 	private static final int SCROLL_HEIGHT = 20;
+	private static final String COPYRIGHT = "\u00a9";
 	private static final String SLOT_PUZZLE_REEL_TEXT = "Slot Puzzle";
 	private static final String BY_TEXT = "by";
 	private static final String AUTHOR_TEXT = "Mark Ellis";
-	private static final String COPYRIGHT_YEAR_AUTHOR_TEXT = "2015 Mark Ellis";
+	private static final String COPYRIGHT_YEAR_AUTHOR_TEXT = COPYRIGHT + "2015 Mark Ellis";
 	
 	private SlotPuzzle game;
 	private Texture texture;
@@ -102,48 +105,16 @@ public class IntroScreen implements Screen {
 			Gdx.app.log(SlotPuzzle.SLOT_PUZZLE, "Loaded cached SlotPuzzleTextFontTile.png file.");
 				
 		} else {
-				
+
 			introScreenLetters = new Array<ReelLetter>();
 
-			slotReelPixmap = new Pixmap(IntroScreen.EXO_FONT_SMALL_SIZE, IntroScreen.SLOT_PUZZLE_REEL_TEXT.length() * IntroScreen.SCROLL_HEIGHT, Pixmap.Format.RGBA8888);		
-			slotReelPixmap = PixmapProcessors.createDynamicVerticalFontText(fontSmall, IntroScreen.SLOT_PUZZLE_REEL_TEXT, slotReelPixmap);
-			slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedVerticalText(slotReelPixmap, IntroScreen.SCROLL_HEIGHT, IntroScreen.SLOT_PUZZLE_REEL_TEXT, IntroScreen.EXO_FONT_SMALL_SIZE, IntroScreen.SCROLL_STEP);
-			slotReelTexture = new Texture(slotReelPixmap);
-
-			for (int i = 0; i < IntroScreen.SLOT_PUZZLE_REEL_TEXT.length(); i++) {
-				introScreenLetters.add(new ReelLetter(this, slotReelTexture, IntroScreen.SLOT_PUZZLE_REEL_TEXT.length(), IntroScreen.SLOT_PUZZLE_REEL_TEXT.length() * 5 - 1, SIXTY_FPS, (i * IntroScreen.TEXT_SPACING_SIZE) + viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + IntroScreen.TEXT_SPACING_SIZE + 10, i));
-			}
-			
-			slotReelPixmap = new Pixmap(IntroScreen.EXO_FONT_SMALL_SIZE, IntroScreen.BY_TEXT.length() * IntroScreen.SCROLL_HEIGHT, Pixmap.Format.RGBA8888);;
-			slotReelPixmap = PixmapProcessors.createDynamicVerticalFontText(fontSmall, IntroScreen.BY_TEXT, slotReelPixmap);
-			slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedVerticalText(slotReelPixmap, IntroScreen.SCROLL_HEIGHT, IntroScreen.BY_TEXT, IntroScreen.EXO_FONT_SMALL_SIZE, IntroScreen.SCROLL_STEP);
-			slotReelTexture = new Texture(slotReelPixmap);
-
-			for (int i = 0; i < IntroScreen.BY_TEXT.length(); i++) {
-				introScreenLetters.add(new ReelLetter(this, slotReelTexture, IntroScreen.BY_TEXT.length(), IntroScreen.BY_TEXT.length() * 5 - 1, SIXTY_FPS, (i * IntroScreen.TEXT_SPACING_SIZE) + viewport.getWorldWidth() / 2.2f, viewport.getWorldHeight() / 2.0f, i));	
-			}
-
-			slotReelPixmap = new Pixmap(IntroScreen.EXO_FONT_SMALL_SIZE, IntroScreen.AUTHOR_TEXT.length() * IntroScreen.SCROLL_HEIGHT, Pixmap.Format.RGBA8888);;
-			slotReelPixmap = PixmapProcessors.createDynamicVerticalFontText(fontSmall, IntroScreen.AUTHOR_TEXT, slotReelPixmap);
-			slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedVerticalText(slotReelPixmap, IntroScreen.SCROLL_HEIGHT, IntroScreen.AUTHOR_TEXT, IntroScreen.EXO_FONT_SMALL_SIZE, IntroScreen.SCROLL_STEP);
-			slotReelTexture = new Texture(slotReelPixmap);
-
-			for (int i = 0; i < IntroScreen.AUTHOR_TEXT.length(); i++) {
-				introScreenLetters.add(new ReelLetter(this, slotReelTexture, IntroScreen.AUTHOR_TEXT.length(), IntroScreen.AUTHOR_TEXT.length() * 5 - 1, SIXTY_FPS, (i * IntroScreen.TEXT_SPACING_SIZE) + viewport.getWorldWidth() / 3.0f, viewport.getWorldHeight() / 2.0f - IntroScreen.TEXT_SPACING_SIZE - 10, i));	
-			}
-			
-			slotReelPixmap = new Pixmap(IntroScreen.EXO_FONT_SMALL_SIZE, IntroScreen.COPYRIGHT_YEAR_AUTHOR_TEXT.length() * IntroScreen.SCROLL_HEIGHT, Pixmap.Format.RGBA8888);;
-			slotReelPixmap = PixmapProcessors.createDynamicVerticalFontText(fontSmall, IntroScreen.COPYRIGHT_YEAR_AUTHOR_TEXT, slotReelPixmap);
-			slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedVerticalText(slotReelPixmap, IntroScreen.SCROLL_HEIGHT, IntroScreen.COPYRIGHT_YEAR_AUTHOR_TEXT, IntroScreen.EXO_FONT_SMALL_SIZE, IntroScreen.SCROLL_STEP);
-			slotReelTexture = new Texture(slotReelPixmap);
-
-			for (int i = 0; i < IntroScreen.COPYRIGHT_YEAR_AUTHOR_TEXT.length(); i++) {
-				introScreenLetters.add(new ReelLetter(this, slotReelTexture, IntroScreen.COPYRIGHT_YEAR_AUTHOR_TEXT.length(), IntroScreen.COPYRIGHT_YEAR_AUTHOR_TEXT.length() * 5 - 1 , SIXTY_FPS, (i * IntroScreen.TEXT_SPACING_SIZE) + viewport.getWorldWidth() / 4.5f, viewport.getWorldHeight() / 2.0f - 5 * IntroScreen.TEXT_SPACING_SIZE - 10, i));	
-			}
+			createReelLetterString(IntroScreen.SLOT_PUZZLE_REEL_TEXT, introScreenLetters, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + IntroScreen.TEXT_SPACING_SIZE + 10);
+			createReelLetterString(IntroScreen.BY_TEXT, introScreenLetters, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + IntroScreen.TEXT_SPACING_SIZE + 10);
+			createReelLetterString(IntroScreen.AUTHOR_TEXT, introScreenLetters, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + IntroScreen.TEXT_SPACING_SIZE + 10);
+			createReelLetterString(IntroScreen.COPYRIGHT_YEAR_AUTHOR_TEXT, introScreenLetters, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + IntroScreen.TEXT_SPACING_SIZE + 10);
 		}
 
 		endOfIntroScreen = false;	
-		
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin();
         buttonAtlas = new TextureAtlas(Gdx.files.internal("ui/ui-blue.atlas"));
@@ -177,7 +148,7 @@ public class IntroScreen implements Screen {
         Timeline introSeq = Timeline.createSequence();
         
         for (int i = 0; i < introScreenLetters.size; i++) {
-        	introSeq = introSeq.push(Tween.set(introScreenLetters.get(i), SpriteAccessor.POS_XY).target(-20f, -20f + i *20f));
+        	introSeq = introSeq.push(Tween.set(introScreenLetters.get(i), SpriteAccessor.POS_XY).target(-40f, -20f + i *20f));
         }
         
 		introSeq = introSeq.pushPause(1.0f);
@@ -208,11 +179,21 @@ public class IntroScreen implements Screen {
 			.pushPause(0.3f)
 			.start(tweenManager);
 	}
+
+	private void createReelLetterString(String reelLetterString, Array<ReelLetter> screenLetters, float posX, float posY) {
+		Pixmap slotReelPixmap = new Pixmap(IntroScreen.REEL_SIZE_WIDTH, reelLetterString.length() * IntroScreen.REEL_SIZE_HEIGHT, Pixmap.Format.RGBA8888);
+		slotReelPixmap = PixmapProcessors.createDynamicVerticalFontText(fontSmall, reelLetterString, slotReelPixmap);
+		slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedVerticalText(slotReelPixmap, IntroScreen.SCROLL_HEIGHT, reelLetterString, IntroScreen.EXO_FONT_SMALL_SIZE, IntroScreen.SCROLL_STEP);
+		Texture slotReelTexture = new Texture(slotReelPixmap);
+
+		for (int i = 0; i < reelLetterString.length(); i++) {
+			introScreenLetters.add(new ReelLetter(this, slotReelTexture, reelLetterString.length(), slotReelPixmap.getWidth() / IntroScreen.REEL_SIZE_WIDTH, SIXTY_FPS, (i * IntroScreen.TEXT_SPACING_SIZE) + posX, posY, i));
+		}
+	}
 		
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	public void update(float dt) {
