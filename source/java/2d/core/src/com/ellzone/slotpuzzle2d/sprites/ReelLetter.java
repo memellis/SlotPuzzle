@@ -68,14 +68,6 @@ public class ReelLetter extends Sprite {
 			}
 		}
 
-		for(int i=0; i<reelFrames.length; i++) {
-			FileHandle reelFramesPixmapFile = Gdx.files.local("reelFramesPixmap" + i + ".png");
-			if (reelFramesPixmapFile.exists()) {
-				reelFramesPixmapFile.delete();
-			}
-			PixmapProcessors.saveTextureRegion(reelFrames[i], reelFramesPixmapFile.file());			
-		}
-		
 		reelAnimationFast = new Animation(frameRate, reelFrames);
 		reelAnimationFast.setPlayMode(Animation.PlayMode.LOOP);
 		stateTime = 0f;
@@ -114,20 +106,20 @@ public class ReelLetter extends Sprite {
 				if (reelLetterLastPixmapFile.exists()) {
 					reelLetterLastPixmapFile.delete();
 				}
-				PixmapProcessors.saveTextureRegion(reelAnimationFast.getKeyFrame(getEndReelFrameTime(), true), reelLetterLastPixmapFile.file());
-				//reelLetterLastPixmapFile = Gdx.files.local("reelLetterLastPixmapFromReelFrames" + endReel + ".png");
-				//if (reelLetterLastPixmapFile.exists()) {
-				//	reelLetterLastPixmapFile.delete();
-				//}
-				//PixmapProcessors.saveTextureRegion(reelFrames[reelAnimationFast.getKeyFrameIndex(getEndReelFrameTime())], reelLetterLastPixmapFile.file());
+				PixmapProcessors.saveTextureRegion(reelAnimationFast.getKeyFrame(endStateTime, true), reelLetterLastPixmapFile.file());
 			}
 		}
 	}
 	
 	private float getEndReelFrameTime() {
-		int row = (initialRow > endReel) ? initialRow - endReel : endReel - initialRow;
+       int row;
+		if ((endReel - initialRow) < 0) {
+			row = reelRows + (endReel - initialRow);
+		} else {
+			row = endReel - initialRow;
+		}
 		int endReelFrame = ((row + 1) * reelCols) - 1;
-		return endReelFrame * frameRate;
+ 		return endReelFrame * frameRate;
 	}
 	
 	public boolean isSpinning() {
