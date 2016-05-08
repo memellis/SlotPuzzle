@@ -56,7 +56,7 @@ public class ReelLetter extends Sprite {
 		reelFrames = new TextureRegion[reelCols * reelRows];		
 		int index = 0;
 		initialRow = random.nextInt(reelRows);
-		
+
 		for (int i = initialRow; i < reelRows; i++) {
 			for (int j = 0; j < reelCols; j++) {
 				reelFrames[index++] = reelGrid[i][j];
@@ -73,15 +73,13 @@ public class ReelLetter extends Sprite {
 		stateTime = 0f;
 		endStateTime = 0f;
 		reelSpinTime = reelAnimationFast.getAnimationDuration();
-		int initialFrame = random.nextInt(reelFrames.length);
+		int initialFrame = 0;
 		setBounds(this.x, this.y, reelFrames[initialFrame].getRegionWidth(), reelFrames[initialFrame].getRegionHeight());
 		setRegion(reelFrames[initialFrame]);
 		spinning = true;		
 		animationCompleted = false;
 	}
-	
-	// Have a method to implement reel friction
-		
+
 	public void update(float dt) {
 		stateTime += dt;
 		reelSpinTime -= dt;
@@ -89,37 +87,32 @@ public class ReelLetter extends Sprite {
 			setRegion(reelAnimationFast.getKeyFrame(stateTime, true));
 		} else {
 			if (endStateTime == 0) {
-				float remainder = ((stateTime / frameRate) % reelCols) * frameRate;
-				endStateTime = stateTime + getEndReelFrameTime() - remainder;
+				float remainder = (((stateTime / frameRate)) % reelCols) * frameRate;
+                endStateTime = stateTime + (getEndReelFrame() * frameRate)  - remainder  - 1;
 			}
 			if (stateTime < endStateTime) {
 				setRegion(reelAnimationFast.getKeyFrame(stateTime, true));
 			} else {
-				setRegion(reelAnimationFast.getKeyFrame(endStateTime, true));
+    			setRegion(reelFrames[getEndReelFrame()]);
 				if (!animationCompleted) {
 					animationCompleted = true;
 					spinning = false;
 					ReelLetter.instanceCount--;
 					Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "Reel stopped spinning - instanceCount="+String.valueOf(ReelLetter.instanceCount + " reelId=" + reelId));
 				}
-				FileHandle reelLetterLastPixmapFile = Gdx.files.local("reelLetterLastPixmap" + endReel + ".png");
-				if (reelLetterLastPixmapFile.exists()) {
-					reelLetterLastPixmapFile.delete();
-				}
-				PixmapProcessors.saveTextureRegion(reelAnimationFast.getKeyFrame(endStateTime, true), reelLetterLastPixmapFile.file());
 			}
 		}
 	}
 	
-	private float getEndReelFrameTime() {
-       int row;
-		if ((endReel - initialRow) < 0) {
+	private int getEndReelFrame() {
+        int row;
+        if ((endReel - initialRow) < 0) {
 			row = reelRows + (endReel - initialRow);
 		} else {
 			row = endReel - initialRow;
 		}
-		int endReelFrame = ((row + 1) * reelCols) - 1;
- 		return endReelFrame * frameRate;
+        int endReelFrame = ((row + 1) * reelCols) - 1;
+ 		return endReelFrame;
 	}
 	
 	public boolean isSpinning() {
