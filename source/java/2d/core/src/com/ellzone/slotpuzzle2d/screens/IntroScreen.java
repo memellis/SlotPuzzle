@@ -73,12 +73,9 @@ public class IntroScreen implements Screen {
 	}
 	
 	void defineIntroScreen() {
-		//viewport = new FitViewport(800, 480, camera);
 		viewport = new FillViewport(800, 480, new OrthographicCamera());
 		stage = new Stage(viewport, game.batch);
-               
-        // FIXME 1: Resizing window needs to generate resized Smartfont
-        
+
 		Tween.setWaypointsLimit(10);
 		Tween.setCombinedAttributesLimit(3);
 		Tween.registerAccessor(Sprite.class, new SpriteAccessor());
