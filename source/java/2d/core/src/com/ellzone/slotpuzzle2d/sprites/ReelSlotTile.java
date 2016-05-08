@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
-public class ReelSlotTile extends Sprite {
+public class ReelSlotTile extends ReelSprite {
 	public static int instanceCount = 0;
 	public static int reelsSpinning = 0;
 	private final DelayedRemovalArray<ReelSlotTileListener> listeners = new DelayedRemovalArray<ReelSlotTileListener>(0);
@@ -138,15 +138,7 @@ public class ReelSlotTile extends Sprite {
 	private float getEndReelFrameTime() {
 		return endStateTime + ((reelRows - initialRow + endReel) * reelCols) * frameRate;
 	}
-	
-	public int getEndReel() {
-		return this.endReel;
-	}
-	
-	public boolean isSpinning() {
-		return spinning;
-	}
-	
+
 	public void setSpinning(boolean spinMode) {
 		spinning = spinMode;
 		if (spinning) {
@@ -190,39 +182,7 @@ public class ReelSlotTile extends Sprite {
 		TextureRegion textureRegion = new TextureRegion(new Texture(reelPixmap));
 		return textureRegion;
 	}
-	
-	public boolean addListener (ReelSlotTileListener listener) {
-		if (!listeners.contains(listener, true)) {
-			listeners.add(listener);
-			return true;
-		}
-		return false;
-	}
 
-	public boolean removeListener (ReelSlotTileListener listener) {
-		return listeners.removeValue(listener, true);
-	}
-
-	public Array<ReelSlotTileListener> getListeners () {
-		return listeners;
-	}
-	
-	private void processEvent(ReelSlotTileEvent reelSlotTileEvent) {
-		Array<ReelSlotTileListener> tempReelSlotTileListenerList = new Array<ReelSlotTileListener>();
-
-		synchronized (this) {
-			if (listeners.size == 0)
-				return;
-			for(int i = 0; i < listeners.size; i++) {
-				tempReelSlotTileListenerList.add(listeners.get(i));
-			}
-		}
-
-		for (ReelSlotTileListener listener : tempReelSlotTileListenerList) {
-			listener.actionPerformed(reelSlotTileEvent);
-		}
-	}
-	
 	public boolean isReelTileDeleted() {
 		return deleteReelTile;
 	}
