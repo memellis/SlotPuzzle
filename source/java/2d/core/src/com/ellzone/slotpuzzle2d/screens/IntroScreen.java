@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
@@ -72,8 +73,9 @@ public class IntroScreen implements Screen {
 	}
 	
 	void defineIntroScreen() {
-		viewport = new FitViewport(800, 480, camera);
-        stage = new Stage(viewport, game.batch);
+		//viewport = new FitViewport(800, 480, camera);
+		viewport = new FillViewport(800, 480, new OrthographicCamera());
+		stage = new Stage(viewport, game.batch);
                
         // FIXME 1: Resizing window needs to generate resized Smartfont
         
