@@ -28,7 +28,9 @@ public class EndOfGameScreen implements Screen {
 	private static final int EXO_FONT_SMALL_SIZE = 24;
 	private static final int EXO_FONT_MEDIUM_SIZE = 48;
 	private static final int EXO_FONT_LARGE_SIZE = 64;
-	private static final int SCROLL_STEP = 4;
+    private static final int REEL_SIZE_WIDTH = 40;
+    private static final int REEL_SIZE_HEIGHT = 40;
+    private static final int SCROLL_STEP = 4;
 	private static final int SCROLL_HEIGHT = 20;
 	private static final String GAME_OVER_TEXT="Game Over";
 	private BitmapFont fontSmall;
@@ -90,19 +92,22 @@ public class EndOfGameScreen implements Screen {
 				
 		} else {
 			gameOverScreenLetters = new Array<ReelLetter>();
-
-			slotReelPixmap = new Pixmap(EndOfGameScreen.EXO_FONT_SMALL_SIZE, EndOfGameScreen.GAME_OVER_TEXT.length() * EndOfGameScreen.SCROLL_HEIGHT, Pixmap.Format.RGBA8888);		
-			slotReelPixmap = PixmapProcessors.createDynamicVerticalFontText(fontSmall, EndOfGameScreen.GAME_OVER_TEXT, slotReelPixmap);
-			slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedVerticalText(slotReelPixmap, 20, EndOfGameScreen.GAME_OVER_TEXT, EndOfGameScreen.EXO_FONT_SMALL_SIZE, EndOfGameScreen.SCROLL_STEP);
-			slotReelTexture = new Texture(slotReelPixmap);
-
-			for (int i = 0; i < EndOfGameScreen.GAME_OVER_TEXT.length(); i++) {
-				gameOverScreenLetters.add(new ReelLetter(this, slotReelTexture, EndOfGameScreen.GAME_OVER_TEXT.length(), EndOfGameScreen.GAME_OVER_TEXT.length() * 5 - 1 , SIXTY_FPS, (i * EndOfGameScreen.TEXT_SPACING_SIZE) + viewport.getWorldWidth() / 3, viewport.getWorldHeight() / 2 +  2 * EndOfGameScreen.TEXT_SPACING_SIZE, i));	
-			}
-		}
+			createReelLetterString(EndOfGameScreen.GAME_OVER_TEXT, gameOverScreenLetters, viewport.getWorldWidth() / 3.0f, viewport.getWorldHeight() / 2.0f + 2 * EndOfGameScreen.TEXT_SPACING_SIZE);
+ 		}
 	}
-	
-	@Override
+
+    private void createReelLetterString(String reelLetterString, Array<ReelLetter> screenLetters, float posX, float posY) {
+        Pixmap slotReelPixmap = new Pixmap(EndOfGameScreen.REEL_SIZE_WIDTH, reelLetterString.length() * EndOfGameScreen.REEL_SIZE_HEIGHT, Pixmap.Format.RGBA8888);
+        slotReelPixmap = PixmapProcessors.createDynamicVerticalFontText(fontSmall, reelLetterString, slotReelPixmap);
+        slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedVerticalText(slotReelPixmap, EndOfGameScreen.SCROLL_HEIGHT, reelLetterString, EndOfGameScreen.EXO_FONT_SMALL_SIZE, EndOfGameScreen.SCROLL_STEP);
+        Texture slotReelTexture = new Texture(slotReelPixmap);
+
+        for (int i = 0; i < reelLetterString.length(); i++) {
+            screenLetters.add(new ReelLetter(this, slotReelTexture, reelLetterString.length(), slotReelPixmap.getWidth() / EndOfGameScreen.REEL_SIZE_WIDTH, SIXTY_FPS, (i * EndOfGameScreen.TEXT_SPACING_SIZE) + posX, posY, i));
+        }
+    }
+
+    @Override
 	public void show() {
 		// TODO Auto-generated method stub
 		
