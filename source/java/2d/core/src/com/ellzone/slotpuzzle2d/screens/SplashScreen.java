@@ -298,6 +298,8 @@ public class SplashScreen implements Screen {
 			 	 			  break;
 			 	 case Keys.C: nextScreen = NextScreen.CREDITSSCREEN;
 			 	 			  break;
+				 case Keys.E: nextScreen = NextScreen.ENDOFGAMESCREEN;
+					          break;
 			 	 default: nextScreen = NextScreen.INTROSCREEN;
 			 	 			  break;
 			 }
