@@ -26,96 +26,116 @@ import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
+import com.ellzone.slotpuzzle2d.effects.ReelSpriteAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.sprites.ReelLetter;
+import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileScroll;
+import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.FileUtils;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
+import aurelienribon.tweenengine.equations.Bounce;
+import aurelienribon.tweenengine.equations.Elastic;
+import aurelienribon.tweenengine.equations.Back;
+import aurelienribon.tweenengine.equations.Quint;
+import aurelienribon.tweenengine.equations.Sine;
+
 
 public class IntroScreen implements Screen {
-	private static final int TEXT_SPACING_SIZE = 30;
-	private static final float SIXTY_FPS = 1/60f;
-	private static final int EXO_FONT_SMALL_SIZE = 24;
-	private static final int REEL_SIZE_WIDTH = 40;
-	private static final int REEL_SIZE_HEIGHT = 40;
-	private static final int SCROLL_STEP = 4;
-	private static final int SCROLL_HEIGHT = 20;
-	private static final String COPYRIGHT = "\u00a9";
-	private static final String SLOT_PUZZLE_REEL_TEXT = "Slot Puzzle";
-	private static final String BY_TEXT = "by";
-	private static final String AUTHOR_TEXT = "Mark Ellis";
-	private static final String COPYRIGHT_YEAR_AUTHOR_TEXT = COPYRIGHT + "2015 Mark Ellis";
-	
-	private SlotPuzzle game;
-	private Texture texture;
-	private Pixmap slotReelPixmap;
-	private Texture slotReelTexture;
-	private final OrthographicCamera camera = new OrthographicCamera();
-	private Viewport viewport;
-	private Stage stage;
-	private BitmapFont fontSmall;
-	private BitmapFont fontMedium;
-	private BitmapFont fontLarge;
-	private Array<ReelLetter> introScreenLetters;
-	private boolean endOfIntroScreen;
-	private TextButton button;
+    private static final int TEXT_SPACING_SIZE = 30;
+    private static final float SIXTY_FPS = 1 / 60f;
+    private static final int EXO_FONT_SMALL_SIZE = 24;
+    private static final int REEL_SIZE_WIDTH = 40;
+    private static final int REEL_SIZE_HEIGHT = 40;
+    private static final int SCROLL_STEP = 4;
+    private static final int SCROLL_HEIGHT = 20;
+    private static final String COPYRIGHT = "\u00a9";
+    private static final String SLOT_PUZZLE_REEL_TEXT = "Slot Puzzle";
+    private static final String BY_TEXT = "by";
+    private static final String AUTHOR_TEXT = "Mark Ellis";
+    private static final String COPYRIGHT_YEAR_AUTHOR_TEXT = COPYRIGHT + "2015 Mark Ellis";
+    private SlotPuzzle game;
+    private Texture texture;
+    private Pixmap slotReelPixmap;
+    private Texture slotReelTexture;
+    private final OrthographicCamera camera = new OrthographicCamera();
+    private Viewport viewport;
+    private Stage stage;
+    private BitmapFont fontSmall;
+    private BitmapFont fontMedium;
+    private BitmapFont fontLarge;
+    private Array<ReelLetter> introScreenLetters;
+    private boolean endOfIntroScreen;
+    private TextButton button;
     private TextButtonStyle textButtonStyle;
     private Skin skin;
     private TextureAtlas buttonAtlas;
-	private TweenManager tweenManager = new TweenManager();
-	
-	public IntroScreen(SlotPuzzle game) {
-		this.game = game;			
-		defineIntroScreen();
-	}
-	
-	void defineIntroScreen() {
-		viewport = new FillViewport(800, 480, new OrthographicCamera());
-		stage = new Stage(viewport, game.batch);
+    private TweenManager tweenManager = new TweenManager();
+    private Sprite cheesecake;
+    private Sprite cherry;
+    private Sprite grapes;
+    private Sprite jelly;
+    private Sprite lemon;
+    private Sprite peach;
+    private Sprite pear;
+    private Sprite tomato;
+    private Sprite[] sprites;
+    private ReelSlotTileScroll reelSlot;
+    private boolean isLoaded = false;
 
-		Tween.setWaypointsLimit(10);
-		Tween.setCombinedAttributesLimit(3);
-		Tween.registerAccessor(Sprite.class, new SpriteAccessor());
-        
-		SmartFontGenerator fontGen = new SmartFontGenerator();
-		FileHandle exoFileInternal = Gdx.files.internal("LiberationMono-Regular.ttf");
-		FileHandle generatedFontDir = Gdx.files.local("generated-fonts/");
-		generatedFontDir.mkdirs();
-		
-		FileHandle exoFile = Gdx.files.local("generated-fonts/LiberationMono-Regular.ttf");
-		
-		try {
-	        FileUtils.copyFile(exoFileInternal, exoFile);
-		} catch (IOException ex) {
-			Gdx.app.error(SlotPuzzle.SLOT_PUZZLE, "Could not copy " + exoFileInternal.file().getPath() + " to file " + exoFile.file().getAbsolutePath() + " " + ex.getMessage());
-		}
-		
-		fontSmall = fontGen.createFont(exoFile, "exo-small", 24);
-		fontMedium = fontGen.createFont(exoFile, "exo-medium", 48);
-		fontLarge = fontGen.createFont(exoFile, "exo-large", 64);
-		
-		ReelLetter.instanceCount = 0;
-		
-		if (Gdx.files.local("SlotPuzzleTextFontTile.png").exists()) {
-			texture = new Texture(Gdx.files.local("SlotPuzzleTextFontTile.png"));
-			Gdx.app.log(SlotPuzzle.SLOT_PUZZLE, "Loaded cached SlotPuzzleTextFontTile.png file.");
-				
-		} else {
+    public IntroScreen(SlotPuzzle game) {
+        this.game = game;
+        defineIntroScreen();
+    }
 
-			introScreenLetters = new Array<ReelLetter>();
+    void defineIntroScreen() {
+        viewport = new FitViewport(800, 480, camera);
+        stage = new Stage(viewport, game.batch);
 
-			createReelLetterString(IntroScreen.SLOT_PUZZLE_REEL_TEXT, introScreenLetters, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + IntroScreen.TEXT_SPACING_SIZE + 10);
-			createReelLetterString(IntroScreen.BY_TEXT, introScreenLetters, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + IntroScreen.TEXT_SPACING_SIZE + 10);
-			createReelLetterString(IntroScreen.AUTHOR_TEXT, introScreenLetters, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + IntroScreen.TEXT_SPACING_SIZE + 10);
-			createReelLetterString(IntroScreen.COPYRIGHT_YEAR_AUTHOR_TEXT, introScreenLetters, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + IntroScreen.TEXT_SPACING_SIZE + 10);
-		}
+        Tween.setWaypointsLimit(10);
+        Tween.setCombinedAttributesLimit(3);
+        Tween.registerAccessor(Sprite.class, new SpriteAccessor());
+        Tween.registerAccessor(ReelSlotTileScroll.class, new ReelSpriteAccessor());
 
-		endOfIntroScreen = false;	
-		Gdx.input.setInputProcessor(stage);
-		skin = new Skin();
+        SmartFontGenerator fontGen = new SmartFontGenerator();
+        FileHandle exoFileInternal = Gdx.files.internal("LiberationMono-Regular.ttf");
+        FileHandle generatedFontDir = Gdx.files.local("generated-fonts/");
+        generatedFontDir.mkdirs();
+
+        FileHandle exoFile = Gdx.files.local("generated-fonts/LiberationMono-Regular.ttf");
+
+        try {
+            FileUtils.copyFile(exoFileInternal, exoFile);
+        } catch (IOException ex) {
+            Gdx.app.error(SlotPuzzle.SLOT_PUZZLE, "Could not copy " + exoFileInternal.file().getPath() + " to file " + exoFile.file().getAbsolutePath() + " " + ex.getMessage());
+        }
+
+        fontSmall = fontGen.createFont(exoFile, "exo-small", 24);
+        fontMedium = fontGen.createFont(exoFile, "exo-medium", 48);
+        fontLarge = fontGen.createFont(exoFile, "exo-large", 64);
+
+        ReelLetter.instanceCount = 0;
+
+        if (Gdx.files.local("SlotPuzzleTextFontTile.png").exists()) {
+            texture = new Texture(Gdx.files.local("SlotPuzzleTextFontTile.png"));
+            Gdx.app.log(SlotPuzzle.SLOT_PUZZLE, "Loaded cached SlotPuzzleTextFontTile.png file.");
+
+        } else {
+
+            introScreenLetters = new Array<ReelLetter>();
+
+            createReelLetterString(IntroScreen.SLOT_PUZZLE_REEL_TEXT, introScreenLetters, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + IntroScreen.TEXT_SPACING_SIZE + 10);
+            createReelLetterString(IntroScreen.BY_TEXT, introScreenLetters, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + IntroScreen.TEXT_SPACING_SIZE + 10);
+            createReelLetterString(IntroScreen.AUTHOR_TEXT, introScreenLetters, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + IntroScreen.TEXT_SPACING_SIZE + 10);
+            createReelLetterString(IntroScreen.COPYRIGHT_YEAR_AUTHOR_TEXT, introScreenLetters, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + IntroScreen.TEXT_SPACING_SIZE + 10);
+        }
+
+        endOfIntroScreen = false;
+        Gdx.input.setInputProcessor(stage);
+        skin = new Skin();
         buttonAtlas = new TextureAtlas(Gdx.files.internal("ui/ui-blue.atlas"));
         skin.addRegions(buttonAtlas);
         textButtonStyle = new TextButtonStyle();
@@ -126,14 +146,14 @@ public class IntroScreen implements Screen {
         button = new TextButton("                  ", textButtonStyle);
         button.addListener(new ChangeListener() {
             @Override
-            public void changed (ChangeEvent event, Actor actor) {
-    			endOfIntroScreen = true;
+            public void changed(ChangeEvent event, Actor actor) {
+                endOfIntroScreen = true;
             }
         });
-        
+
         Label.LabelStyle font = new Label.LabelStyle(fontSmall, Color.WHITE);
         Label buttonPressLabel = new Label("LAUNCH", font);
-        
+
         Table table = new Table();
         table.bottom();
         table.setFillParent(true);
@@ -143,120 +163,154 @@ public class IntroScreen implements Screen {
 
         stage.addActor(table);
         viewport.update(800, 480);
-        
+
         Timeline introSeq = Timeline.createSequence();
-        
+
         for (int i = 0; i < introScreenLetters.size; i++) {
-        	introSeq = introSeq.push(Tween.set(introScreenLetters.get(i), SpriteAccessor.POS_XY).target(-40f, -20f + i *20f));
+            introSeq = introSeq.push(Tween.set(introScreenLetters.get(i), SpriteAccessor.POS_XY).target(-40f, -20f + i * 20f));
         }
-        
-		introSeq = introSeq.pushPause(1.0f);
+
+        introSeq = introSeq.pushPause(1.0f);
 
         for (int i = 0; i < SLOT_PUZZLE_REEL_TEXT.length(); i++) {
-        	introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.4f).target(250f + i * 30f, 280f));
+            introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.4f).target(250f + i * 30f, 280f));
         }
 
         int startOfText = SLOT_PUZZLE_REEL_TEXT.length();
         int endOfText = SLOT_PUZZLE_REEL_TEXT.length() + BY_TEXT.length();
         for (int i = startOfText; i < endOfText; i++) {
-        	introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.4f).target(60f + i * 30f, 240f));
+            introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.4f).target(60f + i * 30f, 240f));
         }
 
         startOfText = endOfText;
         endOfText = startOfText + AUTHOR_TEXT.length();
         for (int i = startOfText; i < endOfText; i++) {
-        	introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.4f).target(-120f + i * 30f, 200f));
+            introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.4f).target(-120f + i * 30f, 200f));
         }
-        
+
         startOfText = endOfText;
-        endOfText = startOfText + COPYRIGHT_YEAR_AUTHOR_TEXT.length(); 
+        endOfText = startOfText + COPYRIGHT_YEAR_AUTHOR_TEXT.length();
         for (int i = startOfText; i < endOfText; i++) {
-        	introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.4f).target(-520f + i * 30f, 90f));
+            introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.4f).target(-520f + i * 30f, 90f));
         }
+
+        Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
+        Assets.inst().update();
+        Assets.inst().finishLoading();
+        isLoaded = true;
+
+        TextureAtlas atlas = Assets.inst().get("reel/reels.pack.atlas", TextureAtlas.class);
+        cherry = atlas.createSprite("cherry");
+        cheesecake = atlas.createSprite("cheesecake");
+        grapes = atlas.createSprite("grapes");
+        jelly = atlas.createSprite("jelly");
+        lemon = atlas.createSprite("lemon");
+        peach = atlas.createSprite("peach");
+        pear = atlas.createSprite("pear");
+        tomato = atlas.createSprite("tomato");
+
+        sprites = new Sprite[]{cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
+        for (Sprite sprite : sprites) {
+            sprite.setOrigin(0, 0);
+        }
+
+        slotReelPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
+        slotReelPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
+        slotReelTexture = new Texture(slotReelPixmap);
+
+        reelSlot = new ReelSlotTileScroll(slotReelTexture, slotReelTexture.getWidth(), slotReelTexture.getHeight(), 32, 32, 0, IntroScreen.SIXTY_FPS);
+
+        Timeline reelSeq = Timeline.createSequence();
+        reelSeq = reelSeq.push(Tween.set(reelSlot, ReelSpriteAccessor.SCROLL_XY).target(0f, 0f).ease(Bounce.IN));
+        reelSeq = reelSeq.push(Tween.to(reelSlot, ReelSpriteAccessor.SCROLL_XY, 5.0f).target(0f, 1000f).ease(Elastic.OUT));
 
         introSeq = introSeq
-			.pushPause(0.3f)
-			.start(tweenManager);
-	}
+                .start(tweenManager);
 
-	private void createReelLetterString(String reelLetterString, Array<ReelLetter> screenLetters, float posX, float posY) {
-		Pixmap slotReelPixmap = new Pixmap(IntroScreen.REEL_SIZE_WIDTH, reelLetterString.length() * IntroScreen.REEL_SIZE_HEIGHT, Pixmap.Format.RGBA8888);
-		slotReelPixmap = PixmapProcessors.createDynamicVerticalFontText(fontSmall, reelLetterString, slotReelPixmap);
-		slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedVerticalText(slotReelPixmap, IntroScreen.SCROLL_HEIGHT, reelLetterString, IntroScreen.EXO_FONT_SMALL_SIZE, IntroScreen.SCROLL_STEP);
-		Texture slotReelTexture = new Texture(slotReelPixmap);
+        reelSeq = reelSeq.
+                repeat(100, 0.0f).
+                start(tweenManager);
+    }
 
-		for (int i = 0; i < reelLetterString.length(); i++) {
-			introScreenLetters.add(new ReelLetter(this, slotReelTexture, reelLetterString.length(), slotReelPixmap.getWidth() / IntroScreen.REEL_SIZE_WIDTH, SIXTY_FPS, (i * IntroScreen.TEXT_SPACING_SIZE) + posX, posY, i));
-		}
-	}
-		
-	@Override
-	public void show() {
-		// TODO Auto-generated method stub
-	}
-	
-	public void update(float dt) {
-		tweenManager.update(dt);
-		for(ReelLetter reel : introScreenLetters) {
-			reel.update(dt);
-		}
-		if (ReelLetter.instanceCount == 0 | endOfIntroScreen) {
-			game.setScreen(new PlayScreen(game));
-			dispose();
-		}
-	}
+    private void createReelLetterString(String reelLetterString, Array<ReelLetter> screenLetters, float posX, float posY) {
+        Pixmap slotReelPixmap = new Pixmap(IntroScreen.REEL_SIZE_WIDTH, reelLetterString.length() * IntroScreen.REEL_SIZE_HEIGHT, Pixmap.Format.RGBA8888);
+        slotReelPixmap = PixmapProcessors.createDynamicVerticalFontText(fontSmall, reelLetterString, slotReelPixmap);
+        slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedVerticalText(slotReelPixmap, IntroScreen.SCROLL_HEIGHT, reelLetterString, IntroScreen.EXO_FONT_SMALL_SIZE, IntroScreen.SCROLL_STEP);
+        Texture slotReelTexture = new Texture(slotReelPixmap);
 
-	@Override
-	public void render(float delta) {
-		update(delta);
-		
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        for (int i = 0; i < reelLetterString.length(); i++) {
+            introScreenLetters.add(new ReelLetter(this, slotReelTexture, reelLetterString.length(), slotReelPixmap.getWidth() / IntroScreen.REEL_SIZE_WIDTH, SIXTY_FPS, (i * IntroScreen.TEXT_SPACING_SIZE) + posX, posY, i));
+        }
+    }
 
-		game.batch.begin();
-		for (ReelLetter reel : introScreenLetters) {
-			reel.draw(game.batch);
-		}
-		game.batch.end();
-		stage.draw();
-	}
+    public void update(float dt) {
+        tweenManager.update(dt);
+        for (ReelLetter reel : introScreenLetters) {
+            reel.update(dt);
+        }
+        reelSlot.update(dt);
+        if (ReelLetter.instanceCount == 0 | endOfIntroScreen) {
+            game.setScreen(new PlayScreen(game));
+            dispose();
+        }
+    }
 
-	@Override
-	public void resize(int width, int height) {
-		viewport.update(width,  height);
-		fontSmall.newFontCache();
-	}
+    @Override
+    public void render(float delta) {
+        update(delta);
 
-	@Override
-	public void pause() {
-		// TODO Auto-generated method stub
-		
-	}
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-	@Override
-	public void resume() {
-		// TODO Auto-generated method stub
-		
-	}
+        if (isLoaded) {
+            game.batch.begin();
+            for (ReelLetter reel : introScreenLetters) {
+                reel.draw(game.batch);
+            }
+            reelSlot.draw(game.batch);
+            game.batch.end();
+            stage.draw();
+        }
+    }
 
-	@Override
-	public void hide() {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height);
+        fontSmall.newFontCache();
+    }
 
-	@Override
-	public void dispose() {
-		if (tweenManager != null) tweenManager.killAll();
-		if (slotReelPixmap != null) slotReelPixmap.dispose();
-		if (slotReelTexture != null) slotReelTexture.dispose();
-		if (texture != null) texture.dispose();
-		if (fontSmall != null) fontSmall.dispose();
-		if (fontMedium != null) fontMedium.dispose();
-		if (fontLarge != null) fontLarge.dispose();
-	}
-	
-	public SlotPuzzle getGame() {
-		return this.game;
-	}
+    @Override
+    public void show() {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void pause() {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void resume() {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void hide() {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void dispose() {
+        if (tweenManager != null) tweenManager.killAll();
+        if (slotReelPixmap != null) slotReelPixmap.dispose();
+        if (slotReelTexture != null) slotReelTexture.dispose();
+        if (texture != null) texture.dispose();
+        if (fontSmall != null) fontSmall.dispose();
+        if (fontMedium != null) fontMedium.dispose();
+        if (fontLarge != null) fontLarge.dispose();
+    }
+
+    public SlotPuzzle getGame() {
+        return this.game;
+    }
 }
