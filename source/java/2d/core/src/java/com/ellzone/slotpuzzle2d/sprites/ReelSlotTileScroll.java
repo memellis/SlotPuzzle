@@ -38,17 +38,20 @@ public class ReelSlotTileScroll extends Sprite {
         this.flashing = false;
         setPosition(this.x, this.y);
         setOrigin(this.x, this.y);
-        setBounds(this.x, this.y, 32, 32);
+        setBounds(this.x, this.y, texture.getWidth(), 32);
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         region = new TextureRegion(texture);
-        region.setRegion(0, 0, 32, 32);
+        region.setRegion(0, 0, texture.getWidth(), 32);
         setRegion(region);
+        System.out.println(texture.getWidth());
     }
 
     public void update(float dt) {
-        float syModulus = sy % texture.getHeight();
-        region.setRegion((int) sx, (int) syModulus, 32, 32);
-        setRegion(region);
+        if(spinning) {
+            float syModulus = sy % texture.getHeight();
+            region.setRegion((int) sx, (int) syModulus, texture.getWidth(), 32);
+            setRegion(region);
+        }
     }
 
     public int getEndReel() {
