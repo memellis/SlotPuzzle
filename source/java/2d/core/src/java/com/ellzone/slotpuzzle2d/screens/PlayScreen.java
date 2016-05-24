@@ -27,6 +27,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
+import com.ellzone.slotpuzzle2d.effects.ReelSpriteAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGridType;
 import com.ellzone.slotpuzzle2d.puzzlegrid.TupleValueIndex;
@@ -34,6 +35,7 @@ import com.ellzone.slotpuzzle2d.sprites.ReelLetter;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTile;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileEvent;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileListener;
+import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileScroll;
 import com.ellzone.slotpuzzle2d.sprites.ReelStoppedFlashingReelSlotTileEvent;
 import com.ellzone.slotpuzzle2d.sprites.ReelStoppedSpinningReelSlotTileEvent;
 import com.ellzone.slotpuzzle2d.utils.Assets;
@@ -41,6 +43,8 @@ import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
+import aurelienribon.tweenengine.equations.Bounce;
+import aurelienribon.tweenengine.equations.Elastic;
 
 @SuppressWarnings("unused")
 public class PlayScreen implements Screen {
@@ -66,8 +70,8 @@ public class PlayScreen implements Screen {
 	private Sprite tomato;
  	private final TweenManager tweenManager = new TweenManager();
 	private boolean isLoaded = false;
-	private Pixmap slotReelPixmap;
-	private Texture slotReelTexture;
+	private Pixmap slotReelPixmap, slotReelScrollPixmap;
+	private Texture slotReelTexture, slotReelScrollTexture;
 	private Array<ReelSlotTile> slotReels;
 	private Array<ReelSlotTile> levelReelSlotTiles;
 	private TmxMapLoader mapLoader;
@@ -81,8 +85,9 @@ public class PlayScreen implements Screen {
 	private boolean displaySpinHelp;
 	private int displaySpinHelpSprite;
 	private Sprite[] sprites;
-	
-	public PlayScreen(SlotPuzzle game) {
+    private ReelSlotTileScroll reelSlot;
+
+    public PlayScreen(SlotPuzzle game) {
 		this.game = game;
 		createPlayScreen();		
 	}
@@ -92,6 +97,7 @@ public class PlayScreen implements Screen {
 		Tween.setWaypointsLimit(10);
 		Tween.setCombinedAttributesLimit(3);
 		Tween.registerAccessor(Sprite.class, new SpriteAccessor());
+		Tween.registerAccessor(ReelSlotTileScroll.class, new ReelSpriteAccessor());
 
 		viewport = new FitViewport(800, 480, camera);
         stage = new Stage(viewport, game.batch);
@@ -178,7 +184,18 @@ public class PlayScreen implements Screen {
 			sequence = sequence.push(Tween.to(levelReelSlotTiles.get(i), SpriteAccessor.POS_XY, 0.2f).target(levelReelSlotTiles.get(i).getX(), levelReelSlotTiles.get(i).getY()));
 		}		
 		sequence = sequence.pushPause(0.3f).start(tweenManager);
-		
+
+        slotReelScrollPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
+        slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
+        slotReelScrollTexture = new Texture(slotReelScrollPixmap);
+        reelSlot = new ReelSlotTileScroll(slotReelScrollTexture, slotReelTexture.getWidth(), slotReelTexture.getHeight(), 32, 32, 0, PlayScreen.SIXTY_FPS);
+		Timeline reelSeq = Timeline.createSequence();
+        reelSeq = reelSeq.push(Tween.set(reelSlot, ReelSpriteAccessor.SCROLL_XY).target(0f, 0f).ease(Bounce.IN));
+        reelSeq = reelSeq.push(Tween.to(reelSlot, ReelSpriteAccessor.SCROLL_XY, 5.0f).target(0f, 1000f).ease(Elastic.OUT));
+        reelSeq = reelSeq.
+                repeat(100, 0.0f).
+                start(tweenManager);
+
         if (gameOver) {
         	Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
 
@@ -315,6 +332,7 @@ public class PlayScreen implements Screen {
 		for (ReelSlotTile reel : levelReelSlotTiles) {
 			reel.update(delta);
 		}
+        reelSlot.update(delta);
 		renderer.setView(camera);
 		if (gameOver) {
 			dispose();
@@ -336,7 +354,8 @@ public class PlayScreen implements Screen {
 					reel.draw(game.batch);
 				}
 			}
-			if(displaySpinHelp) {
+            reelSlot.draw(game.batch);
+            if(displaySpinHelp) {
 				sprites[displaySpinHelpSprite].draw(game.batch);
 			}
 			game.batch.end();
