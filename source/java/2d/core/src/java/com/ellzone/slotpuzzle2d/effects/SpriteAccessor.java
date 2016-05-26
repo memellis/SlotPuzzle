@@ -11,6 +11,7 @@ public class SpriteAccessor implements TweenAccessor<Sprite> {
 	public static final int ROTATION = 4;
 	public static final int OPACITY = 5;
 	public static final int TINT = 6;
+	public static final int SCROLL_XY = 7;
 
 	@Override
 	public int getValues(Sprite target, int tweenType, float[] returnValues) {
@@ -61,6 +62,8 @@ public class SpriteAccessor implements TweenAccessor<Sprite> {
 				c.set(newValues[0], newValues[1], newValues[2], c.a);
 				target.setColor(c);
 				break;
+            case SCROLL_XY:
+                target.setPosition(newValues[0], newValues[2]); break;
 
 			default: assert false;
 		}
