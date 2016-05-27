@@ -172,7 +172,23 @@ public class PixmapProcessors {
 		}		
 		return scrollAnimatedVerticalText;
 	}
-	
+
+
+    public static Pixmap createPixmapToAnimate(Sprite[] sprites) {
+        Pixmap pixmap = getPixmapFromSprite(sprites[0]);
+        Pixmap pixmapToAnimate = new Pixmap(pixmap.getWidth(), pixmap.getHeight() * sprites.length, pixmap.getFormat());
+
+        for (int i = 0; i < sprites.length; i++) {
+            pixmap = getPixmapFromSprite(sprites[i]);
+            PixmapProcessors.copyPixmapHorizontally(pixmap, pixmapToAnimate, (int) i * pixmap.getHeight());
+        }
+
+        Pixmap scrolledPixmap = new Pixmap(pixmapToAnimate.getWidth(), pixmapToAnimate.getHeight(), pixmapToAnimate.getFormat());
+        PixmapProcessors.copyPixmapVertically(pixmapToAnimate, scrolledPixmap, 0);
+
+        return pixmapToAnimate;
+    }
+
 	public static Pixmap createDynamicScrollAnimatedPixmap(Sprite[] sprites, int scrollStep) {
 		Pixmap pixmap = getPixmapFromSprite(sprites[0]);
 		Pixmap pixmapToAnimate = new Pixmap(pixmap.getWidth(), pixmap.getHeight() * sprites.length, pixmap.getFormat());
