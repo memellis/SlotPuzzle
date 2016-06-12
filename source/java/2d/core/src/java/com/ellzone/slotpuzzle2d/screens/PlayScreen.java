@@ -205,24 +205,7 @@ public class PlayScreen implements Screen {
         tween = SlotPuzzleTween.to(reelSlot, ReelSpriteAccessor.SCROLL_XY, 20.0f) .target(0,  2560 + reelSlot.getEndReel() * 32) .ease(Sine.OUT).setCallback(new TweenCallback() {
             @Override
             public void onEvent(int type, BaseTween<?> source) {
-                switch (type){
-                    case TweenCallback.ANY: System.out.println("ANY"); break;
-                    case TweenCallback.ANY_BACKWARD: System.out.println("ANY_BACKWARD"); break;
-                    case TweenCallback.ANY_FORWARD: System.out.println("ANY_FORWARD"); break;
-                    case TweenCallback.BACK_BEGIN: System.out.println("BACK_BEGIN"); break;
-                    case TweenCallback.BACK_COMPLETE: System.out.println("BACK_COMPLETE"); break;
-                    case TweenCallback.BACK_START: System.out.println("BACK_START"); break;
-                    case TweenCallback.COMPLETE: System.out.println("COMPLETE"); break;
-                    case TweenCallback.END:
-                        ReelSpriteAccessor accessor = (ReelSpriteAccessor) tween.getAccessor();
-                        if (accessor != null) {
-                            int size = accessor.getValues(reelSlot, ReelSpriteAccessor.SCROLL_XY, returnValues);
-                        }
-                    case TweenCallback.START:
-                        break;
-                    case TweenCallback.STEP: //System.out.println(source.getUserData());
-                        break;
-                }
+               delegateTweenOnEvent(type, source);
             }
         }) .setCallbackTriggers(TweenCallback.STEP + TweenCallback.END)
            .start(tweenManager);
@@ -306,25 +289,7 @@ public class PlayScreen implements Screen {
                     tween = SlotPuzzleTween.to(reelSlot, ReelSpriteAccessor.SCROLL_XY, 20.0f) .target(0,  returnValues[1] + (2560 - returnValues[1] % 2560) + reelSlot.getEndReel() * 32) .ease(Sine.OUT).setCallback(new TweenCallback() {
                         @Override
                         public void onEvent(int type, BaseTween<?> source) {
-                            switch (type){
-                                case TweenCallback.ANY: System.out.println("ANY"); break;
-                                case TweenCallback.ANY_BACKWARD: System.out.println("ANY_BACKWARD"); break;
-                                case TweenCallback.ANY_FORWARD: System.out.println("ANY_FORWARD"); break;
-                                case TweenCallback.BACK_BEGIN: System.out.println("BACK_BEGIN"); break;
-                                case TweenCallback.BACK_COMPLETE: System.out.println("BACK_COMPLETE"); break;
-                                case TweenCallback.BACK_START: System.out.println("BACK_START"); break;
-                                case TweenCallback.COMPLETE: System.out.println("COMPLETE"); break;
-                                case TweenCallback.END:
-                                    ReelSpriteAccessor accessor = (ReelSpriteAccessor) tween.getAccessor();
-                                    if (accessor != null) {
-                                        int size = accessor.getValues(reelSlot, ReelSpriteAccessor.SCROLL_XY, returnValues);
-                                    } else {
-                                        System.out.println("null!");
-                                    }
-                                    break;
-                                case TweenCallback.START: System.out.println("START"); break;
-                                case TweenCallback.STEP: break;
-                            }
+                            delegateTweenOnEvent(type, source);
                         }
                     }) .setCallbackTriggers(TweenCallback.END)
                             .start(tweenManager);
@@ -333,7 +298,7 @@ public class PlayScreen implements Screen {
                         tweenClicked = true;
                         reelSlot.setEndReel();
                         tween = tween.target(0, returnValues[1] + (1280 - (returnValues[1] % 1280)) + reelSlot.getEndReel() * 32);
-                        tween = tween.setDuration((tween.getDuration() - tween.getCurrentTime()) / 1.25f);
+                        tween = tween.setDuration((tween.getDuration() - tween.getCurrentTime()));
                         tween.start();
                     }
                 }
@@ -364,6 +329,28 @@ public class PlayScreen implements Screen {
 			}
 		}
 	}
+
+    private void delegateTweenOnEvent(int type, BaseTween<?> source) {
+        switch (type){
+            case TweenCallback.ANY: System.out.println("ANY"); break;
+            case TweenCallback.ANY_BACKWARD: System.out.println("ANY_BACKWARD"); break;
+            case TweenCallback.ANY_FORWARD: System.out.println("ANY_FORWARD"); break;
+            case TweenCallback.BACK_BEGIN: System.out.println("BACK_BEGIN"); break;
+            case TweenCallback.BACK_COMPLETE: System.out.println("BACK_COMPLETE"); break;
+            case TweenCallback.BACK_START: System.out.println("BACK_START"); break;
+            case TweenCallback.COMPLETE: System.out.println("COMPLETE"); break;
+            case TweenCallback.END:
+                ReelSpriteAccessor accessor = (ReelSpriteAccessor) tween.getAccessor();
+                if (accessor != null) {
+                    int size = accessor.getValues(reelSlot, ReelSpriteAccessor.SCROLL_XY, returnValues);
+                } else {
+                    System.out.println("null!");
+                }
+                break;
+            case TweenCallback.START: System.out.println("START"); break;
+            case TweenCallback.STEP: break;
+        }
+    }
 	
 	private boolean hiddenPatternRevealed(TupleValueIndex[][] grid) {
 		boolean hiddenPattern = true;
