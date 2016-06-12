@@ -43,7 +43,6 @@ public class ReelSlotTileScroll extends Sprite {
         region = new TextureRegion(texture);
         region.setRegion(0, 0, texture.getWidth(), 32);
         setRegion(region);
-        System.out.println(texture.getWidth());
     }
 
     public void update(float dt) {
@@ -88,6 +87,11 @@ public class ReelSlotTileScroll extends Sprite {
 
     public void setSY(float sy) {
         this.sy = sy;
+    }
+
+    public void setEndReel() {
+        float syModulus = sy % texture.getHeight();
+        this.endReel = (int) syModulus / 32;
     }
 
     private void savePixmap(Pixmap pixmap, String pixmapFileName) {
