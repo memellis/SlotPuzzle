@@ -17,6 +17,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -31,7 +32,6 @@ import com.ellzone.slotpuzzle2d.effects.ReelSpriteAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGridType;
 import com.ellzone.slotpuzzle2d.puzzlegrid.TupleValueIndex;
-import com.ellzone.slotpuzzle2d.sprites.ReelLetter;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTile;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileEvent;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileListener;
@@ -40,11 +40,17 @@ import com.ellzone.slotpuzzle2d.sprites.ReelStoppedFlashingReelSlotTileEvent;
 import com.ellzone.slotpuzzle2d.sprites.ReelStoppedSpinningReelSlotTileEvent;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
-import aurelienribon.tweenengine.Timeline;
-import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.TweenManager;
+import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
+import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
+import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
+import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
+import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
+
 import aurelienribon.tweenengine.equations.Bounce;
 import aurelienribon.tweenengine.equations.Elastic;
+import aurelienribon.tweenengine.equations.Quad;
+import aurelienribon.tweenengine.equations.Quint;
+import aurelienribon.tweenengine.equations.Sine;
 
 @SuppressWarnings("unused")
 public class PlayScreen implements Screen {
@@ -86,6 +92,9 @@ public class PlayScreen implements Screen {
 	private int displaySpinHelpSprite;
 	private Sprite[] sprites;
     private ReelSlotTileScroll reelSlot;
+    private SlotPuzzleTween tween;
+    private float returnValues[] = new float[2];
+    private boolean tweenClicked = false;
 
     public PlayScreen(SlotPuzzle game) {
 		this.game = game;
@@ -94,10 +103,10 @@ public class PlayScreen implements Screen {
 	
 	private void createPlayScreen() {
 		random = new Random();
-		Tween.setWaypointsLimit(10);
-		Tween.setCombinedAttributesLimit(3);
-		Tween.registerAccessor(Sprite.class, new SpriteAccessor());
-		Tween.registerAccessor(ReelSlotTileScroll.class, new ReelSpriteAccessor());
+		SlotPuzzleTween.setWaypointsLimit(10);
+		SlotPuzzleTween.setCombinedAttributesLimit(3);
+		SlotPuzzleTween.registerAccessor(Sprite.class, new SpriteAccessor());
+		SlotPuzzleTween.registerAccessor(ReelSlotTileScroll.class, new ReelSpriteAccessor());
 
 		viewport = new FitViewport(800, 480, camera);
         stage = new Stage(viewport, game.batch);
@@ -177,24 +186,46 @@ public class PlayScreen implements Screen {
 
         Timeline sequence = Timeline.createSequence();
 		for(int i=0; i < levelReelSlotTiles.size; i++) {
-			sequence = sequence.push(Tween.set(levelReelSlotTiles.get(i), SpriteAccessor.POS_XY).target(-60f, -20f + 32*i));
+			sequence = sequence.push(SlotPuzzleTween.set(levelReelSlotTiles.get(i), SpriteAccessor.POS_XY).target(-60f, -20f + 32*i));
 		}
 		sequence = sequence.pushPause(0.5f);
 		for(int i = 0; i < levelReelSlotTiles.size; i++) {
-			sequence = sequence.push(Tween.to(levelReelSlotTiles.get(i), SpriteAccessor.POS_XY, 0.2f).target(levelReelSlotTiles.get(i).getX(), levelReelSlotTiles.get(i).getY()));
+			sequence = sequence.push(SlotPuzzleTween.to(levelReelSlotTiles.get(i), SpriteAccessor.POS_XY, 0.2f).target(levelReelSlotTiles.get(i).getX(), levelReelSlotTiles.get(i).getY()));
 		}		
 		sequence = sequence.pushPause(0.3f).start(tweenManager);
 
         slotReelScrollPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-        reelSlot = new ReelSlotTileScroll(slotReelScrollTexture, slotReelTexture.getWidth(), slotReelTexture.getHeight(), 32, 32, 0, PlayScreen.SIXTY_FPS);
-		Timeline reelSeq = Timeline.createSequence();
-        reelSeq = reelSeq.push(Tween.set(reelSlot, ReelSpriteAccessor.SCROLL_XY).target(0f, 0f).ease(Bounce.IN));
-        reelSeq = reelSeq.push(Tween.to(reelSlot, ReelSpriteAccessor.SCROLL_XY, 5.0f).target(0f, 1000f).ease(Elastic.OUT));
-        reelSeq = reelSeq.
-                repeat(100, 0.0f).
-                start(tweenManager);
+        reelSlot = new ReelSlotTileScroll(slotReelScrollTexture, slotReelTexture.getWidth(), slotReelTexture.getHeight(), 0, 32, 0, PlayScreen.SIXTY_FPS);
+        reelSlot.setX(0);
+        reelSlot.setY(32);
+        reelSlot.setEndReel(random.nextInt(sprites.length));
+
+        tween = SlotPuzzleTween.to(reelSlot, ReelSpriteAccessor.SCROLL_XY, 20.0f) .target(0,  2560 + reelSlot.getEndReel() * 32) .ease(Sine.OUT).setCallback(new TweenCallback() {
+            @Override
+            public void onEvent(int type, BaseTween<?> source) {
+                switch (type){
+                    case TweenCallback.ANY: System.out.println("ANY"); break;
+                    case TweenCallback.ANY_BACKWARD: System.out.println("ANY_BACKWARD"); break;
+                    case TweenCallback.ANY_FORWARD: System.out.println("ANY_FORWARD"); break;
+                    case TweenCallback.BACK_BEGIN: System.out.println("BACK_BEGIN"); break;
+                    case TweenCallback.BACK_COMPLETE: System.out.println("BACK_COMPLETE"); break;
+                    case TweenCallback.BACK_START: System.out.println("BACK_START"); break;
+                    case TweenCallback.COMPLETE: System.out.println("COMPLETE"); break;
+                    case TweenCallback.END:
+                        ReelSpriteAccessor accessor = (ReelSpriteAccessor) tween.getAccessor();
+                        if (accessor != null) {
+                            int size = accessor.getValues(reelSlot, ReelSpriteAccessor.SCROLL_XY, returnValues);
+                        }
+                    case TweenCallback.START:
+                        break;
+                    case TweenCallback.STEP: //System.out.println(source.getUserData());
+                        break;
+                }
+            }
+        }) .setCallbackTriggers(TweenCallback.STEP + TweenCallback.END)
+           .start(tweenManager);
 
         if (gameOver) {
         	Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
@@ -264,10 +295,53 @@ public class PlayScreen implements Screen {
 
 	public void handleInput(float dt) {
 		if (Gdx.input.justTouched()) {
+            touchX = Gdx.input.getX();
+            touchY = Gdx.input.getY();
+            Vector2 newPoints1 = new Vector2(touchX, touchY);
+            newPoints1 = viewport.unproject(newPoints1);
+            if ((newPoints1.x >= 0) & (newPoints1.x <= 32) & (newPoints1.y >= 32) & (newPoints1.y <= 64)) {
+                if (tween.getCurrentTime() == 0) {
+                    tweenClicked = false;
+                    reelSlot.setEndReel(random.nextInt(sprites.length));
+                    tween = SlotPuzzleTween.to(reelSlot, ReelSpriteAccessor.SCROLL_XY, 20.0f) .target(0,  returnValues[1] + (2560 - returnValues[1] % 2560) + reelSlot.getEndReel() * 32) .ease(Sine.OUT).setCallback(new TweenCallback() {
+                        @Override
+                        public void onEvent(int type, BaseTween<?> source) {
+                            switch (type){
+                                case TweenCallback.ANY: System.out.println("ANY"); break;
+                                case TweenCallback.ANY_BACKWARD: System.out.println("ANY_BACKWARD"); break;
+                                case TweenCallback.ANY_FORWARD: System.out.println("ANY_FORWARD"); break;
+                                case TweenCallback.BACK_BEGIN: System.out.println("BACK_BEGIN"); break;
+                                case TweenCallback.BACK_COMPLETE: System.out.println("BACK_COMPLETE"); break;
+                                case TweenCallback.BACK_START: System.out.println("BACK_START"); break;
+                                case TweenCallback.COMPLETE: System.out.println("COMPLETE"); break;
+                                case TweenCallback.END:
+                                    ReelSpriteAccessor accessor = (ReelSpriteAccessor) tween.getAccessor();
+                                    if (accessor != null) {
+                                        int size = accessor.getValues(reelSlot, ReelSpriteAccessor.SCROLL_XY, returnValues);
+                                    } else {
+                                        System.out.println("null!");
+                                    }
+                                    break;
+                                case TweenCallback.START: System.out.println("START"); break;
+                                case TweenCallback.STEP: break;
+                            }
+                        }
+                    }) .setCallbackTriggers(TweenCallback.END)
+                            .start(tweenManager);
+                } else {
+                    if ((tween.getCurrentTime() < tween.getDuration() / 2.0f) & (!tweenClicked)) {
+                        tweenClicked = true;
+                        reelSlot.setEndReel();
+                        tween = tween.target(0, returnValues[1] + (1280 - (returnValues[1] % 1280)) + reelSlot.getEndReel() * 32);
+                        tween = tween.setDuration((tween.getDuration() - tween.getCurrentTime()) / 1.25f);
+                        tween.start();
+                    }
+                }
+            }
 			if (initialFlashingStopped){
 				touchX = Gdx.input.getX();
 				touchY = Gdx.input.getY();
-				Vector2 newPoints = new Vector2(touchX, touchY);
+  				Vector2 newPoints = new Vector2(touchX, touchY);
 				newPoints = viewport.unproject(newPoints);
 				int c = (int) (newPoints.x - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
 				int r = (int) (newPoints.y - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
