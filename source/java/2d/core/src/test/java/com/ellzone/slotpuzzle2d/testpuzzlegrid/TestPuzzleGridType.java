@@ -1,6 +1,5 @@
-package com.ellzone.slotpuzzle2d.tesrpuzzlegrid;
+package com.ellzone.slotpuzzle2d.testpuzzlegrid;
 
-import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGrid;
 import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGridType;
 import com.ellzone.slotpuzzle2d.puzzlegrid.TupleValueIndex;
 
