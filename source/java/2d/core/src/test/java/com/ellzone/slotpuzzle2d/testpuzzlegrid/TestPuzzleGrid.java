@@ -1,4 +1,4 @@
-package com.ellzone.slotpuzzle2d.tesrpuzzlegrid;
+package com.ellzone.slotpuzzle2d.testpuzzlegrid;
 
 import static org.junit.Assert.*;
 
