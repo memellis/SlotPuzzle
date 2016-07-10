@@ -94,7 +94,6 @@ public class TweenGraphsScreen implements Screen {
         }
     }
 
-
     private DrawTweenGraphs game;
     PerspectiveCamera cam;
     private Sprite cheesecake;
@@ -292,7 +291,6 @@ public class TweenGraphsScreen implements Screen {
     private void delegateTweenOnEventToAdjustTarget(int type, BaseTween<?> source, SlotPuzzleTween tween1, ReelSlotTileScroll reelSlot) {
         if (type == TweenCallback.STEP) {
             if (toValue != 0) {
-                System.out.println("tv=0");
                 toValue += 4;
                 tween1.target(0, toValue);
                 tween1.setDuration(tween1.getDuration() + 0.2f);
@@ -307,9 +305,6 @@ public class TweenGraphsScreen implements Screen {
                 tween1.setDuration(savedTime + 5.0f);
                 endCallBack = true;
             } else {
-                System.out.println("endCallBack");
-                System.out.println(tween1.getDuration());
-                System.out.println(tween1.getCurrentTime());
                 tween1.setDuration(0);
             }
         } else if (type == TweenCallback.COMPLETE) {
@@ -361,18 +356,13 @@ public class TweenGraphsScreen implements Screen {
                             reelSlots.get(0).setEndReel();
                             tweens.set(0, tweens.get(0).target(0, returnValues[1] + (1280 - (returnValues[1] % 1280)) + reelSlots.get(0).getEndReel() * 32));
                             tweens.set(0, tweens.get(0).setDuration((tweens.get(0).getDuration() - tweens.get(0).getCurrentTime())));
-                            System.out.println("new target="+returnValues[1] + (1280 - (returnValues[1] % 1280)) + reelSlots.get(0).getEndReel() * 32);
-                            System.out.println("new duration="+(tweens.get(0).getDuration() - tweens.get(0).getCurrentTime()));
                             tweens.get(0).start();
                         }
                     }
                 } else if (slotIndex == 2) {
-                    System.out.println("reel 2");
                     oldToValue = toValue;
                     toValue = 0;
                     savedTime = tweens.get(2).getCurrentTime();
-                    System.out.println("oldToValue="+oldToValue);
-
                 }
             }
         }
@@ -381,7 +371,7 @@ public class TweenGraphsScreen implements Screen {
     private void drawGraphPoint(ShapeRenderer shapeRenderer, Vector2 newPoint) {
         if (points.size >= 2) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.setColor(255, 255, 255, 255);
+            shapeRenderer.setColor(0, 255, 255, 255);
             for (int i = 0; i < points.size - 1; i++) {
                 shapeRenderer.line(points.get(i).x, points.get(i).y, points.get(i + 1).x, points.get(i + 1).y);
             }
@@ -419,8 +409,8 @@ public class TweenGraphsScreen implements Screen {
                 modelBatch.begin(cam);
                 modelBatch.render(tiles, environment);
                 modelBatch.end();
-                drawGraphPoint(shapeRenderer, new Vector2(graphStep++   % Gdx.graphics.getWidth(), reelSlots.get(0).getSy() % slotReelScrollTexture.getHeight()));
-                drawGraphPoint(shapeRenderer, new Vector2(graphStep++ % Gdx.graphics.getWidth(), reelSlots.get(1).getSy() % slotReelScrollTexture.getHeight()));
+                //drawGraphPoint(shapeRenderer, new Vector2(graphStep++   % Gdx.graphics.getWidth(), Gdx.graphics.getHeight()/2 + reelSlots.get(0).getSy() % slotReelScrollTexture.getHeight()));
+                drawGraphPoint(shapeRenderer, new Vector2(graphStep++ % Gdx.graphics.getWidth(), Gdx.graphics.getHeight()/2 + reelSlots.get(1).getSy() % slotReelScrollTexture.getHeight()));
 
             } else {
                 if (Assets.inst().getProgress() < 1) {
