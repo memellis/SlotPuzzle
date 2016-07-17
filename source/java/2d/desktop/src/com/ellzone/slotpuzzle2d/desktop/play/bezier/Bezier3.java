@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.Random;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -28,6 +30,12 @@ public class Bezier3 implements ApplicationListener {
 	public class MyInputProcessor implements InputProcessor {
 	    @Override
 	    public boolean keyDown(int keycode){
+	    	if (keycode == Input.Keys.S) {
+	    		saveControlPoints();
+	    	}
+	    	if (keycode == Input.Keys.L) {
+	    		loadControlPoints();
+	    	}
 	        return false;
 	    }
 
@@ -162,13 +170,8 @@ public class Bezier3 implements ApplicationListener {
 		reelSpinPath[idx++] = new Vector2(351, +40);
 		reelSpinPath[idx++] = new Vector2(390, -16);
 		reelSpinPath[idx++] = new Vector2(429, +32);
-		reelSpinPath[idx  ] = new Vector2(468, +32);
-				
-		CatmullRomSpline<Vector2> myCatmull = new CatmullRomSpline<Vector2>(reelSpinPath, true);
-	    for(int i = 0; i < graphSize; i++) {
-	        reelSpinBezier.add(new Vector2());
-	        myCatmull.valueAt(reelSpinBezier.get(i), ((float)i)/((float)graphSize-1));
-	    }
+		reelSpinPath[idx  ] = new Vector2(468, +32);		
+		renewSpline();
 	}
 		
 	private void initialiseCamera() {
@@ -286,12 +289,39 @@ public class Bezier3 implements ApplicationListener {
 	}
 	
 	private void renewSpline() {
-    	myCatmull = new CatmullRomSpline<Vector2>(reelSpinPath, true);
+    	myCatmull = new CatmullRomSpline<Vector2>(reelSpinPath, false);
     	reelSpinBezier.clear();
     	for(int i = 0; i < graphSize; i++) {
     		reelSpinBezier.add(new Vector2());
     		myCatmull.valueAt(reelSpinBezier.get(i), ((float)i)/((float)graphSize-1));
     	}
+	}
+	
+	private void saveControlPoints() {
+		FileHandle controlPointsFile = Gdx.files.local("controlPointsFile.txt");
+		for (int i=0; i<reelSpinPath.length; i++) {
+			controlPointsFile.writeString(reelSpinPath[i].toString() + "\n", true);
+		}
+	}
+	
+	private void loadControlPoints() {
+		FileHandle controlPointsFile = Gdx.files.local("controlPointsFile.txt");
+		if (controlPointsFile.exists()) {
+			String cpText = controlPointsFile.readString();
+			String controlPoints[] = cpText.split("\\r?\\n");
+			Vector2[] tempControlPoints = new Vector2[controlPoints.length];
+			int i = 0;
+			for (String controlPoint : controlPoints) {
+				String cpFloats[] = controlPoint.split(",");
+				cpFloats[0] = cpFloats[0].substring(1,cpFloats[0].length());
+				cpFloats[1] = cpFloats[1].substring(0,cpFloats[1].length()-1);
+				float x = Float.parseFloat(cpFloats[0]);
+				float y = Float.parseFloat(cpFloats[1]);
+				tempControlPoints[i++] = new Vector2(x, y);
+			}
+			reelSpinPath = tempControlPoints;
+		}
+		renewSpline();
 	}
 
 	@Override
