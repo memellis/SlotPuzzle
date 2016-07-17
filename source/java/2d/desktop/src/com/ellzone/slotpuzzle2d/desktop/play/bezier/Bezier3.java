@@ -219,7 +219,7 @@ public class Bezier3 implements ApplicationListener {
     private void drawGraphPoint(ShapeRenderer shapeRenderer, Vector2 newPoint) {
         if (points.size >= 2) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.setColor(0, 255, 255, 255);
+            shapeRenderer.setColor(random.nextInt(255), random.nextInt(255), random.nextInt(255), 255);
             for (int i = 0; i < points.size - 1; i++) {
                 shapeRenderer.line(points.get(i).x, points.get(i).y, points.get(i + 1).x, points.get(i + 1).y);
             }
@@ -252,7 +252,7 @@ public class Bezier3 implements ApplicationListener {
 	
 	private void drawControlPoints(ShapeRenderer shapeRenderer, Vector2[] reelSpinPath) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.GOLD);
+        shapeRenderer.setColor(random.nextInt(255), random.nextInt(255), random.nextInt(255), 255);
         for (int i=0; i<reelSpinPath.length; i++) {
             shapeRenderer.circle(reelSpinPath[i].x, reelSpinPath[i].y + Gdx.graphics.getHeight() / 4, 4);
          }
