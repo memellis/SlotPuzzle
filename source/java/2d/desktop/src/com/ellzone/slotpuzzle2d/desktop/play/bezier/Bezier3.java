@@ -1,10 +1,10 @@
 package com.ellzone.slotpuzzle2d.desktop.play.bezier;
 
+import java.util.Arrays;
 import java.util.Random;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -16,7 +16,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.screens.TweenGraphsScreen;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileScroll;
@@ -31,48 +30,42 @@ public class Bezier3 implements ApplicationListener {
 	    public boolean keyDown(int keycode){
 	        return false;
 	    }
+
 	    @Override
 	    public boolean keyUp(int keycode){
 	        return false;
 	    }
+	    
 	    @Override
-	    public boolean touchDown(int screenX, int screenY, int pointer, int button){
-	        return false;
+	    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+	    	if (button == 1) {
+	    		addControlPoint(screenX, screenY);
+	    	}
+    		return true;
 	    }
+	    
 	    @Override
-	    public boolean touchUp(int screenX, int screenY, int pointer, int button){
+	    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 	    	dragHit = false;
 	        return false;
 	    }
+	    
 	    @Override 
-	    public boolean keyTyped(char character){
+	    public boolean keyTyped(char character) {
 	           return false;
 	    }
+	    
 	    @Override 
-	    public boolean touchDragged(int screenX, int screenY, int pointer){
-            Vector2 touchPoint = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);            
-	    	if(dragHit) {
-	    		reelSpinPath[dragControlPoint].x = touchPoint.x;
-    			reelSpinPath[dragControlPoint].y = touchPoint.y - Gdx.graphics.getHeight() / 4;
-    			myCatmull = new CatmullRomSpline<Vector2>(reelSpinPath, true);
-    			reelSpinBezier.clear();
-    		    for(int i = 0; i < graphSize; i++) {
-    		        reelSpinBezier.add(new Vector2());
-    		        myCatmull.valueAt(reelSpinBezier.get(i), ((float)i)/((float)graphSize-1));
-    		    }
-    			
-	    	} else {
-	    		dragControlPoint = instersectControlPoint(touchPoint, reelSpinPath); 
-				if (dragControlPoint >= 0) {
-	    			dragHit = true;
-				}
-            }
-	        return true;
+	    public boolean touchDragged(int screenX, int screenY, int pointer) {
+	    	dragControlPoint(screenX, screenY);
+	    	return true;
 	    }
+	    
 	    @Override 
-	    public boolean mouseMoved(int screenX, int screenY){
+	    public boolean mouseMoved(int screenX, int screenY) {
 	        return false;
 	    }
+	    
 	    @Override 
 	    public boolean scrolled(int amount) {
 	        return false;
@@ -270,6 +263,35 @@ public class Bezier3 implements ApplicationListener {
 			}
 		}
 		return -1;
+	}
+	
+	private void addControlPoint(int x, int y) {
+		reelSpinPath = Arrays.copyOf(reelSpinPath, reelSpinPath.length+1);
+		reelSpinPath[reelSpinPath.length-1] = new Vector2(x, y - Gdx.graphics.getHeight() / 4);
+    	renewSpline();		
+	}
+	
+	private void dragControlPoint(int x, int y) {
+        Vector2 touchPoint = new Vector2(x, Gdx.graphics.getHeight() - y);            
+	    if(dragHit) {
+	    	reelSpinPath[dragControlPoint].x = touchPoint.x;
+	    	reelSpinPath[dragControlPoint].y = touchPoint.y - Gdx.graphics.getHeight() / 4;
+	    	renewSpline();
+	    } else {
+	    	dragControlPoint = instersectControlPoint(touchPoint, reelSpinPath); 
+			if (dragControlPoint >= 0) {
+	    		dragHit = true;
+			}
+	    }
+	}
+	
+	private void renewSpline() {
+    	myCatmull = new CatmullRomSpline<Vector2>(reelSpinPath, true);
+    	reelSpinBezier.clear();
+    	for(int i = 0; i < graphSize; i++) {
+    		reelSpinBezier.add(new Vector2());
+    		myCatmull.valueAt(reelSpinBezier.get(i), ((float)i)/((float)graphSize-1));
+    	}
 	}
 
 	@Override
