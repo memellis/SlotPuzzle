@@ -52,6 +52,7 @@ public class Bezier3 implements ApplicationListener {
 	    public boolean touchDragged(int screenX, int screenY, int pointer){
             Vector2 touchPoint = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);            
 	    	if(dragHit) {
+	    		reelSpinPath[dragControlPoint].x = touchPoint.x;
     			reelSpinPath[dragControlPoint].y = touchPoint.y - Gdx.graphics.getHeight() / 4;
     			myCatmull = new CatmullRomSpline<Vector2>(reelSpinPath, true);
     			reelSpinBezier.clear();
@@ -100,7 +101,7 @@ public class Bezier3 implements ApplicationListener {
     private Array<Vector2> points = new Array<Vector2>();
     private Array<Vector2> reelSpinBezier = new Array<Vector2>();
     private int graphStep;
-    private int graphSize = 512;
+    private int graphSize = 384;
     private Vector2[] reelSpinPath;
     private MyInputProcessor inputProcessor;
     private boolean dragHit;
@@ -113,12 +114,8 @@ public class Bezier3 implements ApplicationListener {
         initialiseReelSlots();
         initialiseBezier();
         initialiseCamera();
-        batch = new SpriteBatch();
-        shapeRenderer = new ShapeRenderer();
-        inputProcessor = new MyInputProcessor();
-        Gdx.input.setInputProcessor(inputProcessor);
-        dragHit = false;
-	}
+        initialiseTheRest();
+ 	}
 		
 	private void loadAssets() {
         Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
@@ -158,21 +155,21 @@ public class Bezier3 implements ApplicationListener {
 	}	
 	
 	private void initialiseBezier() {
-		reelSpinPath = new Vector2[20];
+		reelSpinPath = new Vector2[13];
 		int idx=0;
-		for (int l=0; l<10; l++) {
-			reelSpinPath[idx++] = new Vector2(0, 512*l);
-		}
-		reelSpinPath[idx++] = new Vector2(0, +370);		
-		reelSpinPath[idx++] = new Vector2(0, -256);
-		reelSpinPath[idx++] = new Vector2(0, +128);
-		reelSpinPath[idx++] = new Vector2(0, -64);
-		reelSpinPath[idx++] = new Vector2(0, +48);
-		reelSpinPath[idx++] = new Vector2(0, -32);
-		reelSpinPath[idx++] = new Vector2(0, +40);
-		reelSpinPath[idx++] = new Vector2(0, -16);
-		reelSpinPath[idx++] = new Vector2(0, +32);
-		reelSpinPath[idx++] = new Vector2(0, +32);
+		reelSpinPath[idx++] = new Vector2(  0, +0);
+		reelSpinPath[idx++] = new Vector2( 37, +256);
+		reelSpinPath[idx++] = new Vector2 (78, +332);		
+		reelSpinPath[idx++] = new Vector2(117, +128);		
+		reelSpinPath[idx++] = new Vector2(156, -96);
+		reelSpinPath[idx++] = new Vector2(195, +96);
+		reelSpinPath[idx++] = new Vector2(234, -64);
+		reelSpinPath[idx++] = new Vector2(273, +48);
+		reelSpinPath[idx++] = new Vector2(312, -32);
+		reelSpinPath[idx++] = new Vector2(351, +40);
+		reelSpinPath[idx++] = new Vector2(390, -16);
+		reelSpinPath[idx++] = new Vector2(429, +32);
+		reelSpinPath[idx  ] = new Vector2(468, +32);
 				
 		CatmullRomSpline<Vector2> myCatmull = new CatmullRomSpline<Vector2>(reelSpinPath, true);
 	    for(int i = 0; i < graphSize; i++) {
@@ -186,6 +183,15 @@ public class Bezier3 implements ApplicationListener {
         cam.position.set(0, 0, 10);
         cam.lookAt(0, 0, 0);
 	}
+	
+	private void initialiseTheRest() {
+        batch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
+        inputProcessor = new MyInputProcessor();
+	    Gdx.input.setInputProcessor(inputProcessor);
+	    dragHit = false;	
+	}
+	
 
 	@Override
 	public void resize(int width, int height) {
@@ -234,8 +240,8 @@ public class Bezier3 implements ApplicationListener {
                 reelSlot.draw(batch);
             }
             batch.end();
-            if (graphStep < reelSpinBezier.size - (graphSize/reelSpinPath.length)) {
-            	drawGraphPoint(shapeRenderer, new Vector2(graphStep % Gdx.graphics.getWidth(), reelSpinBezier.get(graphStep).y + Gdx.graphics.getHeight() / 4 % Gdx.graphics.getHeight()));
+            if (graphStep < reelSpinBezier.size) {
+            	drawGraphPoint(shapeRenderer, new Vector2(reelSpinBezier.get(graphStep).x, reelSpinBezier.get(graphStep).y + Gdx.graphics.getHeight() / 4 % Gdx.graphics.getHeight()));
             	graphStep++;
             } else {
             	graphStep = 0;
@@ -248,14 +254,14 @@ public class Bezier3 implements ApplicationListener {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.GOLD);
         for (int i=0; i<reelSpinPath.length; i++) {
-            shapeRenderer.circle(i*(graphSize/reelSpinPath.length), reelSpinPath[i].y + Gdx.graphics.getHeight() / 4, 4);
-        }
+            shapeRenderer.circle(reelSpinPath[i].x, reelSpinPath[i].y + Gdx.graphics.getHeight() / 4, 4);
+         }
         shapeRenderer.end();
 	}
 	
 	private int instersectControlPoint(Vector2 touchPoint, Vector2[] controlPoints) {
 		for (int i=0; i<controlPoints.length; i++){
-			float xD = touchPoint.x - i*(graphSize/reelSpinPath.length);
+			float xD = touchPoint.x - controlPoints[i].x;
 			float yD = touchPoint.y - (controlPoints[i].y + Gdx.graphics.getHeight() / 4);
 			float sqDist = xD * xD + yD * yD;
  			boolean collesion = sqDist <= (0.5+4) * (0.5+4);
