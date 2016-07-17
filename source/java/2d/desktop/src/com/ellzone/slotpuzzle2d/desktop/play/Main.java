@@ -61,7 +61,20 @@ public class Main extends JFrame {
 		"SlotPuzzle Play Prototypes|Experiments",
 		new Object[] {
 			"Universal Tween Engine Experiments",
-			new AppDesc("Experiment 1 - waypoints", 1280, 780, com.ellzone.slotpuzzle2d.desktop.play.tween.WayPoints.class)
+			new AppDesc("Experiment 1 - waypoints 1", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.WayPoints1.class),
+			new AppDesc("Experiment 2 - waypoints 2", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.WayPoints2.class)
+		},
+		new Object[] {
+			"Particle Experiments",
+			new AppDesc("Experiment 1 - particles 1 - with Coding Math particle", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle1.class),
+			new AppDesc("Experiment 2 - particles 2 - dampened sine", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle2.class),
+			new AppDesc("Experiment 3 - particles 3", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle3.class)
+		},
+		new Object[] {
+			"Bezier Experiments",
+			new AppDesc("Experiment 1 - bezier 1 - with Coding Math bezier", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.bezier.Bezier1.class),
+			new AppDesc("Experiment 2 - bezier 2 - with libGDX spline", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.bezier.Bezier2.class),
+			new AppDesc("Experiment 3 - bezier 3 - with libGDX spline - change points", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.bezier.Bezier3.class)
 		}
 	};
 	
