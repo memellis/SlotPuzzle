@@ -35,20 +35,12 @@ public class Particle3 implements ApplicationListener {
     private Sprite peach;
     private Sprite pear;
     private Sprite tomato;
-    private Sprite cheesecake1;
-    private Sprite cherry1;
-    private Sprite grapes1;
-    private Sprite jelly1;
-    private Sprite lemon1;
-    private Sprite peach1;
-    private Sprite pear1;
-    private Sprite tomato1;
     private Sprite[] sprites;
-    private Sprite[] sprites1;
     private ReelSlotTileScroll reelSlot;
 	private boolean isLoaded;
     private Pixmap slotReelScrollPixmap;
 	private Texture slotReelScrollTexture;
+	private int slotReelScrollheight;
 	private Random random;
     private Array<ReelSlotTileScroll> reelSlots;
     private SpriteBatch batch;
@@ -94,20 +86,6 @@ public class Particle3 implements ApplicationListener {
         for (Sprite sprite : sprites) {
             sprite.setOrigin(0, 0);
         }
-        
-        cherry1 = atlas.createSprite("cherry");
-        cheesecake1 = atlas.createSprite("cheesecake");
-        grapes1 = atlas.createSprite("grapes");
-        jelly1 = atlas.createSprite("jelly");
-        lemon1 = atlas.createSprite("lemon");
-        peach1 = atlas.createSprite("peach");
-        pear1 = atlas.createSprite("pear");
-        tomato1 = atlas.createSprite("tomato");
-        sprites1 = new Sprite[] {cherry1, cheesecake1, grapes1, jelly1, lemon1, peach1, pear1, tomato1};
-        for (Sprite sprite : sprites) {
-            sprite.setOrigin(0, 0);
-        }
- 
 	}
 	
 	private void initialiseReelSlots() {
@@ -116,6 +94,7 @@ public class Particle3 implements ApplicationListener {
         slotReelScrollPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
+        slotReelScrollheight = slotReelScrollTexture.getHeight();
         reelSlot = new ReelSlotTileScroll(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
         reelSlot.setX(0);
         reelSlot.setY(0);
@@ -193,6 +172,8 @@ public class Particle3 implements ApplicationListener {
     	}
         for(ReelSlotTileScroll reelSlot : reelSlots) { 		  
         	if (reelParticles.get(0).velocity.getY() > Particle3.VELOCITY_MIN) {
+        		// Particle3.VELOCITY.MIN has a major influence on the endReel
+        		// Current setting means the natural endReel is 4 (lemon)
     	 		reelParticles.get(0).velocity.mulitplyBy(0.97f);
         		reelParticles.get(0).accelerate(accelerator);
         		accelerator.mulitplyBy(0.97f);       			
@@ -201,15 +182,15 @@ public class Particle3 implements ApplicationListener {
       			if (reelSlot.getSy() < dampPoint) {
       				if (saveAmplitude) {
       					saveAmplitude = false;
-      					savedSy = reelSlot.getSy();
-      			      	savedAmplitude = (dampPoint - savedSy);      					
+      					savedSy = reelSlot.getSy() + slotReelScrollheight - (reelSlot.getSy() % slotReelScrollheight);
+      			      	savedAmplitude = (dampPoint - savedSy);
       				}
-      		       	float ds = dampenedSine(savedAmplitude, 1.0f, (float) (2 * Math.PI), plotTime++/40, 0);
+      		       	float ds = dampenedSine(savedAmplitude, 1.0f, (float) (3 * Math.PI), plotTime++/32, 0);
       		       	float dsEndReel = ds + reelSlot.getEndReel()*32;
       		       	addGraphPoint(new Vector2(graphStep++ % Gdx.graphics.getWidth(), (Gdx.graphics.getHeight() / 2 + dsEndReel)));
       		       	reelSlot.setSy(savedSy + dsEndReel);
       		       	if(Math.abs(ds)<0.0000001f) {
-     		       		reinitialiseParticle(0);
+      		       		reinitialiseParticle(0);
      		       		reelSlot.setEndReel(random.nextInt(sprites.length - 1));
       		       	}
       			}    			
@@ -251,8 +232,8 @@ public class Particle3 implements ApplicationListener {
             batch.begin();
             for (ReelSlotTileScroll reelSlot : reelSlots) {
                 reelSlot.draw(batch);
-                sprites[(reelSlot.getEndReel()+ 4) % sprites.length].setX(32);
-                sprites[(reelSlot.getEndReel()+ 4) % sprites.length].draw(batch);
+                sprites[reelSlot.getEndReel()].setX(32);
+                sprites[reelSlot.getEndReel()].draw(batch);
             }
             batch.end();
             drawGraphPoint(shapeRenderer);
