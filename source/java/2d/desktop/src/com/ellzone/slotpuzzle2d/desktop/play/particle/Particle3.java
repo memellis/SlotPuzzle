@@ -198,11 +198,6 @@ public class Particle3 implements ApplicationListener {
   		    reelSlot.update(delta);
          }
     }
-
-    private void drawGraphPoint(ShapeRenderer shapeRenderer, Vector2 newPoint) {
-        drawGraphPoint(shapeRenderer);
-        points.add(newPoint);
-    }
     
     private void addGraphPoint(Vector2 newPoint) {
     	points.add(newPoint);
