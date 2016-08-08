@@ -73,19 +73,19 @@ public class ReelSlotTileScroll extends Sprite {
         this.flashing = flashing;
     }
 
-    public float getSX() {
+    public float getSx() {
         return this.sx;
     }
 
-    public float getSY() {
+    public float getSy() {
         return this.sy;
     }
 
-    public void setSX(float sx) {
+    public void setSx(float sx) {
         this.sx = sx;
     }
 
-    public void setSY(float sy) {
+    public void setSy(float sy) {
         this.sy = sy;
     }
 

@@ -43,8 +43,8 @@ public class ReelSpriteAccessor implements TweenAccessor<ReelSlotTileScroll> {
                 return 3;
 
             case SCROLL_XY:
-                returnValues[0] = target.getSX();
-                returnValues[1] = target.getSY();
+                returnValues[0] = target.getSx();
+                returnValues[1] = target.getSy();
                 return 2;
 
             default: assert false; return -1;
@@ -70,8 +70,8 @@ public class ReelSpriteAccessor implements TweenAccessor<ReelSlotTileScroll> {
                 target.setColor(c);
                 break;
             case SCROLL_XY:
-                target.setSX(newValues[0]);
-                target.setSY(newValues[1]);
+                target.setSx(newValues[0]);
+                target.setSy(newValues[1]);
                 break;
 
             default: assert false;
