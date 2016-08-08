@@ -1,4 +1,4 @@
-package com.ellzone.slotpuzzle2d.desktop.play.tween;
+package com.ellzone.slotpuzzle2d.desktop.play.particle;
 
 import java.util.Random;
 
@@ -11,22 +11,21 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.ellzone.slotpuzzle2d.effects.ReelSpriteAccessor;
+import com.ellzone.slotpuzzle.physics.DampenedSine;
+import com.ellzone.slotpuzzle.physics.Particle;
+import com.ellzone.slotpuzzle.physics.SPPhysicsCallback;
+import com.ellzone.slotpuzzle.physics.SPPhysicsEvent;
+import com.ellzone.slotpuzzle.physics.Vector;
 import com.ellzone.slotpuzzle2d.screens.TweenGraphsScreen;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileScroll;
-import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
-import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
-import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
-import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.equations.Circ;
-import aurelienribon.tweenengine.equations.Quad;
-
-public class WayPoints implements ApplicationListener {
+public class Particle4 implements ApplicationListener {
 
 	private static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
 	private PerspectiveCamera cam;
@@ -43,30 +42,32 @@ public class WayPoints implements ApplicationListener {
 	private boolean isLoaded;
     private Pixmap slotReelScrollPixmap;
 	private Texture slotReelScrollTexture;
+	private int slotReelScrollheight;
 	private Random random;
     private Array<ReelSlotTileScroll> reelSlots;
-    private TweenManager tweenManager;
-    private SlotPuzzleTween tween;
     private SpriteBatch batch;
-	private float tweenDuration;
+    private Array<DampenedSine> dampenedSines;
+	private DampenedSine dampenedSine;
+	private Vector accelerator;
+	private int dampPoint;
+    private ShapeRenderer shapeRenderer;
+    private Array<Vector2> points = new Array<Vector2>();
+    private float graphStep;
+    private float savedAmplitude;
+    private float savedSy;
+    private boolean saveAmplitude;
+    private float plotTime;
  
 	@Override
 	public void create() {
-        initialiseUniversalTweenEngine();
         loadAssets();
         initialiseReelSlots();
-        initialTweens();
+        intialiseParticles();
         initialiseCamera();
-        batch = new SpriteBatch();
+        initialiseLibGdx();
+        initialiseDampenedSine();
 	}
-	
-	private void initialiseUniversalTweenEngine() {
-	    SlotPuzzleTween.setWaypointsLimit(10);
-	    SlotPuzzleTween.setCombinedAttributesLimit(3);
-	    SlotPuzzleTween.registerAccessor(ReelSlotTileScroll.class, new ReelSpriteAccessor());
-	    tweenManager = new TweenManager();
-	}
-	
+		
 	private void loadAssets() {
         Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
         Assets.inst().update();
@@ -95,22 +96,40 @@ public class WayPoints implements ApplicationListener {
         slotReelScrollPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
+        slotReelScrollheight = slotReelScrollTexture.getHeight();
         reelSlot = new ReelSlotTileScroll(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
         reelSlot.setX(0);
-        reelSlot.setY(32);
-        reelSlot.setEndReel(random.nextInt(sprites.length));
+        reelSlot.setY(0);
+        reelSlot.setSx(0);
+        reelSlot.setSy(0);
+        reelSlot.setEndReel(random.nextInt(sprites.length - 1));
         reelSlots.add(reelSlot);
+	}	
+	
+	private void intialiseParticles() {
+		dampenedSines = new Array<DampenedSine>();
+		dampenedSine = new DampenedSine(0, reelSlots.get(0).getSy(), 0, 0, 0, slotReelScrollTexture.getHeight() * 20, slotReelScrollTexture.getHeight(), reelSlots.get(0).getEndReel());
+		dampenedSine.setCallback(new SPPhysicsCallback() {
+			public void onEvent(int type, SPPhysicsEvent event) {
+				delegateDSCallback(type);
+			};
+		});
+		dampenedSine.setCallbackTriggers(SPPhysicsCallback.PARTICLE_UPDATE + SPPhysicsCallback.END);
+		dampenedSines.add(dampenedSine);
 	}
 	
-	private void initialTweens() {
-		tweenDuration = 20.0f;
-        tween = SlotPuzzleTween.to(reelSlot, ReelSpriteAccessor.SCROLL_XY, tweenDuration)
-        			//.target(0,  slotReelScrollTexture.getHeight() + reelSlot.getEndReel() * 32)
-        			.ease(Quad.OUT)
-        			.waypoint(0, slotReelScrollTexture.getHeight()*1, 
-        					  0, slotReelScrollTexture.getHeight()*2, 
-        					  0, slotReelScrollTexture.getHeight()*3 + reelSlot.getEndReel() * 32)        			
-        			.start(tweenManager);
+	private void delegateDSCallback(int type) {
+		if (type == SPPhysicsCallback.PARTICLE_UPDATE) {
+		    addGraphPoint(new Vector2(graphStep++ % Gdx.graphics.getWidth(), (Gdx.graphics.getHeight() / 2 + dampenedSines.get(0).dsEndReel)));
+		} else {
+			if (type == SPPhysicsCallback.END) {
+				reelSlots.get(0).setEndReel(random.nextInt(sprites.length - 1));
+				dampenedSines.get(0).initialiseDampenedSine();
+				dampenedSines.get(0).position.y = 0;				
+				dampenedSines.get(0).setEndReel(reelSlots.get(0).getEndReel());
+			}
+		}
+		
 	}
 	
 	private void initialiseCamera() {
@@ -118,7 +137,19 @@ public class WayPoints implements ApplicationListener {
         cam.position.set(0, 0, 10);
         cam.lookAt(0, 0, 0);
 	}
+	
+	private void initialiseLibGdx() {
+		batch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
+	}
 
+	private void initialiseDampenedSine() {
+        graphStep = 0;
+        savedAmplitude = 0;
+        saveAmplitude = true;
+        plotTime = 132;
+ 	}
+	
 	@Override
 	public void resize(int width, int height) {
        float halfHeight = MINIMUM_VIEWPORT_SIZE * 0.5f;
@@ -134,10 +165,29 @@ public class WayPoints implements ApplicationListener {
 	}
 	
     private void update(float delta) {
-        tweenManager.update(delta);
-        for(ReelSlotTileScroll reelSlot : reelSlots) {
-            reelSlot.update(delta);
+        for(ReelSlotTileScroll reelSlot : reelSlots) { 		  
+         	dampenedSines.get(0).update();
+  		    reelSlot.setSy(dampenedSines.get(0).position.y);
+  	       	reelSlot.update(delta); 
         }
+    }
+    
+    private void addGraphPoint(Vector2 newPoint) {
+    	points.add(newPoint);
+    }
+    
+    private void drawGraphPoint(ShapeRenderer shapeRenderer) {
+        if (points.size >= 2) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            int rr = 23;
+            int rg = 32;
+            int rb = 23;
+             shapeRenderer.setColor(rr, rg, rb, 255);
+            for (int i = 0; i < points.size - 1; i++) {
+                shapeRenderer.line(points.get(i).x, points.get(i).y, points.get(i + 1).x, points.get(i + 1).y);
+            }
+            shapeRenderer.end();
+        }    	
     }
 
 	@Override
@@ -150,9 +200,12 @@ public class WayPoints implements ApplicationListener {
             batch.begin();
             for (ReelSlotTileScroll reelSlot : reelSlots) {
                 reelSlot.draw(batch);
+                sprites[reelSlot.getEndReel()].setX(32);
+                sprites[reelSlot.getEndReel()].draw(batch);
             }
             batch.end();
-        }
+            drawGraphPoint(shapeRenderer);
+       }
 	}
 
 	@Override
