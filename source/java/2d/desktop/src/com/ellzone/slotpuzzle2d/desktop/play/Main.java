@@ -69,7 +69,8 @@ public class Main extends JFrame {
 			"Particle Experiments",
 			new AppDesc("Experiment 1 - particles 1 - with Coding Math particle", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle1.class),
 			new AppDesc("Experiment 2 - particles 2 - dampened sine", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle2.class),
-			new AppDesc("Experiment 3 - particles 3 - dampened sine with predictable end", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle3.class)
+			new AppDesc("Experiment 3 - particles 3 - dampened sine with predictable end", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle3.class),
+			new AppDesc("Experiment 4 - particles 4 - dampened sine class with predictable end", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle4.class)
 		},
 		new Object[] {
 			"Bezier Experiments",

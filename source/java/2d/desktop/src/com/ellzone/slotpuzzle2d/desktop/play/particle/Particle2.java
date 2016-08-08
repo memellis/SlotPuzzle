@@ -43,7 +43,6 @@ public class Particle2 implements ApplicationListener {
 	private Texture slotReelScrollTexture;
 	private Random random;
     private Array<ReelSlotTileScroll> reelSlots;
-    private SlotPuzzleTween tween;
     private SpriteBatch batch;
 	private Array<Particle> reelParticles;
 	private Particle reelParticle;
