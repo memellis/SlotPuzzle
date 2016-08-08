@@ -16,10 +16,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle.physics.DampenedSine;
-import com.ellzone.slotpuzzle.physics.Particle;
 import com.ellzone.slotpuzzle.physics.SPPhysicsCallback;
 import com.ellzone.slotpuzzle.physics.SPPhysicsEvent;
-import com.ellzone.slotpuzzle.physics.Vector;
 import com.ellzone.slotpuzzle2d.screens.TweenGraphsScreen;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileScroll;
 import com.ellzone.slotpuzzle2d.utils.Assets;
@@ -48,21 +46,14 @@ public class Particle4 implements ApplicationListener {
     private SpriteBatch batch;
     private Array<DampenedSine> dampenedSines;
 	private DampenedSine dampenedSine;
-	private Vector accelerator;
-	private int dampPoint;
     private ShapeRenderer shapeRenderer;
     private Array<Vector2> points = new Array<Vector2>();
     private float graphStep;
-    private float savedAmplitude;
-    private float savedSy;
-    private boolean saveAmplitude;
-    private float plotTime;
- 
+    
 	@Override
 	public void create() {
         loadAssets();
         initialiseReelSlots();
-        intialiseParticles();
         initialiseCamera();
         initialiseLibGdx();
         initialiseDampenedSine();
@@ -97,7 +88,7 @@ public class Particle4 implements ApplicationListener {
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         slotReelScrollheight = slotReelScrollTexture.getHeight();
-        reelSlot = new ReelSlotTileScroll(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
+        reelSlot = new ReelSlotTileScroll(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollheight, 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
         reelSlot.setX(0);
         reelSlot.setY(0);
         reelSlot.setSx(0);
@@ -106,9 +97,9 @@ public class Particle4 implements ApplicationListener {
         reelSlots.add(reelSlot);
 	}	
 	
-	private void intialiseParticles() {
+	private void initialiseDampenedSine() {
 		dampenedSines = new Array<DampenedSine>();
-		dampenedSine = new DampenedSine(0, reelSlots.get(0).getSy(), 0, 0, 0, slotReelScrollTexture.getHeight() * 20, slotReelScrollTexture.getHeight(), reelSlots.get(0).getEndReel());
+		dampenedSine = new DampenedSine(0, reelSlots.get(0).getSy(), 0, 0, 0, slotReelScrollheight * 20, slotReelScrollheight, reelSlots.get(0).getEndReel());
 		dampenedSine.setCallback(new SPPhysicsCallback() {
 			public void onEvent(int type, SPPhysicsEvent event) {
 				delegateDSCallback(type);
@@ -129,7 +120,6 @@ public class Particle4 implements ApplicationListener {
 				dampenedSines.get(0).setEndReel(reelSlots.get(0).getEndReel());
 			}
 		}
-		
 	}
 	
 	private void initialiseCamera() {
@@ -142,13 +132,6 @@ public class Particle4 implements ApplicationListener {
 		batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
 	}
-
-	private void initialiseDampenedSine() {
-        graphStep = 0;
-        savedAmplitude = 0;
-        saveAmplitude = true;
-        plotTime = 132;
- 	}
 	
 	@Override
 	public void resize(int width, int height) {
