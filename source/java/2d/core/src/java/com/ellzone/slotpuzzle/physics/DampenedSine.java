@@ -10,11 +10,13 @@ public class DampenedSine extends Particle {
 	private float savedSy;
 	private boolean saveAmplitude;
 	private float dampPoint;
-	private int plotTime;
+	private float plotTime;
 	private int height;
 	private int endReel;
 	private SPPhysicsCallback callback;
 	private int callbackTriggers;
+	private float ds;
+	public float dsEndReel;
 	
 	public DampenedSine(float x, float y, float speed, float direction, float grav, float dampPoint, int height, int endReel) {
 		super(x, y, speed, direction, grav);
@@ -24,7 +26,7 @@ public class DampenedSine extends Particle {
 		initialiseDampenedSine();
 	}
 
-	private void initialiseDampenedSine() {
+	public void initialiseDampenedSine() {
 		plotTime = 132;
 		savedAmplitude = 0;
 		saveAmplitude = true;
@@ -33,6 +35,10 @@ public class DampenedSine extends Particle {
 		accelerate(new Vector(0, 2f));
 		velocity.setX(0);
 		velocity.setY(4);
+	}
+	
+	public void setEndReel(int endReel) {
+		this.endReel = endReel;
 	}
 
 	public void update() {
@@ -51,9 +57,10 @@ public class DampenedSine extends Particle {
 				savedSy = position.getY() + height - (position.getY() % height);
 			    savedAmplitude = (dampPoint - savedSy);
 			}
-		    float ds = dampenedSine(savedAmplitude, 1.0f, (float) (3 * Math.PI), plotTime++ / DampenedSine.PLOTTIME_DIVISOR_DAMPER, 0);
-		    float dsEndReel = ds + endReel * SPRITE_SQUARE_SIZE;
-		    position.setY(savedSy + dsEndReel);
+		    ds = dampenedSine(savedAmplitude, 1.0f, (float) (3 * Math.PI), plotTime++ / DampenedSine.PLOTTIME_DIVISOR_DAMPER, 0);
+		    dsEndReel = ds + endReel * SPRITE_SQUARE_SIZE;
+		    position.y = savedSy + dsEndReel;
+		    callCallback(SPPhysicsCallback.PARTICLE_UPDATE);
 		    if (Math.abs(ds) < DampenedSine.MIN_DAMPENED_SINE_VALUE) {
 		    	callCallback(SPPhysicsCallback.END);	
 		    }
