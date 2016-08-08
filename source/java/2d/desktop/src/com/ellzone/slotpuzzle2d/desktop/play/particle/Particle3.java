@@ -185,8 +185,8 @@ public class Particle3 implements ApplicationListener {
       					savedSy = reelSlot.getSy() + slotReelScrollheight - (reelSlot.getSy() % slotReelScrollheight);
       			      	savedAmplitude = (dampPoint - savedSy);
       				}
-      		       	float ds = dampenedSine(savedAmplitude, 1.0f, (float) (3 * Math.PI), plotTime++/32, 0);
-      		       	float dsEndReel = ds + reelSlot.getEndReel()*32;
+      		       	float ds = dampenedSine(savedAmplitude, 1.0f, (float) (3 * Math.PI), plotTime++ / 32, 0);
+      		       	float dsEndReel = ds + reelSlot.getEndReel() * 32;
       		       	addGraphPoint(new Vector2(graphStep++ % Gdx.graphics.getWidth(), (Gdx.graphics.getHeight() / 2 + dsEndReel)));
       		       	reelSlot.setSy(savedSy + dsEndReel);
       		       	if(Math.abs(ds)<0.0000001f) {

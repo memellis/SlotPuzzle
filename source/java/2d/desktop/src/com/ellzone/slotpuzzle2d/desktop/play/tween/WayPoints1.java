@@ -1,4 +1,4 @@
-package com.ellzone.slotpuzzle2d.desktop.play.particle;
+package com.ellzone.slotpuzzle2d.desktop.play.tween;
 
 import java.util.Random;
 
@@ -13,18 +13,18 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
-import com.ellzone.slotpuzzle.physics.Particle;
-import com.ellzone.slotpuzzle.physics.Vector;
+import com.ellzone.slotpuzzle2d.effects.ReelSpriteAccessor;
 import com.ellzone.slotpuzzle2d.screens.TweenGraphsScreen;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileScroll;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
+import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+import aurelienribon.tweenengine.equations.Back;
 
-public class Particle1 implements ApplicationListener {
+public class WayPoints1 implements ApplicationListener {
 
 	private static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
-	private static final float VELOCITY_MIN = 2.0f;
 	private PerspectiveCamera cam;
     private Sprite cheesecake;
     private Sprite cherry;
@@ -41,21 +41,28 @@ public class Particle1 implements ApplicationListener {
 	private Texture slotReelScrollTexture;
 	private Random random;
     private Array<ReelSlotTileScroll> reelSlots;
+    private TweenManager tweenManager;
+    private SlotPuzzleTween tween;
     private SpriteBatch batch;
-	private Array<Particle> reelParticles;
-	private Particle reelParticle;
-	private Vector accelerator;
-	private int dampPoint;
+	private float tweenDuration;
  
 	@Override
 	public void create() {
+        initialiseUniversalTweenEngine();
         loadAssets();
         initialiseReelSlots();
-        intialiseParticles();
+        initialiseTweens();
         initialiseCamera();
         batch = new SpriteBatch();
 	}
-		
+	
+	private void initialiseUniversalTweenEngine() {
+	    SlotPuzzleTween.setWaypointsLimit(10);
+	    SlotPuzzleTween.setCombinedAttributesLimit(3);
+	    SlotPuzzleTween.registerAccessor(ReelSlotTileScroll.class, new ReelSpriteAccessor());
+	    tweenManager = new TweenManager();
+	}
+	
 	private void loadAssets() {
         Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
         Assets.inst().update();
@@ -87,21 +94,19 @@ public class Particle1 implements ApplicationListener {
         reelSlot = new ReelSlotTileScroll(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
         reelSlot.setX(0);
         reelSlot.setY(0);
-        reelSlot.setSx(0);
-        reelSlot.setSy(1024);
         reelSlot.setEndReel(random.nextInt(sprites.length));
         reelSlots.add(reelSlot);
-	}	
+	}
 	
-	private void intialiseParticles() {
-		accelerator = new Vector(0, 3f);
-		reelParticles = new Array<Particle>();
-		reelParticle = new Particle(0, reelSlots.get(0).getSy(), 0.0001f , 0, 0);
-		reelParticle.velocity.setX(0);
-		reelParticle.velocity.setY(4);
-		reelParticle.accelerate(new Vector(0, 2f));
-		reelParticles.add(reelParticle);
-		dampPoint = slotReelScrollTexture.getHeight() * 20 + reelSlots.get(0).getEndReel()*32;
+	private void initialiseTweens() {
+		tweenDuration = 10.0f;
+        tween = SlotPuzzleTween.to(reelSlots.get(0), ReelSpriteAccessor.SCROLL_XY, tweenDuration)
+        			.target(0, slotReelScrollTexture.getHeight()*16 + reelSlot.getEndReel() * 32)
+        			.waypoint(0,  slotReelScrollTexture.getHeight()*4, 
+        					  0, -slotReelScrollTexture.getHeight()*8, 
+        					  0,  slotReelScrollTexture.getHeight()*12)        			
+           			.ease(Back.OUT)
+           		 	.start(tweenManager);
 	}
 	
 	private void initialiseCamera() {
@@ -125,21 +130,9 @@ public class Particle1 implements ApplicationListener {
 	}
 	
     private void update(float delta) {
-    	for (Particle reelParticle : reelParticles) {
-    		reelParticle.update();
-    	}
+        tweenManager.update(delta);
         for(ReelSlotTileScroll reelSlot : reelSlots) {
-    		if (reelParticles.get(0).velocity.getY() > Particle1.VELOCITY_MIN) {
-    	 		reelParticles.get(0).velocity.mulitplyBy(0.97f);
-        		reelParticles.get(0).accelerate(accelerator);
-        		accelerator.mulitplyBy(0.97f);       			
-         		reelSlot.setSy(reelParticles.get(0).position.getY());
-      		} else {
-      			if (reelSlot.getSy() < dampPoint) {
-      				reelSlot.setSy(reelSlot.getSy() + reelParticles.get(0).velocity.getY());
-      			} 
-      		}
-    		reelSlot.update(delta);
+            reelSlot.update(delta);
         }
     }
 
