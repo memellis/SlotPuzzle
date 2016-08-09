@@ -22,7 +22,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
@@ -33,18 +32,15 @@ import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileScroll;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.FileUtils;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
-
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 import aurelienribon.tweenengine.equations.Bounce;
 import aurelienribon.tweenengine.equations.Elastic;
-import aurelienribon.tweenengine.equations.Back;
-import aurelienribon.tweenengine.equations.Quint;
-import aurelienribon.tweenengine.equations.Sine;
-
 
 public class IntroScreen implements Screen {
+	private static final int VIEWPORT_WIDTH = 800;
+	private static final int VIEWPORT_HEIGHT = 480;
     private static final int TEXT_SPACING_SIZE = 30;
     private static final float SIXTY_FPS = 1 / 60f;
     private static final int EXO_FONT_SMALL_SIZE = 24;
@@ -56,7 +52,7 @@ public class IntroScreen implements Screen {
     private static final String SLOT_PUZZLE_REEL_TEXT = "Slot Puzzle";
     private static final String BY_TEXT = "by";
     private static final String AUTHOR_TEXT = "Mark Ellis";
-    private static final String COPYRIGHT_YEAR_AUTHOR_TEXT = COPYRIGHT + "2015 Mark Ellis";
+    private static final String COPYRIGHT_YEAR_AUTHOR_TEXT = COPYRIGHT + "2016 Mark Ellis";
     private SlotPuzzle game;
     private Texture texture;
     private Pixmap slotReelPixmap;
@@ -92,14 +88,30 @@ public class IntroScreen implements Screen {
     }
 
     void defineIntroScreen() {
-        viewport = new FitViewport(800, 480, camera);
+    	initialiseIntroScreen();
+        initialiseTweenEngine();
+        initialiseFonts();
+        initialiseIntroScreenText();
+        initialiseUiStage();        
+        initialiseIntroSequence();
+    }
+    
+    private void initialiseIntroScreen() {
+        viewport = new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, camera);
         stage = new Stage(viewport, game.batch);
+        ReelLetter.instanceCount = 0;
+        endOfIntroScreen = false;
+        Gdx.input.setInputProcessor(stage);    	
+    }
 
+    private void initialiseTweenEngine() {
         Tween.setWaypointsLimit(10);
         Tween.setCombinedAttributesLimit(3);
         Tween.registerAccessor(Sprite.class, new SpriteAccessor());
-        Tween.registerAccessor(ReelSlotTileScroll.class, new ReelSpriteAccessor());
-
+        Tween.registerAccessor(ReelSlotTileScroll.class, new ReelSpriteAccessor());    	
+    }
+    
+    private void initialiseFonts() {
         SmartFontGenerator fontGen = new SmartFontGenerator();
         FileHandle exoFileInternal = Gdx.files.internal("LiberationMono-Regular.ttf");
         FileHandle generatedFontDir = Gdx.files.local("generated-fonts/");
@@ -115,26 +127,35 @@ public class IntroScreen implements Screen {
 
         fontSmall = fontGen.createFont(exoFile, "exo-small", 24);
         fontMedium = fontGen.createFont(exoFile, "exo-medium", 48);
-        fontLarge = fontGen.createFont(exoFile, "exo-large", 64);
-
-        ReelLetter.instanceCount = 0;
-
+        fontLarge = fontGen.createFont(exoFile, "exo-large", 64);    	
+    }
+    
+    private void initialiseIntroScreenText() {
         if (Gdx.files.local("SlotPuzzleTextFontTile.png").exists()) {
             texture = new Texture(Gdx.files.local("SlotPuzzleTextFontTile.png"));
             Gdx.app.log(SlotPuzzle.SLOT_PUZZLE, "Loaded cached SlotPuzzleTextFontTile.png file.");
 
         } else {
-
             introScreenLetters = new Array<ReelLetter>();
-
             createReelLetterString(IntroScreen.SLOT_PUZZLE_REEL_TEXT, introScreenLetters, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + IntroScreen.TEXT_SPACING_SIZE + 10);
             createReelLetterString(IntroScreen.BY_TEXT, introScreenLetters, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + IntroScreen.TEXT_SPACING_SIZE + 10);
             createReelLetterString(IntroScreen.AUTHOR_TEXT, introScreenLetters, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + IntroScreen.TEXT_SPACING_SIZE + 10);
             createReelLetterString(IntroScreen.COPYRIGHT_YEAR_AUTHOR_TEXT, introScreenLetters, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + IntroScreen.TEXT_SPACING_SIZE + 10);
-        }
+        }    	
+    }
+    
+    private void createReelLetterString(String reelLetterString, Array<ReelLetter> screenLetters, float posX, float posY) {
+        Pixmap slotReelPixmap = new Pixmap(IntroScreen.REEL_SIZE_WIDTH, reelLetterString.length() * IntroScreen.REEL_SIZE_HEIGHT, Pixmap.Format.RGBA8888);
+        slotReelPixmap = PixmapProcessors.createDynamicVerticalFontText(fontSmall, reelLetterString, slotReelPixmap);
+        slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedVerticalText(slotReelPixmap, IntroScreen.SCROLL_HEIGHT, reelLetterString, IntroScreen.EXO_FONT_SMALL_SIZE, IntroScreen.SCROLL_STEP);
+        Texture slotReelTexture = new Texture(slotReelPixmap);
 
-        endOfIntroScreen = false;
-        Gdx.input.setInputProcessor(stage);
+        for (int i = 0; i < reelLetterString.length(); i++) {
+            introScreenLetters.add(new ReelLetter(this, slotReelTexture, reelLetterString.length(), slotReelPixmap.getWidth() / IntroScreen.REEL_SIZE_WIDTH, SIXTY_FPS, (i * IntroScreen.TEXT_SPACING_SIZE) + posX, posY, i));
+        }
+    }
+    
+    private void initialiseUiStage() {
         skin = new Skin();
         buttonAtlas = new TextureAtlas(Gdx.files.internal("ui/ui-blue.atlas"));
         skin.addRegions(buttonAtlas);
@@ -162,16 +183,16 @@ public class IntroScreen implements Screen {
         table.add(buttonPressLabel).expandX();
 
         stage.addActor(table);
-        viewport.update(800, 480);
+        viewport.update(800, 480);    	
+    }
 
+    private void initialiseIntroSequence() {
         Timeline introSeq = Timeline.createSequence();
-
         for (int i = 0; i < introScreenLetters.size; i++) {
             introSeq = introSeq.push(Tween.set(introScreenLetters.get(i), SpriteAccessor.POS_XY).target(-40f, -20f + i * 20f));
         }
 
         introSeq = introSeq.pushPause(1.0f);
-
         for (int i = 0; i < SLOT_PUZZLE_REEL_TEXT.length(); i++) {
             introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.4f).target(250f + i * 30f, 280f));
         }
@@ -194,6 +215,27 @@ public class IntroScreen implements Screen {
             introSeq = introSeq.push(Tween.to(introScreenLetters.get(i), SpriteAccessor.POS_XY, 0.4f).target(-520f + i * 30f, 90f));
         }
 
+        initialiseAssets();
+        
+        slotReelPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
+        slotReelPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
+        slotReelTexture = new Texture(slotReelPixmap);
+
+        reelSlot = new ReelSlotTileScroll(slotReelTexture, slotReelTexture.getWidth(), slotReelTexture.getHeight(), 32, 32, 0, IntroScreen.SIXTY_FPS);
+
+        Timeline reelSeq = Timeline.createSequence();
+        reelSeq = reelSeq.push(Tween.set(reelSlot, ReelSpriteAccessor.SCROLL_XY).target(0f, 0f).ease(Bounce.IN));
+        reelSeq = reelSeq.push(Tween.to(reelSlot, ReelSpriteAccessor.SCROLL_XY, 5.0f).target(0f, 1000f).ease(Elastic.OUT));
+
+        introSeq = introSeq
+                .start(tweenManager);
+
+        reelSeq = reelSeq.
+                repeat(100, 0.0f).
+                start(tweenManager);
+    }
+    
+    private void initialiseAssets() {
         Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
         Assets.inst().update();
         Assets.inst().finishLoading();
@@ -213,36 +255,8 @@ public class IntroScreen implements Screen {
         for (Sprite sprite : sprites) {
             sprite.setOrigin(0, 0);
         }
-
-        slotReelPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
-        slotReelPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
-        slotReelTexture = new Texture(slotReelPixmap);
-
-        reelSlot = new ReelSlotTileScroll(slotReelTexture, slotReelTexture.getWidth(), slotReelTexture.getHeight(), 32, 32, 0, IntroScreen.SIXTY_FPS);
-
-        Timeline reelSeq = Timeline.createSequence();
-        reelSeq = reelSeq.push(Tween.set(reelSlot, ReelSpriteAccessor.SCROLL_XY).target(0f, 0f).ease(Bounce.IN));
-        reelSeq = reelSeq.push(Tween.to(reelSlot, ReelSpriteAccessor.SCROLL_XY, 5.0f).target(0f, 1000f).ease(Elastic.OUT));
-
-        introSeq = introSeq
-                .start(tweenManager);
-
-        reelSeq = reelSeq.
-                repeat(100, 0.0f).
-                start(tweenManager);
     }
-
-    private void createReelLetterString(String reelLetterString, Array<ReelLetter> screenLetters, float posX, float posY) {
-        Pixmap slotReelPixmap = new Pixmap(IntroScreen.REEL_SIZE_WIDTH, reelLetterString.length() * IntroScreen.REEL_SIZE_HEIGHT, Pixmap.Format.RGBA8888);
-        slotReelPixmap = PixmapProcessors.createDynamicVerticalFontText(fontSmall, reelLetterString, slotReelPixmap);
-        slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedVerticalText(slotReelPixmap, IntroScreen.SCROLL_HEIGHT, reelLetterString, IntroScreen.EXO_FONT_SMALL_SIZE, IntroScreen.SCROLL_STEP);
-        Texture slotReelTexture = new Texture(slotReelPixmap);
-
-        for (int i = 0; i < reelLetterString.length(); i++) {
-            introScreenLetters.add(new ReelLetter(this, slotReelTexture, reelLetterString.length(), slotReelPixmap.getWidth() / IntroScreen.REEL_SIZE_WIDTH, SIXTY_FPS, (i * IntroScreen.TEXT_SPACING_SIZE) + posX, posY, i));
-        }
-    }
-
+    
     public void update(float dt) {
         tweenManager.update(dt);
         for (ReelLetter reel : introScreenLetters) {
@@ -281,22 +295,18 @@ public class IntroScreen implements Screen {
 
     @Override
     public void show() {
-        // TODO Auto-generated method stub
     }
 
     @Override
     public void pause() {
-        // TODO Auto-generated method stub
     }
 
     @Override
     public void resume() {
-        // TODO Auto-generated method stub
     }
 
     @Override
     public void hide() {
-        // TODO Auto-generated method stub
     }
 
     @Override
