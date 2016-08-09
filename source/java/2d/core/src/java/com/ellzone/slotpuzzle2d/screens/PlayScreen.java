@@ -3,6 +3,7 @@ package com.ellzone.slotpuzzle2d.screens;
 import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -75,13 +76,14 @@ public class PlayScreen implements Screen {
 	private Sprite pear;
 	private Sprite tomato;
  	private final TweenManager tweenManager = new TweenManager();
+ 	private TextureAtlas reelAtlas;
 	private boolean isLoaded = false;
 	private Pixmap slotReelPixmap, slotReelScrollPixmap;
 	private Texture slotReelTexture, slotReelScrollTexture;
 	private Array<ReelSlotTile> slotReels;
 	private Array<ReelSlotTile> levelReelSlotTiles;
 	private TmxMapLoader mapLoader;
-	private TiledMap map;
+	private TiledMap level1;
 	private Random random;
 	private OrthogonalTiledMapRenderer renderer;
 	private ShapeRenderer shapeRenderer; 
@@ -102,52 +104,92 @@ public class PlayScreen implements Screen {
 	}
 	
 	private void createPlayScreen() {
+		initialiseScreen();
+		initialiseTweenEngine();
+		loadAssets();
+		getAssets();
+		createSprites();
+		initialisePlayScreen();
+		createSlotReelTexture();
+		createLevels();
+		createReelIntroSequence();
+
+        if (gameOver) {
+        	Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
+
+        	Table table = new Table();
+        	table.center();
+        	table.setFillParent(true);
+
+        	Label gameOverLabel = new Label("PLAY SCREEN", font);
+        	Label playAgainLabel = new Label("Click to Play Again", font);
+
+        	table.add(gameOverLabel).expandX();
+        	table.row();
+        	table.add(playAgainLabel).expandX().padTop(10f);
+        
+        	stage.addActor(table);
+        }
+   	}
+	
+	private void initialisePlayScreen() {
 		random = new Random();
+		renderer = new OrthogonalTiledMapRenderer(level1);
+		shapeRenderer = new ShapeRenderer();
+		slotReels = new Array<ReelSlotTile>();
+		levelReelSlotTiles = new Array<ReelSlotTile>();
+		initialFlashingStopped = false;
+		displaySpinHelp = false;		
+	}
+	
+	private void initialiseTweenEngine() {
 		SlotPuzzleTween.setWaypointsLimit(10);
 		SlotPuzzleTween.setCombinedAttributesLimit(3);
 		SlotPuzzleTween.registerAccessor(Sprite.class, new SpriteAccessor());
-		SlotPuzzleTween.registerAccessor(ReelSlotTileScroll.class, new ReelSpriteAccessor());
-
+		SlotPuzzleTween.registerAccessor(ReelSlotTileScroll.class, new ReelSpriteAccessor());		
+	}
+	
+	private void initialiseScreen() {
 		viewport = new FitViewport(800, 480, camera);
-        stage = new Stage(viewport, game.batch);
-        
-		Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
-		Assets.inst().update();
-		Assets.inst().finishLoading();
-		isLoaded = true;
+        stage = new Stage(viewport, game.batch);		
+	}
 
-		mapLoader = new TmxMapLoader();
-		map = mapLoader.load("levels/level 1.tmx");
-		renderer = new OrthogonalTiledMapRenderer(map);
-		shapeRenderer = new ShapeRenderer();
-		
-		TextureAtlas atlas = Assets.inst().get("reel/reels.pack.atlas", TextureAtlas.class);
-		cherry = atlas.createSprite("cherry");
-		cheesecake = atlas.createSprite("cheesecake");
-		grapes = atlas.createSprite("grapes");
-		jelly = atlas.createSprite("jelly");
-		lemon = atlas.createSprite("lemon");
-		peach = atlas.createSprite("peach");
-		pear = atlas.createSprite("pear");
-		tomato = atlas.createSprite("tomato");
+	private void loadAssets() {
+		game.assetManager.load("reel/reels.pack.atlas", TextureAtlas.class);
+		game.assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+		game.assetManager.load("levels/level 1.tmx", TiledMap.class);
+ 		game.assetManager.finishLoading();
+	}
+
+	private void getAssets() {
+		level1 = game.assetManager.get("levels/level 1.tmx");
+		reelAtlas = game.assetManager.get("reel/reels.pack.atlas", TextureAtlas.class);
+	}
+	
+	private void createSprites() {
+		cherry = reelAtlas.createSprite("cherry");
+		cheesecake = reelAtlas.createSprite("cheesecake");
+		grapes = reelAtlas.createSprite("grapes");
+		jelly = reelAtlas.createSprite("jelly");
+		lemon = reelAtlas.createSprite("lemon");
+		peach = reelAtlas.createSprite("peach");
+		pear = reelAtlas.createSprite("pear");
+		tomato = reelAtlas.createSprite("tomato");
 
 		sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
 		for (Sprite sprite : sprites) {
 			sprite.setOrigin(0, 0);
 		}
-
-		slotReels = new Array<ReelSlotTile>();
-
+	}
+	
+	private void createSlotReelTexture() {
 		slotReelPixmap = new Pixmap(PlayScreen.TILE_WIDTH, PlayScreen.TILE_HEIGHT, Pixmap.Format.RGBA8888);		
 		slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedPixmap(sprites, sprites.length);
 		slotReelTexture = new Texture(slotReelPixmap);
-
-		levelReelSlotTiles = new Array<ReelSlotTile>();
-		initialFlashingStopped = false;
-		displaySpinHelp = false;
+	}
 	
-		int index = 0; 
-		for (MapObject mapObject : map.getLayers().get(SLOT_REEL_OBJECT_LAYER).getObjects().getByType(RectangleMapObject.class)) {
+	private void createLevels() {
+		for (MapObject mapObject : level1.getLayers().get(SLOT_REEL_OBJECT_LAYER).getObjects().getByType(RectangleMapObject.class)) {
 			Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
 			int c = (int) (mapRectangle.getX() - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
 			int r = (int) (mapRectangle.getY() - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
@@ -179,11 +221,11 @@ public class PlayScreen implements Screen {
 			} else {
 				Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "I don't respond to grid r="+r+"c="+c+". There it won't be added to the level! Sort it out in a level editor.");				
 			}
-			index++;
 		}
+		levelReelSlotTiles = checkLevel(levelReelSlotTiles);	
+	}
 
-		levelReelSlotTiles = checkLevel(levelReelSlotTiles);
-
+	private void createReelIntroSequence() {
         Timeline sequence = Timeline.createSequence();
 		for(int i=0; i < levelReelSlotTiles.size; i++) {
 			sequence = sequence.push(SlotPuzzleTween.set(levelReelSlotTiles.get(i), SpriteAccessor.POS_XY).target(-60f, -20f + 32*i));
@@ -209,25 +251,8 @@ public class PlayScreen implements Screen {
             }
         }) .setCallbackTriggers(TweenCallback.STEP + TweenCallback.END)
            .start(tweenManager);
-
-        if (gameOver) {
-        	Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
-
-        	Table table = new Table();
-        	table.center();
-        	table.setFillParent(true);
-
-        	Label gameOverLabel = new Label("PLAY SCREEN", font);
-        	Label playAgainLabel = new Label("Click to Play Again", font);
-
-        	table.add(gameOverLabel).expandX();
-        	table.row();
-        	table.add(playAgainLabel).expandX().padTop(10f);
-        
-        	stage.addActor(table);
-        }
-   	}
-
+	}
+	
     private Array<ReelSlotTile> checkLevel(Array<ReelSlotTile> slotReelTiles) {
         PuzzleGridType puzzleGrid = new PuzzleGridType();
         TupleValueIndex[][] grid = populateMatchGrid(slotReelTiles);
@@ -354,7 +379,7 @@ public class PlayScreen implements Screen {
 	
 	private boolean hiddenPatternRevealed(TupleValueIndex[][] grid) {
 		boolean hiddenPattern = true;
-		for (MapObject mapObject : map.getLayers().get(HIDDEN_PATTERN_LAYER).getObjects().getByType(RectangleMapObject.class)) {
+		for (MapObject mapObject : level1.getLayers().get(HIDDEN_PATTERN_LAYER).getObjects().getByType(RectangleMapObject.class)) {
 			Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
 			int c = (int) (mapRectangle.getX() - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
 			int r = (int) (mapRectangle.getY() - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
@@ -432,7 +457,6 @@ public class PlayScreen implements Screen {
 
     @Override
     public void show() {
-        // TODO Auto-generated method stub
     }
 
     @Override
@@ -442,17 +466,14 @@ public class PlayScreen implements Screen {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -461,6 +482,5 @@ public class PlayScreen implements Screen {
 		for (ReelSlotTile reelSlotTile : levelReelSlotTiles) {
 			reelSlotTile.dispose();
 		}
-	}
-	
+	}	
 }
