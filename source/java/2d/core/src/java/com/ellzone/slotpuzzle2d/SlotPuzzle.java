@@ -2,8 +2,7 @@ package com.ellzone.slotpuzzle2d;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.ellzone.slotpuzzle2d.screens.SplashScreen;
-
+import com.ellzone.slotpuzzle2d.screens.LoadingScreen;
 
 public class SlotPuzzle extends Game
 {
@@ -14,7 +13,7 @@ public class SlotPuzzle extends Game
 	public void create() {
 		setLogLevel();
 		batch = new SpriteBatch();
-		setScreen(new SplashScreen(this));
+		setScreen(new LoadingScreen(this));
 	}
 	
 	private void setLogLevel() {
