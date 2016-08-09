@@ -41,6 +41,7 @@ public class LoadingScreen implements Screen{
     	loadAssets();
     	getAssets();
     	initialiseScreenPositions();
+    	loadSplashScreenAssets();
     }
     
     private void initialiseLoadingScreen() {
@@ -51,10 +52,8 @@ public class LoadingScreen implements Screen{
     
     private void loadAssets() {
 		assetManager = new AssetManager();
-		
 		assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
 		assetManager.load("levels/level 1.tmx", TiledMap.class);
-		
 		assetManager.load("loading_screen/progress_bar.png", Texture.class);
 		assetManager.load("loading_screen/progress_bar_base.png", Texture.class);
 		assetManager.load("reel/reels.pack.atlas", TextureAtlas.class);
@@ -72,6 +71,11 @@ public class LoadingScreen implements Screen{
     private void initialiseScreenPositions() {
 		pbPos = new Vector2();
 		pbPos.set((Gdx.graphics.getWidth() - progressBarBaseImg.getWidth()) >> 1, Gdx.graphics.getHeight() >> 1);
+    }
+    
+    private void loadSplashScreenAssets() {
+    	assetManager.load("splash/pack.atlas", TextureAtlas.class);
+    	assetManager.load("splash/splash3.pack.atlas", TextureAtlas.class);
     }
 	
 	@Override
@@ -92,7 +96,6 @@ public class LoadingScreen implements Screen{
 		if (assetManager.update()) {
 			game.setScreen(new SplashScreen(game));
 		}
-		
 	}
 
 	@Override
