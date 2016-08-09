@@ -75,6 +75,7 @@ public class PlayScreen implements Screen {
 	private Sprite peach;
 	private Sprite pear;
 	private Sprite tomato;
+	private float spriteWidth, spriteHeight;
  	private final TweenManager tweenManager = new TweenManager();
  	private TextureAtlas reelAtlas;
 	private boolean isLoaded = false;
@@ -175,11 +176,14 @@ public class PlayScreen implements Screen {
 		peach = reelAtlas.createSprite("peach");
 		pear = reelAtlas.createSprite("pear");
 		tomato = reelAtlas.createSprite("tomato");
-
+		
 		sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
 		for (Sprite sprite : sprites) {
 			sprite.setOrigin(0, 0);
 		}
+		spriteWidth = sprites[0].getWidth();
+		spriteHeight = sprites[0].getHeight();
+
 	}
 	
 	private void createSlotReelTexture() {
@@ -236,7 +240,7 @@ public class PlayScreen implements Screen {
 		}		
 		sequence = sequence.pushPause(0.3f).start(tweenManager);
 
-        slotReelScrollPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
+        slotReelScrollPixmap = new Pixmap((int) spriteWidth, (int)spriteHeight, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         reelSlot = new ReelSlotTileScroll(slotReelScrollTexture, slotReelTexture.getWidth(), slotReelTexture.getHeight(), 0, 32, 0, PlayScreen.SIXTY_FPS);
@@ -307,7 +311,7 @@ public class PlayScreen implements Screen {
             touchY = Gdx.input.getY();
             Vector2 newPoints1 = new Vector2(touchX, touchY);
             newPoints1 = viewport.unproject(newPoints1);
-            if ((newPoints1.x >= 0) & (newPoints1.x <= 32) & (newPoints1.y >= 32) & (newPoints1.y <= 64)) {
+            if ((newPoints1.x >= 0) & (newPoints1.x <= spriteWidth) & (newPoints1.y >= spriteHeight) & (newPoints1.y <= 64)) {
                 if (tween.getCurrentTime() == 0) {
                     tweenClicked = false;
                     reelSlot.setEndReel(random.nextInt(sprites.length));
