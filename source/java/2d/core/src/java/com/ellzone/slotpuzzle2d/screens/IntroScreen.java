@@ -183,7 +183,7 @@ public class IntroScreen implements Screen {
         table.add(buttonPressLabel).expandX();
 
         stage.addActor(table);
-        viewport.update(800, 480);    	
+        viewport.update(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);    	
     }
 
     private void initialiseIntroSequence() {
