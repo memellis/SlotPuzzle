@@ -1,4 +1,4 @@
-package com.ellzone.slotpuzzle2d.desktop.play.particle;
+package com.ellzone.slotpuzzle2d.desktop.play.tween;
 
 import java.util.Random;
 
@@ -11,22 +11,25 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.ellzone.slotpuzzle.physics.Particle;
-import com.ellzone.slotpuzzle.physics.Vector;
+import com.ellzone.slotpuzzle2d.effects.ReelSpriteAccessor;
 import com.ellzone.slotpuzzle2d.screens.TweenGraphsScreen;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
+import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
+import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
-public class Particle2 implements ApplicationListener {
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenPaths;
+import aurelienribon.tweenengine.equations.Circ;
+import aurelienribon.tweenengine.equations.Quad;
+
+public class WayPoints2 implements ApplicationListener {
 
 	private static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
-	private static final float VELOCITY_MIN = 2.0f;
 	private PerspectiveCamera cam;
     private Sprite cheesecake;
     private Sprite cherry;
@@ -37,39 +40,34 @@ public class Particle2 implements ApplicationListener {
     private Sprite pear;
     private Sprite tomato;
     private Sprite[] sprites;
-    private ReelTile reelTile;
 	private boolean isLoaded;
     private Pixmap slotReelScrollPixmap;
 	private Texture slotReelScrollTexture;
 	private Random random;
+    private ReelTile reelTile;
     private Array<ReelTile> reelTiles;
+    private TweenManager tweenManager;
+    private SlotPuzzleTween tween;
     private SpriteBatch batch;
-	private Array<Particle> reelParticles;
-	private Particle reelParticle;
-	private Vector accelerator;
-	private int dampPoint;
-    private ShapeRenderer shapeRenderer;
-    private Array<Vector2> points = new Array<Vector2>();
-    private float graphStep;
-    private float savedAmplitude;
-    private float savedSy;
-    private boolean saveAmplitude;
-    private float plotTime;
+	private float tweenDuration;
  
 	@Override
 	public void create() {
+        initialiseUniversalTweenEngine();
         loadAssets();
         initialiseReelSlots();
-        intialiseParticles();
+        initialiseTweens();
         initialiseCamera();
         batch = new SpriteBatch();
-        shapeRenderer = new ShapeRenderer();
-        graphStep = 0;
-        savedAmplitude = 0;
-        saveAmplitude = true;
-        plotTime = 132;
 	}
-		
+	
+	private void initialiseUniversalTweenEngine() {
+	    SlotPuzzleTween.setWaypointsLimit(10);
+	    SlotPuzzleTween.setCombinedAttributesLimit(3);
+	    SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelSpriteAccessor());
+	    tweenManager = new TweenManager();
+	}
+	
 	private void loadAssets() {
         Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
         Assets.inst().update();
@@ -101,25 +99,26 @@ public class Particle2 implements ApplicationListener {
         reelTile = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
         reelTile.setX(0);
         reelTile.setY(0);
-        reelTile.setSx(0);
-        reelTile.setEndReel(random.nextInt(sprites.length - 1));
-        reelTile.setSy(slotReelScrollTexture.getHeight() + 128 + reelTile.getEndReel() * 32 );
+        reelTile.setEndReel(random.nextInt(sprites.length));
         reelTiles.add(reelTile);
-	}	
-	
-	private void intialiseParticles() {
-		accelerator = new Vector(0, 3f);
-		reelParticles = new Array<Particle>();
-		reelParticle = new Particle(0, reelTiles.get(0).getSy(), 0.0001f , 0, 0);
-		reelParticle.velocity.setX(0);
-		reelParticle.velocity.setY(4);
-		reelParticle.accelerate(new Vector(0, 2f));
-		reelParticles.add(reelParticle);
-		dampPoint = slotReelScrollTexture.getHeight() * 20;
 	}
 	
-	private float dampenedSine(float initialAmplitude, float lambda, float angularFrequency, float time, float phaseAngle) {
-		return (float) (initialAmplitude * Math.exp(-lambda * time) *  Math.cos(angularFrequency * time + phaseAngle));
+	private void initialiseTweens() {
+		tweenDuration = 10.0f;
+        tween = SlotPuzzleTween.set(reelTiles.get(0), ReelSpriteAccessor.SCROLL_XY)
+        			.setDuration(tweenDuration)
+        			.target(0, reelTile.getEndReel() * 32)
+        			.waypoint(0,  slotReelScrollTexture.getHeight()*4) 
+        			.waypoint(0, -slotReelScrollTexture.getHeight()*8) 
+        			.waypoint(0,  slotReelScrollTexture.getHeight()*10) 
+        			.waypoint(0, -slotReelScrollTexture.getHeight()*12 + reelTile.getEndReel() * 32)
+        			.waypoint(0,  reelTile.getEndReel() * 32 + 16)
+        			.waypoint(0,  reelTile.getEndReel() * 32 - 15)
+        			.waypoint(0,  reelTile.getEndReel() * 32 + 8)
+					.waypoint(0,  reelTile.getEndReel() * 32 - 8)
+					.waypoint(0,  reelTile.getEndReel() * 32)
+        			.path(TweenPaths.catmullRom)
+        			.start(tweenManager);
 	}
 	
 	private void initialiseCamera() {
@@ -143,60 +142,25 @@ public class Particle2 implements ApplicationListener {
 	}
 	
     private void update(float delta) {
-    	for (Particle reelParticle : reelParticles) {
-    		reelParticle.update();
-    	}
-        for(ReelTile reelSlot : reelTiles) {
-    		if (reelParticles.get(0).velocity.getY() > Particle2.VELOCITY_MIN) {
-    	 		reelParticles.get(0).velocity.mulitplyBy(0.97f);
-        		reelParticles.get(0).accelerate(accelerator);
-        		accelerator.mulitplyBy(0.97f);       			
-         		reelSlot.setSy(reelParticles.get(0).position.getY());
-         	} else {
-      			if (reelSlot.getSy() < dampPoint) {
-      				if (saveAmplitude) {
-      					saveAmplitude = false;
-      					savedSy = reelSlot.getSy();
-      			      	savedAmplitude = (dampPoint - savedSy);      					
-      				}
-      		       	float ds = dampenedSine(savedAmplitude, 1.0f, (float) (2 * Math.PI), plotTime++/30, 0);
-      		       	reelSlot.setSy(savedSy+ds);
-        			
-      			} 
-      			
-      		}
-    		reelSlot.update(delta);
-         }
-    }
-
-    private void drawGraphPoint(ShapeRenderer shapeRenderer, Vector2 newPoint) {
-        if (points.size >= 2) {
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.setColor(0, 255, 255, 255);
-            for (int i = 0; i < points.size - 1; i++) {
-                shapeRenderer.line(points.get(i).x, points.get(i).y, points.get(i + 1).x, points.get(i + 1).y);
-            }
-            shapeRenderer.end();
+        tweenManager.update(delta);
+        for(ReelTile reelTile : reelTiles) {
+            reelTile.update(delta);
         }
-        points.add(newPoint);
     }
 
 	@Override
 	public void render() {	
-		final float delta = Math.min(1/30f, Gdx.graphics.getDeltaTime());
+		final float delta = Math.min(1/60f, Gdx.graphics.getDeltaTime());
         update(delta);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         if(isLoaded) {
             batch.begin();
-            for (ReelTile reelSlot : reelTiles) {
-                reelSlot.draw(batch);
+            for (ReelTile reelTile : reelTiles) {
+                reelTile.draw(batch);
             }
             batch.end();
-            float dsine = dampenedSine(savedAmplitude, 1.0f, (float) (2 * Math.PI), graphStep / 75, (float) Math.PI/2);
-            drawGraphPoint(shapeRenderer, new Vector2(graphStep % Gdx.graphics.getWidth(), 200 + dsine % Gdx.graphics.getHeight()));
-            graphStep++;
-       }
+        }
 	}
 
 	@Override

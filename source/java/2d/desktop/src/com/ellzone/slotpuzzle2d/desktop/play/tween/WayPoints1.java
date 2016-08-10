@@ -15,7 +15,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.effects.ReelSpriteAccessor;
 import com.ellzone.slotpuzzle2d.screens.TweenGraphsScreen;
-import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileScroll;
+import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
@@ -35,12 +35,13 @@ public class WayPoints1 implements ApplicationListener {
     private Sprite pear;
     private Sprite tomato;
     private Sprite[] sprites;
-    private ReelSlotTileScroll reelSlot;
+    private ReelTile reelSlot;
 	private boolean isLoaded;
     private Pixmap slotReelScrollPixmap;
 	private Texture slotReelScrollTexture;
 	private Random random;
-    private Array<ReelSlotTileScroll> reelSlots;
+	private ReelTile reelTile;
+	private Array<ReelTile> reelTiles;
     private TweenManager tweenManager;
     private SlotPuzzleTween tween;
     private SpriteBatch batch;
@@ -59,7 +60,7 @@ public class WayPoints1 implements ApplicationListener {
 	private void initialiseUniversalTweenEngine() {
 	    SlotPuzzleTween.setWaypointsLimit(10);
 	    SlotPuzzleTween.setCombinedAttributesLimit(3);
-	    SlotPuzzleTween.registerAccessor(ReelSlotTileScroll.class, new ReelSpriteAccessor());
+	    SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelSpriteAccessor());
 	    tweenManager = new TweenManager();
 	}
 	
@@ -87,20 +88,20 @@ public class WayPoints1 implements ApplicationListener {
 	
 	private void initialiseReelSlots() {
         random = new Random();
-        reelSlots = new Array<ReelSlotTileScroll>();
+        reelTiles = new Array<ReelTile>();
         slotReelScrollPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-        reelSlot = new ReelSlotTileScroll(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
-        reelSlot.setX(0);
-        reelSlot.setY(0);
-        reelSlot.setEndReel(random.nextInt(sprites.length));
-        reelSlots.add(reelSlot);
+        reelTile = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
+        reelTile.setX(0);
+        reelTile.setY(0);
+        reelTile.setEndReel(random.nextInt(sprites.length));
+        reelTiles.add(reelSlot);
 	}
 	
 	private void initialiseTweens() {
 		tweenDuration = 10.0f;
-        tween = SlotPuzzleTween.to(reelSlots.get(0), ReelSpriteAccessor.SCROLL_XY, tweenDuration)
+        tween = SlotPuzzleTween.to(reelTiles.get(0), ReelSpriteAccessor.SCROLL_XY, tweenDuration)
         			.target(0, slotReelScrollTexture.getHeight()*16 + reelSlot.getEndReel() * 32)
         			.waypoint(0,  slotReelScrollTexture.getHeight()*4, 
         					  0, -slotReelScrollTexture.getHeight()*8, 
@@ -131,7 +132,7 @@ public class WayPoints1 implements ApplicationListener {
 	
     private void update(float delta) {
         tweenManager.update(delta);
-        for(ReelSlotTileScroll reelSlot : reelSlots) {
+        for(ReelTile reelSlot : reelTiles) {
             reelSlot.update(delta);
         }
     }
@@ -144,7 +145,7 @@ public class WayPoints1 implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         if(isLoaded) {
             batch.begin();
-            for (ReelSlotTileScroll reelSlot : reelSlots) {
+            for (ReelTile reelSlot : reelTiles) {
                 reelSlot.draw(batch);
             }
             batch.end();
