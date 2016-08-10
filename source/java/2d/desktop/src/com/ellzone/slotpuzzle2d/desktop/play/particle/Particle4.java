@@ -19,7 +19,7 @@ import com.ellzone.slotpuzzle.physics.DampenedSine;
 import com.ellzone.slotpuzzle.physics.SPPhysicsCallback;
 import com.ellzone.slotpuzzle.physics.SPPhysicsEvent;
 import com.ellzone.slotpuzzle2d.screens.TweenGraphsScreen;
-import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileScroll;
+import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
@@ -36,13 +36,13 @@ public class Particle4 implements ApplicationListener {
     private Sprite pear;
     private Sprite tomato;
     private Sprite[] sprites;
-    private ReelSlotTileScroll reelSlot;
+    private ReelTile reelTile;
 	private boolean isLoaded;
     private Pixmap slotReelScrollPixmap;
 	private Texture slotReelScrollTexture;
 	private int slotReelScrollheight;
 	private Random random;
-    private Array<ReelSlotTileScroll> reelSlots;
+    private Array<ReelTile> reelTiles;
     private SpriteBatch batch;
     private Array<DampenedSine> dampenedSines;
 	private DampenedSine dampenedSine;
@@ -83,23 +83,23 @@ public class Particle4 implements ApplicationListener {
 	
 	private void initialiseReelSlots() {
         random = new Random();
-        reelSlots = new Array<ReelSlotTileScroll>();
+        reelTiles = new Array<ReelTile>();
         slotReelScrollPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         slotReelScrollheight = slotReelScrollTexture.getHeight();
-        reelSlot = new ReelSlotTileScroll(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollheight, 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
-        reelSlot.setX(0);
-        reelSlot.setY(0);
-        reelSlot.setSx(0);
-        reelSlot.setSy(0);
-        reelSlot.setEndReel(random.nextInt(sprites.length - 1));
-        reelSlots.add(reelSlot);
+        reelTile = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollheight, 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
+        reelTile.setX(0);
+        reelTile.setY(0);
+        reelTile.setSx(0);
+        reelTile.setSy(0);
+        reelTile.setEndReel(random.nextInt(sprites.length - 1));
+        reelTiles.add(reelTile);
 	}	
 	
 	private void initialiseDampenedSine() {
 		dampenedSines = new Array<DampenedSine>();
-		dampenedSine = new DampenedSine(0, reelSlots.get(0).getSy(), 0, 0, 0, slotReelScrollheight * 20, slotReelScrollheight, reelSlots.get(0).getEndReel());
+		dampenedSine = new DampenedSine(0, reelTiles.get(0).getSy(), 0, 0, 0, slotReelScrollheight * 20, slotReelScrollheight, reelTiles.get(0).getEndReel());
 		dampenedSine.setCallback(new SPPhysicsCallback() {
 			public void onEvent(int type, SPPhysicsEvent event) {
 				delegateDSCallback(type);
@@ -114,10 +114,10 @@ public class Particle4 implements ApplicationListener {
 		    addGraphPoint(new Vector2(graphStep++ % Gdx.graphics.getWidth(), (Gdx.graphics.getHeight() / 2 + dampenedSines.get(0).dsEndReel)));
 		} else {
 			if (type == SPPhysicsCallback.END) {
-				reelSlots.get(0).setEndReel(random.nextInt(sprites.length - 1));
+				reelTiles.get(0).setEndReel(random.nextInt(sprites.length - 1));
 				dampenedSines.get(0).initialiseDampenedSine();
 				dampenedSines.get(0).position.y = 0;				
-				dampenedSines.get(0).setEndReel(reelSlots.get(0).getEndReel());
+				dampenedSines.get(0).setEndReel(reelTiles.get(0).getEndReel());
 			}
 		}
 	}
@@ -148,7 +148,7 @@ public class Particle4 implements ApplicationListener {
 	}
 	
     private void update(float delta) {
-        for(ReelSlotTileScroll reelSlot : reelSlots) { 		  
+        for(ReelTile reelSlot : reelTiles) { 		  
          	dampenedSines.get(0).update();
   		    reelSlot.setSy(dampenedSines.get(0).position.y);
   	       	reelSlot.update(delta); 
@@ -181,7 +181,7 @@ public class Particle4 implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         if(isLoaded) {
             batch.begin();
-            for (ReelSlotTileScroll reelSlot : reelSlots) {
+            for (ReelTile reelSlot : reelTiles) {
                 reelSlot.draw(batch);
                 sprites[reelSlot.getEndReel()].setX(32);
                 sprites[reelSlot.getEndReel()].draw(batch);

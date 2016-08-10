@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle.physics.Particle;
 import com.ellzone.slotpuzzle.physics.Vector;
 import com.ellzone.slotpuzzle2d.screens.TweenGraphsScreen;
-import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileScroll;
+import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
@@ -35,12 +35,12 @@ public class Particle1 implements ApplicationListener {
     private Sprite pear;
     private Sprite tomato;
     private Sprite[] sprites;
-    private ReelSlotTileScroll reelSlot;
+    private ReelTile reelSlot;
 	private boolean isLoaded;
     private Pixmap slotReelScrollPixmap;
 	private Texture slotReelScrollTexture;
 	private Random random;
-    private Array<ReelSlotTileScroll> reelSlots;
+    private Array<ReelTile> reelTiles;
     private SpriteBatch batch;
 	private Array<Particle> reelParticles;
 	private Particle reelParticle;
@@ -80,28 +80,28 @@ public class Particle1 implements ApplicationListener {
 	
 	private void initialiseReelSlots() {
         random = new Random();
-        reelSlots = new Array<ReelSlotTileScroll>();
+        reelTiles = new Array<ReelTile>();
         slotReelScrollPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-        reelSlot = new ReelSlotTileScroll(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
+        reelSlot = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
         reelSlot.setX(0);
         reelSlot.setY(0);
         reelSlot.setSx(0);
         reelSlot.setSy(1024);
         reelSlot.setEndReel(random.nextInt(sprites.length));
-        reelSlots.add(reelSlot);
+        reelTiles.add(reelSlot);
 	}	
 	
 	private void intialiseParticles() {
 		accelerator = new Vector(0, 3f);
 		reelParticles = new Array<Particle>();
-		reelParticle = new Particle(0, reelSlots.get(0).getSy(), 0.0001f , 0, 0);
+		reelParticle = new Particle(0, reelTiles.get(0).getSy(), 0.0001f , 0, 0);
 		reelParticle.velocity.setX(0);
 		reelParticle.velocity.setY(4);
 		reelParticle.accelerate(new Vector(0, 2f));
 		reelParticles.add(reelParticle);
-		dampPoint = slotReelScrollTexture.getHeight() * 20 + reelSlots.get(0).getEndReel()*32;
+		dampPoint = slotReelScrollTexture.getHeight() * 20 + reelTiles.get(0).getEndReel()*32;
 	}
 	
 	private void initialiseCamera() {
@@ -128,7 +128,7 @@ public class Particle1 implements ApplicationListener {
     	for (Particle reelParticle : reelParticles) {
     		reelParticle.update();
     	}
-        for(ReelSlotTileScroll reelSlot : reelSlots) {
+        for(ReelTile reelSlot : reelTiles) {
     		if (reelParticles.get(0).velocity.getY() > Particle1.VELOCITY_MIN) {
     	 		reelParticles.get(0).velocity.mulitplyBy(0.97f);
         		reelParticles.get(0).accelerate(accelerator);
@@ -151,7 +151,7 @@ public class Particle1 implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         if(isLoaded) {
             batch.begin();
-            for (ReelSlotTileScroll reelSlot : reelSlots) {
+            for (ReelTile reelSlot : reelTiles) {
                 reelSlot.draw(batch);
             }
             batch.end();

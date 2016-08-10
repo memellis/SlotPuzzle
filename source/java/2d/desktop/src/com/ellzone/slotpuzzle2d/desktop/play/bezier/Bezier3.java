@@ -20,8 +20,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.screens.TweenGraphsScreen;
-import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileScroll;
-
+import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
@@ -91,12 +90,12 @@ public class Bezier3 implements ApplicationListener {
     private Sprite pear;
     private Sprite tomato;
     private Sprite[] sprites;
-    private ReelSlotTileScroll reelSlot;
 	private boolean isLoaded;
     private Pixmap slotReelScrollPixmap;
 	private Texture slotReelScrollTexture;
 	private Random random;
-    private Array<ReelSlotTileScroll> reelSlots;
+    private ReelTile reelTile;
+    private Array<ReelTile> reelTiles;
     private SpriteBatch batch;
     private ShapeRenderer shapeRenderer;
     private Array<Vector2> points = new Array<Vector2>();
@@ -142,17 +141,17 @@ public class Bezier3 implements ApplicationListener {
 	
 	private void initialiseReelSlots() {
         random = new Random();
-        reelSlots = new Array<ReelSlotTileScroll>();
+        reelTiles = new Array<ReelTile>();
         slotReelScrollPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-        reelSlot = new ReelSlotTileScroll(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
-        reelSlot.setX(0);
-        reelSlot.setY(0);
-        reelSlot.setSx(0);
-        reelSlot.setEndReel(random.nextInt(sprites.length - 1));
-        reelSlot.setSy(0);
-        reelSlots.add(reelSlot);
+        reelTile = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
+        reelTile.setX(0);
+        reelTile.setY(0);
+        reelTile.setSx(0);
+        reelTile.setEndReel(random.nextInt(sprites.length - 1));
+        reelTile.setSy(0);
+        reelTiles.add(reelTile);
 	}	
 	
 	private void initialiseBezier() {
@@ -204,7 +203,7 @@ public class Bezier3 implements ApplicationListener {
 	}
 	
     private void update(float delta) {
-        for(ReelSlotTileScroll reelSlot : reelSlots) {
+        for(ReelTile reelSlot : reelTiles) {
         	if (graphStep < reelSpinBezier.size - (graphSize/reelSpinPath.length)) {
         		reelSlot.setSy(reelSpinBezier.get(graphStep).y);
         	}
@@ -232,7 +231,7 @@ public class Bezier3 implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         if(isLoaded) {
             batch.begin();
-            for (ReelSlotTileScroll reelSlot : reelSlots) {
+            for (ReelTile reelSlot : reelTiles) {
                 reelSlot.draw(batch);
             }
             batch.end();
