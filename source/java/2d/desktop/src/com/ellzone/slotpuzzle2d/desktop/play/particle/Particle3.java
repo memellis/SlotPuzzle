@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle.physics.Particle;
 import com.ellzone.slotpuzzle.physics.Vector;
 import com.ellzone.slotpuzzle2d.screens.TweenGraphsScreen;
-import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileScroll;
+import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
@@ -36,13 +36,14 @@ public class Particle3 implements ApplicationListener {
     private Sprite pear;
     private Sprite tomato;
     private Sprite[] sprites;
-    private ReelSlotTileScroll reelSlot;
+    private ReelTile reelSlot;
 	private boolean isLoaded;
     private Pixmap slotReelScrollPixmap;
 	private Texture slotReelScrollTexture;
 	private int slotReelScrollheight;
 	private Random random;
-    private Array<ReelSlotTileScroll> reelSlots;
+	private ReelTile reelTile;
+    private Array<ReelTile> reelTiles;
     private SpriteBatch batch;
     private Array<Particle> reelParticles;
 	private Particle reelParticle;
@@ -90,24 +91,24 @@ public class Particle3 implements ApplicationListener {
 	
 	private void initialiseReelSlots() {
         random = new Random();
-        reelSlots = new Array<ReelSlotTileScroll>();
+        reelTiles = new Array<ReelTile>();
         slotReelScrollPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         slotReelScrollheight = slotReelScrollTexture.getHeight();
-        reelSlot = new ReelSlotTileScroll(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
-        reelSlot.setX(0);
-        reelSlot.setY(0);
-        reelSlot.setSx(0);
-        reelSlot.setSy(0);
-        reelSlot.setEndReel(random.nextInt(sprites.length - 1));
-        reelSlots.add(reelSlot);
+        reelTile = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
+        reelTile.setX(0);
+        reelTile.setY(0);
+        reelTile.setSx(0);
+        reelTile.setSy(0);
+        reelTile.setEndReel(random.nextInt(sprites.length - 1));
+        reelTiles.add(reelSlot);
 	}	
 	
 	private void intialiseParticles() {
 		accelerator = new Vector(0, 3f);
 		reelParticles = new Array<Particle>();
-		reelParticle = new Particle(0, reelSlots.get(0).getSy(), 0.0001f , 0, 0);
+		reelParticle = new Particle(0, reelTiles.get(0).getSy(), 0.0001f , 0, 0);
 		reelParticle.velocity.setX(0);
 		reelParticle.velocity.setY(4);
 		reelParticle.accelerate(new Vector(0, 2f));
@@ -116,10 +117,10 @@ public class Particle3 implements ApplicationListener {
 	}
 	
 	private void reinitialiseParticle(int index) {
-		reelSlots.get(0).setSy(0);
+		reelTiles.get(0).setSy(0);
 		accelerator = new Vector(0, 3f);
 		reelParticles.removeIndex(0);
-		reelParticle = new Particle(0, reelSlots.get(0).getSy(), 0.0001f , 0, 0);
+		reelParticle = new Particle(0, reelTiles.get(0).getSy(), 0.0001f , 0, 0);
 		reelParticle.velocity.setX(0);
 		reelParticle.velocity.setY(4);
 		reelParticle.accelerate(new Vector(0, 2f));
@@ -170,7 +171,7 @@ public class Particle3 implements ApplicationListener {
     	for (Particle reelParticle : reelParticles) {
     		reelParticle.update();
     	}
-        for(ReelSlotTileScroll reelSlot : reelSlots) { 		  
+        for(ReelTile reelSlot : reelTiles) { 		  
         	if (reelParticles.get(0).velocity.getY() > Particle3.VELOCITY_MIN) {
         		// Particle3.VELOCITY.MIN has a major influence on the endReel
         		// Current setting means the natural endReel is 4 (lemon)
@@ -225,7 +226,7 @@ public class Particle3 implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         if(isLoaded) {
             batch.begin();
-            for (ReelSlotTileScroll reelSlot : reelSlots) {
+            for (ReelTile reelSlot : reelTiles) {
                 reelSlot.draw(batch);
                 sprites[reelSlot.getEndReel()].setX(32);
                 sprites[reelSlot.getEndReel()].draw(batch);
