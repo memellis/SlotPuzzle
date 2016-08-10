@@ -30,7 +30,7 @@ import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.slotpuzzle2d.effects.ReelSpriteAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.sprites.ReelLetter;
-import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileScroll;
+import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.FileUtils;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
@@ -81,7 +81,7 @@ public class IntroScreen implements Screen {
     private Sprite pear;
     private Sprite tomato;
     private Sprite[] sprites;
-    private ReelSlotTileScroll reelSlot;
+    private ReelTile reelTile;
     private boolean isLoaded = false;
     private Random random;
 
@@ -112,7 +112,7 @@ public class IntroScreen implements Screen {
         Tween.setWaypointsLimit(10);
         Tween.setCombinedAttributesLimit(3);
         Tween.registerAccessor(Sprite.class, new SpriteAccessor());
-        Tween.registerAccessor(ReelSlotTileScroll.class, new ReelSpriteAccessor());    	
+        Tween.registerAccessor(ReelTile.class, new ReelSpriteAccessor());    	
     }
     
     private void initialiseFonts() {
@@ -225,18 +225,18 @@ public class IntroScreen implements Screen {
         slotReelPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelTexture = new Texture(slotReelPixmap);
 
-        reelSlot = new ReelSlotTileScroll(slotReelTexture, slotReelTexture.getWidth(), slotReelTexture.getHeight(), 32, 32, 0, IntroScreen.SIXTY_FPS);
+        reelTile = new ReelTile(slotReelTexture, slotReelTexture.getWidth(), slotReelTexture.getHeight(), 32, 32, 0, IntroScreen.SIXTY_FPS);
 
         Timeline reelSeq = Timeline.createSequence();
-        reelSeq = reelSeq.push(Tween.set(reelSlot, ReelSpriteAccessor.SCROLL_XY).target(0f, 0f).ease(Bounce.IN));
-        reelSeq = reelSeq.push(Tween.to(reelSlot, ReelSpriteAccessor.SCROLL_XY, 5.0f).target(0f, 32.0f * 8 * 3 + random.nextInt(slotReelTexture.getHeight() / 32) * 32).ease(Elastic.OUT));
+        reelSeq = reelSeq.push(Tween.set(reelTile, ReelSpriteAccessor.SCROLL_XY).target(0f, 0f).ease(Bounce.IN));
+        reelSeq = reelSeq.push(Tween.to(reelTile, ReelSpriteAccessor.SCROLL_XY, 5.0f).target(0f, 32.0f * 8 * 3 + random.nextInt(slotReelTexture.getHeight() / 32) * 32).ease(Elastic.OUT));
 
         introSeq = introSeq
                 .start(tweenManager);
 
         reelSeq = reelSeq.
                 repeat(100, 0.0f).
-                push(Tween.to(reelSlot, ReelSpriteAccessor.SCROLL_XY, 5.0f).target(0f, 32.0f * 8 * 3 + random.nextInt(slotReelTexture.getHeight() / 32) * 32).ease(Elastic.OUT)).
+                push(Tween.to(reelTile, ReelSpriteAccessor.SCROLL_XY, 5.0f).target(0f, 32.0f * 8 * 3 + random.nextInt(slotReelTexture.getHeight() / 32) * 32).ease(Elastic.OUT)).
                 start(tweenManager);
     }
     
@@ -267,7 +267,7 @@ public class IntroScreen implements Screen {
         for (ReelLetter reel : introScreenLetters) {
             reel.update(dt);
         }
-        reelSlot.update(dt);
+        reelTile.update(dt);
         if (ReelLetter.instanceCount == 0 | endOfIntroScreen) {
             game.setScreen(new PlayScreen(game));
             dispose();
@@ -286,7 +286,7 @@ public class IntroScreen implements Screen {
             for (ReelLetter reel : introScreenLetters) {
                 reel.draw(game.batch);
             }
-            reelSlot.draw(game.batch);
+            reelTile.draw(game.batch);
             game.batch.end();
             stage.draw();
         }

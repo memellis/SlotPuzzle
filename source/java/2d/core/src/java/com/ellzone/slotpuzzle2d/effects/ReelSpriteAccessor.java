@@ -1,12 +1,11 @@
 package com.ellzone.slotpuzzle2d.effects;
 
 import com.badlogic.gdx.graphics.Color;
-import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileScroll;
-
+import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 
 import aurelienribon.tweenengine.TweenAccessor;
 
-public class ReelSpriteAccessor implements TweenAccessor<ReelSlotTileScroll> {
+public class ReelSpriteAccessor implements TweenAccessor<ReelTile> {
     public static final int POS_XY = 1;
     public static final int CPOS_XY = 2;
     public static final int SCALE_XY = 3;
@@ -16,7 +15,7 @@ public class ReelSpriteAccessor implements TweenAccessor<ReelSlotTileScroll> {
     public static final int SCROLL_XY = 7;
 
     @Override
-    public int getValues(ReelSlotTileScroll target, int tweenType, float[] returnValues) {
+    public int getValues(ReelTile target, int tweenType, float[] returnValues) {
         switch (tweenType) {
             case POS_XY:
                 returnValues[0] = target.getX();
@@ -52,7 +51,7 @@ public class ReelSpriteAccessor implements TweenAccessor<ReelSlotTileScroll> {
     }
 
     @Override
-    public void setValues(ReelSlotTileScroll target, int tweenType, float[] newValues) {
+    public void setValues(ReelTile target, int tweenType, float[] newValues) {
         switch (tweenType) {
             case POS_XY: target.setPosition(newValues[0], newValues[1]); break;
             case CPOS_XY: target.setPosition(newValues[0] - target.getWidth()/2, newValues[1] - target.getHeight()/2); break;

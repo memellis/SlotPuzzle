@@ -36,8 +36,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.effects.ReelSpriteAccessor;
 import com.ellzone.slotpuzzle2d.graphs.DrawTweenGraphs;
-import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileScroll;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileScroll3D;
+import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
@@ -105,8 +105,8 @@ public class TweenGraphsScreen implements Screen {
     private Sprite pear;
     private Sprite tomato;
     private Sprite[] sprites;
-    private ReelSlotTileScroll reelSlot;
-    private Array<ReelSlotTileScroll> reelSlots = new Array<ReelSlotTileScroll>();
+    private ReelTile reelTile;
+    private Array<ReelTile> reelTiles = new Array<ReelTile>();
     private boolean isLoaded;
     private Random random;
     private Pixmap slotReelScrollPixmap;
@@ -144,7 +144,7 @@ public class TweenGraphsScreen implements Screen {
         random = new Random();
         Tween.setWaypointsLimit(10);
         Tween.setCombinedAttributesLimit(3);
-        SlotPuzzleTween.registerAccessor(ReelSlotTileScroll.class, new ReelSpriteAccessor());
+        SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelSpriteAccessor());
 
         modelBatch = new ModelBatch();
 
@@ -177,52 +177,52 @@ public class TweenGraphsScreen implements Screen {
         slotReelScrollPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-        reelSlot = new ReelSlotTileScroll(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
-        reelSlot.setX(0);
-        reelSlot.setY(32);
-        reelSlot.setEndReel(random.nextInt(sprites.length));
-        reelSlots.add(reelSlot);
+        reelTile = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
+        reelTile.setX(0);
+        reelTile.setY(32);
+        reelTile.setEndReel(random.nextInt(sprites.length));
+        reelTiles.add(reelTile);
 
         easeEquation =  Quart.OUT;
-        tween = SlotPuzzleTween.to(reelSlot, ReelSpriteAccessor.SCROLL_XY, 20.0f) .target(0,  2560 + reelSlot.getEndReel() * 32) .ease(easeEquation).setCallback(new TweenCallback() {
+        tween = SlotPuzzleTween.to(reelTile, ReelSpriteAccessor.SCROLL_XY, 20.0f) .target(0,  2560 + reelTile.getEndReel() * 32) .ease(easeEquation).setCallback(new TweenCallback() {
             @Override
             public void onEvent(int type, BaseTween<?> source) {
-                delegateTweenOnEvent(type, source, tween, reelSlot);
+                delegateTweenOnEvent(type, source, tween, reelTile);
             }
         }) .setCallbackTriggers(TweenCallback.STEP + TweenCallback.END)
                 .start(tweenManager);
         tweens.add(tween);
 
-        reelSlot = new ReelSlotTileScroll(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 32, 32, 0, TweenGraphsScreen.SIXTY_FPS);
-        reelSlot.setX(32);
-        reelSlot.setY(32);
-        reelSlot.setEndReel(random.nextInt(sprites.length));
-        reelSlots.add(reelSlot);
+        reelTile = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 32, 32, 0, TweenGraphsScreen.SIXTY_FPS);
+        reelTile.setX(32);
+        reelTile.setY(32);
+        reelTile.setEndReel(random.nextInt(sprites.length));
+        reelTiles.add(reelTile);
 
         easeEquation =  Elastic.OUT;
-        tween = SlotPuzzleTween.to(reelSlot, ReelSpriteAccessor.SCROLL_XY, 10.0f) .target(0, reelSlot.getEndReel() * 32) .ease(easeEquation);
+        tween = SlotPuzzleTween.to(reelTile, ReelSpriteAccessor.SCROLL_XY, 10.0f) .target(0, reelTile.getEndReel() * 32) .ease(easeEquation);
         tween = tween.setCallback(new TweenCallback() {
             @Override
             public void onEvent(int type, BaseTween<?> source) {
-                delegateTweenOnEvent(type, source, tween, reelSlot);
+                delegateTweenOnEvent(type, source, tween, reelTile);
             }
         }) .setCallbackTriggers(TweenCallback.STEP + TweenCallback.END)
                 .start(tweenManager);
         tweens.add(tween);
 
-        reelSlot = new ReelSlotTileScroll(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 64, 32, 0, TweenGraphsScreen.SIXTY_FPS);
-        reelSlot.setX(64);
-        reelSlot.setY(32);
-        reelSlot.setEndReel(random.nextInt(sprites.length));
-        reelSlots.add(reelSlot);
+        reelTile = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 64, 32, 0, TweenGraphsScreen.SIXTY_FPS);
+        reelTile.setX(64);
+        reelTile.setY(32);
+        reelTile.setEndReel(random.nextInt(sprites.length));
+        reelTiles.add(reelTile);
 
         easeEquation =  Quint.OUT;
         toValue = 2048;
-        tween = SlotPuzzleTween.to(reelSlot, ReelSpriteAccessor.SCROLL_XY, 10.0f) .target(0, toValue).ease(easeEquation);
+        tween = SlotPuzzleTween.to(reelTile, ReelSpriteAccessor.SCROLL_XY, 10.0f) .target(0, toValue).ease(easeEquation);
         tween = tween.setCallback(new TweenCallback() {
             @Override
             public void onEvent(int type, BaseTween<?> source) {
-                delegateTweenOnEventToAdjustTarget(type, source, tween, reelSlot);
+                delegateTweenOnEventToAdjustTarget(type, source, tween, reelTile);
             }
         }) .setCallbackTriggers(TweenCallback.STEP + TweenCallback.END + TweenCallback.COMPLETE)
                 .start(tweenManager);
@@ -266,29 +266,20 @@ public class TweenGraphsScreen implements Screen {
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -.4f, -.4f, -.4f));
     }
 
-    private void delegateTweenOnEvent(int type, BaseTween<?> source, SlotPuzzleTween tween, ReelSlotTileScroll reelSlot) {
+    private void delegateTweenOnEvent(int type, BaseTween<?> source, SlotPuzzleTween tween, ReelTile reelTile) {
         switch (type){
-            case TweenCallback.ANY: System.out.println("ANY"); break;
-            case TweenCallback.ANY_BACKWARD: System.out.println("ANY_BACKWARD"); break;
-            case TweenCallback.ANY_FORWARD: System.out.println("ANY_FORWARD"); break;
-            case TweenCallback.BACK_BEGIN: System.out.println("BACK_BEGIN"); break;
-            case TweenCallback.BACK_COMPLETE: System.out.println("BACK_COMPLETE"); break;
-            case TweenCallback.BACK_START: System.out.println("BACK_START"); break;
-            case TweenCallback.COMPLETE: System.out.println("COMPLETE"); break;
             case TweenCallback.END:
                 ReelSpriteAccessor accessor = (ReelSpriteAccessor) tween.getAccessor();
                 if (accessor != null) {
-                    int size = accessor.getValues(reelSlot, ReelSpriteAccessor.SCROLL_XY, returnValues);
+                    accessor.getValues(reelTile, ReelSpriteAccessor.SCROLL_XY, returnValues);
                 } else {
                     System.out.println("null!");
                 }
                 break;
-            case TweenCallback.START: System.out.println("START"); break;
-            case TweenCallback.STEP: break;
         }
     }
 
-    private void delegateTweenOnEventToAdjustTarget(int type, BaseTween<?> source, SlotPuzzleTween tween1, ReelSlotTileScroll reelSlot) {
+    private void delegateTweenOnEventToAdjustTarget(int type, BaseTween<?> source, SlotPuzzleTween tween1, ReelTile reelTile) {
         if (type == TweenCallback.STEP) {
             if (toValue != 0) {
                 toValue += 4;
@@ -309,10 +300,10 @@ public class TweenGraphsScreen implements Screen {
             }
         } else if (type == TweenCallback.COMPLETE) {
             final SlotPuzzleTween tweenReference = tween1;
-            final ReelSlotTileScroll reelSlotReference = reelSlot;
+            final ReelTile reelSlotReference = reelTile;
             toValue = 2048;
             endCallBack = false;
-            tween1 = tween1.to(reelSlot, ReelSpriteAccessor.SCROLL_XY, 10.0f) .target(0, toValue).ease(Quint.OUT);
+            tween1 = tween1.to(reelTile, ReelSpriteAccessor.SCROLL_XY, 10.0f) .target(0, toValue).ease(Quint.OUT);
             tween1 = tween1.setCallback(new TweenCallback() {
                 @Override
                 public void onEvent(int type, BaseTween<?> source) {
@@ -342,19 +333,19 @@ public class TweenGraphsScreen implements Screen {
                     System.out.println("slotIndex=0 clicked");
                     if (tweens.get(0).getCurrentTime() == 0) {
                         tweenClicked = false;
-                        reelSlots.get(0).setEndReel(random.nextInt(sprites.length));
-                        tweens.set(0, SlotPuzzleTween.to(reelSlots.get(0), ReelSpriteAccessor.SCROLL_XY, 20.0f).target(0, returnValues[1] + (2560 - returnValues[1] % 2560) + reelSlots.get(0).getEndReel() * 32).ease(Sine.OUT).setCallback(new TweenCallback() {
+                        reelTiles.get(0).setEndReel(random.nextInt(sprites.length));
+                        tweens.set(0, SlotPuzzleTween.to(reelTiles.get(0), ReelSpriteAccessor.SCROLL_XY, 20.0f).target(0, returnValues[1] + (2560 - returnValues[1] % 2560) + reelTiles.get(0).getEndReel() * 32).ease(Sine.OUT).setCallback(new TweenCallback() {
                             @Override
                             public void onEvent(int type, BaseTween<?> source) {
-                                delegateTweenOnEvent(type, source, tweens.get(0), reelSlots.get(0));
+                                delegateTweenOnEvent(type, source, tweens.get(0), reelTiles.get(0));
                             }
                         }).setCallbackTriggers(TweenCallback.END)
                                 .start(tweenManager));
                     } else {
                         if ((tweens.get(0).getCurrentTime() < tweens.get(0).getDuration() / 2.0f) & (!tweenClicked)) {
                             tweenClicked = true;
-                            reelSlots.get(0).setEndReel();
-                            tweens.set(0, tweens.get(0).target(0, returnValues[1] + (1280 - (returnValues[1] % 1280)) + reelSlots.get(0).getEndReel() * 32));
+                            reelTiles.get(0).setEndReel();
+                            tweens.set(0, tweens.get(0).target(0, returnValues[1] + (1280 - (returnValues[1] % 1280)) + reelTiles.get(0).getEndReel() * 32));
                             tweens.set(0, tweens.get(0).setDuration((tweens.get(0).getDuration() - tweens.get(0).getCurrentTime())));
                             tweens.get(0).start();
                         }
@@ -382,7 +373,7 @@ public class TweenGraphsScreen implements Screen {
 
     private void update(float delta) {
         tweenManager.update(delta);
-        for(ReelSlotTileScroll reelSlot : reelSlots) {
+        for(ReelTile reelSlot : reelTiles) {
             reelSlot.update(delta);
         }
     }
@@ -394,31 +385,30 @@ public class TweenGraphsScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         if(isLoaded) {
-                game.batch.begin();
-                for (ReelSlotTileScroll reelSlot : reelSlots) {
-                    reelSlot.draw(game.batch);
-                }
-                game.batch.end();
-
-                //camController.update();
-
-                ReelSlotTileScroll3D tile = tiles.first();
-                tile.angle = (tile.angle + 90 * delta) % 360;
-                tile.update();
-
-                modelBatch.begin(cam);
-                modelBatch.render(tiles, environment);
-                modelBatch.end();
-                //drawGraphPoint(shapeRenderer, new Vector2(graphStep++   % Gdx.graphics.getWidth(), Gdx.graphics.getHeight()/2 + reelSlots.get(0).getSy() % slotReelScrollTexture.getHeight()));
-                drawGraphPoint(shapeRenderer, new Vector2(graphStep++ % Gdx.graphics.getWidth(), Gdx.graphics.getHeight()/2 + reelSlots.get(1).getSy() % slotReelScrollTexture.getHeight()));
-
-            } else {
-                if (Assets.inst().getProgress() < 1) {
-                    Assets.inst().update();
-                } else {
-                    isLoaded = true;
-                }
+            game.batch.begin();
+            for (ReelTile reelSlot : reelTiles) {
+                reelSlot.draw(game.batch);
             }
+            game.batch.end();
+
+            //camController.update();
+
+            ReelSlotTileScroll3D tile = tiles.first();
+            tile.angle = (tile.angle + 90 * delta) % 360;
+            tile.update();
+
+            modelBatch.begin(cam);
+            modelBatch.render(tiles, environment);
+            modelBatch.end();
+            //drawGraphPoint(shapeRenderer, new Vector2(graphStep++   % Gdx.graphics.getWidth(), Gdx.graphics.getHeight()/2 + reelSlots.get(0).getSy() % slotReelScrollTexture.getHeight()));
+            drawGraphPoint(shapeRenderer, new Vector2(graphStep++ % Gdx.graphics.getWidth(), Gdx.graphics.getHeight()/2 + reelTiles.get(1).getSy() % slotReelScrollTexture.getHeight()));
+        } else {
+            if (Assets.inst().getProgress() < 1) {
+                Assets.inst().update();
+            } else {
+                isLoaded = true;
+            }
+        }
     }
 
     @Override
@@ -438,21 +428,17 @@ public class TweenGraphsScreen implements Screen {
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
     }
 
     @Override
     public void dispose() {
-
     }
 }
