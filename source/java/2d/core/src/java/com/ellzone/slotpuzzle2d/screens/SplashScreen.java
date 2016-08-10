@@ -34,7 +34,6 @@ public class SplashScreen implements Screen {
 	private float wph;
 	boolean isLoaded;
  	private final TweenManager tweenManager = new TweenManager();
- 	private AssetManager assetManager;
  	private Sprite slot;
  	private Sprite puzzle;
 	private Sprite universal;
@@ -59,7 +58,7 @@ public class SplashScreen implements Screen {
 		initialiseSplashScreen();
 		initialiseTweenEngine();
 		initialiseCamera();
-		loadAssets();		
+		loadAssets();	
 		createSprites();
 		createSplashScreenSequence();
 	}
@@ -68,7 +67,7 @@ public class SplashScreen implements Screen {
 		endOfSplashScreen = false;
 		nextScreen = NextScreen.INTROSCREEN;
 		Gdx.input.setInputProcessor(splashScreenInputProcessor);
-		assetManager = new AssetManager();
+		game.assetManager = new AssetManager();
 	}
 
 	private void initialiseTweenEngine() {
@@ -86,13 +85,13 @@ public class SplashScreen implements Screen {
 	}
 	
 	private void loadAssets() {
-		assetManager.load("splash/pack.atlas", TextureAtlas.class);
-		assetManager.load("splash/splash3.pack.atlas", TextureAtlas.class);
-		assetManager.finishLoading();
+		game.assetManager.load("splash/pack.atlas", TextureAtlas.class);
+		game.assetManager.load("splash/splash3.pack.atlas", TextureAtlas.class);
+		game.assetManager.finishLoading();
 	}
 
 	private void createSprites() {
-		TextureAtlas atlas = assetManager.get("splash/pack.atlas", TextureAtlas.class);
+		TextureAtlas atlas = game.assetManager.get("splash/pack.atlas", TextureAtlas.class);
 		universal = atlas.createSprite("universal");
 		tween = atlas.createSprite("tween");
 		engine = atlas.createSprite("engine");
@@ -103,7 +102,7 @@ public class SplashScreen implements Screen {
 		veil = atlas.createSprite("white");
 		gdxTex = atlas.findRegion("gdx");
 
-		TextureAtlas atlas1 = assetManager.get("splash/splash3.pack.atlas", TextureAtlas.class);
+		TextureAtlas atlas1 = game.assetManager.get("splash/splash3.pack.atlas", TextureAtlas.class);
 		slot = atlas1.createSprite("slot");
 		puzzle = atlas1.createSprite("puzzle");
  

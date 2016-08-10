@@ -37,7 +37,6 @@ import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileListener;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileScroll;
 import com.ellzone.slotpuzzle2d.sprites.ReelStoppedFlashingReelSlotTileEvent;
 import com.ellzone.slotpuzzle2d.sprites.ReelStoppedSpinningReelSlotTileEvent;
-import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
@@ -191,7 +190,7 @@ public class PlayScreen implements Screen {
 			r = 8 - r;
 			if ((r >= 0) & (r <= 8) & (c >= 0) & (c <= 8)) {
                 int endReel = random.nextInt(sprites.length);
-				ReelSlotTile reelSlotTile = new ReelSlotTile(this, slotReelTexture, sprites.length, sprites.length * sprites.length, SIXTY_FPS, mapRectangle.getX(), mapRectangle.getY(), endReel);
+				ReelSlotTile reelSlotTile = new ReelSlotTile(slotReelTexture, sprites.length, sprites.length * sprites.length, SIXTY_FPS, mapRectangle.getX(), mapRectangle.getY(), endReel);
 				reelSlotTile.addListener(new ReelSlotTileListener() {
 					@Override
 					public void actionPerformed(ReelSlotTileEvent event) {

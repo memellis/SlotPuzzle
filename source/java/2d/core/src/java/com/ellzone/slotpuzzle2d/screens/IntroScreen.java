@@ -1,6 +1,8 @@
 package com.ellzone.slotpuzzle2d.screens;
 
 import java.io.IOException;
+import java.util.Random;
+
 import org.jrenner.smartfont.SmartFontGenerator;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -81,6 +83,7 @@ public class IntroScreen implements Screen {
     private Sprite[] sprites;
     private ReelSlotTileScroll reelSlot;
     private boolean isLoaded = false;
+    private Random random;
 
     public IntroScreen(SlotPuzzle game) {
         this.game = game;
@@ -101,7 +104,8 @@ public class IntroScreen implements Screen {
         stage = new Stage(viewport, game.batch);
         ReelLetter.instanceCount = 0;
         endOfIntroScreen = false;
-        Gdx.input.setInputProcessor(stage);    	
+        Gdx.input.setInputProcessor(stage);
+        random = new Random();
     }
 
     private void initialiseTweenEngine() {
@@ -225,13 +229,14 @@ public class IntroScreen implements Screen {
 
         Timeline reelSeq = Timeline.createSequence();
         reelSeq = reelSeq.push(Tween.set(reelSlot, ReelSpriteAccessor.SCROLL_XY).target(0f, 0f).ease(Bounce.IN));
-        reelSeq = reelSeq.push(Tween.to(reelSlot, ReelSpriteAccessor.SCROLL_XY, 5.0f).target(0f, 1000f).ease(Elastic.OUT));
+        reelSeq = reelSeq.push(Tween.to(reelSlot, ReelSpriteAccessor.SCROLL_XY, 5.0f).target(0f, 32.0f * 8 * 3 + random.nextInt(slotReelTexture.getHeight() / 32) * 32).ease(Elastic.OUT));
 
         introSeq = introSeq
                 .start(tweenManager);
 
         reelSeq = reelSeq.
                 repeat(100, 0.0f).
+                push(Tween.to(reelSlot, ReelSpriteAccessor.SCROLL_XY, 5.0f).target(0f, 32.0f * 8 * 3 + random.nextInt(slotReelTexture.getHeight() / 32) * 32).ease(Elastic.OUT)).
                 start(tweenManager);
     }
     

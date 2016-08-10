@@ -25,7 +25,6 @@ public class LoadingScreen implements Screen{
 	private Viewport viewport;
 	private Stage stage;
 	private OrthographicCamera camera;
-	private AssetManager assetManager;
 	private TiledMap level1;
 	private Texture progressBarImg, progressBarBaseImg;
 	private TextureAtlas reelAtlas;
@@ -51,21 +50,21 @@ public class LoadingScreen implements Screen{
     }
     
     private void loadAssets() {
-		assetManager = new AssetManager();
-		assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-		assetManager.load("levels/level 1.tmx", TiledMap.class);
-		assetManager.load("loading_screen/progress_bar.png", Texture.class);
-		assetManager.load("loading_screen/progress_bar_base.png", Texture.class);
-		assetManager.load("reel/reels.pack.atlas", TextureAtlas.class);
-		assetManager.finishLoading();
+		game.assetManager = new AssetManager();
+		game.assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+		game.assetManager.load("levels/level 1.tmx", TiledMap.class);
+		game.assetManager.load("loading_screen/progress_bar.png", Texture.class);
+		game.assetManager.load("loading_screen/progress_bar_base.png", Texture.class);
+		game.assetManager.load("reel/reels.pack.atlas", TextureAtlas.class);
+ 		game.assetManager.finishLoading();
 		Gdx.app.log(TAG, "Assets loaded");
     }
     
     private void getAssets() {
-		level1 = assetManager.get("levels/level 1.tmx");
-		progressBarImg = assetManager.get("loading_screen/progress_bar.png");
-		progressBarBaseImg = assetManager.get("loading_screen/progress_bar_base.png");
-		reelAtlas = assetManager.get("reel/reels.pack.atlas", TextureAtlas.class);
+		level1 = game.assetManager.get("levels/level 1.tmx");
+		progressBarImg = game.assetManager.get("loading_screen/progress_bar.png");
+		progressBarBaseImg = game.assetManager.get("loading_screen/progress_bar_base.png");
+		reelAtlas = game.assetManager.get("reel/reels.pack.atlas", TextureAtlas.class);
     }
     
     private void initialiseScreenPositions() {
@@ -74,8 +73,8 @@ public class LoadingScreen implements Screen{
     }
     
     private void loadSplashScreenAssets() {
-    	assetManager.load("splash/pack.atlas", TextureAtlas.class);
-    	assetManager.load("splash/splash3.pack.atlas", TextureAtlas.class);
+    	game.assetManager.load("splash/pack.atlas", TextureAtlas.class);
+    	game.assetManager.load("splash/splash3.pack.atlas", TextureAtlas.class);
     }
 	
 	@Override
@@ -89,11 +88,11 @@ public class LoadingScreen implements Screen{
 
 		game.batch.begin();
 		game.batch.draw(progressBarBaseImg, pbPos.x, pbPos.y);
-		game.batch.draw(progressBarImg, pbPos.x, pbPos.y, progressBarImg.getWidth() * assetManager.getProgress(), progressBarImg.getHeight());
+		game.batch.draw(progressBarImg, pbPos.x, pbPos.y, progressBarImg.getWidth() * game.assetManager.getProgress(), progressBarImg.getHeight());
 		game.batch.end();
         stage.draw();
         
-		if (assetManager.update()) {
+		if (game.assetManager.update()) {
 			game.setScreen(new SplashScreen(game));
 		}
 	}
@@ -116,6 +115,5 @@ public class LoadingScreen implements Screen{
 
 	@Override
 	public void dispose() {
-		assetManager.dispose();
 	}
 }

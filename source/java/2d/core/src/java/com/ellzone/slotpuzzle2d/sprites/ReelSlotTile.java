@@ -2,23 +2,17 @@ package com.ellzone.slotpuzzle2d.sprites;
 
 import java.util.Random;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
 public class ReelSlotTile extends ReelSprite {
 	public static int instanceCount = 0;
 	public static int reelsSpinning = 0;
-	private final DelayedRemovalArray<ReelSlotTileListener> listeners = new DelayedRemovalArray<ReelSlotTileListener>(0);
-	private Screen screen;
 	private Animation reelAnimationFast;
 	private Texture reelTexture;
 	private int reelRows;
@@ -40,8 +34,7 @@ public class ReelSlotTile extends ReelSprite {
 	private FlashState reelFlashState; 
 	private boolean deleteReelTile;
 
-	public ReelSlotTile(Screen screen, Texture reelTexture, int reelRows, int reelCols, float frameRate, float x, float y, int endReel) {
-		this.screen = screen;
+	public ReelSlotTile(Texture reelTexture, int reelRows, int reelCols, float frameRate, float x, float y, int endReel) {
 		this.reelTexture = reelTexture;
 		this.reelRows = reelRows;
 		this.reelCols = reelCols;
@@ -150,8 +143,6 @@ public class ReelSlotTile extends ReelSprite {
 
 	public int getCurrentReel() {
 		int frameIndex = reelAnimationFast.getKeyFrameIndex(stateTime);
-		TextureRegion currentFrame = reelAnimationFast.getKeyFrame(stateTime);
-		TextureRegion firstFrame = reelAnimationFast.getKeyFrame(0);
 		return (((frameIndex % reelCols) /  4) + 1 + initialRow) % reelRows;
 	}
 	

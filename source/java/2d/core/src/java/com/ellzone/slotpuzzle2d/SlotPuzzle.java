@@ -1,18 +1,21 @@
 package com.ellzone.slotpuzzle2d;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.ellzone.slotpuzzle2d.screens.LoadingScreen;
 
 public class SlotPuzzle extends Game
 {
-	public SpriteBatch batch;
 	public final static String SLOT_PUZZLE = "Slot Puzzle";
+	public SpriteBatch batch;
+	public AssetManager assetManager;
 
 	@Override
 	public void create() {
 		setLogLevel();
 		batch = new SpriteBatch();
+		assetManager = new AssetManager();
 		setScreen(new LoadingScreen(this));
 	}
 	
@@ -49,6 +52,7 @@ public class SlotPuzzle extends Game
 	public void dispose() {
 		super.dispose();
 		batch.dispose();
+		assetManager.dispose();
 	}
 
 	@Override
