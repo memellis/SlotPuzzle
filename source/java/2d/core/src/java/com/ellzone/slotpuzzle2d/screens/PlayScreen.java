@@ -12,13 +12,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -46,18 +44,12 @@ import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
-
-import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.equations.Back;
-import aurelienribon.tweenengine.equations.Bounce;
 import aurelienribon.tweenengine.equations.Cubic;
-import aurelienribon.tweenengine.equations.Elastic;
 import aurelienribon.tweenengine.equations.Quad;
 import aurelienribon.tweenengine.equations.Quart;
-import aurelienribon.tweenengine.equations.Quint;
 import aurelienribon.tweenengine.equations.Sine;
 
-@SuppressWarnings("unused")
 public class PlayScreen implements Screen {
 	private static final float SIXTY_FPS = 1/60f;
 	private static final int TILE_WIDTH = 32;
@@ -85,13 +77,10 @@ public class PlayScreen implements Screen {
 	private boolean isLoaded = false;
 	private Pixmap slotReelPixmap, slotReelScrollPixmap;
 	private Texture slotReelTexture, slotReelScrollTexture;
-	private Array<ReelSlotTile> slotReels;
 	private Array<ReelSlotTile> levelReelSlotTiles;
-	private TmxMapLoader mapLoader;
 	private TiledMap level1;
 	private Random random;
 	private OrthogonalTiledMapRenderer renderer;
-	private ShapeRenderer shapeRenderer; 
 	private boolean gameOver = false;
 	private int touchX, touchY;
 	private boolean initialFlashingStopped;
@@ -140,8 +129,6 @@ public class PlayScreen implements Screen {
 	private void initialisePlayScreen() {
 		random = new Random();
 		renderer = new OrthogonalTiledMapRenderer(level1);
-		shapeRenderer = new ShapeRenderer();
-		slotReels = new Array<ReelSlotTile>();
 		levelReelSlotTiles = new Array<ReelSlotTile>();
 		initialFlashingStopped = false;
 		displaySpinHelp = false;		
@@ -289,7 +276,6 @@ public class PlayScreen implements Screen {
 	}
 
     private Array<ReelSlotTile> checkLevel(Array<ReelSlotTile> slotReelTiles) {
-        PuzzleGridType puzzleGrid = new PuzzleGridType();
         TupleValueIndex[][] grid = populateMatchGrid(slotReelTiles);
         int arraySizeR = grid.length;
         int arraySizeC = grid[0].length;
@@ -392,23 +378,14 @@ public class PlayScreen implements Screen {
 
     private void delegateTweenOnEvent(int type, BaseTween<?> source) {
         switch (type){
-            case TweenCallback.ANY: System.out.println("ANY"); break;
-            case TweenCallback.ANY_BACKWARD: System.out.println("ANY_BACKWARD"); break;
-            case TweenCallback.ANY_FORWARD: System.out.println("ANY_FORWARD"); break;
-            case TweenCallback.BACK_BEGIN: System.out.println("BACK_BEGIN"); break;
-            case TweenCallback.BACK_COMPLETE: System.out.println("BACK_COMPLETE"); break;
-            case TweenCallback.BACK_START: System.out.println("BACK_START"); break;
-            case TweenCallback.COMPLETE: System.out.println("COMPLETE"); break;
             case TweenCallback.END:
                 ReelSpriteAccessor accessor = (ReelSpriteAccessor) tween.getAccessor();
                 if (accessor != null) {
-                    int size = accessor.getValues(reelSlot, ReelSpriteAccessor.SCROLL_XY, returnValues);
+                    accessor.getValues(reelSlot, ReelSpriteAccessor.SCROLL_XY, returnValues);
                 } else {
                     System.out.println("null!");
                 }
                 break;
-            case TweenCallback.START: System.out.println("START"); break;
-            case TweenCallback.STEP: break;
         }
     }
 	
@@ -433,18 +410,12 @@ public class PlayScreen implements Screen {
 	}
 
     private void flashMatchedSlots(Array<TupleValueIndex> matchedSlots) {
-        int r, c, index;
+        int index;
         for (int i = 0; i < matchedSlots.size; i++) {
             index = matchedSlots.get(i).getIndex();
             if (index  > 0) {
                 levelReelSlotTiles.get(index).setFlashMode(true);
             }
-        }
-    }
-
-    private void clearSlotReels(Array<ReelSlotTile> levelReelSlotTiles) {
-        for (int i=0; i<levelReelSlotTiles.size; i++) {
-            levelReelSlotTiles.get(i).deleteReelTile();
         }
     }
 
@@ -481,8 +452,8 @@ public class PlayScreen implements Screen {
 			}
 			game.batch.end();
 		} else {
-			if (Assets.inst().getProgress() < 1) {
-				Assets.inst().update();
+			if (game.assetManager.getProgress() < 1) {
+				game.assetManager.update();
 			} else {
 				isLoaded = true;
 			}
