@@ -47,9 +47,13 @@ import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.equations.Back;
 import aurelienribon.tweenengine.equations.Bounce;
+import aurelienribon.tweenengine.equations.Cubic;
 import aurelienribon.tweenengine.equations.Elastic;
 import aurelienribon.tweenengine.equations.Quad;
+import aurelienribon.tweenengine.equations.Quart;
 import aurelienribon.tweenengine.equations.Quint;
 import aurelienribon.tweenengine.equations.Sine;
 
@@ -230,15 +234,16 @@ public class PlayScreen implements Screen {
 	}
 
 	private void createReelIntroSequence() {
-        Timeline sequence = Timeline.createSequence();
+		
+		Timeline sequence = Timeline.createParallel();
 		for(int i=0; i < levelReelSlotTiles.size; i++) {
-			sequence = sequence.push(SlotPuzzleTween.set(levelReelSlotTiles.get(i), SpriteAccessor.POS_XY).target(-60f, -20f + 32*i));
+			sequence = sequence
+					      .push(buildSequence(levelReelSlotTiles.get(i), i, random.nextFloat() * 15.0f, random.nextFloat() * 15.0f));
 		}
-		sequence = sequence.pushPause(0.5f);
-		for(int i = 0; i < levelReelSlotTiles.size; i++) {
-			sequence = sequence.push(SlotPuzzleTween.to(levelReelSlotTiles.get(i), SpriteAccessor.POS_XY, 0.2f).target(levelReelSlotTiles.get(i).getX(), levelReelSlotTiles.get(i).getY()));
-		}		
-		sequence = sequence.pushPause(0.3f).start(tweenManager);
+				
+		sequence = sequence
+				      .pushPause(0.3f)
+				      .start(tweenManager);
 
         slotReelScrollPixmap = new Pixmap((int) spriteWidth, (int)spriteHeight, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
@@ -257,6 +262,32 @@ public class PlayScreen implements Screen {
            .start(tweenManager);
 	}
 	
+	private Timeline buildSequence(Sprite target, int id, float delay1, float delay2) {
+		return Timeline.createSequence()
+			.push(SlotPuzzleTween.set(target, SpriteAccessor.POS_XY).target(-0.5f, -0.5f))
+			.push(SlotPuzzleTween.set(target, SpriteAccessor.SCALE_XY).target(10, 10))
+			.push(SlotPuzzleTween.set(target, SpriteAccessor.ROTATION).target(0))
+			.push(SlotPuzzleTween.set(target, SpriteAccessor.OPACITY).target(0))
+			.pushPause(delay1)
+			.beginParallel()
+				.push(SlotPuzzleTween.to(target, SpriteAccessor.OPACITY, 1.0f).target(1).ease(Quart.INOUT))
+				.push(SlotPuzzleTween.to(target, SpriteAccessor.SCALE_XY, 1.0f).target(1, 1).ease(Quart.INOUT))
+			.end()
+			.pushPause(-0.5f)
+			.push(SlotPuzzleTween.to(target, SpriteAccessor.POS_XY, 1.0f).target(levelReelSlotTiles.get(id).getX(), levelReelSlotTiles.get(id).getY()).ease(Back.OUT))
+			.push(SlotPuzzleTween.to(target, SpriteAccessor.ROTATION, 0.8f).target(360).ease(Cubic.INOUT))
+			.pushPause(delay2)
+			.beginParallel()
+				.push(SlotPuzzleTween.to(target, SpriteAccessor.SCALE_XY, 0.3f).target(3, 3).ease(Quad.IN))
+				.push(SlotPuzzleTween.to(target, SpriteAccessor.OPACITY, 0.3f).target(0).ease(Quad.IN))
+			.end()
+			.pushPause(-0.5f)
+			.beginParallel()
+			    .push(SlotPuzzleTween.to(target, SpriteAccessor.OPACITY, 1.0f).target(1).ease(Quart.INOUT))
+			    .push(SlotPuzzleTween.to(target, SpriteAccessor.SCALE_XY, 1.0f).target(1, 1).ease(Quart.INOUT))
+		    .end();
+	}
+
     private Array<ReelSlotTile> checkLevel(Array<ReelSlotTile> slotReelTiles) {
         PuzzleGridType puzzleGrid = new PuzzleGridType();
         TupleValueIndex[][] grid = populateMatchGrid(slotReelTiles);
