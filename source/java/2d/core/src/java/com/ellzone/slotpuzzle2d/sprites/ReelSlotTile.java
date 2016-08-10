@@ -107,7 +107,7 @@ public class ReelSlotTile extends ReelSprite {
 							if (reelFlashCount <= 0) {
 								reelFlash = false;
 								reelFlashState = FlashState.FLASH_OFF;
-								deleteReelTile = true;
+								//deleteReelTile = true;
 								processEvent(new ReelStoppedFlashingReelSlotTileEvent());
 							} else {
 								if (reelFlashState == FlashState.FLASH_OFF) {

@@ -173,7 +173,6 @@ public class PlayScreen implements Screen {
 		}
 		spriteWidth = sprites[0].getWidth();
 		spriteHeight = sprites[0].getHeight();
-
 	}
 	
 	private void createSlotReelTexture() {
@@ -193,7 +192,7 @@ public class PlayScreen implements Screen {
 				ReelSlotTile reelSlotTile = new ReelSlotTile(slotReelTexture, sprites.length, sprites.length * sprites.length, SIXTY_FPS, mapRectangle.getX(), mapRectangle.getY(), endReel);
 				reelSlotTile.addListener(new ReelSlotTileListener() {
 					@Override
-					public void actionPerformed(ReelSlotTileEvent event) {
+					public void actionPerformed(ReelSlotTileEvent event, ReelSlotTile source) {
 						if (event instanceof ReelStoppedSpinningReelSlotTileEvent) {
   							if (ReelSlotTile.reelsSpinning == 1) {
   								if (testForHiddenPatternRevealed(levelReelSlotTiles)) {
@@ -202,6 +201,7 @@ public class PlayScreen implements Screen {
 							}
 						}
 						if ((event instanceof ReelStoppedFlashingReelSlotTileEvent) & (initialFlashingStopped)) {
+							deleteReelAnimation(source);
 							if (testForHiddenPatternRevealed(levelReelSlotTiles)) {
 								gameOver = true;
 							}
@@ -320,6 +320,29 @@ public class PlayScreen implements Screen {
 		}
 		return matchGrid;
 	}
+	
+	private void deleteReelAnimation(ReelSlotTile source) {
+		Timeline.createSequence()
+		    .beginParallel()
+			    .push(SlotPuzzleTween.to(source, SpriteAccessor.SCALE_XY, 0.3f).target(6, 6).ease(Quad.IN))
+			    .push(SlotPuzzleTween.to(source, SpriteAccessor.OPACITY, 0.3f).target(0).ease(Quad.IN))
+		    .end()
+		    .setUserData(source)
+		    .setCallback(deleteReelCallback)
+		    .setCallbackTriggers(TweenCallback.COMPLETE)
+			.start(tweenManager);
+	}
+	
+	private TweenCallback deleteReelCallback = new TweenCallback() {
+		@Override
+		public void onEvent(int type, BaseTween<?> source) {
+			switch (type) {
+				case COMPLETE: 
+					ReelSlotTile reel = (ReelSlotTile) source.getUserData();
+					reel.deleteReelTile();
+			}
+		}
+	};
 
 	public void handleInput(float dt) {
 		if (Gdx.input.justTouched()) {

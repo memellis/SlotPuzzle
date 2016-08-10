@@ -57,7 +57,7 @@ public abstract class ReelSprite extends Sprite {
         }
 
         for (ReelSlotTileListener listener : tempReelSlotTileListenerList) {
-            listener.actionPerformed(reelSlotTileEvent);
+            listener.actionPerformed(reelSlotTileEvent, (ReelSlotTile) this);
         }
     }
 }
