@@ -8,6 +8,8 @@ import com.ellzone.slotpuzzle2d.screens.LoadingScreen;
 public class SlotPuzzle extends Game
 {
 	public final static String SLOT_PUZZLE = "Slot Puzzle";
+	public final static int V_WIDTH = 800; 
+	public final static int V_HEIGHT = 480;
 	public SpriteBatch batch;
 	public AssetManager assetManager;
 

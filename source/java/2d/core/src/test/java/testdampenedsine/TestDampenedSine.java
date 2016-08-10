@@ -6,9 +6,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.ellzone.slotpuzzle.physics.DampenedSine;
-import com.ellzone.slotpuzzle.physics.SPPhysicsCallback;
-import com.ellzone.slotpuzzle.physics.SPPhysicsEvent;
+import com.ellzone.slotpuzzle2d.physics.DampenedSine;
+import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
+import com.ellzone.slotpuzzle2d.physics.SPPhysicsEvent;
 
 public class TestDampenedSine {
 	private static final int TEST_NUM_REELS = 8;

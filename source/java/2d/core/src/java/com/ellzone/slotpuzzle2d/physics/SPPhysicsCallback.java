@@ -1,4 +1,4 @@
-package com.ellzone.slotpuzzle.physics;
+package com.ellzone.slotpuzzle2d.physics;
 
 public interface SPPhysicsCallback {
     public static final int BEGIN = 0x01;

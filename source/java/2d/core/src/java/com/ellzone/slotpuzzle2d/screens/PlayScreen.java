@@ -4,12 +4,10 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapObject;
@@ -20,8 +18,6 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -31,6 +27,7 @@ import com.ellzone.slotpuzzle2d.effects.ReelSpriteAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGridType;
 import com.ellzone.slotpuzzle2d.puzzlegrid.TupleValueIndex;
+import com.ellzone.slotpuzzle2d.scene.Hud;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTile;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileEvent;
 import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileListener;
@@ -81,6 +78,7 @@ public class PlayScreen implements Screen {
 	private Random random;
 	private OrthogonalTiledMapRenderer renderer;
 	private boolean gameOver = false;
+	private boolean win = false;
 	private int touchX, touchY;
 	private boolean initialFlashingStopped;
 	private boolean displaySpinHelp;
@@ -90,6 +88,7 @@ public class PlayScreen implements Screen {
     private SlotPuzzleTween tween;
     private float returnValues[] = new float[2];
     private boolean tweenClicked = false;
+    private Hud hud;
 
     public PlayScreen(SlotPuzzle game) {
 		this.game = game;
@@ -106,31 +105,11 @@ public class PlayScreen implements Screen {
 		createSlotReelTexture();
 		createLevels();
 		createReelIntroSequence();
-
-        if (gameOver) {
-        	Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
-
-        	Table table = new Table();
-        	table.center();
-        	table.setFillParent(true);
-
-        	Label gameOverLabel = new Label("PLAY SCREEN", font);
-        	Label playAgainLabel = new Label("Click to Play Again", font);
-
-        	table.add(gameOverLabel).expandX();
-        	table.row();
-        	table.add(playAgainLabel).expandX().padTop(10f);
-        
-        	stage.addActor(table);
-        }
    	}
 	
-	private void initialisePlayScreen() {
-		random = new Random();
-		renderer = new OrthogonalTiledMapRenderer(level1);
-		levelReelSlotTiles = new Array<ReelSlotTile>();
-		initialFlashingStopped = false;
-		displaySpinHelp = false;		
+	private void initialiseScreen() {
+		viewport = new FitViewport(SlotPuzzle.V_WIDTH, SlotPuzzle.V_HEIGHT, camera);
+        stage = new Stage(viewport, game.batch);		
 	}
 	
 	private void initialiseTweenEngine() {
@@ -138,11 +117,6 @@ public class PlayScreen implements Screen {
 		SlotPuzzleTween.setCombinedAttributesLimit(3);
 		SlotPuzzleTween.registerAccessor(Sprite.class, new SpriteAccessor());
 		SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelSpriteAccessor());		
-	}
-	
-	private void initialiseScreen() {
-		viewport = new FitViewport(800, 480, camera);
-        stage = new Stage(viewport, game.batch);		
 	}
 
 	private void loadAssets() {
@@ -174,7 +148,16 @@ public class PlayScreen implements Screen {
 		spriteWidth = sprites[0].getWidth();
 		spriteHeight = sprites[0].getHeight();
 	}
-	
+
+	private void initialisePlayScreen() {
+		random = new Random();
+		renderer = new OrthogonalTiledMapRenderer(level1);
+		levelReelSlotTiles = new Array<ReelSlotTile>();
+		initialFlashingStopped = false;
+		displaySpinHelp = false;
+		hud = new Hud(game.batch);
+	}
+
 	private void createSlotReelTexture() {
 		slotReelPixmap = new Pixmap(PlayScreen.TILE_WIDTH, PlayScreen.TILE_HEIGHT, Pixmap.Format.RGBA8888);		
 		slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedPixmap(sprites, sprites.length);
@@ -197,13 +180,22 @@ public class PlayScreen implements Screen {
   							if (ReelSlotTile.reelsSpinning == 1) {
   								if (testForHiddenPatternRevealed(levelReelSlotTiles)) {
 									gameOver = true;
+									win = true;
 								}
 							}
 						}
 						if ((event instanceof ReelStoppedFlashingReelSlotTileEvent) & (initialFlashingStopped)) {
+							reelScoreAnimation(source);
 							deleteReelAnimation(source);
+							
+							if (testForAnyLonelyReels(levelReelSlotTiles)) {
+								gameOver = true;
+								System.out.println("I think its game over and you lose!");
+								win = false;
+							}
 							if (testForHiddenPatternRevealed(levelReelSlotTiles)) {
 								gameOver = true;
+								win = true;
 							}
 						}
 						if ((event instanceof ReelStoppedFlashingReelSlotTileEvent) & (!initialFlashingStopped)) {
@@ -216,7 +208,8 @@ public class PlayScreen implements Screen {
 				Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "I don't respond to grid r="+r+"c="+c+". There it won't be added to the level! Sort it out in a level editor.");				
 			}
 		}
-		levelReelSlotTiles = checkLevel(levelReelSlotTiles);	
+		levelReelSlotTiles = checkLevel(levelReelSlotTiles);
+		levelReelSlotTiles = adjustForAnyLonelyReels(levelReelSlotTiles);
 	}
 
 	private void createReelIntroSequence() {
@@ -299,6 +292,36 @@ public class PlayScreen implements Screen {
 		return hiddenPatternRevealed(grid);	
 	}
 
+	boolean testForAnyLonelyReels(Array<ReelSlotTile> levelReelSlotTiles) {		
+		PuzzleGridType puzzleGrid = new PuzzleGridType();
+		TupleValueIndex[][] grid = populateMatchGrid(levelReelSlotTiles);
+		return puzzleGrid.anyLonelyTiles(grid);
+	}
+	
+	Array<ReelSlotTile> adjustForAnyLonelyReels(Array<ReelSlotTile> levelReelSlotTiles) {
+		PuzzleGridType puzzleGrid = new PuzzleGridType();
+		TupleValueIndex[][] grid = populateMatchGrid(levelReelSlotTiles);
+		Array<TupleValueIndex> lonelyTiles = puzzleGrid.getLonelyTiles(grid);
+		for (TupleValueIndex lonelyTile : lonelyTiles) {
+			if (lonelyTile.r == 0) {
+				System.out.println("Copy from right adjact [" + (lonelyTile.r+1) + "["+ (lonelyTile.c) +"]="+lonelyTile.value+",index="+lonelyTile.index);
+				levelReelSlotTiles.get(grid[lonelyTile.r][lonelyTile.c].index).setEndReel(levelReelSlotTiles.get(grid[lonelyTile.r+1][lonelyTile.c].index).getEndReel());
+			} else if (lonelyTile.c == 0) {
+				System.out.println("Copy from right adjact ["+ (lonelyTile.r) + "["+ (lonelyTile.c+1) + "]="+lonelyTile.value+",index="+lonelyTile.index);
+				levelReelSlotTiles.get(grid[lonelyTile.r][lonelyTile.c].index).setEndReel(levelReelSlotTiles.get(grid[lonelyTile.r][lonelyTile.c+1].index).getEndReel());
+			} else if (lonelyTile.r == 8) {
+				System.out.println("Copy from left adjact [" + (lonelyTile.r-1) + "["+ (lonelyTile.c) +"]="+lonelyTile.value+",index="+lonelyTile.index);
+				levelReelSlotTiles.get(grid[lonelyTile.r][lonelyTile.c].index).setEndReel(levelReelSlotTiles.get(grid[lonelyTile.r-1][lonelyTile.c].index).getEndReel());
+			} else if (lonelyTile.c == 8) {
+				System.out.println("Copy from left adjact [" + (lonelyTile.r) + "["+ (lonelyTile.c-1) +"]="+lonelyTile.value+",index="+lonelyTile.index);
+				levelReelSlotTiles.get(grid[lonelyTile.r][lonelyTile.c].index).setEndReel(levelReelSlotTiles.get(grid[lonelyTile.r][lonelyTile.c-1].index).getEndReel());
+			} else {
+				System.out.println("Copy from right adjact [" + (lonelyTile.r+1) + "["+ (lonelyTile.c) +"]="+lonelyTile.value+",index="+lonelyTile.index);				
+				levelReelSlotTiles.get(grid[lonelyTile.r][lonelyTile.c].index).setEndReel(levelReelSlotTiles.get(grid[lonelyTile.r+1][lonelyTile.c].index).getEndReel());
+			}
+		}
+		return levelReelSlotTiles;
+	}
 	
 	private TupleValueIndex[][] populateMatchGrid(Array<ReelSlotTile> slotReelTiles) {
 		TupleValueIndex[][] matchGrid = new TupleValueIndex[9][9];
@@ -333,12 +356,17 @@ public class PlayScreen implements Screen {
 			.start(tweenManager);
 	}
 	
+	private void reelScoreAnimation(ReelSlotTile source) {
+		System.out.println("animate the score bitmapfont");
+	}
+	
 	private TweenCallback deleteReelCallback = new TweenCallback() {
 		@Override
 		public void onEvent(int type, BaseTween<?> source) {
 			switch (type) {
 				case COMPLETE: 
 					ReelSlotTile reel = (ReelSlotTile) source.getUserData();
+					hud.addScore(reel.getEndReel());
 					reel.deleteReelTile();
 			}
 		}
@@ -448,6 +476,7 @@ public class PlayScreen implements Screen {
 		}
         reelTile.update(delta);
 		renderer.setView(camera);
+		hud.update(delta);
 		if (gameOver) {
 			dispose();
 			game.setScreen(new EndOfGameScreen(game));
@@ -473,6 +502,9 @@ public class PlayScreen implements Screen {
 				sprites[displaySpinHelpSprite].draw(game.batch);
 			}
 			game.batch.end();
+			
+		    game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+		    hud.stage.draw();
 		} else {
 			if (game.assetManager.getProgress() < 1) {
 				game.assetManager.update();

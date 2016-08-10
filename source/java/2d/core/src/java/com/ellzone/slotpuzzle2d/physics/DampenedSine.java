@@ -1,4 +1,4 @@
-package com.ellzone.slotpuzzle.physics;
+package com.ellzone.slotpuzzle2d.physics;
 
 public class DampenedSine extends Particle {
 	public static final float VELOCITY_MIN = 2.0f;
