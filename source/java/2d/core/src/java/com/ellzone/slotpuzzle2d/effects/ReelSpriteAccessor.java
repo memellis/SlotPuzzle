@@ -2,7 +2,6 @@ package com.ellzone.slotpuzzle2d.effects;
 
 import com.badlogic.gdx.graphics.Color;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
-
 import aurelienribon.tweenengine.TweenAccessor;
 
 public class ReelSpriteAccessor implements TweenAccessor<ReelTile> {

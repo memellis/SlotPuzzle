@@ -1,7 +1,7 @@
 package com.ellzone.slotpuzzle2d.effects;
 
 public class Particle {
-    private float x, y;
+    protected float x, y;
     
     public float getX() {
         return x;

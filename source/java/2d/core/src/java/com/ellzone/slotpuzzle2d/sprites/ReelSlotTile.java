@@ -33,6 +33,7 @@ public class ReelSlotTile extends ReelSprite {
 	public enum FlashState {FLASH_OFF, FLASH_ON};
 	private FlashState reelFlashState; 
 	private boolean deleteReelTile;
+	private int score;
 
 	public ReelSlotTile(Texture reelTexture, int reelRows, int reelCols, float frameRate, float x, float y, int endReel) {
 		this.reelTexture = reelTexture;
@@ -174,6 +175,14 @@ public class ReelSlotTile extends ReelSprite {
 	
 	public void deleteReelTile() {
 		deleteReelTile = true;
+	}
+	
+	public void setScore(int score) {
+		this.score = score;
+	}
+	
+	public int getScore() {
+		return this.score;
 	}
 	
 	public void dispose() {

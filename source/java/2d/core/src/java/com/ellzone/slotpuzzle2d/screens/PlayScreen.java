@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.slotpuzzle2d.effects.ReelSpriteAccessor;
+import com.ellzone.slotpuzzle2d.effects.ScoreAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGridType;
 import com.ellzone.slotpuzzle2d.puzzlegrid.TupleValueIndex;
@@ -34,6 +35,7 @@ import com.ellzone.slotpuzzle2d.sprites.ReelSlotTileListener;
 import com.ellzone.slotpuzzle2d.sprites.ReelStoppedFlashingReelSlotTileEvent;
 import com.ellzone.slotpuzzle2d.sprites.ReelStoppedSpinningReelSlotTileEvent;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
+import com.ellzone.slotpuzzle2d.sprites.Score;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
@@ -89,6 +91,7 @@ public class PlayScreen implements Screen {
     private float returnValues[] = new float[2];
     private boolean tweenClicked = false;
     private Hud hud;
+    private Array<Score> scores;
 
     public PlayScreen(SlotPuzzle game) {
 		this.game = game;
@@ -116,7 +119,8 @@ public class PlayScreen implements Screen {
 		SlotPuzzleTween.setWaypointsLimit(10);
 		SlotPuzzleTween.setCombinedAttributesLimit(3);
 		SlotPuzzleTween.registerAccessor(Sprite.class, new SpriteAccessor());
-		SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelSpriteAccessor());		
+		SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelSpriteAccessor());
+		SlotPuzzleTween.registerAccessor(Score.class, new ScoreAccessor());
 	}
 
 	private void loadAssets() {
@@ -156,6 +160,7 @@ public class PlayScreen implements Screen {
 		initialFlashingStopped = false;
 		displaySpinHelp = false;
 		hud = new Hud(game.batch);
+		scores = new Array<Score>();
 	}
 
 	private void createSlotReelTexture() {
@@ -184,10 +189,7 @@ public class PlayScreen implements Screen {
 								}
 							}
 						}
-						if ((event instanceof ReelStoppedFlashingReelSlotTileEvent) & (initialFlashingStopped)) {
-							reelScoreAnimation(source);
-							deleteReelAnimation(source);
-							
+						if ((event instanceof ReelStoppedFlashingReelSlotTileEvent) & (initialFlashingStopped)) {							
 							if (testForAnyLonelyReels(levelReelSlotTiles)) {
 								gameOver = true;
 								System.out.println("I think its game over and you lose!");
@@ -197,6 +199,8 @@ public class PlayScreen implements Screen {
 								gameOver = true;
 								win = true;
 							}
+							reelScoreAnimation(source);
+							deleteReelAnimation(source);
 						}
 						if ((event instanceof ReelStoppedFlashingReelSlotTileEvent) & (!initialFlashingStopped)) {
 							initialFlashingStopped = true;				
@@ -288,6 +292,9 @@ public class PlayScreen implements Screen {
 		TupleValueIndex[][] grid = populateMatchGrid(levelReelSlotTiles);
 		Array<TupleValueIndex> matchedSlots;
 		matchedSlots = puzzleGrid.matchGridSlots(grid);
+		for (TupleValueIndex matchedSlot : matchedSlots) {
+			levelReelSlotTiles.get(matchedSlot.index).setScore(matchedSlot.value);
+		}
  		flashMatchedSlots(matchedSlots);
 		return hiddenPatternRevealed(grid);	
 	}
@@ -304,19 +311,14 @@ public class PlayScreen implements Screen {
 		Array<TupleValueIndex> lonelyTiles = puzzleGrid.getLonelyTiles(grid);
 		for (TupleValueIndex lonelyTile : lonelyTiles) {
 			if (lonelyTile.r == 0) {
-				System.out.println("Copy from right adjact [" + (lonelyTile.r+1) + "["+ (lonelyTile.c) +"]="+lonelyTile.value+",index="+lonelyTile.index);
 				levelReelSlotTiles.get(grid[lonelyTile.r][lonelyTile.c].index).setEndReel(levelReelSlotTiles.get(grid[lonelyTile.r+1][lonelyTile.c].index).getEndReel());
 			} else if (lonelyTile.c == 0) {
-				System.out.println("Copy from right adjact ["+ (lonelyTile.r) + "["+ (lonelyTile.c+1) + "]="+lonelyTile.value+",index="+lonelyTile.index);
 				levelReelSlotTiles.get(grid[lonelyTile.r][lonelyTile.c].index).setEndReel(levelReelSlotTiles.get(grid[lonelyTile.r][lonelyTile.c+1].index).getEndReel());
 			} else if (lonelyTile.r == 8) {
-				System.out.println("Copy from left adjact [" + (lonelyTile.r-1) + "["+ (lonelyTile.c) +"]="+lonelyTile.value+",index="+lonelyTile.index);
 				levelReelSlotTiles.get(grid[lonelyTile.r][lonelyTile.c].index).setEndReel(levelReelSlotTiles.get(grid[lonelyTile.r-1][lonelyTile.c].index).getEndReel());
 			} else if (lonelyTile.c == 8) {
-				System.out.println("Copy from left adjact [" + (lonelyTile.r) + "["+ (lonelyTile.c-1) +"]="+lonelyTile.value+",index="+lonelyTile.index);
 				levelReelSlotTiles.get(grid[lonelyTile.r][lonelyTile.c].index).setEndReel(levelReelSlotTiles.get(grid[lonelyTile.r][lonelyTile.c-1].index).getEndReel());
 			} else {
-				System.out.println("Copy from right adjact [" + (lonelyTile.r+1) + "["+ (lonelyTile.c) +"]="+lonelyTile.value+",index="+lonelyTile.index);				
 				levelReelSlotTiles.get(grid[lonelyTile.r][lonelyTile.c].index).setEndReel(levelReelSlotTiles.get(grid[lonelyTile.r+1][lonelyTile.c].index).getEndReel());
 			}
 		}
@@ -355,22 +357,43 @@ public class PlayScreen implements Screen {
 		    .setCallbackTriggers(TweenCallback.COMPLETE)
 			.start(tweenManager);
 	}
-	
-	private void reelScoreAnimation(ReelSlotTile source) {
-		System.out.println("animate the score bitmapfont");
-	}
-	
+
 	private TweenCallback deleteReelCallback = new TweenCallback() {
 		@Override
 		public void onEvent(int type, BaseTween<?> source) {
 			switch (type) {
 				case COMPLETE: 
 					ReelSlotTile reel = (ReelSlotTile) source.getUserData();
-					hud.addScore(reel.getEndReel());
+					Hud.addScore((reel.getEndReel() + 1) * reel.getScore());
 					reel.deleteReelTile();
 			}
 		}
 	};
+
+	private void reelScoreAnimation(ReelSlotTile source) {
+		Score score = new Score(source.getX(), source.getY(), (source.getEndReel() + 1) * source.getScore());
+		scores.add(score);
+		Timeline.createSequence()
+			.beginParallel()
+				.push(SlotPuzzleTween.to(score, ScoreAccessor.POS_XY, 2.0f).targetRelative(random.nextInt(20), random.nextInt(160)).ease(Quad.IN))
+			.end()
+			.setUserData(score)
+			.setCallback(deleteScoreCallback)
+			.setCallbackTriggers(TweenCallback.COMPLETE)
+			.start(tweenManager);	
+	}
+	
+	private TweenCallback deleteScoreCallback = new TweenCallback() {
+		@Override
+		public void onEvent(int type, BaseTween<?> source) {
+			switch (type) {
+			case COMPLETE:
+				Score score = (Score) source.getUserData();
+				scores.removeValue(score, false);
+			}
+		}
+	};
+	
 
 	public void handleInput(float dt) {
 		if (Gdx.input.justTouched()) {
@@ -497,12 +520,14 @@ public class PlayScreen implements Screen {
 					reel.draw(game.batch);
 				}
 			}
+			for (Score score : scores) {
+				score.render(game.batch);
+			}
             reelTile.draw(game.batch);
             if(displaySpinHelp) {
 				sprites[displaySpinHelpSprite].draw(game.batch);
 			}
 			game.batch.end();
-			
 		    game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 		    hud.stage.draw();
 		} else {
@@ -517,6 +542,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void show() {
+		Gdx.app.log(SlotPuzzle.SLOT_PUZZLE + "PlayScreen", "show");
     }
 
     @Override
@@ -526,14 +552,17 @@ public class PlayScreen implements Screen {
 
 	@Override
 	public void pause() {
+		Gdx.app.log(SlotPuzzle.SLOT_PUZZLE + "PlayScreen", "pause");
 	}
 
 	@Override
 	public void resume() {
+		Gdx.app.log(SlotPuzzle.SLOT_PUZZLE + "PlayScreen", "resume");
 	}
 
 	@Override
 	public void hide() {
+		Gdx.app.log(SlotPuzzle.SLOT_PUZZLE + "PlayScreen", "hide");
 	}
 
 	@Override
