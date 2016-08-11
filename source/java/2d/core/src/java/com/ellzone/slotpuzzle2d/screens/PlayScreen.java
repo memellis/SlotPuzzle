@@ -376,6 +376,7 @@ public class PlayScreen implements Screen {
 		Timeline.createSequence()
 			.beginParallel()
 				.push(SlotPuzzleTween.to(score, ScoreAccessor.POS_XY, 2.0f).targetRelative(random.nextInt(20), random.nextInt(160)).ease(Quad.IN))
+				.push(SlotPuzzleTween.to(score, ScoreAccessor.SCALE_XY, 2.0f).target(2.0f, 2.0f).ease(Quad.IN))
 			.end()
 			.setUserData(score)
 			.setCallback(deleteScoreCallback)

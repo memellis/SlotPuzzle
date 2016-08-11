@@ -26,6 +26,18 @@ public class Score extends Particle {
 		this.fontColor = color;
 	}
 	
+	public float getScaleX() {
+		return this.scoreFont.getScaleX();
+	}
+	
+	public float getScaleY() {
+		return this.scoreFont.getScaleY();
+	}
+	
+	public void setScale(float scaleX, float scaleY) {
+		this.scoreFont.getData().setScale(scaleX, scaleY);
+	}
+	
 	public int getScore() {
 		return this.score;
 	}
