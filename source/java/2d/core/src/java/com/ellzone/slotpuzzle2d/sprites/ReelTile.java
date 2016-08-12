@@ -2,9 +2,11 @@ package com.ellzone.slotpuzzle2d.sprites;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.ellzone.slotpuzzle2d.sprites.ReelSlotTile.FlashState;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
 public class ReelTile extends ReelSprite {
@@ -16,39 +18,76 @@ public class ReelTile extends ReelSprite {
     private float y;
     private float sx = 0;
     private float sy = 0;
-    private float frameRate;
 	private boolean deleteReelTile;
+	private boolean reelFlash;
+	public enum FlashState {FLASH_OFF, FLASH_ON};
+	private FlashState reelFlashState;
+	private float reelFlashTimer;
+	private int reelFlashCount;
+	private int score;
 
-    public ReelTile(Texture texture, int width, int height, float x, float y, int endReel, float frameRate) {
+    public ReelTile(Texture texture, int width, int height, float x, float y, int endReel) {
         this.texture = texture;
         this.width = width;
         this.height = height;
         this.x = x;
         this.y = y;
         super.setEndReel(endReel);
-        this.frameRate = frameRate;
         defineReelSlotTileScroll();
     }
 
     private void defineReelSlotTileScroll() {
         setPosition(this.x, this.y);
         setOrigin(this.x, this.y);
-        setBounds(this.x, this.y, texture.getWidth(), 32);
+        setBounds(this.x, this.y, texture.getWidth(), height);
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         region = new TextureRegion(texture);
-        region.setRegion(0, 0, texture.getWidth(), 32);
+        region.setRegion(0, 0, texture.getWidth(), height);
         setRegion(region);
+		super.setSpinning(true);
+		reelFlashTimer = 0.4f;
+		reelFlash = false;
+		reelFlashState = FlashState.FLASH_OFF;
         deleteReelTile = false;
     }
 
 	@Override
-    public void update(float dt) {
-        if(super.isSpinning()) {
-            float syModulus = sy % texture.getHeight();
-            region.setRegion((int) sx, (int) syModulus, texture.getWidth(), 32);
-            setRegion(region);
+    public void update(float delta) {
+        if (super.isSpinning()) {
+        	processSpinningState();
+        }
+        if (reelFlash) {
+        	processFlashState(delta);
         }
     }
+	
+	private void processSpinningState() {
+        float syModulus = sy % texture.getHeight();
+        region.setRegion((int) sx, (int) syModulus, texture.getWidth(), height);
+        setRegion(region);
+ 	}
+	
+	private void processFlashState(float delta) {
+		reelFlashTimer -= delta;
+		if (reelFlashTimer < 0) {
+			reelFlashTimer = 0.4f;
+			reelFlashCount--;
+			if (reelFlashCount <= 0) {
+				reelFlash = false;
+				reelFlashState = FlashState.FLASH_OFF;
+				processEvent(new ReelStoppedFlashingReelSlotTileEvent());
+			} else {
+				if (reelFlashState == FlashState.FLASH_OFF) {
+					reelFlashState = FlashState.FLASH_ON;
+					TextureRegion flashReel = drawFlashOn(region);
+					setRegion(flashReel);
+				} else {
+					reelFlashState = FlashState.FLASH_OFF;
+					processSpinningState();
+				}
+			}
+		}
+	}
 
     public float getSx() {
         return this.sx;
@@ -71,25 +110,59 @@ public class ReelTile extends ReelSprite {
         super.setEndReel((int) syModulus / 32);
     }
 
+	public int getCurrentReel() {
+        float syModulus = sy % texture.getHeight();
+		return (int) syModulus / 32;
+	}
+
 	@Override
 	public void dispose() {
 		
 	}
 
-    private void savePixmap(Pixmap pixmap, String pixmapFileName) {
-        FileHandle pixmapFile = Gdx.files.local(pixmapFileName);
-        if (pixmapFile.exists()) {
-            pixmapFile.delete();
-        }
-        PixmapProcessors.savePixmap(pixmap, pixmapFile.file());
-    }
-
 	public boolean isReelTileDeleted() {
-		return deleteReelTile;
+		return this.deleteReelTile;
 	}
 	
 	public void deleteReelTile() {
-		deleteReelTile = true;
+		this.deleteReelTile = true;
 	}
+	
+	public void setSpinning() {
+		super.setSpinning(true);
+	}	
 
+	public FlashState getFlashState() {
+		return this.reelFlashState;
+	}
+	
+	public boolean isFlashing() {
+		return this.reelFlash;
+	}
+	
+	public void setFlashMode(boolean reelFlash) {
+		this.reelFlash = reelFlash;
+	}
+	
+	private TextureRegion drawFlashOn(TextureRegion reel) {
+		Pixmap reelPixmap = PixmapProcessors.getPixmapFromtextureRegion(reel);
+		reelPixmap.setColor(Color.RED);
+		reelPixmap.drawRectangle(0, 0, 32, 32);
+		reelPixmap.drawRectangle(1, 1, 30, 30);
+		reelPixmap.drawRectangle(2, 2, 28, 28);
+		TextureRegion textureRegion = new TextureRegion(new Texture(reelPixmap));
+		return textureRegion;
+	}
+	
+	public void setScore(int score) {
+		this.score = score;
+	}
+	
+	public int getScore() {
+		return this.score;
+	}
+	
+	public TextureRegion getRegion() {
+		return this.region;
+	}
 }

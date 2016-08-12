@@ -225,7 +225,7 @@ public class IntroScreen implements Screen {
         slotReelPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelTexture = new Texture(slotReelPixmap);
 
-        reelTile = new ReelTile(slotReelTexture, slotReelTexture.getWidth(), slotReelTexture.getHeight(), 32, 32, 0, IntroScreen.SIXTY_FPS);
+        reelTile = new ReelTile(slotReelTexture, slotReelTexture.getWidth(), slotReelTexture.getHeight(), 32, 32, 0);
 
         Timeline reelSeq = Timeline.createSequence();
         reelSeq = reelSeq.push(Tween.set(reelTile, ReelSpriteAccessor.SCROLL_XY).target(0f, 0f).ease(Bounce.IN));

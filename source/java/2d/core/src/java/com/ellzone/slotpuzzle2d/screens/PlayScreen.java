@@ -61,14 +61,7 @@ public class PlayScreen implements Screen {
 	private final OrthographicCamera camera = new OrthographicCamera();
 	private Viewport viewport;
 	private Stage stage;
-	private Sprite cheesecake;
-	private Sprite cherry;
-	private Sprite grapes;
-	private Sprite jelly;
-	private Sprite lemon;
-	private Sprite peach;
-	private Sprite pear;
-	private Sprite tomato;
+	private Sprite cheesecake, cherry, grapes, jelly, lemon, peach, pear, tomato;
 	private float spriteWidth, spriteHeight;
  	private final TweenManager tweenManager = new TweenManager();
  	private TextureAtlas reelAtlas;
@@ -231,7 +224,7 @@ public class PlayScreen implements Screen {
         slotReelScrollPixmap = new Pixmap((int) spriteWidth, (int)spriteHeight, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-        reelTile = new ReelTile(slotReelScrollTexture, slotReelTexture.getWidth(), slotReelTexture.getHeight(), 0, 32, 0, PlayScreen.SIXTY_FPS);
+        reelTile = new ReelTile(slotReelScrollTexture, slotReelTexture.getWidth(), slotReelTexture.getHeight(), 0, 32, 0);
         reelTile.setX(0);
         reelTile.setY(32);
         reelTile.setEndReel(random.nextInt(sprites.length));

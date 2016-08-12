@@ -241,6 +241,14 @@ public class PixmapProcessors {
         }
 	}
 	
+    public static void savePixmap(Pixmap pixmap, String pixmapFileName) {
+        FileHandle pixmapFile = Gdx.files.local(pixmapFileName);
+        if (pixmapFile.exists()) {
+            pixmapFile.delete();
+        }
+        PixmapProcessors.savePixmap(pixmap, pixmapFile.file());
+    }
+	
 	public static void saveTextureRegion(TextureRegion textureRegion) {
 		savePixmap(getPixmapFromtextureRegion(textureRegion));		
 	}
