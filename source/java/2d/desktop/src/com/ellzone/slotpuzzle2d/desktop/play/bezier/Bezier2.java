@@ -15,7 +15,6 @@ import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.ellzone.slotpuzzle2d.screens.TweenGraphsScreen;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
@@ -33,13 +32,13 @@ public class Bezier2 implements ApplicationListener {
     private Sprite pear;
     private Sprite tomato;
     private Sprite[] sprites;
-	private boolean isLoaded;
+    private int spriteWidth;
+    private int spriteHeight;
     private Pixmap slotReelScrollPixmap;
 	private Texture slotReelScrollTexture;
 	private ReelTile reelTile;
     private Array<ReelTile> reelTiles;
 	private Random random;
-    private Array<ReelTile> reelSlots;
     private SpriteBatch batch;
     private ShapeRenderer shapeRenderer;
     private Array<Vector2> points = new Array<Vector2>();
@@ -62,8 +61,6 @@ public class Bezier2 implements ApplicationListener {
         Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
         Assets.inst().update();
         Assets.inst().finishLoading();
-        isLoaded = true;
-
         TextureAtlas atlas = Assets.inst().get("reel/reels.pack.atlas", TextureAtlas.class);
         cherry = atlas.createSprite("cherry");
         cheesecake = atlas.createSprite("cheesecake");
@@ -78,21 +75,23 @@ public class Bezier2 implements ApplicationListener {
         for (Sprite sprite : sprites) {
             sprite.setOrigin(0, 0);
         }
+        spriteWidth = (int) sprites[0].getWidth();
+        spriteHeight = (int) sprites[0].getHeight();
 	}
 	
 	private void initialiseReelSlots() {
         random = new Random();
-        reelSlots = new Array<ReelTile>();
-        slotReelScrollPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
+        reelTiles = new Array<ReelTile>();
+        slotReelScrollPixmap = new Pixmap(spriteWidth, spriteHeight, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-        reelTile = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
+        reelTile = new ReelTile(slotReelScrollTexture, spriteWidth, spriteHeight, 0, 32, 0);
         reelTile.setX(0);
         reelTile.setY(0);
         reelTile.setSx(0);
         reelTile.setEndReel(random.nextInt(sprites.length - 1));
         reelTile.setSy(0);
-        reelSlots.add(reelTile);
+        reelTiles.add(reelTile);
 	}	
 	
 	private void initialiseBezier() {
@@ -146,7 +145,6 @@ public class Bezier2 implements ApplicationListener {
         for(ReelTile reelTile : reelTiles) {
         	if (graphStep < reelSpinBezier.size - (graphSize/reelSpinPath.length)) {
         		reelTile.setSy(reelSpinBezier.get(graphStep).y);
-        		System.out.println(reelSpinBezier.get(graphStep).y);
         	}
     		reelTile.update(delta);
          }
@@ -170,19 +168,17 @@ public class Bezier2 implements ApplicationListener {
         update(delta);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        if(isLoaded) {
-            batch.begin();
-            for (ReelTile reelTile : reelTiles) {
-                reelTile.draw(batch);
-            }
-            batch.end();
-            if (graphStep < reelSpinBezier.size - (graphSize/reelSpinPath.length)) {
-            	drawGraphPoint(shapeRenderer, new Vector2(graphStep % Gdx.graphics.getWidth(), reelSpinBezier.get(graphStep).y + Gdx.graphics.getHeight() / 4 % Gdx.graphics.getHeight()));
-            	graphStep++;
-            } else {
-            	graphStep = 0;
-            }
-       }
+        batch.begin();
+        for (ReelTile reelTile : reelTiles) {
+            reelTile.draw(batch);
+        }
+        batch.end();
+        if (graphStep < reelSpinBezier.size - (graphSize/reelSpinPath.length)) {
+        	drawGraphPoint(shapeRenderer, new Vector2(graphStep % Gdx.graphics.getWidth(), reelSpinBezier.get(graphStep).y + Gdx.graphics.getHeight() / 4 % Gdx.graphics.getHeight()));
+        	graphStep++;
+        } else {
+        	graphStep = 0;
+        }
 	}
 
 	@Override

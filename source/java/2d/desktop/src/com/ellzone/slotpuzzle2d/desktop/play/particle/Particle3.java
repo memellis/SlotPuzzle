@@ -15,9 +15,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.ellzone.slotpuzzle.physics.Particle;
-import com.ellzone.slotpuzzle.physics.Vector;
-import com.ellzone.slotpuzzle2d.screens.TweenGraphsScreen;
+import com.ellzone.slotpuzzle2d.physics.Particle;
+import com.ellzone.slotpuzzle2d.physics.Vector;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
@@ -36,7 +35,8 @@ public class Particle3 implements ApplicationListener {
     private Sprite pear;
     private Sprite tomato;
     private Sprite[] sprites;
-    private ReelTile reelSlot;
+    private int spriteWidth;
+    private int spriteHeight;
 	private boolean isLoaded;
     private Pixmap slotReelScrollPixmap;
 	private Texture slotReelScrollTexture;
@@ -87,27 +87,30 @@ public class Particle3 implements ApplicationListener {
         for (Sprite sprite : sprites) {
             sprite.setOrigin(0, 0);
         }
+        spriteWidth = (int) sprites[0].getWidth();
+        spriteHeight = (int) sprites[0].getHeight();
 	}
 	
 	private void initialiseReelSlots() {
         random = new Random();
         reelTiles = new Array<ReelTile>();
-        slotReelScrollPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
+        slotReelScrollPixmap = new Pixmap(spriteWidth, spriteHeight, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         slotReelScrollheight = slotReelScrollTexture.getHeight();
-        reelTile = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
+        reelTile = new ReelTile(slotReelScrollTexture, spriteWidth, spriteHeight, 0, 32, 0);
         reelTile.setX(0);
         reelTile.setY(0);
         reelTile.setSx(0);
         reelTile.setSy(0);
         reelTile.setEndReel(random.nextInt(sprites.length - 1));
-        reelTiles.add(reelSlot);
+        reelTiles.add(reelTile);
 	}	
 	
 	private void intialiseParticles() {
 		accelerator = new Vector(0, 3f);
 		reelParticles = new Array<Particle>();
+		System.out.println("reelTiles.get(0).getSy()"+reelTiles.get(0).getSy());
 		reelParticle = new Particle(0, reelTiles.get(0).getSy(), 0.0001f , 0, 0);
 		reelParticle.velocity.setX(0);
 		reelParticle.velocity.setY(4);

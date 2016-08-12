@@ -1,7 +1,6 @@
 package com.ellzone.slotpuzzle2d.desktop.play.particle;
 
 import java.util.Random;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -22,7 +21,7 @@ import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
-public class Particle4 implements ApplicationListener {
+public class Particle5 implements ApplicationListener {
 
 	private static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
 	private PerspectiveCamera cam;
@@ -42,7 +41,7 @@ public class Particle4 implements ApplicationListener {
     private ShapeRenderer shapeRenderer;
     private Array<Vector2> points = new Array<Vector2>();
     private float graphStep;
-    
+
 	@Override
 	public void create() {
         loadAssets();
@@ -51,7 +50,7 @@ public class Particle4 implements ApplicationListener {
         initialiseLibGdx();
         initialiseDampenedSine();
 	}
-		
+
 	private void loadAssets() {
         Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
         Assets.inst().update();
@@ -74,11 +73,11 @@ public class Particle4 implements ApplicationListener {
         spriteWidth = (int) sprites[0].getWidth();
         spriteHeight = (int) sprites[0].getHeight();
 	}
-	
+
 	private void initialiseReelSlots() {
         random = new Random();
         reelTiles = new Array<ReelTile>();
-        slotReelScrollPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
+        slotReelScrollPixmap = new Pixmap(spriteWidth, spriteHeight, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         slotReelScrollheight = slotReelScrollTexture.getHeight();
@@ -90,7 +89,18 @@ public class Particle4 implements ApplicationListener {
         reelTile.setEndReel(random.nextInt(sprites.length - 1));
         reelTiles.add(reelTile);
 	}	
+
+	private void initialiseCamera() {
+        cam = new PerspectiveCamera();
+        cam.position.set(0, 0, 10);
+        cam.lookAt(0, 0, 0);
+	}
 	
+	private void initialiseLibGdx() {
+		batch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
+	}
+
 	private void initialiseDampenedSine() {
 		dampenedSines = new Array<DampenedSine>();
 		dampenedSine = new DampenedSine(0, reelTiles.get(0).getSy(), 0, 0, 0, slotReelScrollheight * 20, slotReelScrollheight, reelTiles.get(0).getEndReel());
@@ -115,17 +125,10 @@ public class Particle4 implements ApplicationListener {
 			}
 		}
 	}
-	
-	private void initialiseCamera() {
-        cam = new PerspectiveCamera();
-        cam.position.set(0, 0, 10);
-        cam.lookAt(0, 0, 0);
-	}
-	
-	private void initialiseLibGdx() {
-		batch = new SpriteBatch();
-        shapeRenderer = new ShapeRenderer();
-	}
+
+    private void addGraphPoint(Vector2 newPoint) {
+    	points.add(newPoint);
+    }
 	
 	@Override
 	public void resize(int width, int height) {
@@ -140,21 +143,23 @@ public class Particle4 implements ApplicationListener {
         cam.lookAt(0, 0, 0);
         cam.update();
 	}
-	
-    private void update(float delta) {
+
+	private void update(float delta) {
         for(ReelTile reelSlot : reelTiles) { 		  
          	dampenedSines.get(0).update();
   		    reelSlot.setSy(dampenedSines.get(0).position.y);
   	       	reelSlot.update(delta); 
         }
     }
-    
+
+
 	@Override
-	public void render() {	
+	public void render() {
 		final float delta = Math.min(1/30f, Gdx.graphics.getDeltaTime());
         update(delta);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+
         batch.begin();
         for (ReelTile reelSlot : reelTiles) {
             reelSlot.draw(batch);
@@ -163,10 +168,10 @@ public class Particle4 implements ApplicationListener {
         }
         batch.end();
         drawGraphPoint(shapeRenderer);
-	}
+ 	}
 
 	@Override
-	public void pause() {		
+	public void pause() {
 	}
 
 	@Override
@@ -175,14 +180,9 @@ public class Particle4 implements ApplicationListener {
 
 	@Override
 	public void dispose() {
-		batch.dispose();
 	}
 
-	private void addGraphPoint(Vector2 newPoint) {
-    	points.add(newPoint);
-    }
-    
-    private void drawGraphPoint(ShapeRenderer shapeRenderer) {
+	private void drawGraphPoint(ShapeRenderer shapeRenderer) {
         if (points.size >= 2) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             int rr = 23;
@@ -195,4 +195,5 @@ public class Particle4 implements ApplicationListener {
             shapeRenderer.end();
         }    	
     }
+
 }
