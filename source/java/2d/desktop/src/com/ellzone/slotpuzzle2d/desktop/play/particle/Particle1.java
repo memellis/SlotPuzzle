@@ -13,9 +13,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
-import com.ellzone.slotpuzzle.physics.Particle;
-import com.ellzone.slotpuzzle.physics.Vector;
-import com.ellzone.slotpuzzle2d.screens.TweenGraphsScreen;
+import com.ellzone.slotpuzzle2d.physics.Particle;
+import com.ellzone.slotpuzzle2d.physics.Vector;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.utils.Assets;
@@ -35,8 +34,9 @@ public class Particle1 implements ApplicationListener {
     private Sprite pear;
     private Sprite tomato;
     private Sprite[] sprites;
+    private int spriteWidth;
+    private int spriteHeight;
     private ReelTile reelSlot;
-	private boolean isLoaded;
     private Pixmap slotReelScrollPixmap;
 	private Texture slotReelScrollTexture;
 	private Random random;
@@ -60,7 +60,6 @@ public class Particle1 implements ApplicationListener {
         Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
         Assets.inst().update();
         Assets.inst().finishLoading();
-        isLoaded = true;
 
         TextureAtlas atlas = Assets.inst().get("reel/reels.pack.atlas", TextureAtlas.class);
         cherry = atlas.createSprite("cherry");
@@ -76,15 +75,17 @@ public class Particle1 implements ApplicationListener {
         for (Sprite sprite : sprites) {
             sprite.setOrigin(0, 0);
         }
+        spriteWidth = (int) sprites[0].getWidth();
+        spriteHeight = (int) sprites[0].getHeight();
 	}
 	
 	private void initialiseReelSlots() {
         random = new Random();
         reelTiles = new Array<ReelTile>();
-        slotReelScrollPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
+        slotReelScrollPixmap = new Pixmap(spriteWidth, spriteHeight, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-        reelSlot = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
+        reelSlot = new ReelTile(slotReelScrollTexture, spriteHeight, spriteHeight, 0, 32, 0);
         reelSlot.setX(0);
         reelSlot.setY(0);
         reelSlot.setSx(0);
@@ -149,13 +150,11 @@ public class Particle1 implements ApplicationListener {
         update(delta);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        if(isLoaded) {
-            batch.begin();
-            for (ReelTile reelSlot : reelTiles) {
-                reelSlot.draw(batch);
-            }
-            batch.end();
+        batch.begin();
+        for (ReelTile reelSlot : reelTiles) {
+            reelSlot.draw(batch);
         }
+        batch.end();
 	}
 
 	@Override

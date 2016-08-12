@@ -15,11 +15,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.ellzone.slotpuzzle.physics.Particle;
-import com.ellzone.slotpuzzle.physics.Vector;
-import com.ellzone.slotpuzzle2d.screens.TweenGraphsScreen;
+import com.ellzone.slotpuzzle2d.physics.Particle;
+import com.ellzone.slotpuzzle2d.physics.Vector;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
-import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
@@ -37,8 +35,9 @@ public class Particle2 implements ApplicationListener {
     private Sprite pear;
     private Sprite tomato;
     private Sprite[] sprites;
+    private int spriteWidth;
+    private int spriteHeight;
     private ReelTile reelTile;
-	private boolean isLoaded;
     private Pixmap slotReelScrollPixmap;
 	private Texture slotReelScrollTexture;
 	private Random random;
@@ -74,7 +73,6 @@ public class Particle2 implements ApplicationListener {
         Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
         Assets.inst().update();
         Assets.inst().finishLoading();
-        isLoaded = true;
 
         TextureAtlas atlas = Assets.inst().get("reel/reels.pack.atlas", TextureAtlas.class);
         cherry = atlas.createSprite("cherry");
@@ -90,15 +88,17 @@ public class Particle2 implements ApplicationListener {
         for (Sprite sprite : sprites) {
             sprite.setOrigin(0, 0);
         }
+        spriteWidth = (int) sprites[0].getWidth();
+        spriteHeight = (int) sprites[0].getHeight();
 	}
 	
 	private void initialiseReelSlots() {
         random = new Random();
         reelTiles = new Array<ReelTile>();
-        slotReelScrollPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
+        slotReelScrollPixmap = new Pixmap(spriteWidth, spriteHeight, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-        reelTile = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
+        reelTile = new ReelTile(slotReelScrollTexture, spriteWidth, spriteHeight, 0, 32, 0);
         reelTile.setX(0);
         reelTile.setY(0);
         reelTile.setSx(0);
@@ -187,16 +187,14 @@ public class Particle2 implements ApplicationListener {
         update(delta);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        if(isLoaded) {
-            batch.begin();
-            for (ReelTile reelSlot : reelTiles) {
-                reelSlot.draw(batch);
-            }
-            batch.end();
-            float dsine = dampenedSine(savedAmplitude, 1.0f, (float) (2 * Math.PI), graphStep / 75, (float) Math.PI/2);
-            drawGraphPoint(shapeRenderer, new Vector2(graphStep % Gdx.graphics.getWidth(), 200 + dsine % Gdx.graphics.getHeight()));
-            graphStep++;
-       }
+        batch.begin();
+        for (ReelTile reelSlot : reelTiles) {
+            reelSlot.draw(batch);
+        }
+        batch.end();
+        float dsine = dampenedSine(savedAmplitude, 1.0f, (float) (2 * Math.PI), graphStep / 75, (float) Math.PI/2);
+        drawGraphPoint(shapeRenderer, new Vector2(graphStep % Gdx.graphics.getWidth(), 200 + dsine % Gdx.graphics.getHeight()));
+        graphStep++;
 	}
 
 	@Override

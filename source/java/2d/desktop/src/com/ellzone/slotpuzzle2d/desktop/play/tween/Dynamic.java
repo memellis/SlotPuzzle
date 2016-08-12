@@ -1,7 +1,6 @@
 package com.ellzone.slotpuzzle2d.desktop.play.tween;
 
 import java.util.Random;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -14,19 +13,12 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.effects.ReelSpriteAccessor;
-import com.ellzone.slotpuzzle2d.screens.TweenGraphsScreen;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
-import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
-
-import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.TweenPaths;
 import aurelienribon.tweenengine.equations.Back;
-import aurelienribon.tweenengine.equations.Circ;
-import aurelienribon.tweenengine.equations.Quad;
 
 public class Dynamic implements ApplicationListener {
 
@@ -41,6 +33,8 @@ public class Dynamic implements ApplicationListener {
     private Sprite pear;
     private Sprite tomato;
     private Sprite[] sprites;
+    private int spriteWidth;
+    private int spriteHeight;
     private ReelTile reelSlot;
     private Array<ReelTile> reelTiles;
 	private boolean isLoaded;
@@ -48,11 +42,9 @@ public class Dynamic implements ApplicationListener {
 	private Texture slotReelScrollTexture;
 	private Random random;
     private TweenManager tweenManager;
-    private SlotPuzzleTween tween;
     private SpriteBatch batch;
 	private float tweenDuration;
 	private float dynamicTarget;
-	private float angle = 0f;
  
 	@Override
 	public void create() {
@@ -91,15 +83,17 @@ public class Dynamic implements ApplicationListener {
         for (Sprite sprite : sprites) {
             sprite.setOrigin(0, 0);
         }
+        spriteWidth = (int) sprites[0].getWidth();
+        spriteHeight = (int) sprites[0].getHeight();
 	}
 	
 	private void initialiseReelSlots() {
         random = new Random();
         reelTiles = new Array<ReelTile>();
-        slotReelScrollPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
+        slotReelScrollPixmap = new Pixmap(spriteWidth, spriteHeight, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-        reelSlot = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0, TweenGraphsScreen.SIXTY_FPS);
+        reelSlot = new ReelTile(slotReelScrollTexture, spriteWidth, spriteHeight, 0, 32, 0);
         reelSlot.setX(0);
         reelSlot.setY(0);
         reelSlot.setOrigin(16, 16);
@@ -110,12 +104,12 @@ public class Dynamic implements ApplicationListener {
 	private void initialiseTweens() {
 		dynamicTarget = 25*360;
 		tweenDuration = 25.0f;
-		tween = SlotPuzzleTween.
-					to(reelTiles.get(0), ReelSpriteAccessor.ROTATION, tweenDuration).
-					target(dynamicTarget).
-					ease(Back.OUT).
-					start(tweenManager);		
- 	}
+		SlotPuzzleTween.
+			to(reelTiles.get(0), ReelSpriteAccessor.ROTATION, tweenDuration).
+			target(dynamicTarget).
+			ease(Back.OUT).
+			start(tweenManager);		
+	}
 	
 	private void initialiseCamera() {
         cam = new PerspectiveCamera();

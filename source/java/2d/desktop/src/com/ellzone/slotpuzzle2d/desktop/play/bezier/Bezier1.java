@@ -1,7 +1,6 @@
-package com.ellzone.slotpuzzle2d.desktop.play.particle;
+package com.ellzone.slotpuzzle2d.desktop.play.bezier;
 
 import java.util.Random;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -15,41 +14,51 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.ellzone.slotpuzzle2d.physics.DampenedSine;
-import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
-import com.ellzone.slotpuzzle2d.physics.SPPhysicsEvent;
+import com.ellzone.slotpuzzle2d.physics.Bezier;
+import com.ellzone.slotpuzzle2d.physics.Particle;
+import com.ellzone.slotpuzzle2d.physics.Point;
+import com.ellzone.slotpuzzle2d.physics.Vector;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
+import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
-public class Particle4 implements ApplicationListener {
+public class Bezier1 implements ApplicationListener {
 
 	private static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
 	private PerspectiveCamera cam;
-    private Sprite cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato;
+    private Sprite cheesecake;
+    private Sprite cherry;
+    private Sprite grapes;
+    private Sprite jelly;
+    private Sprite lemon;
+    private Sprite peach;
+    private Sprite pear;
+    private Sprite tomato;
     private Sprite[] sprites;
     private int spriteWidth;
     private int spriteHeight;
-    private ReelTile reelTile;
+    private ReelTile reelSlot;
     private Pixmap slotReelScrollPixmap;
 	private Texture slotReelScrollTexture;
-	private int slotReelScrollheight;
 	private Random random;
     private Array<ReelTile> reelTiles;
     private SpriteBatch batch;
-    private Array<DampenedSine> dampenedSines;
-	private DampenedSine dampenedSine;
     private ShapeRenderer shapeRenderer;
     private Array<Vector2> points = new Array<Vector2>();
-    private float graphStep;
-    
+    private int graphStep;
+    private Array<Point> reelSpinPath;
+    private Array<Point> reelSpinBezier;
+    private int reelScrollHeight;
+ 
 	@Override
 	public void create() {
         loadAssets();
         initialiseReelSlots();
+        initialiseBezier();
         initialiseCamera();
-        initialiseLibGdx();
-        initialiseDampenedSine();
+        batch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
 	}
 		
 	private void loadAssets() {
@@ -78,55 +87,45 @@ public class Particle4 implements ApplicationListener {
 	private void initialiseReelSlots() {
         random = new Random();
         reelTiles = new Array<ReelTile>();
-        slotReelScrollPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
+        slotReelScrollPixmap = new Pixmap(spriteWidth, spriteHeight, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-        slotReelScrollheight = slotReelScrollTexture.getHeight();
-        reelTile = new ReelTile(slotReelScrollTexture, spriteWidth, spriteHeight, 0, 32, 0);
-        reelTile.setX(0);
-        reelTile.setY(0);
-        reelTile.setSx(0);
-        reelTile.setSy(0);
-        reelTile.setEndReel(random.nextInt(sprites.length - 1));
-        reelTiles.add(reelTile);
+        reelScrollHeight = slotReelScrollTexture.getHeight();
+        reelSlot = new ReelTile(slotReelScrollTexture, spriteWidth, spriteHeight, 0, 32, 0);
+        reelSlot.setX(0);
+        reelSlot.setY(0);
+        reelSlot.setSx(0);
+        reelSlot.setEndReel(random.nextInt(sprites.length - 1));
+        reelSlot.setSy(0);
+        reelTiles.add(reelSlot);
 	}	
 	
-	private void initialiseDampenedSine() {
-		dampenedSines = new Array<DampenedSine>();
-		dampenedSine = new DampenedSine(0, reelTiles.get(0).getSy(), 0, 0, 0, slotReelScrollheight * 20, slotReelScrollheight, reelTiles.get(0).getEndReel());
-		dampenedSine.setCallback(new SPPhysicsCallback() {
-			public void onEvent(int type, SPPhysicsEvent event) {
-				delegateDSCallback(type);
-			};
-		});
-		dampenedSine.setCallbackTriggers(SPPhysicsCallback.PARTICLE_UPDATE + SPPhysicsCallback.END);
-		dampenedSines.add(dampenedSine);
-	}
-	
-	private void delegateDSCallback(int type) {
-		if (type == SPPhysicsCallback.PARTICLE_UPDATE) {
-		    addGraphPoint(new Vector2(graphStep++ % Gdx.graphics.getWidth(), (Gdx.graphics.getHeight() / 2 + dampenedSines.get(0).dsEndReel)));
-		} else {
-			if (type == SPPhysicsCallback.END) {
-				reelTiles.get(0).setEndReel(random.nextInt(sprites.length - 1));
-				dampenedSines.get(0).initialiseDampenedSine();
-				dampenedSines.get(0).position.y = 0;				
-				dampenedSines.get(0).setEndReel(reelTiles.get(0).getEndReel());
-			}
+	private void initialiseBezier() {
+		reelSpinPath = new Array<Point>();
+		reelSpinPath.add(new Point(0, 0));
+		for (int l=0; l<20; l++) {
+			reelSpinPath.add(new Point(0, reelScrollHeight*l));
 		}
+		reelSpinPath.add(new Point(0, 370));		
+		reelSpinPath.add(new Point(0, -100));
+		reelSpinPath.add(new Point(0, -64));
+		reelSpinPath.add(new Point(0, +32));
+		reelSpinPath.add(new Point(0, -16));
+		reelSpinPath.add(new Point(0, +32));
+		reelSpinPath.add(new Point(0, -16));
+		reelSpinPath.add(new Point(0, +32));
+		reelSpinPath.add(new Point(0, -16));
+		reelSpinPath.add(new Point(0, +32));
+		Bezier bezier = new Bezier();
+		reelSpinBezier = bezier.multicurve(reelSpinPath, 0.05f);
 	}
-	
+		
 	private void initialiseCamera() {
         cam = new PerspectiveCamera();
         cam.position.set(0, 0, 10);
         cam.lookAt(0, 0, 0);
 	}
-	
-	private void initialiseLibGdx() {
-		batch = new SpriteBatch();
-        shapeRenderer = new ShapeRenderer();
-	}
-	
+
 	@Override
 	public void resize(int width, int height) {
        float halfHeight = MINIMUM_VIEWPORT_SIZE * 0.5f;
@@ -142,13 +141,26 @@ public class Particle4 implements ApplicationListener {
 	}
 	
     private void update(float delta) {
-        for(ReelTile reelSlot : reelTiles) { 		  
-         	dampenedSines.get(0).update();
-  		    reelSlot.setSy(dampenedSines.get(0).position.y);
-  	       	reelSlot.update(delta); 
-        }
+        for(ReelTile reelSlot : reelTiles) {
+        	if (graphStep < reelSpinBezier.size) {
+        		reelSlot.setSy(reelSpinBezier.get(graphStep).y);
+        	}
+    		reelSlot.update(delta);
+         }
     }
-    
+
+    private void drawGraphPoint(ShapeRenderer shapeRenderer, Vector2 newPoint) {
+        if (points.size >= 2) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.setColor(0, 255, 255, 255);
+            for (int i = 0; i < points.size - 1; i++) {
+                shapeRenderer.line(points.get(i).x, points.get(i).y, points.get(i + 1).x, points.get(i + 1).y);
+            }
+            shapeRenderer.end();
+        }
+        points.add(newPoint);
+    }
+
 	@Override
 	public void render() {	
 		final float delta = Math.min(1/30f, Gdx.graphics.getDeltaTime());
@@ -158,11 +170,14 @@ public class Particle4 implements ApplicationListener {
         batch.begin();
         for (ReelTile reelSlot : reelTiles) {
             reelSlot.draw(batch);
-            sprites[reelSlot.getEndReel()].setX(32);
-            sprites[reelSlot.getEndReel()].draw(batch);
         }
         batch.end();
-        drawGraphPoint(shapeRenderer);
+        if (graphStep < reelSpinBezier.size) {
+        	drawGraphPoint(shapeRenderer, new Vector2(graphStep % Gdx.graphics.getWidth(), reelSpinBezier.get(graphStep).y + Gdx.graphics.getHeight() / 4 % Gdx.graphics.getHeight()));
+        	graphStep++;
+        } else {
+        	graphStep = 0;
+        }
 	}
 
 	@Override
@@ -177,22 +192,4 @@ public class Particle4 implements ApplicationListener {
 	public void dispose() {
 		batch.dispose();
 	}
-
-	private void addGraphPoint(Vector2 newPoint) {
-    	points.add(newPoint);
-    }
-    
-    private void drawGraphPoint(ShapeRenderer shapeRenderer) {
-        if (points.size >= 2) {
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            int rr = 23;
-            int rg = 32;
-            int rb = 23;
-             shapeRenderer.setColor(rr, rg, rb, 255);
-            for (int i = 0; i < points.size - 1; i++) {
-                shapeRenderer.line(points.get(i).x, points.get(i).y, points.get(i + 1).x, points.get(i + 1).y);
-            }
-            shapeRenderer.end();
-        }    	
-    }
 }
