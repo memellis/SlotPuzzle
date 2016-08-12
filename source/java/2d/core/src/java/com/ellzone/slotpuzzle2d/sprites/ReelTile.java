@@ -12,8 +12,8 @@ import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 public class ReelTile extends ReelSprite {
     private Texture texture;
     private TextureRegion region;
-    private int width;
-    private int height;
+    private int spriteWidth;
+    private int spriteHeight;
     private float x;
     private float y;
     private float sx = 0;
@@ -26,10 +26,10 @@ public class ReelTile extends ReelSprite {
 	private int reelFlashCount;
 	private int score;
 
-    public ReelTile(Texture texture, int width, int height, float x, float y, int endReel) {
+    public ReelTile(Texture texture, int spriteWidth, int spriteHeight, float x, float y, int endReel) {
         this.texture = texture;
-        this.width = width;
-        this.height = height;
+        this.spriteWidth = spriteWidth;
+        this.spriteHeight = spriteHeight;
         this.x = x;
         this.y = y;
         super.setEndReel(endReel);
@@ -39,10 +39,10 @@ public class ReelTile extends ReelSprite {
     private void defineReelSlotTileScroll() {
         setPosition(this.x, this.y);
         setOrigin(this.x, this.y);
-        setBounds(this.x, this.y, texture.getWidth(), height);
+        setBounds(this.x, this.y, spriteWidth, spriteHeight);
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         region = new TextureRegion(texture);
-        region.setRegion(0, 0, texture.getWidth(), height);
+        region.setRegion(0, 0, spriteWidth, spriteHeight);
         setRegion(region);
 		super.setSpinning(true);
 		reelFlashTimer = 0.4f;
@@ -63,7 +63,7 @@ public class ReelTile extends ReelSprite {
 	
 	private void processSpinningState() {
         float syModulus = sy % texture.getHeight();
-        region.setRegion((int) sx, (int) syModulus, texture.getWidth(), height);
+        region.setRegion((int) sx, (int) syModulus, spriteWidth, spriteHeight);
         setRegion(region);
  	}
 	
