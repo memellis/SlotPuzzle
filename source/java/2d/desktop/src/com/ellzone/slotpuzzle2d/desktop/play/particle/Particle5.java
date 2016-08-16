@@ -3,6 +3,7 @@ package com.ellzone.slotpuzzle2d.desktop.play.particle;
 import java.util.Random;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.physics.DampenedSine;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
@@ -41,6 +43,7 @@ public class Particle5 implements ApplicationListener {
     private ShapeRenderer shapeRenderer;
     private Array<Vector2> points = new Array<Vector2>();
     private float graphStep;
+    private Vector2 touch;
 
 	@Override
 	public void create() {
@@ -84,6 +87,7 @@ public class Particle5 implements ApplicationListener {
         reelTile = new ReelTile(slotReelScrollTexture, spriteWidth, spriteHeight, 0, 32, 0);
         reelTile.setX(0);
         reelTile.setY(0);
+        reelTile.setBounds(0, 0, spriteWidth, spriteHeight);
         reelTile.setSx(0);
         reelTile.setSy(0);
         reelTile.setEndReel(random.nextInt(sprites.length - 1));
@@ -99,29 +103,38 @@ public class Particle5 implements ApplicationListener {
 	private void initialiseLibGdx() {
 		batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
+        touch = new Vector2();
 	}
 
 	private void initialiseDampenedSine() {
 		dampenedSines = new Array<DampenedSine>();
-		dampenedSine = new DampenedSine(0, reelTiles.get(0).getSy(), 0, 0, 0, slotReelScrollheight * 20, slotReelScrollheight, reelTiles.get(0).getEndReel());
-		dampenedSine.setCallback(new SPPhysicsCallback() {
-			public void onEvent(int type, SPPhysicsEvent event) {
-				delegateDSCallback(type);
-			};
-		});
-		dampenedSine.setCallbackTriggers(SPPhysicsCallback.PARTICLE_UPDATE + SPPhysicsCallback.END);
-		dampenedSines.add(dampenedSine);
+		for (ReelTile reelTile : reelTiles) { 
+			dampenedSine = new DampenedSine(0, reelTile.getSy(), 0, 0, 0, slotReelScrollheight * 20, slotReelScrollheight, reelTile.getEndReel());
+			dampenedSine.setCallback(dsCallback);
+			dampenedSine.setCallbackTriggers(SPPhysicsCallback.PARTICLE_UPDATE + SPPhysicsCallback.END);
+			dampenedSine.setUserData(reelTile);
+			dampenedSines.add(dampenedSine);
+		}
 	}
 	
-	private void delegateDSCallback(int type) {
+	private SPPhysicsCallback dsCallback = new SPPhysicsCallback() {
+		@Override
+		public void onEvent(int type, SPPhysicsEvent source) {
+			delegateDSCallback(type, source); 
+		}
+	};
+	
+	private void delegateDSCallback(int type, SPPhysicsEvent source) {
 		if (type == SPPhysicsCallback.PARTICLE_UPDATE) {
 		    addGraphPoint(new Vector2(graphStep++ % Gdx.graphics.getWidth(), (Gdx.graphics.getHeight() / 2 + dampenedSines.get(0).dsEndReel)));
 		} else {
 			if (type == SPPhysicsCallback.END) {
-				reelTiles.get(0).setEndReel(random.nextInt(sprites.length - 1));
-				dampenedSines.get(0).initialiseDampenedSine();
-				dampenedSines.get(0).position.y = 0;				
-				dampenedSines.get(0).setEndReel(reelTiles.get(0).getEndReel());
+				DampenedSine ds = (DampenedSine)source.getSource();
+				ReelTile reel = (ReelTile)ds.getUserData();
+				reel.setEndReel(random.nextInt(sprites.length - 1));
+				ds.position.y = 0;
+				ds.initialiseDampenedSine();			
+				ds.setEndReel(reel.getEndReel());
 			}
 		}
 	}
@@ -132,7 +145,7 @@ public class Particle5 implements ApplicationListener {
 	
 	@Override
 	public void resize(int width, int height) {
-       float halfHeight = MINIMUM_VIEWPORT_SIZE * 0.5f;
+		float halfHeight = MINIMUM_VIEWPORT_SIZE * 0.5f;
         if (height > width)
             halfHeight *= (float)height / (float)width;
         float halfFovRadians = MathUtils.degreesToRadians * cam.fieldOfView * 0.5f;
@@ -145,18 +158,33 @@ public class Particle5 implements ApplicationListener {
 	}
 
 	private void update(float delta) {
-        for(ReelTile reelSlot : reelTiles) { 		  
-         	dampenedSines.get(0).update();
-  		    reelSlot.setSy(dampenedSines.get(0).position.y);
+		int dsIndex = 0;
+		for (ReelTile reelSlot : reelTiles) { 		  
+         	dampenedSines.get(dsIndex).update();
+  		    reelSlot.setSy(dampenedSines.get(dsIndex).position.y);
   	       	reelSlot.update(delta); 
-        }
-    }
+  	       	dsIndex++;
+		}
+	}
 
+	public void handleInput(float delta) {
+		ReelTile reel = reelTiles.get(0);
+        if (Gdx.input.justTouched()) {
+            touch = touch.set(Gdx.input.getX(), cam.viewportHeight - Gdx.input.getY());
+            if(reel.getBoundingRectangle().contains(touch)) {
+            	if (dampenedSines.get(0).getDSState() == DampenedSine.DSState.UPDATING_DAMPENED_SINE) {
+            		reel.setEndReel(reel.getCurrentReel());
+            		dampenedSines.get(0).setEndReel(reel.getCurrentReel());
+            	}
+            }
+        }
+	}
 
 	@Override
 	public void render() {
 		final float delta = Math.min(1/30f, Gdx.graphics.getDeltaTime());
         update(delta);
+        handleInput(delta);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
@@ -185,15 +213,11 @@ public class Particle5 implements ApplicationListener {
 	private void drawGraphPoint(ShapeRenderer shapeRenderer) {
         if (points.size >= 2) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            int rr = 23;
-            int rg = 32;
-            int rb = 23;
-             shapeRenderer.setColor(rr, rg, rb, 255);
+            shapeRenderer.setColor(Color.YELLOW);
             for (int i = 0; i < points.size - 1; i++) {
                 shapeRenderer.line(points.get(i).x, points.get(i).y, points.get(i + 1).x, points.get(i + 1).y);
             }
             shapeRenderer.end();
         }    	
     }
-
 }
