@@ -169,38 +169,7 @@ public class PlayScreen implements Screen {
 			int r = (int) (mapRectangle.getY() - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
 			r = 8 - r;
 			if ((r >= 0) & (r <= 8) & (c >= 0) & (c <= 8)) {
-                int endReel = random.nextInt(sprites.length);
-				ReelSlotTile reelSlotTile = new ReelSlotTile(slotReelTexture, sprites.length, sprites.length * sprites.length, SIXTY_FPS, mapRectangle.getX(), mapRectangle.getY(), endReel);
-				reelSlotTile.addListener(new ReelSlotTileListener() {
-					@Override
-					public void actionPerformed(ReelSlotTileEvent event, ReelSlotTile source) {
-						if (event instanceof ReelStoppedSpinningReelSlotTileEvent) {
-  							if (ReelSlotTile.reelsSpinning == 1) {
-  								if (testForHiddenPatternRevealed(levelReelSlotTiles)) {
-									gameOver = true;
-									win = true;
-								}
-							}
-						}
-						if ((event instanceof ReelStoppedFlashingReelSlotTileEvent) & (initialFlashingStopped)) {							
-							if (testForAnyLonelyReels(levelReelSlotTiles)) {
-								gameOver = true;
-								System.out.println("I think its game over and you lose!");
-								win = false;
-							}
-							if (testForHiddenPatternRevealed(levelReelSlotTiles)) {
-								gameOver = true;
-								win = true;
-							}
-							reelScoreAnimation(source);
-							deleteReelAnimation(source);
-						}
-						if ((event instanceof ReelStoppedFlashingReelSlotTileEvent) & (!initialFlashingStopped)) {
-							initialFlashingStopped = true;				
-						}	
-					}
-				});
-				levelReelSlotTiles.add(reelSlotTile);
+				addReel(mapRectangle);
 			} else {
 				Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "I don't respond to grid r="+r+"c="+c+". There it won't be added to the level! Sort it out in a level editor.");				
 			}
@@ -209,8 +178,42 @@ public class PlayScreen implements Screen {
 		levelReelSlotTiles = adjustForAnyLonelyReels(levelReelSlotTiles);
 	}
 
-	private void createReelIntroSequence() {
-		
+	private void addReel(Rectangle mapRectangle) {
+        int endReel = random.nextInt(sprites.length);
+		ReelSlotTile reelSlotTile = new ReelSlotTile(slotReelTexture, sprites.length, sprites.length * sprites.length, SIXTY_FPS, mapRectangle.getX(), mapRectangle.getY(), endReel);
+		reelSlotTile.addListener(new ReelSlotTileListener() {
+			@Override
+			public void actionPerformed(ReelSlotTileEvent event, ReelSlotTile source) {
+				if (event instanceof ReelStoppedSpinningReelSlotTileEvent) {
+						if (ReelSlotTile.reelsSpinning == 1) {
+							if (testForHiddenPatternRevealed(levelReelSlotTiles)) {
+							gameOver = true;
+							win = true;
+						}
+					}
+				}
+				if ((event instanceof ReelStoppedFlashingReelSlotTileEvent) & (initialFlashingStopped)) {							
+					if (testForAnyLonelyReels(levelReelSlotTiles)) {
+						gameOver = true;
+						System.out.println("I think its game over and you lose!");
+						win = false;
+					}
+					if (testForHiddenPatternRevealed(levelReelSlotTiles)) {
+						gameOver = true;
+						win = true;
+					}
+					reelScoreAnimation(source);
+					deleteReelAnimation(source);
+				}
+				if ((event instanceof ReelStoppedFlashingReelSlotTileEvent) & (!initialFlashingStopped)) {
+					initialFlashingStopped = true;				
+				}	
+			}
+		});
+		levelReelSlotTiles.add(reelSlotTile);		
+	}
+	
+	private void createReelIntroSequence() {		
 		Timeline sequence = Timeline.createParallel();
 		for(int i=0; i < levelReelSlotTiles.size; i++) {
 			sequence = sequence
