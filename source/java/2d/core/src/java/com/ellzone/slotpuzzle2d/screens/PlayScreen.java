@@ -224,7 +224,7 @@ public class PlayScreen implements Screen {
         slotReelScrollPixmap = new Pixmap((int) spriteWidth, (int)spriteHeight, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-        reelTile = new ReelTile(slotReelScrollTexture, slotReelTexture.getWidth(), slotReelTexture.getHeight(), 0, 32, 0);
+        reelTile = new ReelTile(slotReelScrollTexture, (int) spriteWidth, (int) spriteHeight, 0, 32, 0);
         reelTile.setX(0);
         reelTile.setY(32);
         reelTile.setEndReel(random.nextInt(sprites.length));
@@ -393,9 +393,9 @@ public class PlayScreen implements Screen {
 		if (Gdx.input.justTouched()) {
             touchX = Gdx.input.getX();
             touchY = Gdx.input.getY();
-            Vector2 newPoints1 = new Vector2(touchX, touchY);
-            newPoints1 = viewport.unproject(newPoints1);
-            if ((newPoints1.x >= 0) & (newPoints1.x <= spriteWidth) & (newPoints1.y >= spriteHeight) & (newPoints1.y <= 64)) {
+            Vector2 unProjTouch = new Vector2(touchX, touchY);
+            unProjTouch = viewport.unproject(unProjTouch);
+            if ((unProjTouch.x >= 0) & (unProjTouch.x <= spriteWidth) & (unProjTouch.y >= spriteHeight) & (unProjTouch.y <= 64)) {
                 if (tween.getCurrentTime() == 0) {
                     tweenClicked = false;
                     reelTile.setEndReel(random.nextInt(sprites.length));

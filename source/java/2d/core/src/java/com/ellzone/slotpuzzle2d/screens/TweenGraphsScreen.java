@@ -105,6 +105,7 @@ public class TweenGraphsScreen implements Screen {
     private Sprite pear;
     private Sprite tomato;
     private Sprite[] sprites;
+	private float spriteWidth, spriteHeight;
     private ReelTile reelTile;
     private Array<ReelTile> reelTiles = new Array<ReelTile>();
     private boolean isLoaded;
@@ -129,7 +130,6 @@ public class TweenGraphsScreen implements Screen {
     ModelBatch modelBatch;
     Environment environment;
     TileBatch tiles;
-
 
     public TweenGraphsScreen(DrawTweenGraphs game) {
         this.game = game;
@@ -163,21 +163,23 @@ public class TweenGraphsScreen implements Screen {
         pear = atlas.createSprite("pear");
         tomato = atlas.createSprite("tomato");
 
+        sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
+        for (Sprite sprite : sprites) {
+            sprite.setOrigin(0, 0);
+        }
+        spriteWidth = (int) sprites[0].getWidth();
+        spriteHeight = (int) sprites[0].getHeight();
+        
         Material material = new Material(
                 TextureAttribute.createDiffuse(atlas.getTextures().first()),
                 new BlendingAttribute(false, 1f),
                 FloatAttribute.createAlphaTest(0.5f));
         tiles = new TileBatch(material);
 
-        sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
-        for (Sprite sprite : sprites) {
-            sprite.setOrigin(0, 0);
-        }
-
         slotReelScrollPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-        reelTile = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 32, 0);
+        reelTile = new ReelTile(slotReelScrollTexture, (int) spriteWidth, (int) spriteHeight, 0, 32, 0);
         reelTile.setX(0);
         reelTile.setY(32);
         reelTile.setEndReel(random.nextInt(sprites.length));
@@ -193,7 +195,7 @@ public class TweenGraphsScreen implements Screen {
                 .start(tweenManager);
         tweens.add(tween);
 
-        reelTile = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 32, 32, 0);
+        reelTile = new ReelTile(slotReelScrollTexture, (int) spriteWidth, (int) spriteHeight, 32, 32, 0);
         reelTile.setX(32);
         reelTile.setY(32);
         reelTile.setEndReel(random.nextInt(sprites.length));
@@ -210,7 +212,7 @@ public class TweenGraphsScreen implements Screen {
                 .start(tweenManager);
         tweens.add(tween);
 
-        reelTile = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 64, 32, 0);
+        reelTile = new ReelTile(slotReelScrollTexture, (int) spriteWidth, (int) spriteHeight, 64, 32, 0);
         reelTile.setX(64);
         reelTile.setY(32);
         reelTile.setEndReel(random.nextInt(sprites.length));
@@ -237,25 +239,25 @@ public class TweenGraphsScreen implements Screen {
         Gdx.input.setInputProcessor(camController);
 
         ReelSlotTileScroll3D tile1 = new ReelSlotTileScroll3D(slotReelScrollTexture,
-                slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), -1, 0, 0, TweenGraphsScreen.SIXTY_FPS, lemon, cherry);
+        		(int) spriteWidth, (int) spriteHeight, -1, 0, 0, TweenGraphsScreen.SIXTY_FPS, lemon, cherry);
         tile1.position.set(-1, 0, 0.01f);
         tile1.update();
         tiles.add(tile1);
 
         ReelSlotTileScroll3D tile2 = new ReelSlotTileScroll3D(slotReelScrollTexture,
-                slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 0, 0, 0, TweenGraphsScreen.SIXTY_FPS, jelly, grapes);
+        		(int) spriteWidth, (int) spriteHeight, 0, 0, 0, TweenGraphsScreen.SIXTY_FPS, jelly, grapes);
         tile2.position.set(0, 0, 0.01f);
         tile2.update();
         tiles.add(tile2);
 
         ReelSlotTileScroll3D tile3 = new ReelSlotTileScroll3D(slotReelScrollTexture,
-                slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), 1, 0, 0, TweenGraphsScreen.SIXTY_FPS, peach, pear);
+                (int) spriteWidth, (int) spriteHeight, 1, 0, 0, TweenGraphsScreen.SIXTY_FPS, peach, pear);
         tile3.position.set(1, 0, 0.01f);
         tile3.update();
         tiles.add(tile3);
 
         ReelSlotTileScroll3D tile4 = new ReelSlotTileScroll3D(slotReelScrollTexture,
-                slotReelScrollTexture.getWidth(), slotReelScrollTexture.getHeight(), -5, -5, 0, TweenGraphsScreen.SIXTY_FPS, peach, pear);
+        		(int) spriteWidth, (int) spriteHeight, -5, -5, 0, TweenGraphsScreen.SIXTY_FPS, peach, pear);
         tile4.position.set(-12, -7, 0.0f);
         tile4.update();
         tiles.add(tile4);

@@ -107,12 +107,12 @@ public class ReelTile extends ReelSprite {
 
     public void setEndReel() {
         float syModulus = sy % texture.getHeight();
-        super.setEndReel((int) syModulus / 32);
+        super.setEndReel((int) syModulus / spriteHeight);
     }
 
 	public int getCurrentReel() {
         float syModulus = sy % texture.getHeight();
-		return (int) syModulus / 32;
+ 		return (int) ((syModulus + (spriteHeight / 2)) % texture.getHeight()) / spriteHeight;
 	}
 
 	@Override

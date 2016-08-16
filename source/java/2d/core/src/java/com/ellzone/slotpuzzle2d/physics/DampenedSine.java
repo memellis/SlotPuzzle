@@ -5,6 +5,8 @@ public class DampenedSine extends Particle {
 	public static final float MIN_DAMPENED_SINE_VALUE = 0.0000001f;
 	public static final int PLOTTIME_DIVISOR_DAMPER = 32;
 	public static final int SPRITE_SQUARE_SIZE = 32;
+	public static enum DSState { INITIALISED, UPDATING_DAMPENED_SINE, UPDATING_PARTICLE};
+	public float dsEndReel;
 	private Vector accelerator;
 	private float savedAmplitude;
 	private float savedSy;
@@ -16,7 +18,8 @@ public class DampenedSine extends Particle {
 	private SPPhysicsCallback callback;
 	private int callbackTriggers;
 	private float ds;
-	public float dsEndReel;
+	private Object userData;
+	private DSState dsState;
 	
 	public DampenedSine(float x, float y, float speed, float direction, float grav, float dampPoint, int height, int endReel) {
 		super(x, y, speed, direction, grav);
@@ -35,6 +38,7 @@ public class DampenedSine extends Particle {
 		accelerate(new Vector(0, 2f));
 		velocity.setX(0);
 		velocity.setY(4);
+		dsState = DSState.INITIALISED;
 	}
 	
 	public void setEndReel(int endReel) {
@@ -51,6 +55,7 @@ public class DampenedSine extends Particle {
 	}
 	
 	private void updateParticle() {
+		dsState = DSState.UPDATING_PARTICLE;
 		if (position.getY() < dampPoint) {
 			if (saveAmplitude) {
 				saveAmplitude = false;
@@ -68,6 +73,7 @@ public class DampenedSine extends Particle {
 	}
 	
 	private void updateDampenedSine() {
+		dsState = DSState.UPDATING_DAMPENED_SINE;
 		velocity.mulitplyBy(0.97f);
 		accelerate(accelerator);
 		accelerator.mulitplyBy(0.97f); 
@@ -86,6 +92,18 @@ public class DampenedSine extends Particle {
 	}
 	
 	public void callCallback(int type) {
-	      if (callback != null && (callbackTriggers & type) > 0) callback.onEvent(type, new SPPhysicsEvent());
+	      if (callback != null && (callbackTriggers & type) > 0) callback.onEvent(type, new SPPhysicsEvent(this));
+	}
+	
+	public void setUserData(Object userData) {
+		this.userData = userData;
+	}
+	
+	public Object getUserData() {
+		return userData;
+	}
+	
+	public DSState getDSState() {
+		return this.dsState;
 	}
 }
