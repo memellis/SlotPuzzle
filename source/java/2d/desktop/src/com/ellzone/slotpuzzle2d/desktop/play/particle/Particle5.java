@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.physics.DampenedSine;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
@@ -159,25 +158,28 @@ public class Particle5 implements ApplicationListener {
 
 	private void update(float delta) {
 		int dsIndex = 0;
-		for (ReelTile reelSlot : reelTiles) { 		  
+		for (ReelTile reel : reelTiles) { 		  
          	dampenedSines.get(dsIndex).update();
-  		    reelSlot.setSy(dampenedSines.get(dsIndex).position.y);
-  	       	reelSlot.update(delta); 
+  		    reel.setSy(dampenedSines.get(dsIndex).position.y);
+  	       	reel.update(delta); 
   	       	dsIndex++;
 		}
 	}
 
 	public void handleInput(float delta) {
-		ReelTile reel = reelTiles.get(0);
-        if (Gdx.input.justTouched()) {
-            touch = touch.set(Gdx.input.getX(), cam.viewportHeight - Gdx.input.getY());
-            if(reel.getBoundingRectangle().contains(touch)) {
-            	if (dampenedSines.get(0).getDSState() == DampenedSine.DSState.UPDATING_DAMPENED_SINE) {
-            		reel.setEndReel(reel.getCurrentReel());
-            		dampenedSines.get(0).setEndReel(reel.getCurrentReel());
-            	}
-            }
-        }
+		int dsIndex = 0;
+		for (ReelTile reel : reelTiles) { 		  		
+			if (Gdx.input.justTouched()) {
+				touch = touch.set(Gdx.input.getX(), cam.viewportHeight - Gdx.input.getY());
+				if(reel.getBoundingRectangle().contains(touch)) {
+					if (dampenedSines.get(dsIndex).getDSState() == DampenedSine.DSState.UPDATING_DAMPENED_SINE) {
+						reel.setEndReel(reel.getCurrentReel());
+						dampenedSines.get(dsIndex).setEndReel(reel.getCurrentReel());
+					}
+				}
+			}
+			dsIndex++;
+		}
 	}
 
 	@Override
