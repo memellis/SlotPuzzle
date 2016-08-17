@@ -1,12 +1,9 @@
 package com.ellzone.slotpuzzle2d.sprites;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.ellzone.slotpuzzle2d.sprites.ReelSlotTile.FlashState;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
 public class ReelTile extends ReelSprite {
@@ -39,13 +36,14 @@ public class ReelTile extends ReelSprite {
     private void defineReelSlotTileScroll() {
         setPosition(this.x, this.y);
         setOrigin(this.x, this.y);
-        setBounds(this.x, this.y, spriteWidth, spriteHeight);
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         region = new TextureRegion(texture);
         region.setRegion(0, 0, spriteWidth, spriteHeight);
+        setBounds(this.x, this.y, spriteWidth, spriteHeight);
         setRegion(region);
 		super.setSpinning(true);
-		reelFlashTimer = 0.4f;
+		reelFlashTimer = 0.3f;
+		reelFlashCount = 10;
 		reelFlash = false;
 		reelFlashState = FlashState.FLASH_OFF;
         deleteReelTile = false;
@@ -70,12 +68,12 @@ public class ReelTile extends ReelSprite {
 	private void processFlashState(float delta) {
 		reelFlashTimer -= delta;
 		if (reelFlashTimer < 0) {
-			reelFlashTimer = 0.4f;
+			reelFlashTimer = 0.3f;
 			reelFlashCount--;
 			if (reelFlashCount <= 0) {
 				reelFlash = false;
 				reelFlashState = FlashState.FLASH_OFF;
-				processEvent(new ReelStoppedFlashingReelSlotTileEvent());
+				processEvent(new ReelStoppedFlashingEvent());
 			} else {
 				if (reelFlashState == FlashState.FLASH_OFF) {
 					reelFlashState = FlashState.FLASH_ON;
@@ -117,7 +115,6 @@ public class ReelTile extends ReelSprite {
 
 	@Override
 	public void dispose() {
-		
 	}
 
 	public boolean isReelTileDeleted() {

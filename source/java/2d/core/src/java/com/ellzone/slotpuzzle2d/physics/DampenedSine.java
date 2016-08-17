@@ -20,6 +20,7 @@ public class DampenedSine extends Particle {
 	private float ds;
 	private Object userData;
 	private DSState dsState;
+	private boolean dsComplete;
 	
 	public DampenedSine(float x, float y, float speed, float direction, float grav, float dampPoint, int height, int endReel) {
 		super(x, y, speed, direction, grav);
@@ -39,6 +40,7 @@ public class DampenedSine extends Particle {
 		velocity.setX(0);
 		velocity.setY(4);
 		dsState = DSState.INITIALISED;
+		dsComplete = false;
 	}
 	
 	public void setEndReel(int endReel) {
@@ -66,8 +68,9 @@ public class DampenedSine extends Particle {
 		    dsEndReel = ds + endReel * SPRITE_SQUARE_SIZE;
 		    position.y = savedSy + dsEndReel;
 		    callCallback(SPPhysicsCallback.PARTICLE_UPDATE);
-		    if (Math.abs(ds) < DampenedSine.MIN_DAMPENED_SINE_VALUE) {
+		    if ((Math.abs(ds) < DampenedSine.MIN_DAMPENED_SINE_VALUE) & (!dsComplete)) {
 		    	callCallback(SPPhysicsCallback.END);	
+		    	dsComplete = true;
 		    }
 		} 
 	}
@@ -105,5 +108,9 @@ public class DampenedSine extends Particle {
 	
 	public DSState getDSState() {
 		return this.dsState;
+	}
+	
+	public void setDampPoint(float dampPoint) {
+		this.dampPoint = dampPoint;
 	}
 }

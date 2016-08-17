@@ -17,7 +17,7 @@ import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 public class ReelLetter extends ReelSprite {
 	
 	public static int instanceCount = 0;
-	private final DelayedRemovalArray<ReelSlotTileListener> listeners = new DelayedRemovalArray<ReelSlotTileListener>(0);
+	private final DelayedRemovalArray<ReelTileListener> listeners = new DelayedRemovalArray<ReelTileListener>(0);
 	private int reelId;
 	private float x, y;
 	private Animation reelAnimationFast;

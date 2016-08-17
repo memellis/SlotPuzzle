@@ -85,4 +85,8 @@ public class Hud implements Disposable {
     public boolean isTimeUp() { 
     	return timeUp; 
     }
+    
+    public Integer getWorldTime() {
+    	return worldTimer;
+    }
 }

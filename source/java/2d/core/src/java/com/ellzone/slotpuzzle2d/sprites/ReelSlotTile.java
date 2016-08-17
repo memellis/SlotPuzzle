@@ -95,7 +95,7 @@ public class ReelSlotTile extends ReelSprite {
 				if (isSpinning()) {
 					setRegion(reelAnimationFast.getKeyFrame(getEndReelFrameTime(), true));
 					super.setSpinning(false);
-					processEvent(new ReelStoppedSpinningReelSlotTileEvent());
+					processEvent(new ReelStoppedSpinningEvent());
 					ReelSlotTile.instanceCount--;
 					ReelSlotTile.reelsSpinning--;
 					Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "Reel stopped spinning - instanceCount="+String.valueOf(ReelLetter.instanceCount + " reelId=" + reelId));
@@ -108,7 +108,7 @@ public class ReelSlotTile extends ReelSprite {
 							if (reelFlashCount <= 0) {
 								reelFlash = false;
 								reelFlashState = FlashState.FLASH_OFF;
-								processEvent(new ReelStoppedFlashingReelSlotTileEvent());
+								processEvent(new ReelStoppedFlashingEvent());
 							} else {
 								if (reelFlashState == FlashState.FLASH_OFF) {
 									reelFlashState = FlashState.FLASH_ON;

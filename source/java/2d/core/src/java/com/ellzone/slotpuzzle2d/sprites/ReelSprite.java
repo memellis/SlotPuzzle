@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 
 public abstract class ReelSprite extends Sprite {
-    private final DelayedRemovalArray<ReelSlotTileListener> listeners = new DelayedRemovalArray<ReelSlotTileListener>(0);
+    private final DelayedRemovalArray<ReelTileListener> listeners = new DelayedRemovalArray<ReelTileListener>(0);
     private boolean spinning = true;
     private int endReel;
 
@@ -29,7 +29,7 @@ public abstract class ReelSprite extends Sprite {
         this.endReel = endReel;
     }
 
-    public boolean addListener (ReelSlotTileListener listener) {
+    public boolean addListener (ReelTileListener listener) {
         if (!listeners.contains(listener, true)) {
             listeners.add(listener);
             return true;
@@ -37,16 +37,16 @@ public abstract class ReelSprite extends Sprite {
         return false;
     }
 
-    public boolean removeListener (ReelSlotTileListener listener) {
+    public boolean removeListener (ReelTileListener listener) {
         return listeners.removeValue(listener, true);
     }
 
-    public Array<ReelSlotTileListener> getListeners () {
+    public Array<ReelTileListener> getListeners () {
         return listeners;
     }
 
-    public void processEvent(ReelSlotTileEvent reelSlotTileEvent) {
-        Array<ReelSlotTileListener> tempReelSlotTileListenerList = new Array<ReelSlotTileListener>();
+    public void processEvent(ReelTileEvent reelTileEvent) {
+        Array<ReelTileListener> tempReelSlotTileListenerList = new Array<ReelTileListener>();
 
         synchronized (this) {
             if (listeners.size == 0)
@@ -56,8 +56,8 @@ public abstract class ReelSprite extends Sprite {
             }
         }
 
-        for (ReelSlotTileListener listener : tempReelSlotTileListenerList) {
-            listener.actionPerformed(reelSlotTileEvent, (ReelSlotTile) this);
+        for (ReelTileListener listener : tempReelSlotTileListenerList) {
+            listener.actionPerformed(reelTileEvent, (ReelTile) this);
         }
     }
 }
