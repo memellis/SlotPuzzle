@@ -13,7 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
-import com.ellzone.slotpuzzle2d.effects.ReelSpriteAccessor;
+import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
@@ -58,7 +58,7 @@ public class WayPoints1 implements ApplicationListener {
 	private void initialiseUniversalTweenEngine() {
 	    SlotPuzzleTween.setWaypointsLimit(10);
 	    SlotPuzzleTween.setCombinedAttributesLimit(3);
-	    SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelSpriteAccessor());
+	    SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelAccessor());
 	    tweenManager = new TweenManager();
 	}
 	
@@ -100,7 +100,7 @@ public class WayPoints1 implements ApplicationListener {
 	
 	private void initialiseTweens() {
 		tweenDuration = 10.0f;
-        SlotPuzzleTween.to(reelTiles.get(0), ReelSpriteAccessor.SCROLL_XY, tweenDuration)
+        SlotPuzzleTween.to(reelTiles.get(0), ReelAccessor.SCROLL_XY, tweenDuration)
 			.target(0, slotReelScrollTexture.getHeight()*16 + reelTile.getEndReel() * 32)
 			.waypoint(0,  slotReelScrollTexture.getHeight()*4, 
 					  0, -slotReelScrollTexture.getHeight()*8, 

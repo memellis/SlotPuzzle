@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
-import com.ellzone.slotpuzzle2d.effects.ReelSpriteAccessor;
+import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
@@ -59,7 +59,7 @@ public class Dynamic implements ApplicationListener {
 	private void initialiseUniversalTweenEngine() {
 	    SlotPuzzleTween.setWaypointsLimit(10);
 	    SlotPuzzleTween.setCombinedAttributesLimit(3);
-	    SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelSpriteAccessor());
+	    SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelAccessor());
 	    tweenManager = new TweenManager();
 	}
 	
@@ -105,7 +105,7 @@ public class Dynamic implements ApplicationListener {
 		dynamicTarget = 25*360;
 		tweenDuration = 25.0f;
 		SlotPuzzleTween.
-			to(reelTiles.get(0), ReelSpriteAccessor.ROTATION, tweenDuration).
+			to(reelTiles.get(0), ReelAccessor.ROTATION, tweenDuration).
 			target(dynamicTarget).
 			ease(Back.OUT).
 			start(tweenManager);		

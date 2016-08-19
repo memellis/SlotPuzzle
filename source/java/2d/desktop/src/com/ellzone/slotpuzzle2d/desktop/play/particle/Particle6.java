@@ -1,6 +1,7 @@
 package com.ellzone.slotpuzzle2d.desktop.play.particle;
 
 import java.util.Random;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -15,14 +16,21 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.ellzone.slotpuzzle2d.physics.DampenedSine;
+import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
+import com.ellzone.slotpuzzle2d.physics.DampenedSineParticle;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsEvent;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
+import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
+import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
+import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
+import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
+import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+import aurelienribon.tweenengine.equations.Elastic;
 
-public class Particle5 implements ApplicationListener {
+public class Particle6 implements ApplicationListener {
 
 	private static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
 	private PerspectiveCamera cam;
@@ -36,12 +44,14 @@ public class Particle5 implements ApplicationListener {
 	private Random random;
     private Array<ReelTile> reelTiles;
     private SpriteBatch batch;
-    private Array<DampenedSine> dampenedSines;
-	private DampenedSine dampenedSine;
+    private Array<DampenedSineParticle> dampenedSines;
+	private DampenedSineParticle dampenedSine;
     private ShapeRenderer shapeRenderer;
     private Array<Vector2> points = new Array<Vector2>();
     private float graphStep;
     private Vector2 touch;
+    private Timeline endReelSeq;
+    private TweenManager tweenManager;
 
 	@Override
 	public void create() {
@@ -49,6 +59,7 @@ public class Particle5 implements ApplicationListener {
         initialiseReelSlots();
         initialiseCamera();
         initialiseLibGdx();
+        initialiseUniversalTweenEngine();
         initialiseDampenedSine();
 	}
 
@@ -102,17 +113,24 @@ public class Particle5 implements ApplicationListener {
         shapeRenderer = new ShapeRenderer();
         touch = new Vector2();
 	}
+	
+	private void initialiseUniversalTweenEngine() {
+	    SlotPuzzleTween.setWaypointsLimit(10);
+	    SlotPuzzleTween.setCombinedAttributesLimit(3);
+	    SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelAccessor());
+	    tweenManager = new TweenManager();
+	}
 
 	private void initialiseDampenedSine() {
-		dampenedSines = new Array<DampenedSine>();
+		dampenedSines = new Array<DampenedSineParticle>();
 		for (ReelTile reel : reelTiles) { 
-			dampenedSine = new DampenedSine(0, reel.getSy(), 0, 0, 0, slotReelScrollheight * 20, slotReelScrollheight, reel.getEndReel());
+			dampenedSine = new DampenedSineParticle(0, reel.getSy(), 0, 0, 0, slotReelScrollheight * 20, slotReelScrollheight, reel.getEndReel());
 			dampenedSine.setCallback(dsCallback);
-			dampenedSine.setCallbackTriggers(SPPhysicsCallback.PARTICLE_UPDATE + SPPhysicsCallback.END);
+			dampenedSine.setCallbackTriggers(SPPhysicsCallback.PARTICLE_UPDATE);
 			dampenedSine.setUserData(reel);
 			dampenedSines.add(dampenedSine);
 		}
-		graphStep = 0f;
+		graphStep=0f;
 	}
 	
 	private SPPhysicsCallback dsCallback = new SPPhysicsCallback() {
@@ -124,16 +142,35 @@ public class Particle5 implements ApplicationListener {
 	
 	private void delegateDSCallback(int type, SPPhysicsEvent source) {
 		if (type == SPPhysicsCallback.PARTICLE_UPDATE) {
-		    addGraphPoint(new Vector2(graphStep++ % Gdx.graphics.getWidth(), (Gdx.graphics.getHeight() / 2 + dampenedSines.get(0).dsEndReel)));
-		} else {
-			if (type == SPPhysicsCallback.END) {
-				DampenedSine ds = (DampenedSine)source.getSource();
-				ReelTile reel = (ReelTile)ds.getUserData();
-				reel.setEndReel(random.nextInt(sprites.length - 1));
-				ds.position.y = 0;
-				ds.initialiseDampenedSine();			
-				ds.setEndReel(reel.getEndReel());
-			}
+			DampenedSineParticle ds = (DampenedSineParticle)source.getSource();
+			ReelTile reel = (ReelTile)ds.getUserData();
+			endReelSeq = Timeline.createSequence();
+			float remainingSy = slotReelScrollheight - (reel.getSy() % slotReelScrollheight);
+			float endSy = reel.getSy() + remainingSy + reel.getEndReel() * spriteHeight;
+	        endReelSeq = endReelSeq.push(SlotPuzzleTween.to(reel, ReelAccessor.SCROLL_XY, 5.0f)
+	        		               .target(0f, endSy)
+	        		               .ease(Elastic.OUT)
+	        		               .setCallbackTriggers(TweenCallback.STEP + TweenCallback.END)
+	        		               .setCallback(slowingSpinningCallback)
+	        		               .setUserData(reel));	        					
+	        endReelSeq = endReelSeq
+	        				.start(tweenManager);
+		}
+	}
+	
+	private TweenCallback slowingSpinningCallback = new TweenCallback() {
+		@Override
+		public void onEvent(int type, BaseTween<?> source) {
+			delegateSlowingSpinning(type, source);
+		}
+	};
+	
+	private void delegateSlowingSpinning(int type, BaseTween<?> source) {
+		ReelTile reel = (ReelTile)source.getUserData();
+		if (type == TweenCallback.END) {
+			reel.setSpinning(false);
+		} else if (type == TweenCallback.STEP) {
+		    addGraphPoint(new Vector2(graphStep++ % Gdx.graphics.getWidth(), (Gdx.graphics.getHeight() / 2 + (reel.getSy() % slotReelScrollheight))));
 		}
 	}
 
@@ -156,11 +193,14 @@ public class Particle5 implements ApplicationListener {
 	}
 
 	private void update(float delta) {
+		tweenManager.update(delta);
 		int dsIndex = 0;
 		for (ReelTile reel : reelTiles) { 		  
-         	dampenedSines.get(dsIndex).update();
-  		    reel.setSy(dampenedSines.get(dsIndex).position.y);
-  	       	reel.update(delta); 
+			dampenedSines.get(dsIndex).update();
+         	if (dampenedSines.get(dsIndex).getDSState() == DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE) {
+         		reel.setSy(dampenedSines.get(dsIndex).position.y);
+  	       	}
+         	reel.update(delta);
   	       	dsIndex++;
 		}
 	}
@@ -171,9 +211,16 @@ public class Particle5 implements ApplicationListener {
 			if (Gdx.input.justTouched()) {
 				touch = touch.set(Gdx.input.getX(), cam.viewportHeight - Gdx.input.getY());
 				if(reel.getBoundingRectangle().contains(touch)) {
-					if (dampenedSines.get(dsIndex).getDSState() == DampenedSine.DSState.UPDATING_DAMPENED_SINE) {
-						reel.setEndReel(reel.getCurrentReel());
-						dampenedSines.get(dsIndex).setEndReel(reel.getCurrentReel());
+					if (reel.isSpinning()) {
+						if (dampenedSines.get(dsIndex).getDSState() == DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE) {
+							reel.setEndReel(reel.getCurrentReel());
+							dampenedSines.get(dsIndex).setEndReel(reel.getCurrentReel());
+						}
+					} else {
+						reel.setEndReel(random.nextInt(sprites.length - 1));
+				        reel.setSpinning(true);
+						dampenedSines.get(dsIndex).initialiseDampenedSine();
+						dampenedSines.get(dsIndex).position.y = 0;
 					}
 				}
 			}
@@ -190,10 +237,10 @@ public class Particle5 implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         batch.begin();
-        for (ReelTile reel : reelTiles) {
-            reel.draw(batch);
-            sprites[reel.getEndReel()].setX(32);
-            sprites[reel.getEndReel()].draw(batch);
+        for (ReelTile reelSlot : reelTiles) {
+            reelSlot.draw(batch);
+            sprites[reelSlot.getEndReel()].setX(32);
+            sprites[reelSlot.getEndReel()].draw(batch);
         }
         batch.end();
         drawGraphPoint(shapeRenderer);
