@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import aurelienribon.tweenengine.TweenAccessor;
 
-public class ReelSpriteAccessor implements TweenAccessor<ReelTile> {
+public class ReelAccessor implements TweenAccessor<ReelTile> {
     public static final int POS_XY = 1;
     public static final int CPOS_XY = 2;
     public static final int SCALE_XY = 3;

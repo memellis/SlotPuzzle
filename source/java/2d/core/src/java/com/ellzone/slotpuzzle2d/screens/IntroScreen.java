@@ -27,7 +27,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
-import com.ellzone.slotpuzzle2d.effects.ReelSpriteAccessor;
+import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.sprites.ReelLetter;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
@@ -112,7 +112,7 @@ public class IntroScreen implements Screen {
         Tween.setWaypointsLimit(10);
         Tween.setCombinedAttributesLimit(3);
         Tween.registerAccessor(Sprite.class, new SpriteAccessor());
-        Tween.registerAccessor(ReelTile.class, new ReelSpriteAccessor());    	
+        Tween.registerAccessor(ReelTile.class, new ReelAccessor());    	
     }
     
     private void initialiseFonts() {
@@ -228,15 +228,15 @@ public class IntroScreen implements Screen {
         reelTile = new ReelTile(slotReelTexture, slotReelTexture.getWidth(), slotReelTexture.getHeight(), 32, 32, 0);
 
         Timeline reelSeq = Timeline.createSequence();
-        reelSeq = reelSeq.push(Tween.set(reelTile, ReelSpriteAccessor.SCROLL_XY).target(0f, 0f).ease(Bounce.IN));
-        reelSeq = reelSeq.push(Tween.to(reelTile, ReelSpriteAccessor.SCROLL_XY, 5.0f).target(0f, 32.0f * 8 * 3 + random.nextInt(slotReelTexture.getHeight() / 32) * 32).ease(Elastic.OUT));
+        reelSeq = reelSeq.push(Tween.set(reelTile, ReelAccessor.SCROLL_XY).target(0f, 0f).ease(Bounce.IN));
+        reelSeq = reelSeq.push(Tween.to(reelTile, ReelAccessor.SCROLL_XY, 5.0f).target(0f, 32.0f * 8 * 3 + random.nextInt(slotReelTexture.getHeight() / 32) * 32).ease(Elastic.OUT));
 
         introSeq = introSeq
                 .start(tweenManager);
 
         reelSeq = reelSeq.
                 repeat(100, 0.0f).
-                push(Tween.to(reelTile, ReelSpriteAccessor.SCROLL_XY, 5.0f).target(0f, 32.0f * 8 * 3 + random.nextInt(slotReelTexture.getHeight() / 32) * 32).ease(Elastic.OUT)).
+                push(Tween.to(reelTile, ReelAccessor.SCROLL_XY, 5.0f).target(0f, 32.0f * 8 * 3 + random.nextInt(slotReelTexture.getHeight() / 32) * 32).ease(Elastic.OUT)).
                 start(tweenManager);
     }
     

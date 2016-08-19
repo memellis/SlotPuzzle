@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
-import com.ellzone.slotpuzzle2d.effects.ReelSpriteAccessor;
+import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.effects.ScoreAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.physics.DampenedSine;
@@ -116,7 +116,7 @@ public class PlayScreen implements Screen {
 		SlotPuzzleTween.setWaypointsLimit(10);
 		SlotPuzzleTween.setCombinedAttributesLimit(3);
 		SlotPuzzleTween.registerAccessor(Sprite.class, new SpriteAccessor());
-		SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelSpriteAccessor());
+		SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelAccessor());
 		SlotPuzzleTween.registerAccessor(Score.class, new ScoreAccessor());
 	}
 
@@ -270,7 +270,7 @@ public class PlayScreen implements Screen {
         reelTile.setY(32);
         reelTile.setEndReel(random.nextInt(sprites.length));
 
-        tween = SlotPuzzleTween.to(reelTile, ReelSpriteAccessor.SCROLL_XY, 20.0f) .target(0,  2560 + reelTile.getEndReel() * 32) .ease(Sine.OUT).setCallback(new TweenCallback() {
+        tween = SlotPuzzleTween.to(reelTile, ReelAccessor.SCROLL_XY, 20.0f) .target(0,  2560 + reelTile.getEndReel() * 32) .ease(Sine.OUT).setCallback(new TweenCallback() {
             @Override
             public void onEvent(int type, BaseTween<?> source) {
                delegateTweenOnEvent(type, source);
@@ -440,7 +440,7 @@ public class PlayScreen implements Screen {
                 if (tween.getCurrentTime() == 0) {
                     tweenClicked = false;
                     reelTile.setEndReel(random.nextInt(sprites.length));
-                    tween = SlotPuzzleTween.to(reelTile, ReelSpriteAccessor.SCROLL_XY, 20.0f) .target(0,  returnValues[1] + (2560 - returnValues[1] % 2560) + reelTile.getEndReel() * 32) .ease(Sine.OUT).setCallback(new TweenCallback() {
+                    tween = SlotPuzzleTween.to(reelTile, ReelAccessor.SCROLL_XY, 20.0f) .target(0,  returnValues[1] + (2560 - returnValues[1] % 2560) + reelTile.getEndReel() * 32) .ease(Sine.OUT).setCallback(new TweenCallback() {
                         @Override
                         public void onEvent(int type, BaseTween<?> source) {
                             delegateTweenOnEvent(type, source);
@@ -497,9 +497,9 @@ public class PlayScreen implements Screen {
     private void delegateTweenOnEvent(int type, BaseTween<?> source) {
         switch (type){
             case TweenCallback.END:
-                ReelSpriteAccessor accessor = (ReelSpriteAccessor) tween.getAccessor();
+                ReelAccessor accessor = (ReelAccessor) tween.getAccessor();
                 if (accessor != null) {
-                    accessor.getValues(reelTile, ReelSpriteAccessor.SCROLL_XY, returnValues);
+                    accessor.getValues(reelTile, ReelAccessor.SCROLL_XY, returnValues);
                 } else {
                     System.out.println("null!");
                 }
