@@ -63,8 +63,9 @@ public class Main extends JFrame {
 			"Universal Tween Engine Experiments",
 			new AppDesc("Experiment 1 - waypoints 1", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.WayPoints1.class),
 			new AppDesc("Experiment 2 - waypoints 2", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.WayPoints2.class),
-			new AppDesc("Experiment 3 - dynamic tween", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Dynamic.class)
-					},
+			new AppDesc("Experiment 3 - dynamic tween", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Dynamic.class),
+			new AppDesc("Experiment 4 - flash", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Flash.class)	
+		},
 		new Object[] {
 			"Particle Experiments",
 			new AppDesc("Experiment 1 - particles 1 - with Coding Math particle", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle1.class),

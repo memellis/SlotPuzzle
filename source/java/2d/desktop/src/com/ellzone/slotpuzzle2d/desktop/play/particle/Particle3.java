@@ -110,7 +110,6 @@ public class Particle3 implements ApplicationListener {
 	private void intialiseParticles() {
 		accelerator = new Vector(0, 3f);
 		reelParticles = new Array<Particle>();
-		System.out.println("reelTiles.get(0).getSy()"+reelTiles.get(0).getSy());
 		reelParticle = new Particle(0, reelTiles.get(0).getSy(), 0.0001f , 0, 0);
 		reelParticle.velocity.setX(0);
 		reelParticle.velocity.setY(4);

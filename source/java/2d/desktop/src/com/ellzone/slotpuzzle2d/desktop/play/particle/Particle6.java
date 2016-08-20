@@ -237,10 +237,10 @@ public class Particle6 implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         batch.begin();
-        for (ReelTile reelSlot : reelTiles) {
-            reelSlot.draw(batch);
-            sprites[reelSlot.getEndReel()].setX(32);
-            sprites[reelSlot.getEndReel()].draw(batch);
+        for (ReelTile reel : reelTiles) {
+            reel.draw(batch);
+            sprites[reel.getEndReel()].setX(32);
+            sprites[reel.getEndReel()].draw(batch);
         }
         batch.end();
         drawGraphPoint(shapeRenderer);
