@@ -230,6 +230,9 @@ public class PixmapProcessors {
 	}
 	
 	public static void savePixmap(Pixmap pixmap, File file) {
+		if (file.exists()) {
+			file.delete();
+		}
 		try {
 			FileHandle fh;
             do {

@@ -1,5 +1,6 @@
 package com.ellzone.slotpuzzle2d.sprites;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -17,10 +18,12 @@ public class ReelTile extends ReelSprite {
     private float sy = 0;
 	private boolean deleteReelTile;
 	private boolean reelFlash;
+	private boolean reelFlashTween;
 	public enum FlashState {FLASH_OFF, FLASH_ON};
 	private FlashState reelFlashState;
 	private float reelFlashTimer;
 	private int reelFlashCount;
+	private Color flashColor;
 	private int score;
 
     public ReelTile(Texture texture, int spriteWidth, int spriteHeight, float x, float y, int endReel) {
@@ -45,7 +48,9 @@ public class ReelTile extends ReelSprite {
 		reelFlashTimer = 0.3f;
 		reelFlashCount = 10;
 		reelFlash = false;
+		reelFlashTween = false;
 		reelFlashState = FlashState.FLASH_OFF;
+		flashColor = Color.RED;
         deleteReelTile = false;
     }
 
@@ -56,6 +61,9 @@ public class ReelTile extends ReelSprite {
         }
         if (reelFlash) {
         	processFlashState(delta);
+        }
+        if (reelFlashTween) {
+        	processFlashTweenState(delta);
         }
     }
 	
@@ -85,6 +93,10 @@ public class ReelTile extends ReelSprite {
 				}
 			}
 		}
+	}
+	
+	private void processFlashTweenState(float delta) {
+		setFlashOn();
 	}
 
     public float getSx() {
@@ -141,12 +153,37 @@ public class ReelTile extends ReelSprite {
 		this.reelFlash = reelFlash;
 	}
 	
+	public Color getFlashColor() {
+		return this.flashColor;
+	}
+	
+	public void setFlashColor(Color flashColor) {
+		this.flashColor = flashColor;
+	}
+	
+	public void setFlashTween(boolean reelFlashTween) {
+		this.reelFlashTween = reelFlashTween;
+	}
+	
+	public boolean getFlashTween() {
+		return this.reelFlashTween;
+	}
+	
+	public void setFlashOn() {
+		TextureRegion flashReel = drawFlashOn(region);
+		setRegion(flashReel);
+	}
+	
+	public void setFlashOff() {
+		setRegion(region);
+	}
+	
 	private TextureRegion drawFlashOn(TextureRegion reel) {
 		Pixmap reelPixmap = PixmapProcessors.getPixmapFromtextureRegion(reel);
-		reelPixmap.setColor(Color.RED);
-		reelPixmap.drawRectangle(0, 0, 32, 32);
-		reelPixmap.drawRectangle(1, 1, 30, 30);
-		reelPixmap.drawRectangle(2, 2, 28, 28);
+		reelPixmap.setColor(flashColor);
+		reelPixmap.drawRectangle(0, 0, spriteWidth    , spriteHeight);
+		reelPixmap.drawRectangle(1, 1, spriteWidth - 2, spriteHeight - 2);
+		reelPixmap.drawRectangle(2, 2, spriteWidth - 4, spriteHeight - 4);
 		TextureRegion textureRegion = new TextureRegion(new Texture(reelPixmap));
 		return textureRegion;
 	}
