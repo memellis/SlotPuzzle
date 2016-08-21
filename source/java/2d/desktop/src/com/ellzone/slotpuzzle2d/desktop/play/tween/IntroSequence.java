@@ -4,7 +4,6 @@ import java.util.Random;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -13,19 +12,24 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
+import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
-import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
-import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
-import aurelienribon.tweenengine.equations.Sine;
 
-public class Flash implements ApplicationListener {
+import aurelienribon.tweenengine.equations.Back;
+import aurelienribon.tweenengine.equations.Cubic;
+import aurelienribon.tweenengine.equations.Quad;
+import aurelienribon.tweenengine.equations.Quart;
+
+public class IntroSequence implements ApplicationListener {
+
 	private static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
 	private PerspectiveCamera cam;
     private SpriteBatch batch;
@@ -36,19 +40,19 @@ public class Flash implements ApplicationListener {
     private Pixmap slotReelScrollPixmap;
 	private Texture slotReelScrollTexture;
 	private Random random;
-    private Array<ReelTile> reelTiles;
-    private Timeline flashSeq;
-    private TweenManager tweenManager;
-
+    private Array<ReelTile> reels;
+    private Timeline introSequence;
+    private TweenManager tweenManager; 
 
 	@Override
 	public void create() {
-        loadAssets();
+		loadAssets();
         initialiseCamera();
         initialiseLibGdx();
         initialiseUniversalTweenEngine();
         initialiseReelSlots();
- 	}
+        createIntroSequence();
+	}
 
 	private void loadAssets() {
         Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
@@ -72,7 +76,7 @@ public class Flash implements ApplicationListener {
         spriteWidth = (int) sprites[0].getWidth();
         spriteHeight = (int) sprites[0].getHeight();
 	}
-
+	
 	private void initialiseCamera() {
         cam = new PerspectiveCamera();
         cam.position.set(0, 0, 10);
@@ -92,67 +96,76 @@ public class Flash implements ApplicationListener {
 
 	private void initialiseReelSlots() {
         random = new Random();
-        reelTiles = new Array<ReelTile>();
+        reels = new Array<ReelTile>();
         slotReelScrollPixmap = new Pixmap(spriteWidth, spriteHeight, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-        ReelTile reel = new ReelTile(slotReelScrollTexture, spriteWidth, spriteHeight, 0, 32, 0);
-        reel.setX(0);
-        reel.setY(0);
-        reel.setSx(0);
-        reel.setSy(0);
-        reel.setEndReel(random.nextInt(sprites.length - 1));
-        initialiseReelFlash(reel);
-        reelTiles.add(reel);
+        for (int i=0; i<15; i++) {
+	        ReelTile reel = new ReelTile(slotReelScrollTexture, spriteWidth, spriteHeight, 0, 32, 0);
+	        reel.setX(i*spriteHeight);
+	        reel.setY(i*spriteWidth);
+	        reel.setSx(0);
+	        reel.setSy(0);
+	        reel.setEndReel(random.nextInt(sprites.length - 1));
+	        reels.add(reel);
+        }
 	}	
 	
-	private void initialiseReelFlash(ReelTile reel) {
-		reel.setFlashTween(true);
-		flashSeq = Timeline.createSequence();
-		flashSeq = flashSeq.push(SlotPuzzleTween.set(reel, ReelAccessor.FLASH_TINT)
-						   .target(Color.WHITE.r, Color.WHITE.g, Color.WHITE.b)
-						   .ease(Sine.IN));
-		flashSeq = flashSeq.push(SlotPuzzleTween.to(reel, ReelAccessor.FLASH_TINT, 0.5f)
-						   .target(Color.RED.r, Color.RED.g, Color.RED.b)
-						   .ease(Sine.OUT)
-						   .repeatYoyo(17, 0));
-
-		flashSeq = flashSeq.push(SlotPuzzleTween.set(reel, ReelAccessor.FLASH_TINT)
-				   .target(Color.WHITE.r, Color.WHITE.g, Color.WHITE.b)
-				   .ease(Sine.IN));
-		flashSeq = flashSeq.push(SlotPuzzleTween.to(reel, ReelAccessor.FLASH_TINT, 0.2f)
-				   .target(Color.RED.r, Color.RED.g, Color.RED.b)
-				   .ease(Sine.OUT)
-				   .repeatYoyo(25, 0));
-
-		
-		flashSeq = flashSeq.push(SlotPuzzleTween.set(reel, ReelAccessor.FLASH_TINT)
-				           .target(Color.WHITE.r, Color.WHITE.g, Color.WHITE.b)
-				           .ease(Sine.IN));
-		flashSeq = flashSeq.push(SlotPuzzleTween.to(reel, ReelAccessor.FLASH_TINT, 0.05f)
-						   .target(Color.RED.r, Color.RED.g, Color.RED.b)
-						   .ease(Sine.OUT)
-				           .repeatYoyo(33, 0))
-						   .setCallback(reelFlashCallback)
-						   .setCallbackTriggers(TweenCallback.END)
-						   .setUserData(reel)
-						   .start(tweenManager);			           
-	}
-	
-	private TweenCallback reelFlashCallback = new TweenCallback() {
-		@Override
-		public void onEvent(int type, BaseTween<?> source) {
-			delegateReelFlashCallback(type, source);
+	private void createIntroSequence() {		
+		introSequence = Timeline.createParallel();
+		for(int i=0; i < reels.size; i++) {
+			introSequence = introSequence
+					      .push(buildSequence(reels.get(i), i, random.nextFloat() * 5.0f, random.nextFloat() * 5.0f));
 		}
-	};
-	
-	private void delegateReelFlashCallback(int type, BaseTween<?> source) {
-		ReelTile reel = (ReelTile)source.getUserData();
-		reel.setFlashOff();
-		reel.setFlashTween(false);
-		reel.setSpinning();
+				
+		introSequence = introSequence
+				      .pushPause(0.3f)
+				      .start(tweenManager);
 	}
-		
+
+	private Timeline buildSequence(Sprite target, int id, float delay1, float delay2) {
+		Vector2 targetXY = getRandomCorner();
+		return Timeline.createSequence()
+			.push(SlotPuzzleTween.set(target, SpriteAccessor.POS_XY).target(targetXY.x, targetXY.y))
+			.push(SlotPuzzleTween.set(target, SpriteAccessor.SCALE_XY).target(30, 30))
+			.push(SlotPuzzleTween.set(target, SpriteAccessor.ROTATION).target(0))
+			.push(SlotPuzzleTween.set(target, SpriteAccessor.OPACITY).target(0))
+			.pushPause(delay1)
+			.beginParallel()
+				.push(SlotPuzzleTween.to(target, SpriteAccessor.OPACITY, 1.0f).target(1).ease(Quart.INOUT))
+				.push(SlotPuzzleTween.to(target, SpriteAccessor.SCALE_XY, 1.0f).target(1, 1).ease(Quart.INOUT))
+			.end()
+			.pushPause(-0.5f)
+			.push(SlotPuzzleTween.to(target, SpriteAccessor.POS_XY, 1.0f).target(target.getX(), target.getY()).ease(Back.OUT))
+			.push(SlotPuzzleTween.to(target, SpriteAccessor.ROTATION, 0.8f).target(360).ease(Cubic.INOUT))
+			.pushPause(delay2)
+			.beginParallel()
+				.push(SlotPuzzleTween.to(target, SpriteAccessor.SCALE_XY, 0.3f).target(3, 3).ease(Quad.IN))
+				.push(SlotPuzzleTween.to(target, SpriteAccessor.OPACITY, 0.3f).target(0).ease(Quad.IN))
+			.end()
+			.pushPause(-0.5f)
+			.beginParallel()
+			    .push(SlotPuzzleTween.to(target, SpriteAccessor.OPACITY, 1.0f).target(1).ease(Quart.INOUT))
+			    .push(SlotPuzzleTween.to(target, SpriteAccessor.SCALE_XY, 1.0f).target(1, 1).ease(Quart.INOUT))
+		    .end();
+	}
+	
+	private Vector2 getRandomCorner() {
+		int randomCorner = random.nextInt(4);
+		switch (randomCorner) {
+			case 0: 
+				return new Vector2(-1 * random.nextFloat(), -1 * random.nextFloat());
+			case 1:
+				return new Vector2(-1 * random.nextFloat(), 800 + random.nextFloat());
+			case 2:
+				return new Vector2(480 + random.nextFloat(), -1 * random.nextFloat());
+			case 3:
+				return new Vector2(480 + random.nextFloat(), 800 + random.nextFloat());
+			default: 
+				return new Vector2(-0.5f, -0.5f);
+		}
+	}
+	
 	@Override
 	public void resize(int width, int height) {
 		float halfHeight = MINIMUM_VIEWPORT_SIZE * 0.5f;
@@ -166,10 +179,9 @@ public class Flash implements ApplicationListener {
         cam.lookAt(0, 0, 0);
         cam.update();
 	}
-
 	private void update(float delta) {
 		tweenManager.update(delta);
-		for (ReelTile reel : reelTiles) { 		  
+		for (ReelTile reel : reels) { 		  
          	reel.update(delta);
 		}
 	}
@@ -181,7 +193,7 @@ public class Flash implements ApplicationListener {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         batch.begin();
-        for (ReelTile reel : reelTiles) {
+        for (ReelTile reel : reels) {
             reel.draw(batch);
             sprites[reel.getEndReel()].setX(32);
             sprites[reel.getEndReel()].draw(batch);
@@ -198,6 +210,6 @@ public class Flash implements ApplicationListener {
 	}
 
 	@Override
-	public void dispose() {		
+	public void dispose() {
 	}
 }
