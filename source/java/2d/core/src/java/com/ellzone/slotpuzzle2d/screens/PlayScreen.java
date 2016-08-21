@@ -53,6 +53,8 @@ import aurelienribon.tweenengine.equations.Sine;
 public class PlayScreen implements Screen {
 	private static final int TILE_WIDTH = 32;
 	private static final int TILE_HEIGHT = 32;
+	private static final int GAME_LEVEL_WIDTH = 8;
+	private static final int GAME_LEVEL_HEIGHT = 8;
 	private static final int SLOT_REEL_OBJECT_LAYER = 3;
 	private static final int HIDDEN_PATTERN_LAYER = 0;  
 	private static final float PUZZLE_GRID_START_X = 192.0f;
@@ -173,7 +175,7 @@ public class PlayScreen implements Screen {
 			int c = (int) (mapRectangle.getX() - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
 			int r = (int) (mapRectangle.getY() - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
 			r = 8 - r;
-			if ((r >= 0) & (r <= 8) & (c >= 0) & (c <= 8)) {
+			if ((r >= 0) & (r <= PlayScreen.GAME_LEVEL_HEIGHT) & (c >= 0) & (c <= PlayScreen.GAME_LEVEL_WIDTH)) {
 				addReel(mapRectangle);
 			} else {
 				Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "I don't respond to grid r="+r+" c="+c+". There it won't be added to the level! Sort it out in a level editor.");				
@@ -187,7 +189,9 @@ public class PlayScreen implements Screen {
 
 	private void addReel(Rectangle mapRectangle) {
         int endReel = random.nextInt(sprites.length);
-		ReelTile reel = new ReelTile(slotReelTexture, (int)spriteWidth, (int)spriteHeight, mapRectangle.getX(), mapRectangle.getY(), endReel);
+		ReelTile reel = new ReelTile(slotReelTexture, (int)spriteWidth, (int)spriteHeight, 0, 0, endReel);
+		reel.setX(mapRectangle.getX());
+		reel.setY(mapRectangle.getY());
 		reel.addListener(new ReelTileListener() {
 			@Override
 			public void actionPerformed(ReelTileEvent event, ReelTile source) {
@@ -268,6 +272,7 @@ public class PlayScreen implements Screen {
         reelTile = new ReelTile(slotReelScrollTexture, (int) spriteWidth, (int) spriteHeight, 0, 32, 0);
         reelTile.setX(0);
         reelTile.setY(32);
+        reelTile.rotate(120);
         reelTile.setEndReel(random.nextInt(sprites.length));
 
         tween = SlotPuzzleTween.to(reelTile, ReelAccessor.SCROLL_XY, 20.0f) .target(0,  2560 + reelTile.getEndReel() * 32) .ease(Sine.OUT).setCallback(new TweenCallback() {
@@ -282,7 +287,7 @@ public class PlayScreen implements Screen {
 	private Timeline buildSequence(Sprite target, int id, float delay1, float delay2) {
 		return Timeline.createSequence()
 			.push(SlotPuzzleTween.set(target, SpriteAccessor.POS_XY).target(-0.5f, -0.5f))
-			.push(SlotPuzzleTween.set(target, SpriteAccessor.SCALE_XY).target(10, 10))
+			.push(SlotPuzzleTween.set(target, SpriteAccessor.SCALE_XY).target(20, 20))
 			.push(SlotPuzzleTween.set(target, SpriteAccessor.ROTATION).target(0))
 			.push(SlotPuzzleTween.set(target, SpriteAccessor.OPACITY).target(0))
 			.pushPause(delay1)
@@ -304,7 +309,7 @@ public class PlayScreen implements Screen {
 			    .push(SlotPuzzleTween.to(target, SpriteAccessor.SCALE_XY, 1.0f).target(1, 1).ease(Quart.INOUT))
 		    .end();
 	}
-
+	
     private Array<ReelTile> checkLevel(Array<ReelTile> reelLevel) {
         TupleValueIndex[][] grid = populateMatchGrid(reelLevel);
         int arraySizeR = grid.length;

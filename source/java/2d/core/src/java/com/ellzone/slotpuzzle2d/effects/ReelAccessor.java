@@ -63,7 +63,6 @@ public class ReelAccessor implements TweenAccessor<ReelTile> {
             case CPOS_XY: target.setPosition(newValues[0] - target.getWidth()/2, newValues[1] - target.getHeight()/2); break;
             case SCALE_XY: target.setScale(newValues[0], newValues[1]); break;
             case ROTATION: target.setRotation(newValues[0]); break;
-            
             case OPACITY:
                 Color oc = target.getColor();
                 oc.set(oc.r, oc.g, oc.b, newValues[0]);
