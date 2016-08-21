@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -11,8 +12,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
@@ -24,6 +24,11 @@ import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
+import aurelienribon.tweenengine.equations.Bounce;
+import aurelienribon.tweenengine.equations.Elastic;
+import aurelienribon.tweenengine.equations.Quad;
+import aurelienribon.tweenengine.equations.Sine;
+
 public class Flash implements ApplicationListener {
 	private static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
 	private PerspectiveCamera cam;
@@ -34,7 +39,6 @@ public class Flash implements ApplicationListener {
     private int spriteHeight;
     private Pixmap slotReelScrollPixmap;
 	private Texture slotReelScrollTexture;
-	private int slotReelScrollheight;
 	private Random random;
     private Array<ReelTile> reelTiles;
     private Timeline flashSeq;
@@ -96,7 +100,6 @@ public class Flash implements ApplicationListener {
         slotReelScrollPixmap = new Pixmap(spriteWidth, spriteHeight, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-        slotReelScrollheight = slotReelScrollTexture.getHeight();
         ReelTile reel = new ReelTile(slotReelScrollTexture, spriteWidth, spriteHeight, 0, 32, 0);
         reel.setX(0);
         reel.setY(0);
@@ -110,14 +113,34 @@ public class Flash implements ApplicationListener {
 	private void initialiseReelFlash(ReelTile reel) {
 		reel.setFlashTween(true);
 		flashSeq = Timeline.createSequence();
+		flashSeq = flashSeq.push(SlotPuzzleTween.set(reel, ReelAccessor.FLASH_TINT)
+						   .target(Color.WHITE.r, Color.WHITE.g, Color.WHITE.b)
+						   .ease(Sine.IN));
+		flashSeq = flashSeq.push(SlotPuzzleTween.to(reel, ReelAccessor.FLASH_TINT, 0.5f)
+						   .target(Color.RED.r, Color.RED.g, Color.RED.b)
+						   .ease(Sine.OUT)
+						   .repeatYoyo(17, 0));
+
+		flashSeq = flashSeq.push(SlotPuzzleTween.set(reel, ReelAccessor.FLASH_TINT)
+				   .target(Color.WHITE.r, Color.WHITE.g, Color.WHITE.b)
+				   .ease(Sine.IN));
+		flashSeq = flashSeq.push(SlotPuzzleTween.to(reel, ReelAccessor.FLASH_TINT, 0.2f)
+				   .target(Color.RED.r, Color.RED.g, Color.RED.b)
+				   .ease(Sine.OUT)
+				   .repeatYoyo(25, 0));
+
+		
+		flashSeq = flashSeq.push(SlotPuzzleTween.set(reel, ReelAccessor.FLASH_TINT)
+				           .target(Color.WHITE.r, Color.WHITE.g, Color.WHITE.b)
+				           .ease(Sine.IN));
 		flashSeq = flashSeq.push(SlotPuzzleTween.to(reel, ReelAccessor.FLASH_TINT, 0.05f)
-						   .target(0.3f, reel.getFlashColor().g, reel.getFlashColor().b)
+						   .target(Color.RED.r, Color.RED.g, Color.RED.b)
+						   .ease(Sine.OUT)
 				           .repeatYoyo(33, 0))
 						   .setCallback(reelFlashCallback)
 						   .setCallbackTriggers(TweenCallback.END)
 						   .setUserData(reel)
-						   .start(tweenManager);
-				           
+						   .start(tweenManager);			           
 	}
 	
 	private TweenCallback reelFlashCallback = new TweenCallback() {
@@ -143,6 +166,16 @@ public class Flash implements ApplicationListener {
 	
 	@Override
 	public void resize(int width, int height) {
+		float halfHeight = MINIMUM_VIEWPORT_SIZE * 0.5f;
+        if (height > width)
+            halfHeight *= (float)height / (float)width;
+        float halfFovRadians = MathUtils.degreesToRadians * cam.fieldOfView * 0.5f;
+        float distance = halfHeight / (float)Math.tan(halfFovRadians);
+        cam.viewportWidth = width;
+        cam.viewportHeight = height;
+        cam.position.set(0, 0, distance);
+        cam.lookAt(0, 0, 0);
+        cam.update();
 	}
 
 	@Override
