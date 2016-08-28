@@ -101,7 +101,7 @@ public class IntroSequence implements ApplicationListener {
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         for (int i=0; i<15; i++) {
-	        ReelTile reel = new ReelTile(slotReelScrollTexture, spriteWidth, spriteHeight, 0, 32, 0);
+	        ReelTile reel = new ReelTile(slotReelScrollTexture, spriteWidth, spriteHeight, 0, 0, 0);
 	        reel.setX(i*spriteHeight);
 	        reel.setY(i*spriteWidth);
 	        reel.setSx(0);
@@ -136,7 +136,7 @@ public class IntroSequence implements ApplicationListener {
 				.push(SlotPuzzleTween.to(target, SpriteAccessor.SCALE_XY, 1.0f).target(1, 1).ease(Quart.INOUT))
 			.end()
 			.pushPause(-0.5f)
-			.push(SlotPuzzleTween.to(target, SpriteAccessor.POS_XY, 1.0f).target(target.getX(), target.getY()).ease(Back.OUT))
+			.push(SlotPuzzleTween.to(target, SpriteAccessor.POS_XY, 1.0f).target(id * spriteWidth, id * spriteHeight).ease(Back.OUT))
 			.push(SlotPuzzleTween.to(target, SpriteAccessor.ROTATION, 0.8f).target(360).ease(Cubic.INOUT))
 			.pushPause(delay2)
 			.beginParallel()
