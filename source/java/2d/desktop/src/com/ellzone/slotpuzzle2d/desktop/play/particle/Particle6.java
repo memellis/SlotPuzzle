@@ -15,11 +15,20 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.physics.DampenedSineParticle;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsEvent;
+import com.ellzone.slotpuzzle2d.physics.Vector;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
@@ -32,6 +41,7 @@ import aurelienribon.tweenengine.equations.Elastic;
 
 public class Particle6 implements ApplicationListener {
 
+	private static final String PrototypeName = "Particle6";
 	private static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
 	private PerspectiveCamera cam;
     private Sprite cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato;
@@ -52,6 +62,12 @@ public class Particle6 implements ApplicationListener {
     private Vector2 touch;
     private Timeline endReelSeq;
     private TweenManager tweenManager;
+    private Skin skin;
+	private Stage stage;
+	private Label acceleratorYLabel, accelerateYLabel,  velocityYLabel, velocityYMinLabel, acceleratorFrictionLabel, velocityFrictionLabel;
+	private Label fpsLabel;
+	private Vector accelerator, accelerate, velocity, velocityMin;
+	private float acceleratorY, accelerateY, acceleratorFriction, velocityFriction, velocityY, velocityYMin;
 
 	@Override
 	public void create() {
@@ -61,6 +77,7 @@ public class Particle6 implements ApplicationListener {
         initialiseLibGdx();
         initialiseUniversalTweenEngine();
         initialiseDampenedSine();
+        initialiseUi();
 	}
 
 	private void loadAssets() {
@@ -122,15 +139,25 @@ public class Particle6 implements ApplicationListener {
 	}
 
 	private void initialiseDampenedSine() {
+		velocityY = 4.0f;
+		velocity = new Vector(0, velocityY);
+		velocityYMin = 2.0f;
+		velocityMin = new Vector(0, velocityYMin);
+		acceleratorY = 3.0f;
+		accelerator = new Vector(0, acceleratorY);
+		accelerateY = 2.0f;
+		accelerate = new Vector(0, accelerateY);
+		acceleratorFriction = 0.97f;
+		velocityFriction = 0.97f;
 		dampenedSines = new Array<DampenedSineParticle>();
-		for (ReelTile reel : reelTiles) { 
-			dampenedSine = new DampenedSineParticle(0, reel.getSy(), 0, 0, 0, slotReelScrollheight * 20, slotReelScrollheight, reel.getEndReel());
+		for (ReelTile reel : reelTiles) {
+			dampenedSine = new DampenedSineParticle(0, reel.getSy(), 0, 0, 0, velocity, velocityMin, accelerator, accelerate, velocityFriction, acceleratorFriction);
 			dampenedSine.setCallback(dsCallback);
 			dampenedSine.setCallbackTriggers(SPPhysicsCallback.PARTICLE_UPDATE);
 			dampenedSine.setUserData(reel);
 			dampenedSines.add(dampenedSine);
 		}
-		graphStep=0f;
+		graphStep = 0f;
 	}
 	
 	private SPPhysicsCallback dsCallback = new SPPhysicsCallback() {
@@ -177,6 +204,119 @@ public class Particle6 implements ApplicationListener {
     private void addGraphPoint(Vector2 newPoint) {
     	points.add(newPoint);
     }
+    
+    private void initialiseUi() {
+		stage = new Stage(new ScreenViewport());
+		Gdx.input.setInputProcessor(stage);
+    	skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+    	
+    	final Slider acceleratorYSlider = new Slider(0, 100, 1, false, skin);
+    	acceleratorYSlider.setAnimateDuration(0.3f);
+    	acceleratorYSlider.setValue(acceleratorY);
+    	
+    	final Slider accelerateYSlider = new Slider(0, 100, 1, false, skin);
+    	accelerateYSlider.setAnimateDuration(0.3f);
+    	accelerateYSlider.setValue(accelerateY);
+    	
+    	final Slider velocityYMinSlider = new Slider(0, 100, 1, false, skin);
+    	velocityYMinSlider.setAnimateDuration(0.3f);
+		velocityYMinSlider.setValue(velocityYMin);
+		
+		final Slider velocityYSlider = new Slider(0, 100, 1, false, skin);
+		velocityYSlider.setAnimateDuration(0.3f);
+		velocityYSlider.setValue(velocityY);
+		
+		final Slider velocityFrictionSlider = new Slider(0, 1, 0.01f, false, skin);
+		velocityFrictionSlider.setAnimateDuration(0.3f);
+		velocityFrictionSlider.setValue(velocityFriction);
+
+		final Slider acceleratorFrictionSlider = new Slider(0, 1, 0.01f, false, skin);
+		acceleratorFrictionSlider.setAnimateDuration(0.3f);
+		acceleratorFrictionSlider.setValue(acceleratorFriction);
+		
+		accelerateYLabel = new Label("AccelrateY:", skin);
+		acceleratorYLabel = new Label("AccelreatorY:", skin);
+		velocityYMinLabel = new Label("Velocity Min:", skin);
+		velocityYLabel = new Label("VelocityY:", skin);
+		acceleratorFrictionLabel = new Label("Accelerator Friction:", skin);
+		velocityFrictionLabel = new Label("Velocity Friction:", skin);
+		fpsLabel = new Label("fps:", skin);
+		
+		Window window = new Window("Prototype Control", skin);
+		window.setPosition(Gdx.graphics.getWidth() - 200, Gdx.graphics.getHeight() - 30);
+		window.defaults().spaceBottom(10);
+		window.add(accelerateYLabel);
+		window.row();
+		window.add(accelerateYSlider).minWidth(200).fillX().colspan(3);
+		window.row();
+		window.add(acceleratorYLabel);
+		window.row();
+		window.add(acceleratorYSlider).minWidth(200).fillX().colspan(3);
+		window.row();
+		window.add(velocityYMinLabel);
+		window.row();
+		window.add(velocityYMinSlider).minWidth(200).fillX().colspan(3);
+		window.row();
+		window.add(velocityYLabel);
+		window.row();
+		window.add(velocityYSlider).minWidth(200).fillX().colspan(3);
+		window.row();
+		window.add(acceleratorFrictionLabel);		
+		window.row();
+		window.add(acceleratorFrictionSlider).minWidth(200).fillX().colspan(3);
+		window.row();
+		window.add(velocityFrictionLabel);
+		window.row();
+		window.add(velocityFrictionSlider).minWidth(200).fillX().colspan(3);
+		window.row();
+		window.row();
+		window.add(fpsLabel);
+		window.pack();
+		stage.addActor(window);	
+
+		acceleratorYSlider.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				accelerator.setY(acceleratorYSlider.getValue());
+				Gdx.app.log(PrototypeName, "acceleratorY: " + accelerator.getY());
+			}
+		});
+
+		accelerateYSlider.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				accelerate.setY(accelerateYSlider.getValue());
+				Gdx.app.log(PrototypeName, "accelerateY: " + accelerate.getY());
+			}
+		});
+		
+		velocityYMinSlider.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				velocityYMin = velocityYMinSlider.getValue();
+				Gdx.app.log(PrototypeName, "velocityMin: " + velocityYMin);
+			}
+		});
+		
+		velocityYSlider.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				velocityY = velocityYSlider.getValue();
+				Gdx.app.log(PrototypeName, "velocitySlider: " + velocityY);
+			}
+		});
+
+		acceleratorFrictionSlider.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				acceleratorFriction = acceleratorFrictionSlider.getValue();
+				Gdx.app.log(PrototypeName, "acceleratorFrictionSlider: " + acceleratorFriction);
+			}
+		});
+
+		velocityFrictionSlider.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				velocityFriction = velocityFrictionSlider.getValue();
+				Gdx.app.log(PrototypeName, "velocityFrictionSlider: " + velocityFriction);
+			}
+		});
+
+    }
 	
 	@Override
 	public void resize(int width, int height) {
@@ -190,6 +330,7 @@ public class Particle6 implements ApplicationListener {
         cam.position.set(0, 0, distance);
         cam.lookAt(0, 0, 0);
         cam.update();
+		stage.getViewport().update(width, height, true);
 	}
 
 	private void update(float delta) {
@@ -214,13 +355,19 @@ public class Particle6 implements ApplicationListener {
 					if (reel.isSpinning()) {
 						if (dampenedSines.get(dsIndex).getDSState() == DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE) {
 							reel.setEndReel(reel.getCurrentReel());
-							dampenedSines.get(dsIndex).setEndReel(reel.getCurrentReel());
 						}
 					} else {
 						reel.setEndReel(random.nextInt(sprites.length - 1));
 				        reel.setSpinning(true);
+				        reel.setSy(0);
 						dampenedSines.get(dsIndex).initialiseDampenedSine();
 						dampenedSines.get(dsIndex).position.y = 0;
+						dampenedSines.get(dsIndex).velocity = new Vector(0, velocityY);
+						accelerator = new Vector(0, acceleratorY);
+						dampenedSines.get(dsIndex).accelerator = accelerator;
+						accelerate = new Vector(0, accelerateY);
+						dampenedSines.get(dsIndex).accelerate(accelerate);
+						dampenedSines.get(dsIndex).velocityMin.y = velocityMin.y;
 					}
 				}
 			}
@@ -244,6 +391,16 @@ public class Particle6 implements ApplicationListener {
         }
         batch.end();
         drawGraphPoint(shapeRenderer);
+        accelerateYLabel.setText("AccelerateYMin:" + accelerateY);
+        acceleratorYLabel.setText("AcceleratorYMin:" + acceleratorY);
+        velocityYMinLabel.setText("VelocityYMin:" + velocityYMin);
+    	velocityYLabel.setText("VeclocityY: " + velocityY);
+    	acceleratorFrictionLabel.setText("AcceleratorFriction: " + acceleratorFriction);
+    	velocityFrictionLabel.setText("VeclocityFriction: " + velocityFriction);
+    	
+    	fpsLabel.setText("fps: " + Gdx.graphics.getFramesPerSecond());
+		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+		stage.draw();
  	}
 
 	@Override
@@ -256,6 +413,10 @@ public class Particle6 implements ApplicationListener {
 
 	@Override
 	public void dispose() {
+		stage.dispose();
+		skin.dispose();
+		slotReelScrollTexture.dispose();
+		batch.dispose();
 	}
 
 	private void drawGraphPoint(ShapeRenderer shapeRenderer) {
