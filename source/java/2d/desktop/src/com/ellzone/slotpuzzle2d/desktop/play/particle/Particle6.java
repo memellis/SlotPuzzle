@@ -172,8 +172,8 @@ public class Particle6 implements ApplicationListener {
 			DampenedSineParticle ds = (DampenedSineParticle)source.getSource();
 			ReelTile reel = (ReelTile)ds.getUserData();
 			endReelSeq = Timeline.createSequence();
-			float remainingSy = slotReelScrollheight - (reel.getSy() % slotReelScrollheight);
-			float endSy = reel.getSy() + remainingSy + reel.getEndReel() * spriteHeight;
+			float endSy = (reel.getEndReel() * spriteHeight) % slotReelScrollheight;		
+			reel.setSy(reel.getSy() % (slotReelScrollheight));
 	        endReelSeq = endReelSeq.push(SlotPuzzleTween.to(reel, ReelAccessor.SCROLL_XY, 5.0f)
 	        		               .target(0f, endSy)
 	        		               .ease(Elastic.OUT)
