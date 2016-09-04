@@ -1,10 +1,6 @@
 package com.ellzone.slotpuzzle2d.physics;
 
 public class DampenedSineParticle extends Particle {
-	public static final float VELOCITY_MIN = 2.0f;
-	public static final float MIN_DAMPENED_SINE_VALUE = 0.0000001f;
-	public static final int PLOTTIME_DIVISOR_DAMPER = 32;
-	public static final int SPRITE_SQUARE_SIZE = 32;
 	public static enum DSState { INITIALISED, UPDATING_DAMPENED_SINE, UPDATING_PARTICLE};
 	public float dsEndReel;
 	public Vector accelerator;
@@ -29,10 +25,6 @@ public class DampenedSineParticle extends Particle {
 	}
 
 	public void initialiseDampenedSine() {
-		//accelerator = new Vector(0, 3f);
-		//accelerate(new Vector(0, 2f));
-		//velocity.setX(0);
-		//velocity.setY(4);
 		dsState = DSState.INITIALISED;
 		invokedCallback = false;
 	}
@@ -60,11 +52,7 @@ public class DampenedSineParticle extends Particle {
 		accelerate(accelerator);
 		accelerator.mulitplyBy(acceleratorFriction); 
  	}
-	
-	public float dampenedSine(float initialAmplitude, float lambda, float angularFrequency, float time, float phaseAngle) {
-		return (float) (initialAmplitude * Math.exp(-lambda * time) *  Math.cos(angularFrequency * time + phaseAngle));
-	}
-	
+		
 	public void setCallback(SPPhysicsCallback callback) {
 		this.callback = callback;
 	}
