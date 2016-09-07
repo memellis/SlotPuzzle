@@ -15,7 +15,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.5 r10040"
-   sodipodi:docname="blue_tile.svg">
+   sodipodi:docname="neon_tiles.svg">
   <defs
      id="defs4">
     <linearGradient
@@ -770,7 +770,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -785,7 +785,7 @@
        height="32"
        x="39.813915"
        y="55.645016"
-       transform="matrix(0.95632406,0,0,0.93818583,-29.669503,-46.402705)"
+       transform="matrix(1.1951143,0,0,1.1730288,-42.994975,-61.217357)"
        clip-path="url(#clipPath3822)" />
     <rect
        style="fill:#800000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter3019-4)"
@@ -821,7 +821,7 @@
        height="32"
        x="39.813915"
        y="55.645016"
-       transform="matrix(0.95632406,0,0,0.93818583,-29.928086,-12.763003)"
+       transform="matrix(1.1951832,0,0,1.173027,-43.262575,-19.577192)"
        clip-path="url(#clipPath3822-7)" />
     <rect
        style="fill:#008080;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter3019-6)"
