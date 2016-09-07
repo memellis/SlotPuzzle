@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.utils.Assets;
-
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
@@ -100,7 +99,7 @@ public class SplashScreen implements Screen {
 		powered = atlas.createSprite("powered");
 		gdx = atlas.createSprite("gdxblur");
 		veil = atlas.createSprite("white");
-		gdxTex = atlas.findRegion("gdx");
+ 		gdxTex = atlas.findRegion("gdx");
 
 		TextureAtlas atlas1 = game.assetManager.get("splash/splash3.pack.atlas", TextureAtlas.class);
 		slot = atlas1.createSprite("slot");
