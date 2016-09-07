@@ -1,7 +1,6 @@
 package com.ellzone.slotpuzzle2d.desktop.play.tween;
 
 import java.util.Random;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -22,7 +21,6 @@ import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
-
 import aurelienribon.tweenengine.equations.Back;
 import aurelienribon.tweenengine.equations.Cubic;
 import aurelienribon.tweenengine.equations.Quad;
@@ -179,6 +177,7 @@ public class IntroSequence implements ApplicationListener {
         cam.lookAt(0, 0, 0);
         cam.update();
 	}
+	
 	private void update(float delta) {
 		tweenManager.update(delta);
 		for (ReelTile reel : reels) { 		  
@@ -211,5 +210,6 @@ public class IntroSequence implements ApplicationListener {
 
 	@Override
 	public void dispose() {
+		batch.dispose();
 	}
 }

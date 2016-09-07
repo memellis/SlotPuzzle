@@ -315,7 +315,6 @@ public class Particle6 implements ApplicationListener {
 				Gdx.app.log(PrototypeName, "velocityFrictionSlider: " + velocityFriction);
 			}
 		});
-
     }
 	
 	@Override

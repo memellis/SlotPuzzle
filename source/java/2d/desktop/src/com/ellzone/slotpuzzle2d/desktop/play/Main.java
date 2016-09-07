@@ -61,27 +61,32 @@ public class Main extends JFrame {
 		"SlotPuzzle Play Prototypes|Experiments",
 		new Object[] {
 			"Universal Tween Engine Experiments",
-			new AppDesc("Experiment 1 - waypoints 1", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.WayPoints1.class),
-			new AppDesc("Experiment 2 - waypoints 2", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.WayPoints2.class),
-			new AppDesc("Experiment 3 - dynamic tween", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Dynamic.class),
-			new AppDesc("Experiment 4 - flash", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Flash.class),
-			new AppDesc("Experiment 5 - intro sequence", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.IntroSequence.class)
+			new AppDesc("Experiment 1 - waypoints 1", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.WayPoints1.class),
+			new AppDesc("Experiment 2 - waypoints 2", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.WayPoints2.class),
+			new AppDesc("Experiment 3 - dynamic tween", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Dynamic.class),
+			new AppDesc("Experiment 4 - flash", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Flash.class),
+			new AppDesc("Experiment 5 - intro sequence", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.IntroSequence.class),
+			new AppDesc("Experiment 6 - veil", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Veil.class)
 		},
 		new Object[] {
 			"Particle Experiments",
-			new AppDesc("Experiment 1 - particles 1 - with Coding Math particle", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle1.class),
-			new AppDesc("Experiment 2 - particles 2 - dampened sine", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle2.class),
-			new AppDesc("Experiment 3 - particles 3 - dampened sine with predictable end", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle3.class),
-			new AppDesc("Experiment 4 - particles 4 - dampened sine class with predictable end", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle4.class),
-			new AppDesc("Experiment 5 - particles 5 - dampened sine class with predictable end via mouse click", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle5.class),
-			new AppDesc("Experiment 6 - particles 6 - dampened sine but with tween predictable end via mouse click", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle6.class)
+			new AppDesc("Experiment 1 - particles 1 - with Coding Math particle", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle1.class),
+			new AppDesc("Experiment 2 - particles 2 - dampened sine", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle2.class),
+			new AppDesc("Experiment 3 - particles 3 - dampened sine with predictable end", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle3.class),
+			new AppDesc("Experiment 4 - particles 4 - dampened sine class with predictable end", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle4.class),
+			new AppDesc("Experiment 5 - particles 5 - dampened sine class with predictable end via mouse click", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle5.class),
+			new AppDesc("Experiment 6 - particles 6 - dampened sine but with tween predictable end via mouse click", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle6.class)
 			
 		},
 		new Object[] {
 			"Bezier Experiments",
-			new AppDesc("Experiment 1 - bezier 1 - with Coding Math bezier", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.bezier.Bezier1.class),
-			new AppDesc("Experiment 2 - bezier 2 - with libGDX spline", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.bezier.Bezier2.class),
-			new AppDesc("Experiment 3 - bezier 3 - with libGDX spline - change points", 720, 480, com.ellzone.slotpuzzle2d.desktop.play.bezier.Bezier3.class)
+			new AppDesc("Experiment 1 - bezier 1 - with Coding Math bezier", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.bezier.Bezier1.class),
+			new AppDesc("Experiment 2 - bezier 2 - with libGDX spline", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.bezier.Bezier2.class),
+			new AppDesc("Experiment 3 - bezier 3 - with libGDX spline - change points", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.bezier.Bezier3.class)
+		},
+		new Object[] {
+			"Basic2d Experiments",
+			new AppDesc("Basic2d", 640,480, com.ellzone.slotpuzzle2d.desktop.play.basic2d.Basic2D.class)
 		}
 	};
 	
