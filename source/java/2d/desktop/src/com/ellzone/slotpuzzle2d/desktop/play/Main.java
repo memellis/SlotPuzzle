@@ -66,7 +66,8 @@ public class Main extends JFrame {
 			new AppDesc("Experiment 3 - dynamic tween", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Dynamic.class),
 			new AppDesc("Experiment 4 - flash", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Flash.class),
 			new AppDesc("Experiment 5 - intro sequence", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.IntroSequence.class),
-			new AppDesc("Experiment 6 - veil", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Veil.class)
+			new AppDesc("Experiment 6 - veil", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Veil.class),
+			new AppDesc("Experiment 7 - GameOverPopUp", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.GameOverPopUp.class)
 		},
 		new Object[] {
 			"Particle Experiments",
