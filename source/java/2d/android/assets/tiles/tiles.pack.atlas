@@ -6,8 +6,22 @@ filter: Nearest,Nearest
 repeat: none
 GameOverPopUp
   rotate: false
-  xy: 2, 2
+  xy: 2, 45
   size: 250, 200
   orig: 250, 200
+  offset: 0, 0
+  index: -1
+game
+  rotate: false
+  xy: 2, 7
+  size: 96, 36
+  orig: 96, 36
+  offset: 0, 0
+  index: -1
+over
+  rotate: false
+  xy: 100, 2
+  size: 89, 41
+  orig: 89, 41
   offset: 0, 0
   index: -1
