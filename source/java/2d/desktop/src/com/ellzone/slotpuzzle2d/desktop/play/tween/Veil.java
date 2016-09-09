@@ -1,49 +1,28 @@
 package com.ellzone.slotpuzzle2d.desktop.play.tween;
 
-import java.util.Random;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
-import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
-import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
-import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
-
-import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.equations.Back;
-import aurelienribon.tweenengine.equations.Cubic;
-import aurelienribon.tweenengine.equations.Quad;
-import aurelienribon.tweenengine.equations.Quart;
 
 public class Veil implements ApplicationListener {
 	private static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
 	private PerspectiveCamera cam;
     private SpriteBatch batch;
-	private Sprite cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato, strip, veil, gdx;
+	private Sprite cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato, strip, veil;
     private Sprite[] sprites;
-    private int spriteWidth;
-    private int spriteHeight;
-    private Pixmap slotReelScrollPixmap;
-	private Texture slotReelScrollTexture;
-	private Random random;
-    private Array<ReelTile> reels;
-    private Timeline introSequence;
     private TweenManager tweenManager; 
     
 
@@ -92,8 +71,6 @@ public class Veil implements ApplicationListener {
             sprite.setPosition(192 + i * sprite.getWidth(), Gdx.graphics.getHeight() / 2 - sprite.getHeight() / 2);
             i++;
         }
-        spriteWidth = (int) sprites[0].getWidth();
-        spriteHeight = (int) sprites[0].getHeight();
 	}
 	
 	private void initialiseCamera() {
