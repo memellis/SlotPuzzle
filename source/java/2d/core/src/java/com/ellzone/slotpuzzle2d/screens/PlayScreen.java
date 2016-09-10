@@ -53,14 +53,14 @@ import aurelienribon.tweenengine.equations.Quad;
 import aurelienribon.tweenengine.equations.Quart;
 
 public class PlayScreen implements Screen {
-	private static final int TILE_WIDTH = 32;
-	private static final int TILE_HEIGHT = 32;
-	private static final int GAME_LEVEL_WIDTH = 8;
+	private static final int TILE_WIDTH = 40;
+	private static final int TILE_HEIGHT = 40;
+	private static final int GAME_LEVEL_WIDTH = 10;
 	private static final int GAME_LEVEL_HEIGHT = 8;
 	private static final int SLOT_REEL_OBJECT_LAYER = 3;
 	private static final int HIDDEN_PATTERN_LAYER = 0;  
-	private static final float PUZZLE_GRID_START_X = 192.0f;
-	private static final float PUZZLE_GRID_START_Y = 96.0f;
+	private static final float PUZZLE_GRID_START_X = 160.0f;
+	private static final float PUZZLE_GRID_START_Y = 40.0f;
 	private static final int TIME_INTRO_SEQUENCE_ENDS = 294;
 	
 	private SlotPuzzle game;
@@ -129,24 +129,24 @@ public class PlayScreen implements Screen {
 	private void loadAssets() {
 		game.assetManager.load("reel/reels.pack.atlas", TextureAtlas.class);
 		game.assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-		game.assetManager.load("levels/level 1.tmx", TiledMap.class);
+		game.assetManager.load("levels/level 1 - 40x40.tmx", TiledMap.class);
  		game.assetManager.finishLoading();
 	}
 
 	private void getAssets() {
-		level1 = game.assetManager.get("levels/level 1.tmx");
+		level1 = game.assetManager.get("levels/level 1 - 40x40.tmx");
 		reelAtlas = game.assetManager.get("reel/reels.pack.atlas", TextureAtlas.class);
 	}
 	
 	private void createSprites() {
-		cherry = reelAtlas.createSprite("cherry");
-		cheesecake = reelAtlas.createSprite("cheesecake");
-		grapes = reelAtlas.createSprite("grapes");
-		jelly = reelAtlas.createSprite("jelly");
-		lemon = reelAtlas.createSprite("lemon");
-		peach = reelAtlas.createSprite("peach");
-		pear = reelAtlas.createSprite("pear");
-		tomato = reelAtlas.createSprite("tomato");
+		cherry = reelAtlas.createSprite("cherry 40x40");
+		cheesecake = reelAtlas.createSprite("cheesecake 40x40");
+		grapes = reelAtlas.createSprite("grapes 40x40");
+		jelly = reelAtlas.createSprite("jelly 40x40");
+		lemon = reelAtlas.createSprite("lemon 40x40");
+		peach = reelAtlas.createSprite("peach 40x40");
+		pear = reelAtlas.createSprite("pear 40x40");
+		tomato = reelAtlas.createSprite("tomato 40x40");
 		
 		sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
 		for (Sprite sprite : sprites) {
@@ -336,7 +336,7 @@ public class PlayScreen implements Screen {
 			.pushPause(-0.5f)
 			.beginParallel()
 			    .push(SlotPuzzleTween.to(target, SpriteAccessor.OPACITY, 1.0f).target(1).ease(Quart.INOUT))
-			    .push(SlotPuzzleTween.to(target, SpriteAccessor.SCALE_XY, 1.0f).target(1, 1).ease(Quart.INOUT))
+			    .push(SlotPuzzleTween.to(target, SpriteAccessor.SCALE_XY, 1.0f).target(1.0f, 1.0f).ease(Quart.INOUT))
 		    .end();
 	}
 	
@@ -395,7 +395,7 @@ public class PlayScreen implements Screen {
 	}
 	
 	private TupleValueIndex[][] populateMatchGrid(Array<ReelTile> reelLevel) {
-		TupleValueIndex[][] matchGrid = new TupleValueIndex[9][9];
+		TupleValueIndex[][] matchGrid = new TupleValueIndex[9][11];
 		int r, c;	
 		for (int i = 0; i < reelLevel.size; i++) {
 			c = (int) (reelLevel.get(i).getX() - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
