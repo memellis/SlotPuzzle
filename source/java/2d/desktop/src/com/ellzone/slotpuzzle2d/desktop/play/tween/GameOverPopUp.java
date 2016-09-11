@@ -162,7 +162,7 @@ public class GameOverPopUp implements ApplicationListener {
         gameOverPopUp.draw(batch);
         game.draw(batch);
         over.draw(batch);
-        font.draw(batch, "Press to try again", game.getX() + 32, game.getY() - 32); 
+        font.draw(batch, "Touch/Click to try again", game.getX() + 32, game.getY() - 32); 
         batch.end();
 	}
 
