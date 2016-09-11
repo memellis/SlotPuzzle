@@ -16,13 +16,8 @@ import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
-
 import aurelienribon.tweenengine.equations.Back;
-import aurelienribon.tweenengine.equations.Bounce;
-import aurelienribon.tweenengine.equations.Elastic;
 import aurelienribon.tweenengine.equations.Quad;
-import aurelienribon.tweenengine.equations.Quint;
-import aurelienribon.tweenengine.equations.Sine;
 
 public class GameOverPopUp implements ApplicationListener {
 	
