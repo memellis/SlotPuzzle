@@ -4,6 +4,8 @@ import java.util.Random;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -81,6 +83,7 @@ public class Flash implements ApplicationListener {
 	
 	private void initialiseLibGdx() {
 		batch = new SpriteBatch();
+		Gdx.input.setInputProcessor(inputProcessor);
  	}
 	
 	private void initialiseUniversalTweenEngine() {
@@ -109,11 +112,16 @@ public class Flash implements ApplicationListener {
 	private void initialiseReelFlash(ReelTile reel) {
 		reel.setFlashTween(true);
 		flashSeq = Timeline.createSequence();
+		Color myRed = new Color(Color.RED);
+		myRed.r = 1.0f;
+		myRed.g = 0.0f;
+		myRed.b = 0.0f;
+		myRed.a = 1.0f;
 		flashSeq = flashSeq.push(SlotPuzzleTween.set(reel, ReelAccessor.FLASH_TINT)
 						   .target(Color.WHITE.r, Color.WHITE.g, Color.WHITE.b)
 						   .ease(Sine.IN));
 		flashSeq = flashSeq.push(SlotPuzzleTween.to(reel, ReelAccessor.FLASH_TINT, 0.5f)
-						   .target(Color.RED.r, Color.RED.g, Color.RED.b)
+						   .target(myRed.r, myRed.g, myRed.b)
 						   .ease(Sine.OUT)
 						   .repeatYoyo(17, 0));
 
@@ -121,16 +129,15 @@ public class Flash implements ApplicationListener {
 				   .target(Color.WHITE.r, Color.WHITE.g, Color.WHITE.b)
 				   .ease(Sine.IN));
 		flashSeq = flashSeq.push(SlotPuzzleTween.to(reel, ReelAccessor.FLASH_TINT, 0.2f)
-				   .target(Color.RED.r, Color.RED.g, Color.RED.b)
+				   .target(myRed.r, myRed.g, myRed.b)
 				   .ease(Sine.OUT)
 				   .repeatYoyo(25, 0));
 
-		
 		flashSeq = flashSeq.push(SlotPuzzleTween.set(reel, ReelAccessor.FLASH_TINT)
 				           .target(Color.WHITE.r, Color.WHITE.g, Color.WHITE.b)
 				           .ease(Sine.IN));
 		flashSeq = flashSeq.push(SlotPuzzleTween.to(reel, ReelAccessor.FLASH_TINT, 0.05f)
-						   .target(Color.RED.r, Color.RED.g, Color.RED.b)
+						   .target(myRed.r, myRed.g, myRed.b)
 						   .ease(Sine.OUT)
 				           .repeatYoyo(33, 0))
 						   .setCallback(reelFlashCallback)
@@ -148,9 +155,8 @@ public class Flash implements ApplicationListener {
 	
 	private void delegateReelFlashCallback(int type, BaseTween<?> source) {
 		ReelTile reel = (ReelTile)source.getUserData();
-		reel.setFlashOff();
 		reel.setFlashTween(false);
-		reel.setSpinning();
+		reel.setFlashOff();
 	}
 		
 	@Override
@@ -183,8 +189,6 @@ public class Flash implements ApplicationListener {
         batch.begin();
         for (ReelTile reel : reelTiles) {
             reel.draw(batch);
-            sprites[reel.getEndReel()].setX(32);
-            sprites[reel.getEndReel()].draw(batch);
         }
         batch.end();
 	}
@@ -200,4 +204,19 @@ public class Flash implements ApplicationListener {
 	@Override
 	public void dispose() {		
 	}
+	
+	private final InputProcessor inputProcessor = new InputAdapter() {
+		@Override
+		public boolean touchUp(int x, int y, int pointer, int button) {
+			tweenManager.killAll();
+			for (ReelTile reel : reelTiles) {
+				if (!reel.getFlashTween()) {
+					Color flashColor = new Color(Color.RED);
+					reel.setFlashColor(flashColor);
+					initialiseReelFlash(reel);
+				}
+			}
+			return true;
+		}
+	};
 }
