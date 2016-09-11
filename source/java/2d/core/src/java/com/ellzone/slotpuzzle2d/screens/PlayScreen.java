@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapObject;
@@ -46,7 +47,6 @@ import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
-
 import aurelienribon.tweenengine.equations.Back;
 import aurelienribon.tweenengine.equations.Cubic;
 import aurelienribon.tweenengine.equations.Elastic;
@@ -70,10 +70,11 @@ public class PlayScreen implements Screen {
 	private Viewport viewport;
 	private Stage stage;
 	private Sprite cheesecake, cherry, grapes, jelly, lemon, peach, pear, tomato;
+	private Sprite gameOverPopUp, gameText, overText;
 	private float spriteWidth, spriteHeight;
  	private final TweenManager tweenManager = new TweenManager();
  	private Timeline introSequence, reelFlashSeq;
- 	private TextureAtlas reelAtlas;
+ 	private TextureAtlas reelAtlas, tilesAtlas;
 	private boolean isLoaded = false;
 	private Pixmap slotReelPixmap, slotReelScrollPixmap;
 	private Texture slotReelTexture, slotReelScrollTexture;
@@ -84,6 +85,9 @@ public class PlayScreen implements Screen {
 	private Random random;
 	private OrthogonalTiledMapRenderer renderer;
 	private boolean gameOver = false;
+	private boolean failedLevel = false;
+	private boolean touchedRestartLevel = false;
+	private boolean inRestartLevel = false;
 	private boolean win = false;
 	private int touchX, touchY;
 	private boolean displaySpinHelp;
@@ -96,6 +100,7 @@ public class PlayScreen implements Screen {
 	private Array<Timeline> endReelSeqs;
 	private float slotReelScrollheight;
 	float reelSlowingTargetTime;
+    private BitmapFont font;
 
     public PlayScreen(SlotPuzzle game) {
 		this.game = game;
@@ -129,6 +134,7 @@ public class PlayScreen implements Screen {
 
 	private void loadAssets() {
 		game.assetManager.load("reel/reels.pack.atlas", TextureAtlas.class);
+		game.assetManager.load("tiles/tiles.pack.atlas", TextureAtlas.class);
 		game.assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
 		game.assetManager.load("levels/level 1 - 40x40.tmx", TiledMap.class);
  		game.assetManager.finishLoading();
@@ -137,6 +143,7 @@ public class PlayScreen implements Screen {
 	private void getAssets() {
 		level1 = game.assetManager.get("levels/level 1 - 40x40.tmx");
 		reelAtlas = game.assetManager.get("reel/reels.pack.atlas", TextureAtlas.class);
+        tilesAtlas = game.assetManager.get("tiles/tiles.pack.atlas", TextureAtlas.class);
 	}
 	
 	private void createSprites() {
@@ -148,6 +155,15 @@ public class PlayScreen implements Screen {
 		peach = reelAtlas.createSprite("peach 40x40");
 		pear = reelAtlas.createSprite("pear 40x40");
 		tomato = reelAtlas.createSprite("tomato 40x40");
+		
+        gameOverPopUp = tilesAtlas.createSprite("GameOverPopUp"); 
+        gameText = tilesAtlas.createSprite("game");
+        overText = tilesAtlas.createSprite("over");
+ 
+        gameOverPopUp.setPosition(Gdx.graphics.getWidth() / 2 - gameOverPopUp.getWidth() / 2, Gdx.graphics.getHeight() / 2 - gameOverPopUp.getHeight() /2);
+        gameText.setPosition(-200, Gdx.graphics.getHeight() / 2 - gameText.getHeight() /2);
+        overText.setPosition(200 + Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 2 - overText.getHeight() /2);
+
 		
 		sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
 		for (Sprite sprite : sprites) {
@@ -165,6 +181,7 @@ public class PlayScreen implements Screen {
 		displaySpinHelp = false;
 		hud = new Hud(game.batch);
 		scores = new Array<Score>();
+		font = new BitmapFont();
 	}
 
 	private void createSlotReelTexture() {
@@ -220,9 +237,13 @@ public class PlayScreen implements Screen {
 					}
 					if ((event instanceof ReelStoppedFlashingEvent)) {							
 						if (testForAnyLonelyReels(reels)) {
-							gameOver = true;
-							System.out.println("I think its game over and you lose!");
 							win = false;
+							if (Hud.getLives() > 0) {
+								failedLevel = true;
+								createGameOverPopUp();
+							} else {
+								gameOver = true;
+							}
 						}
 						reelScoreAnimation(source);
 						deleteReelAnimation(source);
@@ -473,7 +494,7 @@ public class PlayScreen implements Screen {
 		reelFlashSeq = reelFlashSeq.push(SlotPuzzleTween.to(reel, ReelAccessor.FLASH_TINT, 0.2f)
 				   .target(toColor.r, toColor.g, toColor.b)
 				   .ease(Sine.OUT)
-				   .repeatYoyo(25, 0));
+				   .repeatYoyo(17, 0));
 		
 		reelFlashSeq = reelFlashSeq.push(SlotPuzzleTween.set(reel, ReelAccessor.FLASH_TINT)
 				           .target(fromColor.r, fromColor.g, fromColor.b)
@@ -481,7 +502,7 @@ public class PlayScreen implements Screen {
 		reelFlashSeq = reelFlashSeq.push(SlotPuzzleTween.to(reel, ReelAccessor.FLASH_TINT, 0.05f)
 						   .target(toColor.r, toColor.g, toColor.b)
 						   .ease(Sine.OUT)
-				           .repeatYoyo(33, 0))
+				           .repeatYoyo(25, 0))
 						   .setCallback(reelFlashCallback)
 						   .setCallbackTriggers(TweenCallback.COMPLETE)
 						   .setUserData(userData)
@@ -513,44 +534,50 @@ public class PlayScreen implements Screen {
 
 	public void handleInput(float dt) {
 		if (Gdx.input.justTouched()) {
-			touchX = Gdx.input.getX();
-			touchY = Gdx.input.getY();
-			Vector2 newPoints = new Vector2(touchX, touchY);
-			newPoints = viewport.unproject(newPoints);
-			int c = (int) (newPoints.x - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
-			int r = (int) (newPoints.y - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
-			r = GAME_LEVEL_HEIGHT - r;
-			if ((r >= 0) & (r <= GAME_LEVEL_HEIGHT) & (c >= 0) & (c <= GAME_LEVEL_WIDTH)) {
-				TupleValueIndex[][] grid = populateMatchGrid(reels);
-				ReelTile reel = reels.get(grid[r][c].index);
-				DampenedSineParticle ds = dampenedSines.get(grid[r][c].index);
-				if (!reel.isReelTileDeleted()) {
-					if (reel.isSpinning()) {
-						if (ds.getDSState() == DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE) {
-							reel.setEndReel(reel.getCurrentReel());
-							displaySpinHelp = true;
-							displaySpinHelpSprite = reel.getCurrentReel();
-						}
-					} else {
-						if (!reel.getFlashTween()) {
-							reelSlowingTargetTime = 5.0f;
-							reel.setEndReel(random.nextInt(sprites.length - 1));
-					        reel.setSpinning(true);
-					        reelsSpinning++;
-					        reel.setSy(0);
-							ds.initialiseDampenedSine();
-							ds.position.y = 0;
-							ds.velocity = new Vector(0, velocityY);
-							accelerator = new Vector(0, acceleratorY);
-							ds.accelerator = accelerator;
-							ds.accelerate(new Vector(0, accelerateY));
-							ds.velocityMin.y = velocityMin.y;
+			if ((failedLevel) & (!touchedRestartLevel)) {
+				touchedRestartLevel = true;
+				hideGameOverpopUp();
+			} else {
+				touchX = Gdx.input.getX();
+				touchY = Gdx.input.getY();
+				Vector2 newPoints = new Vector2(touchX, touchY);
+				newPoints = viewport.unproject(newPoints);
+				int c = (int) (newPoints.x - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
+				int r = (int) (newPoints.y - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
+				r = GAME_LEVEL_HEIGHT - r;
+				if ((r >= 0) & (r <= GAME_LEVEL_HEIGHT) & (c >= 0) & (c <= GAME_LEVEL_WIDTH)) {
+					TupleValueIndex[][] grid = populateMatchGrid(reels);
+					ReelTile reel = reels.get(grid[r][c].index);
+					DampenedSineParticle ds = dampenedSines.get(grid[r][c].index);
+					if (!reel.isReelTileDeleted()) {
+						if (reel.isSpinning()) {
+							if (ds.getDSState() == DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE) {
+								reel.setEndReel(reel.getCurrentReel());
+								displaySpinHelp = true;
+								displaySpinHelpSprite = reel.getCurrentReel();
+								Hud.addScore(-1);
+							}
+						} else {
+							if (!reel.getFlashTween()) {
+								reelSlowingTargetTime = 5.0f;
+								reel.setEndReel(random.nextInt(sprites.length - 1));
+						        reel.setSpinning(true);
+						        reelsSpinning++;
+						        reel.setSy(0);
+								ds.initialiseDampenedSine();
+								ds.position.y = 0;
+								ds.velocity = new Vector(0, velocityY);
+								accelerator = new Vector(0, acceleratorY);
+								ds.accelerator = accelerator;
+								ds.accelerate(new Vector(0, accelerateY));
+								ds.velocityMin.y = velocityMin.y;
+								Hud.addScore(-1);
+							}
 						}
 					}
+				} else {
+					Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "I don't respond to r="+r+"c="+c);
 				}
-				Hud.addScore(-1);
-			} else {
-				Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "I don't respond to r="+r+"c="+c);
 			}
 		}
 	}
@@ -590,7 +617,83 @@ public class PlayScreen implements Screen {
             }
         }
     }
+    
+	private void createGameOverPopUp() {
+		Timeline.createSequence()
+			.push(SlotPuzzleTween.set(gameOverPopUp, SpriteAccessor.SCALE_XY).target(0.1f, 0))
+			.push(SlotPuzzleTween.set(gameText, SpriteAccessor.POS_XY). target(-200, Gdx.graphics.getHeight() / 2 - gameText.getHeight() /2))
+			.push(SlotPuzzleTween.set(overText, SpriteAccessor.POS_XY). target(200 + Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 2 - overText.getHeight() /2))		
+			.pushPause(0.5f)
+			.push(SlotPuzzleTween.to(gameOverPopUp, SpriteAccessor.SCALE_XY, 0.8f).target(1, 0.6f).ease(Back.OUT))
+			.pushPause(-0.3f)
+			.pushPause(0.3f)
+			.pushPause(0.3f)
+			.beginParallel()
+				.push(SlotPuzzleTween.to(gameOverPopUp, SpriteAccessor.SCALE_XY, 0.5f).target(1.1f, 1.1f).ease(Back.IN))
+				.push(SlotPuzzleTween.to(gameOverPopUp, SpriteAccessor.OPACITY, 0.5f).target(0.8f).ease(Back.IN))
+			.end()
+			.pushPause(0.3f)
+			.pushPause(-0.3f)
+			.beginParallel()
+			    .push(SlotPuzzleTween.to(gameText, SpriteAccessor.POS_XY, 1.0f).target(Gdx.graphics.getWidth() / 2 - gameText.getWidth(), Gdx.graphics.getHeight() / 2 - gameText.getHeight() /2).ease(Back.INOUT))
+			    .push(SlotPuzzleTween.to(overText, SpriteAccessor.POS_XY, 1.0f).target(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2 - overText.getHeight() /2).ease(Back.INOUT))
+			    
+			.end()    
+			.pushPause(0.5f)
+			.start(tweenManager);
+	}
+	
+	private void hideGameOverpopUp() {
+		Timeline.createSequence()
+		    .pushPause(0.25f)
+			.beginParallel()
+			    .push((SlotPuzzleTween.to(gameOverPopUp, SpriteAccessor.POS_XY, 1.5f)
+			    	.waypoint(Gdx.graphics.getWidth() / 2 - gameOverPopUp.getWidth() / 2, Gdx.graphics.getHeight() / 2 - gameOverPopUp.getHeight() / 2 + 64)
+			    	.target(Gdx.graphics.getWidth() / 2 - gameOverPopUp.getWidth() / 2, -300).ease(Quad.OUT)))
+			    .push(SlotPuzzleTween.to(gameOverPopUp, SpriteAccessor.OPACITY, 1.5f)
+			    	.target(1.0f))
+			    .push((SlotPuzzleTween.to(gameText, SpriteAccessor.POS_XY, 1.5f)
+			        .waypoint(Gdx.graphics.getWidth() / 2 - gameText.getWidth(), Gdx.graphics.getHeight() / 2 - gameText.getHeight() /2 + 64)
+			        .target(Gdx.graphics.getWidth() / 2 - gameText.getWidth(), -300).ease(Quad.OUT)))
+			    .push((SlotPuzzleTween.to(overText, SpriteAccessor.POS_XY, 1.5f)
+			    	.waypoint(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2 - overText.getHeight() / 2 + 64)
+			    	.target(Gdx.graphics.getWidth() / 2, -300).ease(Quad.OUT)))
+			.end()    
+			.pushPause(0.5f)
+			.setCallback(levelOverCallback)
+			.setCallbackTriggers(TweenCallback.COMPLETE)
+			.start(tweenManager);
+	}
 
+	private TweenCallback levelOverCallback = new TweenCallback() {
+		@Override
+		public void onEvent(int type, BaseTween<?> source) {
+			switch (type) {
+				case TweenCallback.COMPLETE:
+					delegateLevelOverCallback(type, source);
+			}
+		}
+	};
+
+	private void delegateLevelOverCallback(int type, BaseTween<?> source) {
+		tweenManager.killAll();
+		Hud.resetScore();
+		Hud.loseLife();
+		hud.resetWorldTime();
+		renderer = new OrthogonalTiledMapRenderer(level1);
+		reels = new Array<ReelTile>();
+		dampenedSines = new Array<DampenedSineParticle>();
+		displaySpinHelp = false;
+		failedLevel = false;
+		touchedRestartLevel = false;
+		inRestartLevel = false;
+		loadAssets();
+		getAssets();
+		createSprites();
+		createLevels();
+		createReelIntroSequence();
+	}
+	
     private void update(float delta) {
 		tweenManager.update(delta);
 		int dsIndex = 0;
@@ -604,7 +707,16 @@ public class PlayScreen implements Screen {
 		}
 		renderer.setView(camera);
 		hud.update(delta);
-		if (gameOver) {
+		if (hud.getWorldTime() == 0) {
+			if ((Hud.getLives() > 0) & (!inRestartLevel)) {
+				inRestartLevel = true;
+				failedLevel = true;
+				createGameOverPopUp();
+			} else {
+				gameOver = true;
+			}			
+		}
+		if ((gameOver) & (!win) & (Hud.getLives() == 0)) {
 			dispose();
 			game.setScreen(new EndOfGameScreen(game));
 		}
@@ -627,9 +739,15 @@ public class PlayScreen implements Screen {
 			for (Score score : scores) {
 				score.render(game.batch);
 			}
-            if(displaySpinHelp) {
+            if (displaySpinHelp) {
 				sprites[displaySpinHelpSprite].draw(game.batch);
 			}
+            if (failedLevel) {
+            	gameOverPopUp.draw(game.batch);
+            	gameText.draw(game.batch);
+            	overText.draw(game.batch);
+                font.draw(game.batch, "Touch/Click to try again", gameText.getX() + 16, gameText.getY() - 32); 
+            }
 			game.batch.end();
 		    game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 		    hud.stage.draw();
@@ -671,6 +789,7 @@ public class PlayScreen implements Screen {
 	@Override
 	public void dispose() {
 		stage.dispose();
+		font.dispose();
 		for (ReelTile reel : reels) {
 			reel.dispose();
 		}

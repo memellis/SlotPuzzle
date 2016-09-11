@@ -21,18 +21,15 @@ public class Hud implements Disposable {
     private boolean timeUp; 
     private float timeCount;
     private static Integer score;
-
-    private Label countdownLabel;
-    private static Label scoreLabel;
-    private Label timeLabel;
-    private Label levelLabel;
-    private Label worldLabel;
-    private Label marioLabel;
+    private static Integer lives;
+    private static Label scoreLabel, livesLeftLabel;
+    private Label countdownLabel, livesLabel, timeLabel, levelLabel, worldLabel, slotPuzzle;
 
     public Hud(SpriteBatch sb){
         worldTimer = 300;
         timeCount = 0;
         score = 0;
+        lives = 3;
 
         viewport = new FitViewport(SlotPuzzle.V_WIDTH, SlotPuzzle.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, sb);
@@ -42,24 +39,28 @@ public class Hud implements Disposable {
         table.setFillParent(true);
 
         countdownLabel = new Label(String.format("%03d", worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        scoreLabel =new Label(String.format("%06d", score), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        scoreLabel = new Label(String.format("%06d", score), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        livesLeftLabel = new Label(String.format("%03d", lives), new Label.LabelStyle(new BitmapFont(), Color.WHITE));        
         timeLabel = new Label("TIME", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         levelLabel = new Label("1-1", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         worldLabel = new Label("WORLD", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        marioLabel = new Label("Slot Puzzle", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        slotPuzzle = new Label("Slot Puzzle", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        livesLabel = new Label("LIVES", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
-        table.add(marioLabel).expandX().padTop(10);
+        table.add(slotPuzzle).expandX().padTop(10);
+        table.add(livesLabel).expandX().padTop(10);
         table.add(worldLabel).expandX().padTop(10);
         table.add(timeLabel).expandX().padTop(10);
         table.row();
         table.add(scoreLabel).expandX();
+        table.add(livesLeftLabel).expandX();
         table.add(levelLabel).expandX();
         table.add(countdownLabel).expandX();
 
         stage.addActor(table);
     }
 
-    public void update(float dt){
+    public void update(float dt) {
         timeCount += dt;
         if(timeCount >= 1){
             if (worldTimer > 0) {
@@ -72,9 +73,13 @@ public class Hud implements Disposable {
         }
     }
 
-    public static void addScore(int value){
+    public static void addScore(int value) {
         score += value;
         scoreLabel.setText(String.format("%06d", score));
+    }
+    
+    public static void resetScore() {
+    	score = 0;
     }
 
     @Override
@@ -88,5 +93,20 @@ public class Hud implements Disposable {
     
     public Integer getWorldTime() {
     	return worldTimer;
+    }
+    
+    public void resetWorldTime() {
+    	worldTimer = 30;
+    }
+    
+    public static void loseLife() {
+    	if (lives > 0) {
+    		lives--;
+    	}
+    	livesLeftLabel.setText(String.format("%03d", lives));
+    }
+    
+    public static int getLives() {
+    	return lives;
     }
 }
