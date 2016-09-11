@@ -96,7 +96,7 @@ public class Hud implements Disposable {
     }
     
     public void resetWorldTime() {
-    	worldTimer = 30;
+    	worldTimer = 300;
     }
     
     public static void loseLife() {
