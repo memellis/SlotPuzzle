@@ -4,6 +4,7 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -51,6 +52,7 @@ import aurelienribon.tweenengine.equations.Cubic;
 import aurelienribon.tweenengine.equations.Elastic;
 import aurelienribon.tweenengine.equations.Quad;
 import aurelienribon.tweenengine.equations.Quart;
+import aurelienribon.tweenengine.equations.Sine;
 
 public class PlayScreen implements Screen {
 	private static final int TILE_WIDTH = 40;
@@ -70,7 +72,7 @@ public class PlayScreen implements Screen {
 	private Sprite cheesecake, cherry, grapes, jelly, lemon, peach, pear, tomato;
 	private float spriteWidth, spriteHeight;
  	private final TweenManager tweenManager = new TweenManager();
- 	private Timeline introSequence;
+ 	private Timeline introSequence, reelFlashSeq;
  	private TextureAtlas reelAtlas;
 	private boolean isLoaded = false;
 	private Pixmap slotReelPixmap, slotReelScrollPixmap;
@@ -84,7 +86,6 @@ public class PlayScreen implements Screen {
 	private boolean gameOver = false;
 	private boolean win = false;
 	private int touchX, touchY;
-	private boolean initialFlashingStopped;
 	private boolean displaySpinHelp;
 	private int displaySpinHelpSprite;
 	private Sprite[] sprites;
@@ -161,7 +162,6 @@ public class PlayScreen implements Screen {
 		renderer = new OrthogonalTiledMapRenderer(level1);
 		reels = new Array<ReelTile>();
 		dampenedSines = new Array<DampenedSineParticle>();
-		initialFlashingStopped = false;
 		displaySpinHelp = false;
 		hud = new Hud(game.batch);
 		scores = new Array<Score>();
@@ -218,22 +218,15 @@ public class PlayScreen implements Screen {
 							}
 						}
 					}
-					if ((event instanceof ReelStoppedFlashingEvent) & (initialFlashingStopped)) {							
+					if ((event instanceof ReelStoppedFlashingEvent)) {							
 						if (testForAnyLonelyReels(reels)) {
 							gameOver = true;
 							System.out.println("I think its game over and you lose!");
 							win = false;
 						}
-						if (testForHiddenPatternRevealed(reels)) {
-							gameOver = true;
-							win = true;
-						}
 						reelScoreAnimation(source);
 						deleteReelAnimation(source);
 					}
-					if ((event instanceof ReelStoppedFlashingEvent) & (!initialFlashingStopped)) {
-						initialFlashingStopped = true;				
-					}	
 				}
 			}
 		);
@@ -306,12 +299,10 @@ public class PlayScreen implements Screen {
 		for(int i=0; i < reels.size; i++) {
 			introSequence = introSequence
 					      .push(buildSequence(reels.get(i), i, random.nextFloat() * 3.0f, random.nextFloat() * 3.0f));
-		}
-				
+		}	
 		introSequence = introSequence
 				      .pushPause(0.3f)
 				      .start(tweenManager);
-		
 	}
 	
 	private Timeline buildSequence(Sprite target, int id, float delay1, float delay2) {
@@ -430,7 +421,7 @@ public class PlayScreen implements Screen {
 		@Override
 		public void onEvent(int type, BaseTween<?> source) {
 			switch (type) {
-				case COMPLETE: 
+				case TweenCallback.COMPLETE: 
 					ReelTile reel = (ReelTile) source.getUserData();
 					Hud.addScore((reel.getEndReel() + 1) * reel.getScore());
 					reel.deleteReelTile();
@@ -456,36 +447,92 @@ public class PlayScreen implements Screen {
 		@Override
 		public void onEvent(int type, BaseTween<?> source) {
 			switch (type) {
-			case COMPLETE:
+			case TweenCallback.COMPLETE:
 				Score score = (Score) source.getUserData();
 				scores.removeValue(score, false);
 			}
 		}
 	};
 	
+	private void initialiseReelFlash(ReelTile reel) {
+		Array<Object> userData = new Array<Object>();
+		reel.setFlashTween(true);
+		reelFlashSeq = Timeline.createSequence();
+		
+		Color fromColor = new Color(Color.WHITE);
+		fromColor.a = 1;
+		Color toColor = new Color(Color.RED);
+		toColor.a = 1;
+		
+		userData.add(reel);
+		userData.add(reelFlashSeq);
+		
+		reelFlashSeq = reelFlashSeq.push(SlotPuzzleTween.set(reel, ReelAccessor.FLASH_TINT)
+				   .target(fromColor.r, fromColor.g, fromColor.b)
+				   .ease(Sine.IN));
+		reelFlashSeq = reelFlashSeq.push(SlotPuzzleTween.to(reel, ReelAccessor.FLASH_TINT, 0.2f)
+				   .target(toColor.r, toColor.g, toColor.b)
+				   .ease(Sine.OUT)
+				   .repeatYoyo(25, 0));
+		
+		reelFlashSeq = reelFlashSeq.push(SlotPuzzleTween.set(reel, ReelAccessor.FLASH_TINT)
+				           .target(fromColor.r, fromColor.g, fromColor.b)
+				           .ease(Sine.IN));
+		reelFlashSeq = reelFlashSeq.push(SlotPuzzleTween.to(reel, ReelAccessor.FLASH_TINT, 0.05f)
+						   .target(toColor.r, toColor.g, toColor.b)
+						   .ease(Sine.OUT)
+				           .repeatYoyo(33, 0))
+						   .setCallback(reelFlashCallback)
+						   .setCallbackTriggers(TweenCallback.COMPLETE)
+						   .setUserData(userData)
+						   .start(tweenManager);	
+	}
+	
+	private TweenCallback reelFlashCallback = new TweenCallback() {
+		@Override
+		public void onEvent(int type, BaseTween<?> source) {
+			switch (type) {
+				case TweenCallback.COMPLETE:
+					delegateReelFlashCallback(type, source);
+			}
+		}
+	};
+	
+	private void delegateReelFlashCallback(int type, BaseTween<?> source) {
+		@SuppressWarnings("unchecked")
+		Array<Object> userData = (Array<Object>) source.getUserData();
+		ReelTile reel = (ReelTile) userData.get(0);
+		Timeline reelFlashSeq = (Timeline) userData.get(1);
+		reelFlashSeq.kill();
+		if (reel.getFlashTween()) {
+			reel.setFlashOff();
+			reel.setFlashTween(false);
+			reel.processEvent(new ReelStoppedFlashingEvent());
+		}
+	}
 
 	public void handleInput(float dt) {
 		if (Gdx.input.justTouched()) {
-			if (initialFlashingStopped){
-				touchX = Gdx.input.getX();
-				touchY = Gdx.input.getY();
-  				Vector2 newPoints = new Vector2(touchX, touchY);
-				newPoints = viewport.unproject(newPoints);
-				int c = (int) (newPoints.x - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
-				int r = (int) (newPoints.y - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
-				r = GAME_LEVEL_HEIGHT - r;
-				if ((r >= 0) & (r <= GAME_LEVEL_HEIGHT) & (c >= 0) & (c <= GAME_LEVEL_WIDTH)) {
-					TupleValueIndex[][] grid = populateMatchGrid(reels);
-					ReelTile reel = reels.get(grid[r][c].index);
-					DampenedSineParticle ds = dampenedSines.get(grid[r][c].index);
-					if (!reel.isReelTileDeleted()) {
-						if (reel.isSpinning()) {
-							if (ds.getDSState() == DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE) {
-								reel.setEndReel(reel.getCurrentReel());
-								displaySpinHelp = true;
-								displaySpinHelpSprite = reel.getCurrentReel();
-							}
-						} else {
+			touchX = Gdx.input.getX();
+			touchY = Gdx.input.getY();
+			Vector2 newPoints = new Vector2(touchX, touchY);
+			newPoints = viewport.unproject(newPoints);
+			int c = (int) (newPoints.x - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
+			int r = (int) (newPoints.y - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
+			r = GAME_LEVEL_HEIGHT - r;
+			if ((r >= 0) & (r <= GAME_LEVEL_HEIGHT) & (c >= 0) & (c <= GAME_LEVEL_WIDTH)) {
+				TupleValueIndex[][] grid = populateMatchGrid(reels);
+				ReelTile reel = reels.get(grid[r][c].index);
+				DampenedSineParticle ds = dampenedSines.get(grid[r][c].index);
+				if (!reel.isReelTileDeleted()) {
+					if (reel.isSpinning()) {
+						if (ds.getDSState() == DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE) {
+							reel.setEndReel(reel.getCurrentReel());
+							displaySpinHelp = true;
+							displaySpinHelpSprite = reel.getCurrentReel();
+						}
+					} else {
+						if (!reel.getFlashTween()) {
 							reelSlowingTargetTime = 5.0f;
 							reel.setEndReel(random.nextInt(sprites.length - 1));
 					        reel.setSpinning(true);
@@ -500,10 +547,10 @@ public class PlayScreen implements Screen {
 							ds.velocityMin.y = velocityMin.y;
 						}
 					}
-					Hud.addScore(-1);
-				} else {
-					Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "I don't respond to r="+r+"c="+c);
 				}
+				Hud.addScore(-1);
+			} else {
+				Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "I don't respond to r="+r+"c="+c);
 			}
 		}
 	}
@@ -533,7 +580,13 @@ public class PlayScreen implements Screen {
         for (int i = 0; i < matchedSlots.size; i++) {
             index = matchedSlots.get(i).getIndex();
             if (index  > 0) {
-                reels.get(index).setFlashMode(true);
+            	ReelTile reel = reels.get(index);
+            	if (!reel.getFlashTween()) {
+            		reel.setFlashMode(true);
+            		Color flashColor = new Color(Color.RED);
+            		reel.setFlashColor(flashColor);
+            		initialiseReelFlash(reel);
+            	}
             }
         }
     }

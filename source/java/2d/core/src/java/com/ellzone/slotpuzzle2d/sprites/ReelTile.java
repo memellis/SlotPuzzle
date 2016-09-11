@@ -20,8 +20,6 @@ public class ReelTile extends ReelSprite {
 	private boolean reelFlashTween;
 	public enum FlashState {FLASH_OFF, FLASH_ON};
 	private FlashState reelFlashState;
-	private float reelFlashTimer;
-	private int reelFlashCount;
 	private Color flashColor;
 	private int score;
 
@@ -44,8 +42,6 @@ public class ReelTile extends ReelSprite {
         setBounds(this.x, this.y, spriteWidth, spriteHeight);
         setRegion(region);
 		super.setSpinning(true);
-		reelFlashTimer = 0.3f;
-		reelFlashCount = 10;
 		reelFlash = false;
 		reelFlashTween = false;
 		reelFlashState = FlashState.FLASH_OFF;
@@ -58,9 +54,6 @@ public class ReelTile extends ReelSprite {
         if (super.isSpinning()) {
         	processSpinningState();
         }
-        if (reelFlash) {
-        	processFlashState(delta);
-        }
         if (reelFlashTween) {
         	processFlashTweenState(delta);
         }
@@ -71,29 +64,7 @@ public class ReelTile extends ReelSprite {
         region.setRegion((int) sx, (int) syModulus, spriteWidth, spriteHeight);
         setRegion(region);
  	}
-	
-	private void processFlashState(float delta) {
-		reelFlashTimer -= delta;
-		if (reelFlashTimer < 0) {
-			reelFlashTimer = 0.3f;
-			reelFlashCount--;
-			if (reelFlashCount <= 0) {
-				reelFlash = false;
-				reelFlashState = FlashState.FLASH_OFF;
-				processEvent(new ReelStoppedFlashingEvent());
-			} else {
-				if (reelFlashState == FlashState.FLASH_OFF) {
-					reelFlashState = FlashState.FLASH_ON;
-					TextureRegion flashReel = drawFlashOn(region);
-					setRegion(flashReel);
-				} else {
-					reelFlashState = FlashState.FLASH_OFF;
-					processSpinningState();
-				}
-			}
-		}
-	}
-	
+		
 	private void processFlashTweenState(float delta) {
 		setFlashOn();
 	}
