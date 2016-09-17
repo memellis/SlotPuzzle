@@ -56,7 +56,7 @@ public class GameOverPopUp implements ApplicationListener {
         tomato = reelAtlas.createSprite("tomato");
 
         TextureAtlas tilesAtlas = Assets.inst().get("tiles/tiles.pack.atlas", TextureAtlas.class);
-        gameOverPopUp = tilesAtlas.createSprite("GameOverPopUp"); 
+        gameOverPopUp = tilesAtlas.createSprite("GamePopUp"); 
         game = tilesAtlas.createSprite("game");
         over = tilesAtlas.createSprite("over");
  
@@ -177,8 +177,11 @@ public class GameOverPopUp implements ApplicationListener {
 	@Override
 	public void dispose() {
 		batch.dispose();
-		cherry.getTexture().dispose();
+        for (Sprite sprite : sprites) {
+        	sprite.getTexture().dispose();
+        }
 		font.dispose();
+		Assets.inst().dispose();
 	}
 
 	private final InputProcessor inputProcessor = new InputAdapter() {
@@ -189,5 +192,4 @@ public class GameOverPopUp implements ApplicationListener {
 			return true;
 		}
 	};
-
 }
