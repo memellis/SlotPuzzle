@@ -1,6 +1,7 @@
 package com.ellzone.slotpuzzle2d.desktop.play;
 
 import java.awt.BorderLayout;
+import java.awt.Canvas;
 import java.awt.Container;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -67,7 +68,8 @@ public class Main extends JFrame {
 			new AppDesc("Experiment 4 - flash", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Flash.class),
 			new AppDesc("Experiment 5 - intro sequence", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.IntroSequence.class),
 			new AppDesc("Experiment 6 - veil", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Veil.class),
-			new AppDesc("Experiment 7 - GameOverPopUp", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.GameOverPopUp.class)
+			new AppDesc("Experiment 7 - GameOverPopUp", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.GameOverPopUp.class),
+			new AppDesc("Experiment 8 - Tile Input Select", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.TileInputSelect.class)
 		},
 		new Object[] {
 			"Particle Experiments",
@@ -104,9 +106,11 @@ public class Main extends JFrame {
 		data = (appDesc.data == null || appDesc.data.isEmpty()) ? "data" : appDesc.data;
 		
 		Container container = getContentPane();
-		if (currentTest != null)
+		if (currentTest != null) {
+			currentTest.stop();
 			container.remove(currentTest.getCanvas());
-		
+		}
+			
 		currentTest = new LwjglAWTCanvas(listener);
 		currentTest.getCanvas().setSize(appDesc.width, appDesc.height);
 		container.add(currentTest.getCanvas(), BorderLayout.CENTER);
@@ -134,8 +138,9 @@ public class Main extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
-				if (currentTest != null)
+				if (currentTest != null) {
 					currentTest.exit();
+				}
 			}
 		});
 	}
@@ -174,7 +179,6 @@ public class Main extends JFrame {
 					Object obj = ((DefaultMutableTreeNode)tree.getLastSelectedPathComponent()).getUserObject();
 					if (obj instanceof AppDesc) {
 						AppDesc app = (AppDesc)obj;
-						//dispose();
 						runApp(app);
 					}
 				}

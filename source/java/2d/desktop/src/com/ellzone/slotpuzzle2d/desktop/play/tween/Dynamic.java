@@ -168,5 +168,6 @@ public class Dynamic implements ApplicationListener {
 	@Override
 	public void dispose() {
 		batch.dispose();
+		Assets.inst().dispose();
 	}
 }

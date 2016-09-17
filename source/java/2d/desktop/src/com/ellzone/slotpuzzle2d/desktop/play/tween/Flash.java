@@ -202,7 +202,9 @@ public class Flash implements ApplicationListener {
 	}
 
 	@Override
-	public void dispose() {		
+	public void dispose() {	
+		batch.dispose();
+		Assets.inst().dispose();
 	}
 	
 	private final InputProcessor inputProcessor = new InputAdapter() {
