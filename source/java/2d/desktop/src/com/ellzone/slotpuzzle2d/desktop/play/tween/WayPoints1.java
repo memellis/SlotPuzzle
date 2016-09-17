@@ -160,5 +160,6 @@ public class WayPoints1 implements ApplicationListener {
 	@Override
 	public void dispose() {
 		batch.dispose();
+		Assets.inst().dispose();
 	}
 }
