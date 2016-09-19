@@ -103,18 +103,21 @@ public class GameOverPopUp implements ApplicationListener {
 			.pushPause(-0.3f)
 			.pushPause(0.3f)
 			.pushPause(0.3f)
-			.push(SlotPuzzleTween.to(gameOverPopUp, SpriteAccessor.SCALE_XY, 0.5f).target(1.1f, 1.1f).ease(Back.IN))
+			.beginParallel()
+			    .push(SlotPuzzleTween.to(gameOverPopUp, SpriteAccessor.SCALE_XY, 0.5f).target(1.1f, 1.1f).ease(Back.IN))
+			    .push(SlotPuzzleTween.to(gameOverPopUp, SpriteAccessor.OPACITY, 0.5f).target(0.7f).ease(Back.IN))
+			.end()
 			.pushPause(0.3f)
 			.pushPause(-0.3f)
 			.beginParallel()
 			    .push(SlotPuzzleTween.to(game, SpriteAccessor.POS_XY, 1.0f).target(Gdx.graphics.getWidth() / 2 - game.getWidth(), Gdx.graphics.getHeight() / 2 - game.getHeight() /2).ease(Back.INOUT))
-			    .push(SlotPuzzleTween.to(over, SpriteAccessor.POS_XY, 1.0f).target(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2 - over.getHeight() /2).ease(Back.INOUT))	
+			    .push(SlotPuzzleTween.to(over, SpriteAccessor.POS_XY, 1.0f).target(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2 - over.getHeight() /2).ease(Back.INOUT))	    
 			.end()    
 			.pushPause(0.5f)
 			.start(tweenManager);
 	}
 	
-	private void hideGameOverpopUp() {
+	private void hideGameOverPopUp() {
 		Timeline.createSequence()
 		    .pushPause(0.25f)
 			.beginParallel()
@@ -188,7 +191,7 @@ public class GameOverPopUp implements ApplicationListener {
 		@Override
 		public boolean touchUp(int x, int y, int pointer, int button) {
 			tweenManager.killAll();
-			hideGameOverpopUp();
+			hideGameOverPopUp();
 			return true;
 		}
 	};
