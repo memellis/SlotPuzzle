@@ -6,7 +6,7 @@
  <tileset firstgid="2" name="blue" tilewidth="40" tileheight="40" tilecount="1" columns="1">
   <image source="blue.png" width="49" height="49"/>
  </tileset>
- <objectgroup name="Hidden Pattern Object" visible="0">
+ <objectgroup name="Hidden Pattern Object">
   <object id="108" name="Reel" x="200" y="320" width="40" height="40"/>
   <object id="109" name="Reel" x="240" y="360" width="40" height="40"/>
   <object id="110" name="Reel" x="280" y="360" width="40" height="40"/>
@@ -109,8 +109,8 @@
   <object id="46" name="Reel" x="480" y="240" width="40" height="40"/>
   <object id="47" name="Reel" x="240" y="240" width="40" height="40"/>
   <object id="48" name="Reel" x="360" y="240" width="40" height="40"/>
-  <object id="49" name="Reel" x="520" y="239" width="40" height="40"/>
-  <object id="50" name="Reel" x="560" y="239" width="40" height="40"/>
+  <object id="49" name="Reel" x="520" y="240" width="40" height="40"/>
+  <object id="50" name="Reel" x="560" y="240" width="40" height="40"/>
   <object id="51" name="Reel" x="320" y="240" width="40" height="40"/>
   <object id="52" name="Reel" x="160" y="240" width="40" height="40"/>
   <object id="53" name="Reel" x="400" y="240" width="40" height="40"/>

@@ -1,7 +1,6 @@
 package com.ellzone.slotpuzzle2d.desktop.play;
 
 import java.awt.BorderLayout;
-import java.awt.Canvas;
 import java.awt.Container;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -68,8 +67,9 @@ public class Main extends JFrame {
 			new AppDesc("Experiment 4 - flash", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Flash.class),
 			new AppDesc("Experiment 5 - intro sequence", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.IntroSequence.class),
 			new AppDesc("Experiment 6 - veil", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Veil.class),
-			new AppDesc("Experiment 7 - GameOverPopUp", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.GameOverPopUp.class),
-			new AppDesc("Experiment 8 - Tile Input Select", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.TileInputSelect.class)
+			new AppDesc("Experiment 7 - Game Over Pop-Up", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.GameOverPopUp.class),
+			new AppDesc("Experiment 8 - Tile Input Select", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.TileInputSelect.class),
+			new AppDesc("Experiment 9 - Level Pop-Up", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.LevelPopUp.class)
 		},
 		new Object[] {
 			"Particle Experiments",
