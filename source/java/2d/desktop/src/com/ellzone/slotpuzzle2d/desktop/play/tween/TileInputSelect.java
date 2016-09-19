@@ -241,7 +241,6 @@ public class TileInputSelect implements ApplicationListener {
 
 	@Override
 	public void dispose() {
-		System.out.println("Dispose");
 		batch.dispose();
 		Assets.inst().dispose();
 		
