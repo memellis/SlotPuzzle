@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.ellzone.slotpuzzle2d.desktop.play;
 
 import java.awt.BorderLayout;
@@ -61,15 +77,16 @@ public class Main extends JFrame {
 		"SlotPuzzle Play Prototypes|Experiments",
 		new Object[] {
 			"Universal Tween Engine Experiments",
-			new AppDesc("Experiment 1 - waypoints 1", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.WayPoints1.class),
-			new AppDesc("Experiment 2 - waypoints 2", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.WayPoints2.class),
-			new AppDesc("Experiment 3 - dynamic tween", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Dynamic.class),
-			new AppDesc("Experiment 4 - flash", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Flash.class),
-			new AppDesc("Experiment 5 - intro sequence", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.IntroSequence.class),
-			new AppDesc("Experiment 6 - veil", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Veil.class),
-			new AppDesc("Experiment 7 - Game Over Pop-Up", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.GameOverPopUp.class),
-			new AppDesc("Experiment 8 - Tile Input Select", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.TileInputSelect.class),
-			new AppDesc("Experiment 9 - Level Pop-Up", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.LevelPopUp.class)
+			new AppDesc("Experiment  1 - waypoints 1", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.WayPoints1.class),
+			new AppDesc("Experiment  2 - waypoints 2", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.WayPoints2.class),
+			new AppDesc("Experiment  3 - dynamic tween", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Dynamic.class),
+			new AppDesc("Experiment  4 - flash", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Flash.class),
+			new AppDesc("Experiment  5 - intro sequence", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.IntroSequence.class),
+			new AppDesc("Experiment  6 - veil", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Veil.class),
+			new AppDesc("Experiment  7 - Game Over Pop-Up", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.GameOverPopUp.class),
+			new AppDesc("Experiment  8 - Tile Input Select", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.TileInputSelect.class),
+			new AppDesc("Experiment  9 - Level Pop-Up", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.LevelPopUp.class),
+			new AppDesc("Experiment 10 - ReelLetterTile", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.ReelLetterTilePlay.class)
 		},
 		new Object[] {
 			"Particle Experiments",
