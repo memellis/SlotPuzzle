@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.ellzone.slotpuzzle2d.desktop.play.tween;
 
 import com.badlogic.gdx.Gdx;
@@ -48,6 +64,10 @@ public class LevelPopUp extends Prototype {
         complete.setPosition(200 + Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 2 - complete.getHeight() /2);
 	}
 	
+	@Override
+	protected void initialiseUniversalTweenEngineOverride() {		
+	}
+	
 	private void createLevelPopUp() {
 		Timeline.createSequence()
 		.push(SlotPuzzleTween.set(levelPopUp, SpriteAccessor.SCALE_XY).target(0.1f, 0))
@@ -87,11 +107,11 @@ public class LevelPopUp extends Prototype {
 	}
 
 	@Override
-	protected void updateOverride() {
+	protected void updateOverride(float delta) {
 	}
 
 	@Override
-	protected void renderOverride() {
+	protected void renderOverride(float delta) {
 		batch.begin();
 		levelPopUp.draw(batch);
 		level.draw(batch);

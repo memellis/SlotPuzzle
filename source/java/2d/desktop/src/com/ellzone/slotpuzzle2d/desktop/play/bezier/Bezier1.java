@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.ellzone.slotpuzzle2d.desktop.play.bezier;
 
 import java.util.Random;
@@ -15,11 +31,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.physics.Bezier;
-import com.ellzone.slotpuzzle2d.physics.Particle;
 import com.ellzone.slotpuzzle2d.physics.Point;
-import com.ellzone.slotpuzzle2d.physics.Vector;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
-import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
@@ -91,7 +104,7 @@ public class Bezier1 implements ApplicationListener {
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         reelScrollHeight = slotReelScrollTexture.getHeight();
-        reelSlot = new ReelTile(slotReelScrollTexture, spriteWidth, spriteHeight, 0, 32, 0);
+        reelSlot = new ReelTile(slotReelScrollTexture, 0, 32, spriteWidth, spriteHeight, 0);
         reelSlot.setX(0);
         reelSlot.setY(0);
         reelSlot.setSx(0);
@@ -191,5 +204,6 @@ public class Bezier1 implements ApplicationListener {
 	@Override
 	public void dispose() {
 		batch.dispose();
+		Assets.inst().dispose();
 	}
 }
