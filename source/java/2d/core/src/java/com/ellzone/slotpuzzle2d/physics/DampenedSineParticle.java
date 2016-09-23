@@ -76,5 +76,4 @@ public class DampenedSineParticle extends Particle {
 	public DSState getDSState() {
 		return this.dsState;
 	}
-	
 }

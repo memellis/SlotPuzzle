@@ -253,14 +253,14 @@ public class PixmapProcessors {
     }
 	
 	public static void saveTextureRegion(TextureRegion textureRegion) {
-		savePixmap(getPixmapFromtextureRegion(textureRegion));		
+		savePixmap(getPixmapFromTextureRegion(textureRegion));		
 	}
 	
 	public static void saveTextureRegion(TextureRegion textureRegion, File file) {
-		savePixmap(getPixmapFromtextureRegion(textureRegion), file);		
+		savePixmap(getPixmapFromTextureRegion(textureRegion), file);		
 	}
 	
-	public static Pixmap getPixmapFromtextureRegion(TextureRegion textureRegion) {
+	public static Pixmap getPixmapFromTextureRegion(TextureRegion textureRegion) {
 		Texture texture = textureRegion.getTexture();
 		if (!texture.getTextureData().isPrepared()) {
 		    texture.getTextureData().prepare();

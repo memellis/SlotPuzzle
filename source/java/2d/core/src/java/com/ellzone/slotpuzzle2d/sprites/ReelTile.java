@@ -9,13 +9,13 @@ import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 public class ReelTile extends ReelSprite {
     private Texture texture;
     private TextureRegion region;
-    private int spriteWidth;
-    private int spriteHeight;
+    private float tileWidth;
+    private float tileHeight;
     private float x;
     private float y;
     private float sx = 0;
     private float sy = 0;
-	private boolean deleteReelTile;
+	private boolean tileDeleted;
 	private boolean reelFlash;
 	private boolean reelFlashTween;
 	public enum FlashState {FLASH_OFF, FLASH_ON};
@@ -23,30 +23,30 @@ public class ReelTile extends ReelSprite {
 	private Color flashColor;
 	private int score;
 
-    public ReelTile(Texture texture, int spriteWidth, int spriteHeight, float x, float y, int endReel) {
+    public ReelTile(Texture texture, float x, float y, float tileWidth, float tileHeight, int endReel) {
         this.texture = texture;
-        this.spriteWidth = spriteWidth;
-        this.spriteHeight = spriteHeight;
         this.x = x;
         this.y = y;
+        this.tileWidth = tileWidth;
+        this.tileHeight = tileHeight;
         super.setEndReel(endReel);
         defineReelSlotTileScroll();
     }
 
     private void defineReelSlotTileScroll() {
-        setPosition(this.x, this.y);
-        setOrigin(this.x, this.y);
+        setPosition((int)this.x, (int)this.y);
+        setOrigin((int)this.x, (int)this.y);
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         region = new TextureRegion(texture);
-        region.setRegion(0, 0, spriteWidth, spriteHeight);
-        setBounds(this.x, this.y, spriteWidth, spriteHeight);
+        region.setRegion((int)0, (int)0, (int)tileWidth, (int)tileHeight);
+        setBounds((int)this.x, (int)this.y, (int)tileWidth, (int)tileHeight);
         setRegion(region);
 		super.setSpinning(true);
 		reelFlash = false;
 		reelFlashTween = false;
 		reelFlashState = FlashState.FLASH_OFF;
 		flashColor = Color.RED;
-        deleteReelTile = false;
+        tileDeleted = false;
     }
 
 	@Override
@@ -61,7 +61,7 @@ public class ReelTile extends ReelSprite {
 	
 	private void processSpinningState() {
         float syModulus = sy % texture.getHeight();
-        region.setRegion((int) sx, (int) syModulus, spriteWidth, spriteHeight);
+        region.setRegion((int) sx, (int) syModulus, (int)tileWidth, (int)tileHeight);
         setRegion(region);
  	}
 		
@@ -87,24 +87,20 @@ public class ReelTile extends ReelSprite {
 
     public void setEndReel() {
         float syModulus = sy % texture.getHeight();
-        super.setEndReel((int) syModulus / spriteHeight);
+        super.setEndReel((int) ((int) syModulus / tileHeight));
     }
 
 	public int getCurrentReel() {
         float syModulus = sy % texture.getHeight();
- 		return (int) ((syModulus + (spriteHeight / 2)) % texture.getHeight()) / spriteHeight;
-	}
-
-	@Override
-	public void dispose() {
+ 		return (int) ((int) ((syModulus + (tileHeight / 2)) % texture.getHeight()) / tileHeight);
 	}
 
 	public boolean isReelTileDeleted() {
-		return this.deleteReelTile;
+		return this.tileDeleted;
 	}
 	
 	public void deleteReelTile() {
-		this.deleteReelTile = true;
+		this.tileDeleted = true;
 	}
 	
 	public void setSpinning() {
@@ -149,11 +145,11 @@ public class ReelTile extends ReelSprite {
 	}
 	
 	private TextureRegion drawFlashOn(TextureRegion reel) {
-		Pixmap reelPixmap = PixmapProcessors.getPixmapFromtextureRegion(reel);
+		Pixmap reelPixmap = PixmapProcessors.getPixmapFromTextureRegion(reel);
 		reelPixmap.setColor(flashColor);
-		reelPixmap.drawRectangle(0, 0, spriteWidth    , spriteHeight);
-		reelPixmap.drawRectangle(1, 1, spriteWidth - 2, spriteHeight - 2);
-		reelPixmap.drawRectangle(2, 2, spriteWidth - 4, spriteHeight - 4);
+		reelPixmap.drawRectangle(0, 0, (int)tileWidth    , (int)tileHeight);
+		reelPixmap.drawRectangle(1, 1, (int)tileWidth - 2, (int)tileHeight - 2);
+		reelPixmap.drawRectangle(2, 2, (int)tileWidth - 4, (int)tileHeight - 4);
 		TextureRegion textureRegion = new TextureRegion(new Texture(reelPixmap));
 		return textureRegion;
 	}
@@ -168,5 +164,12 @@ public class ReelTile extends ReelSprite {
 	
 	public TextureRegion getRegion() {
 		return this.region;
+	}
+
+	@Override
+	public void dispose() {
+		if (region != null) {
+			region.getTexture().dispose();
+		}
 	}
 }

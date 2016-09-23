@@ -159,7 +159,7 @@ public class ReelSlotTile extends ReelSprite {
 	}
 	
 	private TextureRegion drawFlashOn(TextureRegion reel) {
-		Pixmap reelPixmap = PixmapProcessors.getPixmapFromtextureRegion(reel);
+		Pixmap reelPixmap = PixmapProcessors.getPixmapFromTextureRegion(reel);
 		reelPixmap.setColor(Color.RED);
 		reelPixmap.drawRectangle(0, 0, 32, 32);
 		reelPixmap.drawRectangle(1, 1, 30, 30);
