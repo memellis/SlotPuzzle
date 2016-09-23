@@ -165,6 +165,7 @@ public class Basic2D implements ApplicationListener {
 
 	@Override
 	public void dispose() {
+		batch.dispose();
 	}
 
 }
