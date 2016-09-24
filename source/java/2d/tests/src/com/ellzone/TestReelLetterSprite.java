@@ -89,7 +89,7 @@ public class TestReelLetterSprite {
 		Array<Pixmap> startPixmaps = new Array<Pixmap>();
 		for (int letter = 0; letter < reelText.length(); letter++) {
 			TextureRegion startReelLetter = new TextureRegion(textTexture, 0, letter * TestReelLetterSprite.REEL_SIZE_HEIGHT, TestReelLetterSprite.REEL_SIZE_WIDTH, TestReelLetterSprite.REEL_SIZE_HEIGHT);
-			startPixmaps.add(PixmapProcessors.getPixmapFromtextureRegion(startReelLetter));
+			startPixmaps.add(PixmapProcessors.getPixmapFromTextureRegion(startReelLetter));
 			savePixmap(startPixmaps.get(letter), "startReelLetterPixmap" + letter + ".png");
 		}
 	
