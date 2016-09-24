@@ -27,7 +27,6 @@ import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
 import com.ellzone.slotpuzzle2d.utils.Assets;
-
 import aurelienribon.tweenengine.equations.Back;
 import aurelienribon.tweenengine.equations.Quad;
 
@@ -39,11 +38,10 @@ public class LevelPopUp extends Prototype {
 
 	@Override
 	protected void initialiseOverride() {	
-		createLevelPopUp();
 		currentLevelFont = new BitmapFont();
 		currentLevelFont.getData().scale(1.5f);
+		createLevelPopUp();
 		Gdx.input.setInputProcessor(inputProcessor);
-		
 	}
 	
 	@Override
