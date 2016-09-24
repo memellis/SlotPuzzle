@@ -43,6 +43,7 @@ import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.effects.ScoreAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
+import com.ellzone.slotpuzzle2d.level.LevelPopUp;
 import com.ellzone.slotpuzzle2d.physics.DampenedSineParticle;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsEvent;
@@ -72,14 +73,18 @@ import aurelienribon.tweenengine.equations.Sine;
 public class PlayScreen implements Screen {
 	private static final int TILE_WIDTH = 40;
 	private static final int TILE_HEIGHT = 40;
-	private static final int GAME_LEVEL_WIDTH = 10;
+	private static final int GAME_LEVEL_WIDTH = 11;
 	private static final int GAME_LEVEL_HEIGHT = 8;
-	private static final int SLOT_REEL_OBJECT_LAYER = 3;
+	private static final int SLOT_REEL_OBJECT_LAYER = 2;
 	private static final int HIDDEN_PATTERN_LAYER = 0;  
 	private static final float PUZZLE_GRID_START_X = 160.0f;
 	private static final float PUZZLE_GRID_START_Y = 40.0f;
-	private static final int TIME_INTRO_SEQUENCE_ENDS = 294;
+	public static final String SLOTPUZZLE_SCREEN = "PlayScreen";
+	public static final String LEVEL_DESC =  "Reveal the hidden pattern to complete the level.";
+	public static final String CURRENT_LEVEL = "1-1";
 	
+	public enum PlayStates {INITIALISING, INTRO_SEQUENCE, INTRO_POPUP, INTRO_SPINNING, INTRO_FLASHING, PLAYING, LEVEL_OVER_POPUP, WON_LEVEL, RESTARTING_LEVEL};
+	private PlayStates playState;
 	private SlotPuzzle game;
 	private final OrthographicCamera camera = new OrthographicCamera();
 	private Viewport viewport;
@@ -101,7 +106,6 @@ public class PlayScreen implements Screen {
 	private OrthogonalTiledMapRenderer renderer;
 	private boolean gameOver = false;
 	private boolean failedLevel = false;
-	private boolean touchedRestartLevel = false;
 	private boolean inRestartLevel = false;
 	private boolean win = false;
 	private int touchX, touchY;
@@ -116,6 +120,10 @@ public class PlayScreen implements Screen {
 	private float slotReelScrollheight;
 	float reelSlowingTargetTime;
     private BitmapFont font;
+    
+	private LevelPopUp levelPopUp;
+	private Array<Sprite> popUpSprites;
+	private BitmapFont currentLevelFont;
 
     public PlayScreen(SlotPuzzle game) {
 		this.game = game;
@@ -123,6 +131,7 @@ public class PlayScreen implements Screen {
 	}
 	
 	private void createPlayScreen() {
+		playState = PlayStates.INITIALISING;
 		initialiseScreen();
 		initialiseTweenEngine();
 		loadAssets();
@@ -131,6 +140,7 @@ public class PlayScreen implements Screen {
 		initialisePlayScreen();
 		createSlotReelTexture();
 		createLevels();
+		hud = new Hud(game.batch);
 		createReelIntroSequence();
    	}
 	
@@ -170,22 +180,24 @@ public class PlayScreen implements Screen {
 		peach = reelAtlas.createSprite("peach 40x40");
 		pear = reelAtlas.createSprite("pear 40x40");
 		tomato = reelAtlas.createSprite("tomato 40x40");
-		
-        gameOverPopUp = tilesAtlas.createSprite("GamePopUp"); 
-        gameText = tilesAtlas.createSprite("game");
-        overText = tilesAtlas.createSprite("over");
- 
-        gameOverPopUp.setPosition(Gdx.graphics.getWidth() / 2 - gameOverPopUp.getWidth() / 2, Gdx.graphics.getHeight() / 2 - gameOverPopUp.getHeight() /2);
-        gameText.setPosition(-200, Gdx.graphics.getHeight() / 2 - gameText.getHeight() /2);
-        overText.setPosition(200 + Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 2 - overText.getHeight() /2);
 
-		
 		sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
 		for (Sprite sprite : sprites) {
 			sprite.setOrigin(0, 0);
 		}
 		spriteWidth = sprites[0].getWidth();
 		spriteHeight = sprites[0].getHeight();
+
+		popUpSprites = new Array<Sprite>();
+		
+        gameOverPopUp = tilesAtlas.createSprite("GamePopUp"); 
+        gameText = tilesAtlas.createSprite("game");
+        overText = tilesAtlas.createSprite("over");
+
+        popUpSprites.add(tilesAtlas.createSprite("GamePopUp"));
+	    popUpSprites.add(tilesAtlas.createSprite("level"));
+	    popUpSprites.add(tilesAtlas.createSprite("over"));
+	    popUpSprites.add(tilesAtlas.createSprite("complete"));        
 	}
 
 	private void initialisePlayScreen() {
@@ -194,11 +206,16 @@ public class PlayScreen implements Screen {
 		reels = new Array<ReelTile>();
 		dampenedSines = new Array<DampenedSineParticle>();
 		displaySpinHelp = false;
-		hud = new Hud(game.batch);
 		scores = new Array<Score>();
 		font = new BitmapFont();
+		createPopUp();
 	}
 
+	private void createPopUp() {
+		currentLevelFont = new BitmapFont();
+		currentLevelFont.getData().scale(1.5f);
+	    levelPopUp = new LevelPopUp(game.batch, tweenManager, popUpSprites, currentLevelFont, CURRENT_LEVEL, LEVEL_DESC);
+	}
 	private void createSlotReelTexture() {
 		slotReelPixmap = new Pixmap(PlayScreen.TILE_WIDTH, PlayScreen.TILE_HEIGHT, Pixmap.Format.RGBA8888);		
 		slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedPixmap(sprites, sprites.length);
@@ -241,11 +258,13 @@ public class PlayScreen implements Screen {
 			public void actionPerformed(ReelTileEvent event, ReelTile source) {
 					if (event instanceof ReelStoppedSpinningEvent) {
 						reelsSpinning--;
-						if (hud.getWorldTime() < TIME_INTRO_SEQUENCE_ENDS) {
+						if (playState == PlayStates.PLAYING) {
 							if (reelsSpinning <= -1) {
 								if (testForHiddenPatternRevealed(reels)) {
 									gameOver = true;
 									win = true;
+									playState = PlayStates.WON_LEVEL;
+									levelPopUp.showLevelPopUp(null);
 								}
 							}
 						}
@@ -255,6 +274,10 @@ public class PlayScreen implements Screen {
 							win = false;
 							if (Hud.getLives() > 0) {
 								failedLevel = true;
+								playState = PlayStates.LEVEL_OVER_POPUP;
+						        gameOverPopUp.setPosition(Gdx.graphics.getWidth() / 2 - gameOverPopUp.getWidth() / 2, Gdx.graphics.getHeight() / 2 - gameOverPopUp.getHeight() /2);
+						        gameText.setPosition(-200, Gdx.graphics.getHeight() / 2 - gameText.getHeight() /2);
+						        overText.setPosition(200 + Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 2 - overText.getHeight() /2);
 								createGameOverPopUp();
 							} else {
 								gameOver = true;
@@ -330,6 +353,7 @@ public class PlayScreen implements Screen {
 	}
 	
 	private void createReelIntroSequence() {
+		playState = PlayStates.INTRO_SEQUENCE;
 		reelSlowingTargetTime = 4.0f;
 		introSequence = Timeline.createParallel();
 		for(int i=0; i < reels.size; i++) {
@@ -338,6 +362,8 @@ public class PlayScreen implements Screen {
 		}	
 		introSequence = introSequence
 				      .pushPause(0.3f)
+				      .setCallback(introSequenceCallback)
+				      .setCallbackTriggers(TweenCallback.END)
 				      .start(tweenManager);
 	}
 	
@@ -365,6 +391,26 @@ public class PlayScreen implements Screen {
 			    .push(SlotPuzzleTween.to(target, SpriteAccessor.OPACITY, 1.0f).target(1).ease(Quart.INOUT))
 			    .push(SlotPuzzleTween.to(target, SpriteAccessor.SCALE_XY, 1.0f).target(1.0f, 1.0f).ease(Quart.INOUT))
 		    .end();
+	}
+	
+	private TweenCallback introSequenceCallback = new TweenCallback() {
+		@Override
+		public void onEvent(int type, BaseTween<?> source) {
+			delegateIntroSequenceCallback(type, source);
+		}
+	};
+	
+	private void delegateIntroSequenceCallback(int type, BaseTween<?> source) {
+		switch (type) {
+		    case TweenCallback.END: 
+	        	playState = PlayStates.INTRO_POPUP;
+	    	    popUpSprites.get(0).setPosition(Gdx.graphics.getWidth() / 2 - popUpSprites.get(0).getWidth() / 2, Gdx.graphics.getHeight() / 2 - popUpSprites.get(0).getHeight() /2);
+	    		popUpSprites.get(1).setPosition(-200, Gdx.graphics.getHeight() / 2 - popUpSprites.get(1).getHeight() /2);
+	    	    popUpSprites.get(2).setPosition(200 + Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 2 - popUpSprites.get(2).getHeight() /2);
+	    	    popUpSprites.get(3).setPosition(200 + Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 2 - popUpSprites.get(3).getHeight() /2);		
+	        	levelPopUp.showLevelPopUp(null);
+		        break;
+		}
 	}
 	
     private Array<ReelTile> checkLevel(Array<ReelTile> reelLevel) {
@@ -422,7 +468,7 @@ public class PlayScreen implements Screen {
 	}
 	
 	private TupleValueIndex[][] populateMatchGrid(Array<ReelTile> reelLevel) {
-		TupleValueIndex[][] matchGrid = new TupleValueIndex[9][11];
+		TupleValueIndex[][] matchGrid = new TupleValueIndex[9][12];
 		int r, c;	
 		for (int i = 0; i < reelLevel.size; i++) {
 			c = (int) (reelLevel.get(i).getX() - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
@@ -549,54 +595,111 @@ public class PlayScreen implements Screen {
 
 	public void handleInput(float dt) {
 		if (Gdx.input.justTouched()) {
-			if ((failedLevel) & (!touchedRestartLevel)) {
-				touchedRestartLevel = true;
-				hideGameOverpopUp();
-			} else {
-				touchX = Gdx.input.getX();
-				touchY = Gdx.input.getY();
-				Vector2 newPoints = new Vector2(touchX, touchY);
-				newPoints = viewport.unproject(newPoints);
-				int c = (int) (newPoints.x - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
-				int r = (int) (newPoints.y - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
-				r = GAME_LEVEL_HEIGHT - r;
-				if ((r >= 0) & (r <= GAME_LEVEL_HEIGHT) & (c >= 0) & (c <= GAME_LEVEL_WIDTH)) {
-					TupleValueIndex[][] grid = populateMatchGrid(reels);
-					ReelTile reel = reels.get(grid[r][c].index);
-					DampenedSineParticle ds = dampenedSines.get(grid[r][c].index);
-					if (!reel.isReelTileDeleted()) {
-						if (reel.isSpinning()) {
-							if (ds.getDSState() == DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE) {
-								reel.setEndReel(reel.getCurrentReel());
-								displaySpinHelp = true;
-								displaySpinHelpSprite = reel.getCurrentReel();
-								Hud.addScore(-1);
-							}
-						} else {
-							if (!reel.getFlashTween()) {
-								reelSlowingTargetTime = 5.0f;
-								reel.setEndReel(random.nextInt(sprites.length - 1));
-						        reel.setSpinning(true);
-						        reelsSpinning++;
-						        reel.setSy(0);
-								ds.initialiseDampenedSine();
-								ds.position.y = 0;
-								ds.velocity = new Vector(0, velocityY);
-								accelerator = new Vector(0, acceleratorY);
-								ds.accelerator = accelerator;
-								ds.accelerate(new Vector(0, accelerateY));
-								ds.velocityMin.y = velocityMin.y;
-								Hud.addScore(-1);
-							}
+			touchX = Gdx.input.getX();
+			touchY = Gdx.input.getY();
+			switch (playState) {
+				case INITIALISING: 
+					Gdx.app.debug(SLOTPUZZLE_SCREEN, "Initialising");
+					break;
+				case INTRO_SEQUENCE: 
+					Gdx.app.debug(SLOTPUZZLE_SCREEN, "Intro Sequence");
+					break;
+				case INTRO_POPUP: 
+					Gdx.app.debug(SLOTPUZZLE_SCREEN, "Intro Popup");
+					if (isOver(popUpSprites.get(0), touchX, touchY)) {
+						levelPopUp.hideLevelPopUp(hideLevelPopUpCallback);
+					}
+					break;
+				case INTRO_SPINNING:
+					Gdx.app.debug(SLOTPUZZLE_SCREEN, "Intro Spinning");
+					break;
+				case INTRO_FLASHING:
+					Gdx.app.debug(SLOTPUZZLE_SCREEN, "Intro Flashing");
+					break;
+				case PLAYING:
+					Gdx.app.debug(SLOTPUZZLE_SCREEN, "Playing");
+					processIsTileClicked();
+					break;
+				case LEVEL_OVER_POPUP: 
+					Gdx.app.debug(SLOTPUZZLE_SCREEN, "Lost Level");
+					if (isOver(gameOverPopUp, touchX, touchY)) {
+						if (failedLevel) {
+							hideGameOverpopUp();
 						}
 					}
-				} else {
-					Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "I don't respond to r="+r+"c="+c);
-				}
+					break;
+				case WON_LEVEL:
+					Gdx.app.debug(SLOTPUZZLE_SCREEN, "Won Level");
+					break;
+				case RESTARTING_LEVEL:
+					Gdx.app.debug(SLOTPUZZLE_SCREEN, "Restarting Level");
+					break;
+				default: break;
 			}
 		}
 	}
 	
+	public boolean isOver(Sprite sprite, float x, float y) {
+		return sprite.getX() <= x && x <= sprite.getX() + sprite.getWidth()
+			&& sprite.getY() <= y && y <= sprite.getY() + sprite.getHeight();
+	}
+
+	private TweenCallback hideLevelPopUpCallback = new TweenCallback() {
+		@Override
+		public void onEvent(int type, BaseTween<?> source) {
+			switch (type) {
+			    case TweenCallback.END: 
+			    	playState = PlayStates.PLAYING;
+			    	hud.resetWorldTime(300);
+			    	hud.startWorldTimer();
+			    	testForHiddenPatternRevealed(reels);
+			}
+		}
+	};
+	
+    private void processIsTileClicked() {
+		touchX = Gdx.input.getX();
+		touchY = Gdx.input.getY();
+		Vector2 newPoints = new Vector2(touchX, touchY);
+		newPoints = viewport.unproject(newPoints);
+		int c = (int) (newPoints.x - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
+		int r = (int) (newPoints.y - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
+		r = GAME_LEVEL_HEIGHT - r;
+		if ((r >= 0) & (r <= GAME_LEVEL_HEIGHT) & (c >= 0) & (c <= GAME_LEVEL_WIDTH)) {
+			TupleValueIndex[][] grid = populateMatchGrid(reels);
+			ReelTile reel = reels.get(grid[r][c].index);
+			DampenedSineParticle ds = dampenedSines.get(grid[r][c].index);
+			if (!reel.isReelTileDeleted()) {
+				if (reel.isSpinning()) {
+					if (ds.getDSState() == DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE) {
+						reel.setEndReel(reel.getCurrentReel());
+						displaySpinHelp = true;
+						displaySpinHelpSprite = reel.getCurrentReel();
+						Hud.addScore(-1);
+					}
+				} else {
+					if (!reel.getFlashTween()) {
+						reelSlowingTargetTime = 5.0f;
+						reel.setEndReel(random.nextInt(sprites.length - 1));
+				        reel.setSpinning(true);
+				        reelsSpinning++;
+				        reel.setSy(0);
+						ds.initialiseDampenedSine();
+						ds.position.y = 0;
+						ds.velocity = new Vector(0, velocityY);
+						accelerator = new Vector(0, acceleratorY);
+						ds.accelerator = accelerator;
+						ds.accelerate(new Vector(0, accelerateY));
+						ds.velocityMin.y = velocityMin.y;
+						Hud.addScore(-1);
+					}
+				}
+			}
+		} else {
+			Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "I don't respond to r="+r+"c="+c);
+		}
+	}
+		
 	private boolean hiddenPatternRevealed(TupleValueIndex[][] grid) {
 		boolean hiddenPattern = true;
 		for (MapObject mapObject : level1.getLayers().get(HIDDEN_PATTERN_LAYER).getObjects().getByType(RectangleMapObject.class)) {
@@ -694,17 +797,13 @@ public class PlayScreen implements Screen {
 		tweenManager.killAll();
 		Hud.resetScore();
 		Hud.loseLife();
-		hud.resetWorldTime();
+		hud.resetWorldTime(300);
 		renderer = new OrthogonalTiledMapRenderer(level1);
 		reels = new Array<ReelTile>();
 		dampenedSines = new Array<DampenedSineParticle>();
 		displaySpinHelp = false;
 		failedLevel = false;
-		touchedRestartLevel = false;
 		inRestartLevel = false;
-		loadAssets();
-		getAssets();
-		createSprites();
 		createLevels();
 		createReelIntroSequence();
 	}
@@ -726,6 +825,10 @@ public class PlayScreen implements Screen {
 			if ((Hud.getLives() > 0) & (!inRestartLevel)) {
 				inRestartLevel = true;
 				failedLevel = true;
+				playState = PlayStates.LEVEL_OVER_POPUP;
+		        gameOverPopUp.setPosition(Gdx.graphics.getWidth() / 2 - gameOverPopUp.getWidth() / 2, Gdx.graphics.getHeight() / 2 - gameOverPopUp.getHeight() /2);
+		        gameText.setPosition(-200, Gdx.graphics.getHeight() / 2 - gameText.getHeight() /2);
+		        overText.setPosition(200 + Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 2 - overText.getHeight() /2);
 				createGameOverPopUp();
 			} else {
 				gameOver = true;
@@ -764,6 +867,9 @@ public class PlayScreen implements Screen {
                 font.draw(game.batch, "Touch/Click to try again", gameText.getX() + 16, gameText.getY() - 32); 
             }
 			game.batch.end();
+			if (playState == PlayStates.INTRO_POPUP) {
+				levelPopUp.draw(game.batch);
+			}
 		    game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 		    hud.stage.draw();
 		} else {

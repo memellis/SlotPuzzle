@@ -16,14 +16,29 @@
 
 package com.ellzone.slotpuzzle2d.physics;
 
-public class SPPhysicsEvent {
-	private Object source;
-	
-	public SPPhysicsEvent (Object source) {
-		this.source = source;
-	}
-	
-	public Object getSource() {
-		return this.source;
-	}
+public class Point {
+    public float x, y;
+    
+    public Point() {};
+    
+    public Point(float x, float y) {
+    	this.x = x;
+    	this.y = y;
+    }
+    
+    public float getX() {
+        return x;
+    }
+    
+    public float getY() {
+        return y;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
 }

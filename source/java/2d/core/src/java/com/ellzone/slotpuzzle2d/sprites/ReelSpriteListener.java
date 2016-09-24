@@ -14,16 +14,8 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.ellzone.slotpuzzle2d.physics;
+package com.ellzone.slotpuzzle2d.sprites;
 
-public class SPPhysicsEvent {
-	private Object source;
-	
-	public SPPhysicsEvent (Object source) {
-		this.source = source;
-	}
-	
-	public Object getSource() {
-		return this.source;
-	}
+public interface ReelSpriteListener {
+	public void actionPerformed(ReelTileEvent event);
 }
