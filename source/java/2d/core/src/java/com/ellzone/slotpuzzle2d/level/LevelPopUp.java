@@ -36,6 +36,8 @@ public class LevelPopUp {
 	private BitmapFont levelFont, font;
 	private String currentLevel;
 	private String levelDescription;
+	private int sW = Gdx.graphics.getWidth();
+	private int sH = Gdx.graphics.getHeight();
 	
 	public LevelPopUp(SpriteBatch batch, TweenManager tweenManager, Array<Sprite> sprites, BitmapFont levelFont, String currentLevel, String levelDescription) {
 		this.tweenManager = tweenManager;
@@ -49,7 +51,15 @@ public class LevelPopUp {
 	public void showLevelPopUp(TweenCallback callback) {
 		Timeline timeline = Timeline.createSequence()
 		    .push(SlotPuzzleTween.set(sprites.get(0), SpriteAccessor.SCALE_XY).target(0.1f, 0))
-		    .push(SlotPuzzleTween.set(sprites.get(1), SpriteAccessor.POS_XY). target(-200, Gdx.graphics.getHeight() / 2 - sprites.get(1).getHeight() /2))
+		    .push(SlotPuzzleTween.set(sprites.get(1), SpriteAccessor.POS_XY). target(-200, sH / 2 - sprites.get(1).getHeight() / 2));
+		
+		if(sprites.size == 4) {
+			timeline = timeline
+			    .push(SlotPuzzleTween.set(sprites.get(2), SpriteAccessor.POS_XY). target(-200, sH / 2 - sprites.get(2).getHeight() / 2 - 20))
+		        .push(SlotPuzzleTween.set(sprites.get(3), SpriteAccessor.POS_XY). target(sW + 200, sH / 2 - sprites.get(3).getHeight() /2 - 20));
+		}
+		
+		timeline = timeline    
 		    .pushPause(0.5f)
 		    .push(SlotPuzzleTween.to(sprites.get(0), SpriteAccessor.SCALE_XY, 0.8f).target(1, 0.6f).ease(Back.OUT))
 		    .pushPause(-0.3f)
@@ -60,7 +70,19 @@ public class LevelPopUp {
 		    .pushPause(0.3f)
 		    .beginParallel()
 		         .push(SlotPuzzleTween.to(sprites.get(1), SpriteAccessor.POS_XY, 1.0f).target(Gdx.graphics.getWidth() / 2 - sprites.get(1).getWidth() / 2 - 20, Gdx.graphics.getHeight() / 2 - sprites.get(1).getHeight() /2 + 50).ease(Back.INOUT))
-		    .end()    
+		    .end();
+		
+		if (sprites.size == 4) {
+			float tW = sprites.get(2).getWidth() + sprites.get(3).getWidth();
+			float tH = Math.max(sprites.get(2).getHeight(), sprites.get(3).getHeight());
+			timeline = timeline
+			    .beginParallel()
+			        .push(SlotPuzzleTween.to(sprites.get(2), SpriteAccessor.POS_XY, 1.0f).target((sW - tW) / 2, sH / 2 - tH / 2 - 80).ease(Back.INOUT))
+			        .push(SlotPuzzleTween.to(sprites.get(3), SpriteAccessor.POS_XY, 1.0f).target((sW - tW) / 2 + sprites.get(2).getWidth(), sH / 2 - tH / 2 - 80).ease(Back.INOUT)) 		        
+			    .end();
+		}
+		
+		timeline = timeline
 		    .pushPause(0.5f);
 		
 		if(callback != null) {
@@ -75,12 +97,23 @@ public class LevelPopUp {
 		    .pushPause(0.25f)
 			.beginParallel()
 			    .push((SlotPuzzleTween.to(sprites.get(0), SpriteAccessor.POS_XY, 1.5f)
-			    	.waypoint(Gdx.graphics.getWidth() / 2 - sprites.get(0).getWidth() / 2, Gdx.graphics.getHeight() / 2 - sprites.get(0).getHeight() / 2 + 64)
-			    	.target(Gdx.graphics.getWidth() / 2 - sprites.get(0).getWidth() / 2, -300).ease(Quad.OUT)))
+			    	.waypoint(sW / 2 - sprites.get(0).getWidth() / 2, sH / 2 - sprites.get(0).getHeight() / 2 + 64)
+			    	.target(sW / 2 - sprites.get(0).getWidth() / 2, -300).ease(Quad.OUT)))
 			    .push((SlotPuzzleTween.to(sprites.get(1), SpriteAccessor.POS_XY, 1.5f)
-			        .waypoint(Gdx.graphics.getWidth() / 2 - sprites.get(1).getWidth() / 2 - 20, Gdx.graphics.getHeight() / 2 - sprites.get(1).getHeight() / 2 + 64)
-			        .target(Gdx.graphics.getWidth() / 2 - sprites.get(1).getWidth() / 2 - 20, -300).ease(Quad.OUT)))
-			.end()    
+			        .waypoint(sW / 2 - sprites.get(1).getWidth() / 2 - 20, sH / 2 - sprites.get(1).getHeight() / 2 + 64)
+			        .target(sW / 2 - sprites.get(1).getWidth() / 2 - 20, -300).ease(Quad.OUT)));
+
+		if (sprites.size == 4) {
+			timeline = timeline
+			        .push((SlotPuzzleTween.to(sprites.get(2), SpriteAccessor.POS_XY, 1.5f)
+				        .waypoint(sW / 2  - sprites.get(2).getWidth() / 2 - 40, sH / 2 - sprites.get(2).getHeight() / 2 - 20)
+				        .target(sW / 2  - sprites.get(2).getWidth() / 2 - 40, -300).ease(Quad.OUT)))
+			        .push((SlotPuzzleTween.to(sprites.get(3), SpriteAccessor.POS_XY, 1.5f)
+					        .waypoint(sW / 2 + sprites.get(3).getWidth() / 2 - 35, sH / 2 - sprites.get(2).getHeight() / 2 - 28)
+					        .target(sW / 2 + sprites.get(3).getWidth() / 2 - 35, -300).ease(Quad.OUT)))
+			    .end();
+		}
+		timeline = timeline
 			.pushPause(0.5f);
 			
 		if(callback != null) {
@@ -99,4 +132,10 @@ public class LevelPopUp {
 		font.draw(batch, levelDescription, sprites.get(1).getX() - 16, sprites.get(1).getY() - 32, 175, -15, true);
 		batch.end();
 	}
+	
+	public boolean isOver(Sprite sprite, float x, float y) {
+		return sprite.getX() <= x && x <= sprite.getX() + sprite.getWidth()
+			&& sprite.getY() <= y && y <= sprite.getY() + sprite.getHeight();
+	}
+
 }
