@@ -87,7 +87,8 @@ public class Main extends JFrame {
 			new AppDesc("Experiment  8 - Tile Input Select", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.TileInputSelect.class),
 			new AppDesc("Experiment  9 - Level Pop-Up", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.LevelPopUp.class),
 			new AppDesc("Experiment 10 - Level Pop-Up using LevelPopUp", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.LevelPopUpUsingLevelPopUp.class),						
-			new AppDesc("Experiment 11 - ReelLetterTile", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.ReelLetterTilePlay.class)
+			new AppDesc("Experiment 11 - Level Over Pop-Up using LevelPopUp", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.LevelOverPopUpUsingLevelPopUp.class),						
+			new AppDesc("Experiment 12 - ReelLetterTile", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.ReelLetterTilePlay.class)
 		},
 		new Object[] {
 			"Particle Experiments",
