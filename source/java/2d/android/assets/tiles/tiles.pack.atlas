@@ -27,7 +27,7 @@ game
   index: -1
 interactive
   rotate: false
-  xy: 447, 2
+  xy: 443, 2
   size: 35, 48
   orig: 35, 48
   offset: 0, 0
@@ -35,15 +35,15 @@ interactive
 level
   rotate: false
   xy: 258, 14
-  size: 96, 36
-  orig: 96, 36
+  size: 92, 36
+  orig: 92, 36
   offset: 0, 0
   index: -1
 over
   rotate: false
-  xy: 356, 9
-  size: 89, 41
-  orig: 89, 41
+  xy: 352, 14
+  size: 89, 36
+  orig: 89, 36
   offset: 0, 0
   index: -1
 white
