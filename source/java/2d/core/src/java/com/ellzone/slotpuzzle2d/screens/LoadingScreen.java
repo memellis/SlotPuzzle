@@ -41,9 +41,7 @@ public class LoadingScreen implements Screen{
 	private Viewport viewport;
 	private Stage stage;
 	private OrthographicCamera camera;
-	private TiledMap level1;
 	private Texture progressBarImg, progressBarBaseImg;
-	private TextureAtlas reelAtlas;
 	private Vector2 pbPos;
 
     public LoadingScreen(SlotPuzzle game) {
@@ -68,19 +66,19 @@ public class LoadingScreen implements Screen{
     private void loadAssets() {
 		game.assetManager = new AssetManager();
 		game.assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+		game.assetManager.load("levels/WorldMap.tmx", TiledMap.class);
 		game.assetManager.load("levels/level 1.tmx", TiledMap.class);
 		game.assetManager.load("loading_screen/progress_bar.png", Texture.class);
 		game.assetManager.load("loading_screen/progress_bar_base.png", Texture.class);
 		game.assetManager.load("reel/reels.pack.atlas", TextureAtlas.class);
+		game.assetManager.load("tiles/tiles.pack.atlas", TextureAtlas.class);
  		game.assetManager.finishLoading();
 		Gdx.app.log(TAG, "Assets loaded");
     }
     
     private void getAssets() {
-		level1 = game.assetManager.get("levels/level 1.tmx");
 		progressBarImg = game.assetManager.get("loading_screen/progress_bar.png");
 		progressBarBaseImg = game.assetManager.get("loading_screen/progress_bar_base.png");
-		reelAtlas = game.assetManager.get("reel/reels.pack.atlas", TextureAtlas.class);
     }
     
     private void initialiseScreenPositions() {
@@ -109,7 +107,7 @@ public class LoadingScreen implements Screen{
         stage.draw();
         
 		if (game.assetManager.update()) {
-			game.setScreen(new SplashScreen(game));
+			game.setScreen(new WorldScreen(game));
 		}
 	}
 

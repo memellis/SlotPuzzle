@@ -214,7 +214,6 @@ public class PlayScreen implements Screen {
 	}
 	
 	private void setLevelLostSpritePositions() {
-		System.out.println("setLevelLostSpritePositions");
 	    levelLostSprites.get(0).setPosition(sW / 2 - levelLostSprites.get(0).getWidth() / 2, sH / 2 - levelLostSprites.get(0).getHeight() /2);
 	    levelLostSprites.get(1).setPosition(-200, sH / 2 - levelLostSprites.get(1).getHeight() / 2);
 	    levelLostSprites.get(2).setPosition(-200, sH / 2 - levelLostSprites.get(2).getHeight() / 2 + 40);
@@ -222,7 +221,6 @@ public class PlayScreen implements Screen {
 	}
 	
 	private void setLevelWonSpritePositions() {
-		System.out.println("setLevelWonSpritePositions");		
 	    levelWonSprites.get(0).setPosition(sW / 2 - levelWonSprites.get(0).getWidth() / 2, sH / 2 - levelWonSprites.get(0).getHeight() /2);
 	    levelWonSprites.get(1).setPosition(-200, sH / 2 - levelWonSprites.get(1).getHeight() / 2);
 	    levelWonSprites.get(2).setPosition(-200, sH / 2 - levelWonSprites.get(2).getHeight() / 2 + 40);
@@ -858,6 +856,20 @@ public class PlayScreen implements Screen {
 			    case WON_LEVEL:
 			    	levelWonPopUp.draw(game.batch);
 			    	break;
+			    case INITIALISING:
+				    break;
+			    case INTRO_FLASHING:
+				    break;
+			    case INTRO_SEQUENCE:
+				    break;
+			    case INTRO_SPINNING:
+				    break;
+			    case PLAYING:
+				    break;
+			    case RESTARTING_LEVEL:
+				    break;
+			    default:
+				    break;
 			}
 		    game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 		    hud.stage.draw();
