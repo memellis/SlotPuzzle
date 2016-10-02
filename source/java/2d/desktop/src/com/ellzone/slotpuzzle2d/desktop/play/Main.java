@@ -107,6 +107,11 @@ public class Main extends JFrame {
 			new AppDesc("Experiment 3 - bezier 3 - with libGDX spline - change points", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.bezier.Bezier3.class)
 		},
 		new Object[] {
+			"Map Experiments",
+			new AppDesc("Experiment 1 - Map 1 - scrollable world map using fling gesture", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.map.SmoothScrollingWorldMap.class),		
+			new AppDesc("Experiment 2 - Map 2 - Select level animation", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.map.WorldMapLevelSelect.class)		
+		},
+		new Object[] {
 			"Basic2d Experiments",
 			new AppDesc("Basic2d", 640,480, com.ellzone.slotpuzzle2d.desktop.play.basic2d.Basic2D.class)
 		}
