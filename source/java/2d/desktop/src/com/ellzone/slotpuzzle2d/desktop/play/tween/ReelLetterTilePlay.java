@@ -26,7 +26,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
-import com.ellzone.slotpuzzle2d.desktop.play.Prototype;
+import com.ellzone.slotpuzzle2d.desktop.play.PlayPrototype;
 import com.ellzone.slotpuzzle2d.effects.ReelLetterAccessor;
 import com.ellzone.slotpuzzle2d.physics.DampenedSineParticle;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
@@ -41,7 +41,7 @@ import com.ellzone.slotpuzzle2d.utils.FileUtils;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import aurelienribon.tweenengine.equations.Elastic;
 
-public class ReelLetterTilePlay extends Prototype {
+public class ReelLetterTilePlay extends PlayPrototype {
 
 	public static final String SLOT_PUZZLE = "Slot Puzzle";
 	public static final String LIBERATION_MONO_REGULAR_FONT_NAME = "LiberationMono-Regular.ttf";

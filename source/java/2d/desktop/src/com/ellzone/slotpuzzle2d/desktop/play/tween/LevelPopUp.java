@@ -22,7 +22,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.ellzone.slotpuzzle2d.desktop.play.Prototype;
+import com.ellzone.slotpuzzle2d.desktop.play.PlayPrototype;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
@@ -30,7 +30,7 @@ import com.ellzone.slotpuzzle2d.utils.Assets;
 import aurelienribon.tweenengine.equations.Back;
 import aurelienribon.tweenengine.equations.Quad;
 
-public class LevelPopUp extends Prototype {
+public class LevelPopUp extends PlayPrototype {
 
 	public static final String POPUP_DESC =  "Reveal the hidden pattern to complete the level.";
 	private Sprite complete, levelPopUp, level, over;
