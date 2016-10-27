@@ -83,7 +83,7 @@ public class LoadingScreen implements Screen{
     
     private void initialiseScreenPositions() {
 		pbPos = new Vector2();
-		pbPos.set((Gdx.graphics.getWidth() - progressBarBaseImg.getWidth()) >> 1, Gdx.graphics.getHeight() >> 1);
+		pbPos.set((SlotPuzzle.V_WIDTH - progressBarBaseImg.getWidth()) >> 1, SlotPuzzle.V_HEIGHT >> 1);
     }
     
     private void loadSplashScreenAssets() {
@@ -107,7 +107,7 @@ public class LoadingScreen implements Screen{
         stage.draw();
         
 		if (game.assetManager.update()) {
-			game.setScreen(new WorldScreen(game));
+			game.setScreen(new IntroScreen(game));
 		}
 	}
 

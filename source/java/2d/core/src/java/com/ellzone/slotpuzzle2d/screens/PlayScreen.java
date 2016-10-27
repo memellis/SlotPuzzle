@@ -34,6 +34,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -79,6 +80,7 @@ public class PlayScreen implements Screen {
 	private static final int HIDDEN_PATTERN_LAYER = 0;  
 	private static final float PUZZLE_GRID_START_X = 160.0f;
 	private static final float PUZZLE_GRID_START_Y = 40.0f;
+	public static final String LOG_TAG = "SlotPuzzle_PlayScreen";
 	public static final String SLOTPUZZLE_SCREEN = "PlayScreen";
 	public static final String LEVEL_TIP_DESC =  "Reveal the hidden pattern to complete the level.";
 	public static final String LEVEL_LOST_DESC =  "Sorry you lost that level. Touch/Press to restart the level.";
@@ -209,8 +211,8 @@ public class PlayScreen implements Screen {
 	}
 
 	private void setPopUpSpritePositions() {
-	    popUpSprites.get(0).setPosition(Gdx.graphics.getWidth() / 2 - popUpSprites.get(0).getWidth() / 2, Gdx.graphics.getHeight() / 2 - popUpSprites.get(0).getHeight() /2);
-		popUpSprites.get(1).setPosition(-200, Gdx.graphics.getHeight() / 2 - popUpSprites.get(1).getHeight() /2);
+	    popUpSprites.get(0).setPosition(sW/ 2 - popUpSprites.get(0).getWidth() / 2, sH / 2 - popUpSprites.get(0).getHeight() /2);
+		popUpSprites.get(1).setPosition(-200, sH / 2 - popUpSprites.get(1).getHeight() /2);
 	}
 	
 	private void setLevelLostSpritePositions() {
@@ -236,9 +238,9 @@ public class PlayScreen implements Screen {
 		displaySpinHelp = false;
 		scores = new Array<Score>();
 		font = new BitmapFont();
-		sW = viewport.getScreenWidth();
-		sH = viewport.getScreenHeight();
-		createPopUps();
+		sW = SlotPuzzle.V_WIDTH;
+		sH = SlotPuzzle.V_HEIGHT;
+        createPopUps();
 	}
 
 	private void createPopUps() {
@@ -399,8 +401,9 @@ public class PlayScreen implements Screen {
 	}
 	
 	private Timeline buildSequence(Sprite target, int id, float delay1, float delay2) {
-		return Timeline.createSequence()
-			.push(SlotPuzzleTween.set(target, SpriteAccessor.POS_XY).target(-0.5f, -0.5f))
+        Vector2 targetXY = getRandomCorner();
+        return Timeline.createSequence()
+			.push(SlotPuzzleTween.set(target, SpriteAccessor.POS_XY).target(targetXY.x, targetXY.y))
 			.push(SlotPuzzleTween.set(target, SpriteAccessor.SCALE_XY).target(20, 20))
 			.push(SlotPuzzleTween.set(target, SpriteAccessor.ROTATION).target(0))
 			.push(SlotPuzzleTween.set(target, SpriteAccessor.OPACITY).target(0))
@@ -423,8 +426,24 @@ public class PlayScreen implements Screen {
 			    .push(SlotPuzzleTween.to(target, SpriteAccessor.SCALE_XY, 1.0f).target(1.0f, 1.0f).ease(Quart.INOUT))
 		    .end();
 	}
-	
-	private TweenCallback introSequenceCallback = new TweenCallback() {
+
+    private Vector2 getRandomCorner() {
+        int randomCorner = random.nextInt(4);
+        switch (randomCorner) {
+            case 0:
+                return new Vector2(-1 * random.nextFloat(), -1 * random.nextFloat());
+            case 1:
+                return new Vector2(-1 * random.nextFloat(), SlotPuzzle.V_WIDTH + random.nextFloat());
+            case 2:
+                return new Vector2(SlotPuzzle.V_HEIGHT / 2 + random.nextFloat(), -1 * random.nextFloat());
+            case 3:
+                return new Vector2(SlotPuzzle.V_HEIGHT + random.nextFloat(), SlotPuzzle.V_WIDTH + random.nextFloat());
+            default:
+                return new Vector2(-0.5f, -0.5f);
+        }
+    }
+
+    private TweenCallback introSequenceCallback = new TweenCallback() {
 		@Override
 		public void onEvent(int type, BaseTween<?> source) {
 			delegateIntroSequenceCallback(type, source);
@@ -625,6 +644,8 @@ public class PlayScreen implements Screen {
 		if (Gdx.input.justTouched()) {
 			touchX = Gdx.input.getX();
 			touchY = Gdx.input.getY();
+            Vector3 unprojTouch = new Vector3(touchX, touchY, 0);
+            viewport.unproject(unprojTouch);
 			switch (playState) {
 				case INITIALISING: 
 					Gdx.app.debug(SLOTPUZZLE_SCREEN, "Initialising");
@@ -633,8 +654,7 @@ public class PlayScreen implements Screen {
 					Gdx.app.debug(SLOTPUZZLE_SCREEN, "Intro Sequence");
 					break;
 				case INTRO_POPUP: 
-					Gdx.app.debug(SLOTPUZZLE_SCREEN, "Intro Popup");
-					if (isOver(popUpSprites.get(0), touchX, touchY)) {
+                    if (isOver(popUpSprites.get(0), unprojTouch.x, unprojTouch.y)) {
 						levelPopUp.hideLevelPopUp(hideLevelPopUpCallback);
 					}
 					break;
@@ -650,13 +670,13 @@ public class PlayScreen implements Screen {
 					break;
 				case LEVEL_LOST: 
 					Gdx.app.debug(SLOTPUZZLE_SCREEN, "Lost Level");
-					if (isOver(levelLostSprites.get(0), touchX, touchY)) {
+					if (isOver(levelLostSprites.get(0), unprojTouch.x, unprojTouch.y)) {
 					    levelLostPopUp.hideLevelPopUp(levelOverCallback);
 					}
 					break;
 				case WON_LEVEL:
 					Gdx.app.debug(SLOTPUZZLE_SCREEN, "Won Level");
-					if(isOver(levelWonSprites.get(0), touchX, touchY)) {
+					if(isOver(levelWonSprites.get(0), unprojTouch.x, unprojTouch.y)) {
 						levelWonPopUp.hideLevelPopUp(levelWonCallback);
 					}
 					break;
@@ -669,7 +689,7 @@ public class PlayScreen implements Screen {
 	}
 	
 	public boolean isOver(Sprite sprite, float x, float y) {
-		return sprite.getX() <= x && x <= sprite.getX() + sprite.getWidth()
+        return sprite.getX() <= x && x <= sprite.getX() + sprite.getWidth()
 			&& sprite.getY() <= y && y <= sprite.getY() + sprite.getHeight();
 	}
 
@@ -891,8 +911,6 @@ public class PlayScreen implements Screen {
     @Override
 	public void resize(int width, int height) {
 		viewport.update(width,  height);
-		sW = viewport.getScreenWidth();
-		sH = viewport.getScreenHeight();
 	}
 
 	@Override

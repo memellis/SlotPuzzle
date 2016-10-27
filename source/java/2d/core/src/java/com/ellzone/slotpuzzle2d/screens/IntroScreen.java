@@ -41,6 +41,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
+import com.ellzone.slotpuzzle2d.Version;
 import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.effects.ReelLetterAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
@@ -181,7 +182,8 @@ public class IntroScreen implements Screen {
     	initialiseFontReel(BY_TEXT, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + TEXT_SPACING_SIZE + 10);
     	initialiseFontReel(AUTHOR_TEXT, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + TEXT_SPACING_SIZE + 10);
     	initialiseFontReel(COPYRIGHT_YEAR_AUTHOR_TEXT, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + TEXT_SPACING_SIZE + 10);
-		numReelLettersSpinning = reelLetterTiles.size;
+        initialiseFontReel("v"+ Version.VERSION, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 4.0f + TEXT_SPACING_SIZE + 10);
+        numReelLettersSpinning = reelLetterTiles.size;
 		numReelLetterSpinLoops = 10;
     }
         
@@ -243,6 +245,12 @@ public class IntroScreen implements Screen {
         endOfText = startOfText + COPYRIGHT_YEAR_AUTHOR_TEXT.length();
         for (int i = startOfText; i < endOfText; i++) {
             introSeq = introSeq.push(SlotPuzzleTween.to(reelLetterTiles.get(i), ReelLetterAccessor.POS_XY, 0.4f).target(-520f + i * 30f, 90f));
+        }
+
+        startOfText = endOfText;
+        endOfText = startOfText + 1 + Version.VERSION.length();
+        for (int i = startOfText; i < endOfText; i++) {
+            introSeq = introSeq.push(SlotPuzzleTween.to(reelLetterTiles.get(i), ReelLetterAccessor.POS_XY, 0.4f).target(-700f + i * 30f, 40f));
         }
 
         introSeq = introSeq
@@ -397,7 +405,7 @@ public class IntroScreen implements Screen {
 		}
         reelTile.update(delta);
         if (endOfIntroScreen) {
-            game.setScreen(new PlayScreen(game));
+            game.setScreen(new WorldScreen(game));
             dispose();
         }
     }

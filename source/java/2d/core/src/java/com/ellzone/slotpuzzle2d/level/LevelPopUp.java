@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
+import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
@@ -30,14 +31,15 @@ import aurelienribon.tweenengine.equations.Back;
 import aurelienribon.tweenengine.equations.Quad;
 
 public class LevelPopUp {
-	
-	private TweenManager tweenManager;
+
+    public static final String LOG_TAG = "SlotPuzzle_PlayScreen";
+    private TweenManager tweenManager;
 	private Array<Sprite> sprites;
 	private BitmapFont levelFont, font;
 	private String currentLevel;
 	private String levelDescription;
-	private int sW = Gdx.graphics.getWidth();
-	private int sH = Gdx.graphics.getHeight();
+	private int sW = SlotPuzzle.V_WIDTH;
+	private int sH = SlotPuzzle.V_HEIGHT;
 	
 	public LevelPopUp(SpriteBatch batch, TweenManager tweenManager, Array<Sprite> sprites, BitmapFont levelFont, String currentLevel, String levelDescription) {
 		this.tweenManager = tweenManager;
@@ -49,7 +51,10 @@ public class LevelPopUp {
 	}
 	
 	public void showLevelPopUp(TweenCallback callback) {
-		Timeline timeline = Timeline.createSequence()
+		Gdx.app.log(LOG_TAG, "sW"+sW);
+        Gdx.app.log(LOG_TAG, "sH"+sH);
+
+        Timeline timeline = Timeline.createSequence()
 		    .push(SlotPuzzleTween.set(sprites.get(0), SpriteAccessor.SCALE_XY).target(0.1f, 0))
 		    .push(SlotPuzzleTween.set(sprites.get(1), SpriteAccessor.POS_XY). target(-200, sH / 2 - sprites.get(1).getHeight() / 2));
 		
@@ -69,7 +74,7 @@ public class LevelPopUp {
 		    .end()
 		    .pushPause(0.3f)
 		    .beginParallel()
-		         .push(SlotPuzzleTween.to(sprites.get(1), SpriteAccessor.POS_XY, 1.0f).target(Gdx.graphics.getWidth() / 2 - sprites.get(1).getWidth() / 2 - 20, Gdx.graphics.getHeight() / 2 - sprites.get(1).getHeight() /2 + 50).ease(Back.INOUT))
+		         .push(SlotPuzzleTween.to(sprites.get(1), SpriteAccessor.POS_XY, 1.0f).target(sW / 2 - sprites.get(1).getWidth() / 2 - 20, sH / 2 - sprites.get(1).getHeight() /2 + 50).ease(Back.INOUT))
 		    .end();
 		
 		if (sprites.size == 4) {

@@ -26,13 +26,16 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -74,6 +77,7 @@ public class WorldScreen implements Screen {
 		}
 	}
 
+    public static final String LOG_TAG = "SlotPuzzle_WorldScreen";
 	private SlotPuzzle game;
 	private OrthographicCamera cam;
 	private TiledMap worldMap;
@@ -82,14 +86,17 @@ public class WorldScreen implements Screen {
 	private Array<Rectangle> levelDoors;
 	private OrthogonalTiledMapRenderer renderer;
 	private BitmapFont font;
-	private float w, h, aspectRatio;
+	private float w, h, cww, cwh, aspectRatio;
+    private float screenOverCWWRatio, screenOverCWHRatio;
 	private Pixmap levelDoorPixmap;
 	private Texture levelDoorTexture;
 	private Sprite levelDoorSprite;
     private TextureAtlas tilesAtlas;
 	private MapTile mapTile, selectedTile;
-	private TweenManager tweenManager; 
-
+	private TweenManager tweenManager;
+    private int mapWidth, mapHeight, tilePixelWidth, tilePixelHeight;
+    private SpriteBatch batch;
+    
     public WorldScreen(SlotPuzzle game) {
 		this.game = game;
 		createWorldScreen();		
@@ -97,10 +104,10 @@ public class WorldScreen implements Screen {
     
     private void createWorldScreen() {
     	getAssets();
+        loadWorld();
     	initialiseCamera();
     	initialiseUniversalTweenEngine();
     	initialiseLibGdx();
-    	loadWorld();
     }
 
 	private void getAssets() {
@@ -113,11 +120,14 @@ public class WorldScreen implements Screen {
 		h = Gdx.graphics.getHeight();
 		aspectRatio = w / h;
         cam = new OrthographicCamera();
-        
 		cam.setToOrtho(false, aspectRatio * 10, 10);
 		cam.zoom = 2;
         cam.update();
-    };
+        cww = cam.viewportWidth * cam.zoom * tilePixelWidth;
+        cwh = cam.viewportHeight * cam.zoom * tilePixelHeight;
+        screenOverCWWRatio = w / cww;
+        screenOverCWHRatio = h / cwh;
+    }
 
     private void initialiseLibGdx() {
       	font = new BitmapFont();
@@ -127,6 +137,10 @@ public class WorldScreen implements Screen {
 		multiplexer.addProcessor(gestureDetector);
 		Gdx.input.setInputProcessor(multiplexer);
     	renderer = new OrthogonalTiledMapRenderer(worldMap, 1f / 40f);
+    	Matrix4 gameProjectionMatrix = new Matrix4();
+        gameProjectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        game.batch.setProjectionMatrix(gameProjectionMatrix);
+    	
    }
     
 	private void initialiseUniversalTweenEngine() {
@@ -137,11 +151,20 @@ public class WorldScreen implements Screen {
 	}
     
     private void loadWorld() {
+        getMapProperties();
     	levelDoors = new Array<Rectangle>();
 		for (MapObject mapObject : worldMap.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)) {
 			Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
 			levelDoors.add(mapRectangle);
 		}
+    }
+
+    private void getMapProperties() {
+        MapProperties worldProps = worldMap.getProperties();
+        mapWidth = worldProps.get("width", Integer.class);
+        mapHeight = worldProps.get("height", Integer.class);
+        tilePixelWidth = worldProps.get("tilewidth", Integer.class);
+        tilePixelHeight = worldProps.get("tileheight", Integer.class);
     }
     
 	private void createPopUps(Sprite mapTileSprite) {
@@ -163,7 +186,7 @@ public class WorldScreen implements Screen {
 	}
 	
 	public void update(float delta) {
-		tweenManager.update(delta);
+        tweenManager.update(delta);
 	}
 
 	@Override
@@ -171,6 +194,9 @@ public class WorldScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         update(delta);
+        mapGestureListener.update();
+        renderer.render();
+        renderer.setView(cam);
 		cam.update();
 		game.batch.begin();
 		if(levelDoorSprite != null) {
@@ -180,9 +206,6 @@ public class WorldScreen implements Screen {
 			mapTile.draw(game.batch);
 		}
 		game.batch.end();
-		mapGestureListener.update();
-		renderer.setView(cam);
-		renderer.render();
 	}
 
 	@Override
@@ -225,19 +248,22 @@ public class WorldScreen implements Screen {
 
 	    @Override
 	    public boolean tap(float x, float y, int count, int button) {
-	    	float wx = screenXToWorldX(x);
-	    	float wy = screenYToWorldY(y);	    	
-	    	for (Rectangle levelDoor : levelDoors) {
-	    		if (levelDoor.contains(wx, wy)) {
+            Gdx.app.log(LOG_TAG, "tap");
+            float wx = screenXToWorldX(x);
+	    	float wy = screenYToWorldY(y);
+ 	    	for (Rectangle levelDoor : levelDoors) {
+                if (levelDoor.contains(wx, wy)) {
 	    			int sx = (int)worldXToScreenX(levelDoor.x);
 	    			int sy = (int)worldYToScreenY(levelDoor.y);
-	    			int sw = (int)(levelDoor.width * 0.6f);
-	    			int sh = (int)(levelDoor.height * 0.6f);
-	    			levelDoorPixmap = ScreenshotFactory.getScreenshot(sx, sy, sw, sh, true);
+	    			int sw = (int)(levelDoor.width * screenOverCWWRatio);
+	    			int sh = (int)(levelDoor.height * screenOverCWHRatio);
+
+                    levelDoorPixmap = ScreenshotFactory.getScreenshot(sx, sy, sw, sh, true);
 	    			levelDoorTexture = new Texture(levelDoorPixmap);
 	    			levelDoorSprite = new Sprite(levelDoorTexture);
-	    			levelDoorSprite.setPosition(sx, sy);
-	    			levelDoorSprite.setBounds(sx, sy, sw, sh);
+					levelDoorSprite.setX(sx);
+					levelDoorSprite.setY(sy);
+					levelDoorSprite.setOrigin(0, 0);
 	    			createPopUps(levelDoorSprite);
 					mapTile.maximize(maximizeCallback);
 	    		}
@@ -298,31 +324,31 @@ public class WorldScreen implements Screen {
 			if (camera.position.x < 0) {
 				camera.position.x = 0;
 			}
-			if (camera.position.x > 100) {
-				camera.position.x = 100;
+			if (camera.position.x > mapWidth) {
+				camera.position.x = mapWidth;
 			}
 			if (camera.position.y < 0) {
 				camera.position.y = 0;
 			}
-			if (camera.position.y > 400) {
-				camera.position.y = 400;
+			if (camera.position.y > mapHeight) {
+				camera.position.y = mapHeight;
 			}			
 		}
 		
-		private float screenXToWorldX(float x) {
-			return ((camera.position.x - aspectRatio * 10) * 40) + (x / 0.6f);
-		}
-		
-		private float screenYToWorldY(float y) {
-			return ((camera.position.y - 10) * 40) + ((h - y) / 0.6f);
-		}
-		
-		private float worldXToScreenX(float wx) {
-			return (wx  - ((camera.position.x - aspectRatio * 10) * 40)) * 0.6f;
+        private float screenXToWorldX(float x) {
+            return ((camera.position.x - aspectRatio * 10) * tilePixelWidth) + (x / screenOverCWWRatio);
+        }
+
+        private float screenYToWorldY(float y) {
+            return ((camera.position.y - 10) * tilePixelHeight) + ((h - y) / screenOverCWHRatio);
+        }
+
+        private float worldXToScreenX(float wx) {
+			return (wx  - ((camera.position.x - aspectRatio * 10) * tilePixelWidth)) * screenOverCWWRatio;
 		}
 		
 		private float worldYToScreenY(float wy) {
-			return (wy - ((camera.position.y - 10) * 40)) * 0.6f;	
+			return (wy - ((camera.position.y - 10) * tilePixelHeight)) * screenOverCWHRatio;
 		}
 	}	
 }
