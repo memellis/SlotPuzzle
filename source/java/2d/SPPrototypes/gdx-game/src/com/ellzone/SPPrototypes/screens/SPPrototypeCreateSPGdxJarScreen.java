@@ -35,7 +35,8 @@ public class SPPrototypeCreateSPGdxJarScreen implements Screen {
 	AsyncResult<Void> extractJarTask, findJavaFilesTask;
 	//final FileHandle jarArchive = Gdx.files.external("AppProjects/SPPrototypes/gdx-game/libs/gdx.jar");
 	final FileHandle jarArchive = Gdx.files.external("SlotPuzzle/source/java/2d/SPPrototypes/gdx-game/libs/gdx.jar");
-	final FileHandle extractDir = Gdx.files.external("AppProjects/SPPrototypes/gdxjar");
+	//final FileHandle extractDir = Gdx.files.external("AppProjects/SPPrototypes/gdxjar");
+	final FileHandle extractDir = Gdx.files.external("SlotPuzzle/source/java/2d/SPPrototypes/gdxjar");
 	//final FileHandle javaFilesDir = Gdx.files.external("AppProjects/SPPrototypes/badlogic");
 	final FileHandle javaFilesDir = Gdx.files.external("SlotPuzzle/source/java/2d");
 	
@@ -47,6 +48,8 @@ public class SPPrototypeCreateSPGdxJarScreen implements Screen {
 	}
 
 	private void defineSPGdxJarScreen() {
+		System.out.println("jarArchive "+jarArchive.file().getAbsolutePath());
+		System.out.println(jarArchive.exists());
 		initialiseScreen();
 		font = new BitmapFont(); 
 	    Gdx.input.setInputProcessor(stage);// Make the stage consume events
