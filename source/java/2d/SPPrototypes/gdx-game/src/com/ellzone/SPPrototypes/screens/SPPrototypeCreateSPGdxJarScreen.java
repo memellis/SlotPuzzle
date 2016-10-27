@@ -2,6 +2,9 @@ package com.ellzone.SPPrototypes.screens;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.files.FileHandle;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.Screen;
@@ -18,11 +21,6 @@ import com.ellzone.SPPrototypes.SPPrototypes;
 import com.ellzone.SPPrototypes.utils.UiUtils;
 import com.ellzone.utils.FileUtils;
 import com.ellzone.utils.JavaArchive;
-import java.util.logging.*;
-import java.io.*;
-import com.ellzone.utils.*;
-import java.util.*;
-
 
 public class SPPrototypeCreateSPGdxJarScreen implements Screen {
 	private SPPrototypes game;
@@ -31,12 +29,17 @@ public class SPPrototypeCreateSPGdxJarScreen implements Screen {
 	FitViewport viewport;
 	BitmapFont font;
 	JavaArchive javaArchive;
+	FileUtils fileUtils;
 	String message = "";
 	AsyncExecutor executor;
-	AsyncResult<Void> task;
-	final FileHandle jarArchive = Gdx.files.external("AppProjects/SPPrototypes/gdx-game/libs/gdx.jar");
+	AsyncResult<Void> extractJarTask, findJavaFilesTask;
+	//final FileHandle jarArchive = Gdx.files.external("AppProjects/SPPrototypes/gdx-game/libs/gdx.jar");
+	final FileHandle jarArchive = Gdx.files.external("SlotPuzzle/source/java/2d/SPPrototypes/gdx-game/libs/gdx.jar");
 	final FileHandle extractDir = Gdx.files.external("AppProjects/SPPrototypes/gdxjar");
+	//final FileHandle javaFilesDir = Gdx.files.external("AppProjects/SPPrototypes/badlogic");
+	final FileHandle javaFilesDir = Gdx.files.external("SlotPuzzle/source/java/2d");
 	
+	HashMap<String, FileHandle> javaFilehandles = new HashMap<String, FileHandle>();
 
 	public SPPrototypeCreateSPGdxJarScreen(SPPrototypes game) {
 		this.game = game;			
@@ -50,6 +53,7 @@ public class SPPrototypeCreateSPGdxJarScreen implements Screen {
 		skin = new Skin();
 		UiUtils.createBasicSkin(skin);
 		javaArchive = new JavaArchive();
+		fileUtils = new FileUtils();
 		executor = new AsyncExecutor(1);
 		createButtons();
 	}
@@ -66,8 +70,7 @@ public class SPPrototypeCreateSPGdxJarScreen implements Screen {
 		button.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				//createSPGdxJar();
-				findJavaFiles();
+				createSPGdxJar();
 			}
 		});
 		button = new TextButton("Exit Create SP GDX Jar screen", skin); // Use the initialized skin
@@ -93,26 +96,25 @@ public class SPPrototypeCreateSPGdxJarScreen implements Screen {
 				
 		if (jarArchive.exists()) {
 			message = "JAR archive file: " + jarArchive.file().getAbsolutePath() + " exists";
-			task = executor.submit(new AsyncTask<Void>() {
-					public Void call() throws IOException {
-						javaArchive.extractJar(jarArchive.file().getAbsolutePath(), extractDir.file().getAbsolutePath());
-						findJavaFiles();
-						return null;
-					} 
-				});
+			extractJarTask = executor.submit(new AsyncTask<Void>() {
+				public Void call() throws IOException {
+					javaArchive.extractJar(jarArchive.file().getAbsolutePath(), extractDir.file().getAbsolutePath());
+					return null;
+				} 
+			});
 		}
 	}
 	
 	private void findJavaFiles() {
-		HashSet<String> names = new HashSet<String>();
-		HashMap<String, FileHandle> filehandles = new HashMap<String, FileHandle>();
+		final HashSet<String> names = new HashSet<String>();
 		message = "Finding Java Files";
-		FileUtils.gatherJavaFiles(extractDir, names, filehandles, true);
-		String namesA[] = new String[names.size()];
-		names.toArray(namesA);
-		for (int i=0; i < names.size(); i++) {
-			message = "Java file =" + namesA[i];
-		}
+		
+		findJavaFilesTask = executor.submit(new AsyncTask<Void>() {
+			public Void call() {
+				fileUtils.gatherJavaFiles(javaFilesDir, names, javaFilehandles, true);
+				return null;
+			}
+		});
 	}
 
 	@Override
@@ -123,11 +125,20 @@ public class SPPrototypeCreateSPGdxJarScreen implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		if (task != null && !task.isDone()) {
-			message = "" + javaArchive.getNumJarElementsExtracted();
+		if (extractJarTask != null) {
+			if (extractJarTask.isDone()) {
+				message = "JAR archive file: " + jarArchive.file().getAbsolutePath() + " extracted";
+				findJavaFiles();
+			} else {
+				message = "" + javaArchive.getNumJarElementsExtracted();
+			}
 		}
-		if (task != null && task.isDone()) {
-			message = "JAR archive file: " + jarArchive.file().getAbsolutePath() + " extracted";
+		if (findJavaFilesTask != null) {
+			if (findJavaFilesTask.isDone()) {
+				message = "Found " + javaFilehandles.size();
+			} else {
+				message = "Number of Java files found " + fileUtils.getNumJavaFilesFound();
+			}
 		}
 		game.batch.begin();
 		font.draw(game.batch, message, 0, SPPrototypes.V_HEIGHT - 10); 		   
@@ -157,5 +168,5 @@ public class SPPrototypeCreateSPGdxJarScreen implements Screen {
 	public void dispose() {
 		stage.dispose();
 	}
-	
 }
+
