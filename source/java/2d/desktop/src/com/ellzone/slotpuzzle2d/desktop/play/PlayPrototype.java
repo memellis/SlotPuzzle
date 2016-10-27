@@ -31,7 +31,7 @@ import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 
-public abstract class Prototype implements ApplicationListener {
+public abstract class PlayPrototype implements ApplicationListener {
 
 	public static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
 	public static final String SLOTPUZZLE_PLAY = "SlotPuzzlePlay";
@@ -167,8 +167,15 @@ public abstract class Prototype implements ApplicationListener {
 	}
 
 	public void dispose() {
-		tweenManager.killAll();
-		batch.dispose();
+		if (tweenManager != null) {
+		    tweenManager.killAll();
+		}
+		if (batch != null) {
+			batch.dispose();
+		}
+		for (Sprite sprite : sprites) {
+			sprite.getTexture().dispose();
+		}
 		Assets.inst().dispose();
 
 		disposeOverride();
