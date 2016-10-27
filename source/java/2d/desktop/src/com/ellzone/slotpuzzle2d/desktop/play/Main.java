@@ -109,7 +109,16 @@ public class Main extends JFrame {
 		new Object[] {
 			"Map Experiments",
 			new AppDesc("Experiment 1 - Map 1 - scrollable world map using fling gesture", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.map.SmoothScrollingWorldMap.class),		
-			new AppDesc("Experiment 2 - Map 2 - Select level animation", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.map.WorldMapLevelSelect.class)		
+			new AppDesc("Experiment 2 - Map 2 - Select level animation w=640 by h=480", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.map.WorldMapLevelSelect.class),
+			new AppDesc("Experiment 3 - Map 3 - Select level animation - w=800 by h=480", 800, 480, com.ellzone.slotpuzzle2d.desktop.play.map.WorldMapLevelSelect.class), 			new AppDesc("Experiment 4 - Map 4 - Select level animation - w=1280 by h=720", 1280, 720, com.ellzone.slotpuzzle2d.desktop.play.map.WorldMapLevelSelect.class),
+			new AppDesc("Experiment 4 - Map 4 - Select level animation - w=1280 by h=720", 1280, 720, com.ellzone.slotpuzzle2d.desktop.play.map.WorldMapLevelSelect.class),
+			new AppDesc("Experiment 5 - Map 5 - Select level animation and return", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.map.WorldMapLevelSelectAndReturn.class),
+			new AppDesc("Experiment 6 - Map 6 - sub-pixel perfect smooth scrolling", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.map.SubPixelPerfectSmoothScrolling.class)
+		},
+		new Object[] {
+				"Game Asset Creation Experiments",
+				new AppDesc("Experiment 1 - Game Asset 1 - generated text reels saved as tileset", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.assets.CreateLevelReels.class)
+				//new AppDesc("Experiment 12 - ReelLetterTile", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.assets.CreateLevelReels.class)
 		},
 		new Object[] {
 			"Basic2d Experiments",

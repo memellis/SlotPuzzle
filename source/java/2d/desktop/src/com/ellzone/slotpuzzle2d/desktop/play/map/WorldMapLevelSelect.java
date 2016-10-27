@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -61,6 +62,7 @@ public class WorldMapLevelSelect implements ApplicationListener {
 		}
 	}
 
+    public static final String LOG_TAG = "SlotPuzzle_WorldScreen";
 	private OrthographicCamera cam;
     private SpriteBatch batch;
 	private TiledMap worldMap;
@@ -69,22 +71,24 @@ public class WorldMapLevelSelect implements ApplicationListener {
 	private GestureDetector gestureDetector;
 	private MapGestureListener mapGestureListener;
 	private Array<Rectangle> levelDoors;
-	private float w, h, aspectRatio;
+	private float w, h, cww, cwh, aspectRatio;
+	private float screenOverCWWRatio, screenOverCWHRatio;
 	private Pixmap levelDoorPixmap;
 	private Texture levelDoorTexture;
 	private Sprite levelDoorSprite;
     private TextureAtlas tilesAtlas;
     private MapTile mapTile, selectedTile;
-    private TweenManager tweenManager; 
+    private TweenManager tweenManager;
+	private int mapWidth, mapHeight, tilePixelWidth, tilePixelHeight;
 
 	@Override
 	public void create() {
 		loadAssets();
 		getAssets();
+        loadWorld();
         initialiseCamera();
         initialiseLibGdx();
         initialiseUniversalTweenEngine();
-        loadWorld();
 	}
 
 	private void loadAssets() {
@@ -108,7 +112,12 @@ public class WorldMapLevelSelect implements ApplicationListener {
 		cam.setToOrtho(false, aspectRatio * 10, 10);
 		cam.zoom = 2;
         cam.update();
-   };
+		cww = cam.viewportWidth * cam.zoom * tilePixelWidth;
+		cwh = cam.viewportHeight * cam.zoom * tilePixelHeight;
+		screenOverCWWRatio = w / cww;
+		screenOverCWHRatio = h / cwh;
+
+	};
     
     private void initialiseLibGdx() {
        	batch = new SpriteBatch();
@@ -130,13 +139,22 @@ public class WorldMapLevelSelect implements ApplicationListener {
 	}
 
     private void loadWorld() {
-    	levelDoors = new Array<Rectangle>();
+        getMapProperties();
+        levelDoors = new Array<Rectangle>();
 		for (MapObject mapObject : worldMap.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)) {
 			Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
 			levelDoors.add(mapRectangle);
 		}
     }
-    
+
+	private void getMapProperties() {
+		MapProperties worldProps = worldMap.getProperties();
+		mapWidth = worldProps.get("width", Integer.class);
+		mapHeight = worldProps.get("height", Integer.class);
+		tilePixelWidth = worldProps.get("tilewidth", Integer.class);
+		tilePixelHeight = worldProps.get("tileheight", Integer.class);
+	}
+
 	private void createPopUps(Sprite mapTileSprite) {
 		Level level1 = new MapLevel1();
 		mapTile = new MapTile(20, 20, 200, 200, level1, tilesAtlas, cam, font, tweenManager, mapTileSprite);
@@ -210,14 +228,14 @@ public class WorldMapLevelSelect implements ApplicationListener {
 
 	    @Override
 	    public boolean tap(float x, float y, int count, int button) {
-	    	float wx = ((camera.position.x - aspectRatio * 10) * 40) + (x / 0.6f);
-	    	float wy = ((camera.position.y - 10) * 40) + ((h - y) / 0.6f);	    	
-			for (Rectangle levelDoor : levelDoors) {
+            float wx = screenXToWorldX(x);
+            float wy = screenYToWorldY(y);
+            for (Rectangle levelDoor : levelDoors) {
 	    		if (levelDoor.contains(wx, wy)) {
 	    			int sx = (int)worldXToScreenX(levelDoor.x);
 	    			int sy = (int)worldYToScreenY(levelDoor.y);
-	    			int sw = (int)(levelDoor.width * 0.6f);
-	    			int sh = (int)(levelDoor.height * 0.6f);
+	    			int sw = (int)(levelDoor.width * screenOverCWWRatio);
+	    			int sh = (int)(levelDoor.height * screenOverCWHRatio);
 	    			levelDoorPixmap = ScreenshotFactory.getScreenshot(sx, sy, sw, sh, true);
 	    			levelDoorTexture = new Texture(levelDoorPixmap);
 	    			levelDoorSprite = new Sprite(levelDoorTexture);
@@ -225,6 +243,24 @@ public class WorldMapLevelSelect implements ApplicationListener {
 	    			createPopUps(levelDoorSprite);
 					mapTile.maximize(maximizeCallback);
 	    			System.out.println("Found level door at ("+wx+","+wy+")");
+                    Gdx.app.log(LOG_TAG, "ldx="+levelDoor.x);
+                    Gdx.app.log(LOG_TAG, "ldy="+levelDoor.y);
+                    Gdx.app.log(LOG_TAG, "x="+x);
+                    Gdx.app.log(LOG_TAG, "y="+y);
+					Gdx.app.log(LOG_TAG, "w="+w);
+					Gdx.app.log(LOG_TAG, "h="+h);
+					Gdx.app.log(LOG_TAG, "sx="+sx);
+                    Gdx.app.log(LOG_TAG, "sy="+sy);
+                    Gdx.app.log(LOG_TAG, "wx="+wx);
+                    Gdx.app.log(LOG_TAG, "wy="+wy);
+                    Gdx.app.log(LOG_TAG, "cx="+camera.position.x);
+                    Gdx.app.log(LOG_TAG, "cy="+camera.position.y);
+					Gdx.app.log(LOG_TAG, "cvpw="+camera.viewportWidth);
+					Gdx.app.log(LOG_TAG, "cvp="+camera.viewportHeight);
+                    Gdx.app.log(LOG_TAG, "aspectRatio="+aspectRatio);
+                    Gdx.app.log(LOG_TAG, "screenOverCWWRatio="+screenOverCWWRatio);
+                    Gdx.app.log(LOG_TAG, "screenOverCWHRatio="+screenOverCWHRatio);
+
 	    		}
 	    	}
 	        return false;
@@ -293,13 +329,21 @@ public class WorldMapLevelSelect implements ApplicationListener {
 				camera.position.y = 400;
 			}			
 		}
-				
-		private float worldXToScreenX(float wx) {
-			return (wx  - ((camera.position.x - aspectRatio * 10) * 40)) * 0.6f;
+
+        private float screenXToWorldX(float x) {
+            return ((camera.position.x - aspectRatio * 10) * tilePixelWidth) + (x / screenOverCWWRatio);
+        }
+
+        private float screenYToWorldY(float y) {
+            return ((camera.position.y - 10) * tilePixelHeight) + ((h - y) / screenOverCWHRatio);
+        }
+
+        private float worldXToScreenX(float wx) {
+			return (wx  - ((camera.position.x - aspectRatio * 10) * tilePixelWidth)) * screenOverCWWRatio;
 		}
 		
 		private float worldYToScreenY(float wy) {
-			return (wy - ((camera.position.y - 10) * 40)) * 0.6f;	
+			return (wy - ((camera.position.y - 10) * tilePixelHeight)) * screenOverCWHRatio;
 		}
 	}	
 }

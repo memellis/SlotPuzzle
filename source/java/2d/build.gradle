@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
-        classpath 'com.android.tools.build:gradle:2.1.2'
+        classpath 'com.android.tools.build:gradle:2.2.1'
         classpath 'com.google.gms:google-services:3.0.0'
     }
 }
@@ -18,7 +18,7 @@ allprojects {
     version = '1.0'
     ext {
         appName = "SlotPuzzle2d"
-        gdxVersion = '1.7.2'
+        gdxVersion = '1.9.0'
         roboVMVersion = '1.9.0'
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.6.0'
