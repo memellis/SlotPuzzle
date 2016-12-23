@@ -280,14 +280,14 @@ public class WorldScreen implements Screen {
 	    @Override
 	    public boolean fling(float velocityX, float velocityY, int button) {
 			flinging = true;
-			velX = camera.zoom * velocityX * 0.1f;
-			velY = camera.zoom * velocityY * 0.1f;
+			velX = camera.zoom * velocityX * 0.01f;
+			velY = camera.zoom * velocityY * 0.01f;
 	        return false;
 	    }
 
 	    @Override
 	    public boolean pan(float x, float y, float deltaX, float deltaY) {
-		    camera.position.add(-deltaX * camera.zoom * 0.1f, deltaY * camera.zoom * 0.1f, 0);
+		    camera.position.add(-deltaX * camera.zoom * 0.01f, deltaY * camera.zoom * 0.01f, 0);
 	        clampCamera();
 		    return false;
 	    }
@@ -311,8 +311,8 @@ public class WorldScreen implements Screen {
 
 		public void update () {
 			if (flinging) {
-				velX *= 0.98f;
-				velY *= 0.98f;
+				velX *= 0.9f;
+				velY *= 0.9f;
 				camera.position.add(-velX * Gdx.graphics.getDeltaTime(), velY * Gdx.graphics.getDeltaTime(), 0);
 				clampCamera();
 				if (Math.abs(velX) < 0.01f) velX = 0;
