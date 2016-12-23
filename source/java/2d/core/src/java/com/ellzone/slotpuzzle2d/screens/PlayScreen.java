@@ -482,8 +482,11 @@ public class PlayScreen implements Screen {
 		Array<TupleValueIndex> matchedSlots;
 		matchedSlots = puzzleGrid.matchGridSlots(grid);
 		for (TupleValueIndex matchedSlot : matchedSlots) {
+            System.out.println("ms i="+matchedSlot.index);
+            System.out.println(levelReel.get(matchedSlot.index).isReelTileDeleted());
 			levelReel.get(matchedSlot.index).setScore(matchedSlot.value);
 		}
+		PuzzleGridType.printGrid(grid);
  		flashMatchedSlots(matchedSlots);
 		return hiddenPatternRevealed(grid);	
 	}
@@ -780,7 +783,7 @@ public class PlayScreen implements Screen {
         int index;
         for (int i = 0; i < matchedSlots.size; i++) {
             index = matchedSlots.get(i).getIndex();
-            if (index  > 0) {
+            if (index  >= 0) {
             	ReelTile reel = reels.get(index);
             	if (!reel.getFlashTween()) {
             		reel.setFlashMode(true);
