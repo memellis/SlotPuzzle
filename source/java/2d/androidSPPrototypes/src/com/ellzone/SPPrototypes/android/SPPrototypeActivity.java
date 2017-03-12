@@ -31,7 +31,7 @@ public class SPPrototypeActivity extends AndroidApplication {
 		Bundle extras = getIntent().getExtras();
 		String testName = (String)extras.get("spprototype");
 
-		SPPrototype test = SPPrototypes.newSample(testName);
+		SPPrototype test = SPPrototypes.newSPPrototype(testName);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		initialize(test, config);
 	}
