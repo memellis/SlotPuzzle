@@ -17,6 +17,7 @@
 package com.ellzone.slotpuzzle2d.prototypes;
 
 import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.ellzone.slotpuzzle2d.prototypes.assets.CreateLevelReels;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.ellzone.slotpuzzle2d.prototypes.basic2d.Basic2D;
 import com.ellzone.slotpuzzle2d.prototypes.bezier.Bezier1;
@@ -52,6 +53,7 @@ import java.util.List;
 
 public class SPPrototypes {
     public static final List<Class<? extends SPPrototype>> tests = new ArrayList<Class<? extends SPPrototype>>((Collection<? extends Class<? extends SPPrototype>>) Arrays.asList(
+        CreateLevelReels.class,
         Basic2D.class,
         Bezier1.class,
         Bezier2.class,
