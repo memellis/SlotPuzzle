@@ -77,52 +77,52 @@ public class Main extends JFrame {
 		"SlotPuzzle Play Prototypes|Experiments",
 		new Object[] {
 			"Universal Tween Engine Experiments",
-			new AppDesc("Experiment  1 - waypoints 1", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.WayPoints1.class),
-			new AppDesc("Experiment  2 - waypoints 2", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.WayPoints2.class),
-			new AppDesc("Experiment  3 - dynamic tween", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Dynamic.class),
-			new AppDesc("Experiment  4 - flash", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Flash.class),
-			new AppDesc("Experiment  5 - intro sequence", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.IntroSequence.class),
-			new AppDesc("Experiment  6 - veil", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.Veil.class),
-			new AppDesc("Experiment  7 - Game Over Pop-Up", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.GameOverPopUp.class),
-			new AppDesc("Experiment  8 - Tile Input Select", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.TileInputSelect.class),
+			new AppDesc("Experiment  1 - waypoints 1", 640, 480, com.ellzone.slotpuzzle2d.prototypes.tween.WayPoints1.class),
+			new AppDesc("Experiment  2 - waypoints 2", 640, 480, com.ellzone.slotpuzzle2d.prototypes.tween.WayPoints2.class),
+			new AppDesc("Experiment  3 - dynamic tween", 640, 480, com.ellzone.slotpuzzle2d.prototypes.tween.Dynamic.class),
+			new AppDesc("Experiment  4 - flash", 640, 480, com.ellzone.slotpuzzle2d.prototypes.tween.Flash.class),
+			new AppDesc("Experiment  5 - intro sequence", 640, 480, com.ellzone.slotpuzzle2d.prototypes.tween.IntroSequence.class),
+			new AppDesc("Experiment  6 - veil", 640, 480, com.ellzone.slotpuzzle2d.prototypes.tween.Veil.class),
+			new AppDesc("Experiment  7 - Game Over Pop-Up", 640, 480, com.ellzone.slotpuzzle2d.prototypes.tween.GameOverPopUp.class),
+			new AppDesc("Experiment  8 - Tile Input Select", 640, 480, com.ellzone.slotpuzzle2d.prototypes.tween.TileInputSelect.class),
 			new AppDesc("Experiment  9 - Level Pop-Up", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.LevelPopUp.class),
-			new AppDesc("Experiment 10 - Level Pop-Up using LevelPopUp", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.LevelPopUpUsingLevelPopUp.class),						
-			new AppDesc("Experiment 11 - Level Over Pop-Up using LevelPopUp", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.LevelOverPopUpUsingLevelPopUp.class),						
-			new AppDesc("Experiment 12 - ReelLetterTile", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.ReelLetterTilePlay.class)
+			new AppDesc("Experiment 10 - Level Pop-Up using LevelPopUp", 640, 480, com.ellzone.slotpuzzle2d.prototypes.tween.LevelPopUpUsingLevelPopUp.class),
+			new AppDesc("Experiment 11 - Level Over Pop-Up using LevelPopUp", 640, 480, com.ellzone.slotpuzzle2d.prototypes.tween.LevelOverPopUpUsingLevelPopUp.class),
+			new AppDesc("Experiment 12 - ReelLetterTile", 640, 480, com.ellzone.slotpuzzle2d.prototypes.tween.ReelLetterTilePlay.class)
 		},
 		new Object[] {
 			"Particle Experiments",
-			new AppDesc("Experiment 1 - particles 1 - with Coding Math particle", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle1.class),
-			new AppDesc("Experiment 2 - particles 2 - dampened sine", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle2.class),
-			new AppDesc("Experiment 3 - particles 3 - dampened sine with predictable end", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle3.class),
-			new AppDesc("Experiment 4 - particles 4 - dampened sine class with predictable end", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle4.class),
-			new AppDesc("Experiment 5 - particles 5 - dampened sine class with predictable end via mouse click", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle5.class),
-			new AppDesc("Experiment 6 - particles 6 - dampened sine but with tween predictable end via mouse click", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.particle.Particle6.class)
+			new AppDesc("Experiment 1 - particles 1 - with Coding Math particle", 640, 480, com.ellzone.slotpuzzle2d.prototypes.particle.Particle1.class),
+			new AppDesc("Experiment 2 - particles 2 - dampened sine", 640, 480, com.ellzone.slotpuzzle2d.prototypes.particle.Particle2.class),
+			new AppDesc("Experiment 3 - particles 3 - dampened sine with predictable end", 640, 480, com.ellzone.slotpuzzle2d.prototypes.particle.Particle3.class),
+			new AppDesc("Experiment 4 - particles 4 - dampened sine class with predictable end", 640, 480, com.ellzone.slotpuzzle2d.prototypes.particle.Particle4.class),
+			new AppDesc("Experiment 5 - particles 5 - dampened sine class with predictable end via mouse click", 640, 480, com.ellzone.slotpuzzle2d.prototypes.particle.Particle5.class),
+			new AppDesc("Experiment 6 - particles 6 - dampened sine but with tween predictable end via mouse click", 640, 480, com.ellzone.slotpuzzle2d.prototypes.particle.Particle6.class)
 			
 		},
 		new Object[] {
 			"Bezier Experiments",
-			new AppDesc("Experiment 1 - bezier 1 - with Coding Math bezier", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.bezier.Bezier1.class),
-			new AppDesc("Experiment 2 - bezier 2 - with libGDX spline", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.bezier.Bezier2.class),
-			new AppDesc("Experiment 3 - bezier 3 - with libGDX spline - change points", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.bezier.Bezier3.class)
+			new AppDesc("Experiment 1 - bezier 1 - with Coding Math bezier", 640, 480, com.ellzone.slotpuzzle2d.prototypes.bezier.Bezier1.class),
+			new AppDesc("Experiment 2 - bezier 2 - with libGDX spline", 640, 480, com.ellzone.slotpuzzle2d.prototypes.bezier.Bezier2.class),
+			new AppDesc("Experiment 3 - bezier 3 - with libGDX spline - change points", 640, 480, com.ellzone.slotpuzzle2d.prototypes.bezier.Bezier3.class)
 		},
 		new Object[] {
 			"Map Experiments",
-			new AppDesc("Experiment 1 - Map 1 - scrollable world map using fling gesture", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.map.SmoothScrollingWorldMap.class),		
-			new AppDesc("Experiment 2 - Map 2 - Select level animation w=640 by h=480", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.map.WorldMapLevelSelect.class),
-			new AppDesc("Experiment 3 - Map 3 - Select level animation - w=800 by h=480", 800, 480, com.ellzone.slotpuzzle2d.desktop.play.map.WorldMapLevelSelect.class), 			new AppDesc("Experiment 4 - Map 4 - Select level animation - w=1280 by h=720", 1280, 720, com.ellzone.slotpuzzle2d.desktop.play.map.WorldMapLevelSelect.class),
-			new AppDesc("Experiment 4 - Map 4 - Select level animation - w=1280 by h=720", 1280, 720, com.ellzone.slotpuzzle2d.desktop.play.map.WorldMapLevelSelect.class),
-			new AppDesc("Experiment 5 - Map 5 - Select level animation and return", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.map.WorldMapLevelSelectAndReturn.class),
-			new AppDesc("Experiment 6 - Map 6 - sub-pixel perfect smooth scrolling", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.map.SubPixelPerfectSmoothScrolling.class)
+			new AppDesc("Experiment 1 - Map 1 - scrollable world map using fling gesture", 640, 480, com.ellzone.slotpuzzle2d.prototypes.map.SmoothScrollingWorldMap.class),
+			new AppDesc("Experiment 2 - Map 2 - Select level animation w=640 by h=480", 640, 480, com.ellzone.slotpuzzle2d.prototypes.map.WorldMapLevelSelect.class),
+			new AppDesc("Experiment 3 - Map 3 - Select level animation - w=800 by h=480", 800, 480, com.ellzone.slotpuzzle2d.prototypes.map.WorldMapLevelSelect.class), 			new AppDesc("Experiment 4 - Map 4 - Select level animation - w=1280 by h=720", 1280, 720, com.ellzone.slotpuzzle2d.desktop.play.map.WorldMapLevelSelect.class),
+			new AppDesc("Experiment 4 - Map 4 - Select level animation - w=1280 by h=720", 1280, 720, com.ellzone.slotpuzzle2d.prototypes.map.WorldMapLevelSelect.class),
+			new AppDesc("Experiment 5 - Map 5 - Select level animation and return", 640, 480, com.ellzone.slotpuzzle2d.prototypes.map.WorldMapLevelSelectAndReturn.class),
+			new AppDesc("Experiment 6 - Map 6 - sub-pixel perfect smooth scrolling", 640, 480, com.ellzone.slotpuzzle2d.prototypes.map.SubPixelPerfectSmoothScrolling.class)
 		},
 		new Object[] {
 				"Game Asset Creation Experiments",
-				new AppDesc("Experiment 1 - Game Asset 1 - generated text reels saved as tileset", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.assets.CreateLevelReels.class)
+				new AppDesc("Experiment 1 - Game Asset 1 - generated text reels saved as tileset", 640, 480, com.ellzone.slotpuzzle2d.prototypes.assets.CreateLevelReels.class)
 				//new AppDesc("Experiment 12 - ReelLetterTile", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.assets.CreateLevelReels.class)
 		},
 		new Object[] {
 			"Basic2d Experiments",
-			new AppDesc("Basic2d", 640,480, com.ellzone.slotpuzzle2d.desktop.play.basic2d.Basic2D.class)
+			new AppDesc("Basic2d", 640,480, com.ellzone.slotpuzzle2d.prototypes.basic2d.Basic2D.class)
 		}
 	};
 	
