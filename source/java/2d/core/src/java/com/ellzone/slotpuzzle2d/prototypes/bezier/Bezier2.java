@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.ellzone.slotpuzzle2d.prototypes;
+package com.ellzone.slotpuzzle2d.prototypes.bezier;
 
 import java.util.Random;
 import com.badlogic.gdx.ApplicationListener;
