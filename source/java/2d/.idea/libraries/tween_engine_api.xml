@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="tween-engine-api">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/tween-engine-api.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/libs/tween-engine-api-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
