@@ -96,6 +96,7 @@ public class WorldScreen implements Screen {
 	private TweenManager tweenManager;
     private int mapWidth, mapHeight, tilePixelWidth, tilePixelHeight;
     private SpriteBatch batch;
+    private String message = "";
     
     public WorldScreen(SlotPuzzle game) {
 		this.game = game;
@@ -140,7 +141,6 @@ public class WorldScreen implements Screen {
     	Matrix4 gameProjectionMatrix = new Matrix4();
         gameProjectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         game.batch.setProjectionMatrix(gameProjectionMatrix);
-    	
    }
     
 	private void initialiseUniversalTweenEngine() {
@@ -186,7 +186,7 @@ public class WorldScreen implements Screen {
 	}
 	
 	public void update(float delta) {
-        tweenManager.update(delta);
+		tweenManager.update(delta);
 	}
 
 	@Override
@@ -205,6 +205,7 @@ public class WorldScreen implements Screen {
 		if (mapTile != null) {
 			mapTile.draw(game.batch);
 		}
+        font.draw(game.batch, message, 80, 100);
 		game.batch.end();
 	}
 
@@ -236,38 +237,21 @@ public class WorldScreen implements Screen {
 		float initialScale = 1;
 		
 		public MapGestureListener(OrthographicCamera camera) {
-		     this.camera = camera;	
+            this.camera = camera;
 		}
 		
 	    @Override
 	    public boolean touchDown(float x, float y, int pointer, int button) {
 			flinging = false;
 			initialScale = camera.zoom;
+            processTouch(x, y);
 	        return false;
 	    }
 
 	    @Override
 	    public boolean tap(float x, float y, int count, int button) {
-            Gdx.app.log(LOG_TAG, "tap");
-            float wx = screenXToWorldX(x);
-	    	float wy = screenYToWorldY(y);
- 	    	for (Rectangle levelDoor : levelDoors) {
-                if (levelDoor.contains(wx, wy)) {
-	    			int sx = (int)worldXToScreenX(levelDoor.x);
-	    			int sy = (int)worldYToScreenY(levelDoor.y);
-	    			int sw = (int)(levelDoor.width * screenOverCWWRatio);
-	    			int sh = (int)(levelDoor.height * screenOverCWHRatio);
-
-                    levelDoorPixmap = ScreenshotFactory.getScreenshot(sx, sy, sw, sh, true);
-	    			levelDoorTexture = new Texture(levelDoorPixmap);
-	    			levelDoorSprite = new Sprite(levelDoorTexture);
-					levelDoorSprite.setX(sx);
-					levelDoorSprite.setY(sy);
-					levelDoorSprite.setOrigin(0, 0);
-	    			createPopUps(levelDoorSprite);
-					mapTile.maximize(maximizeCallback);
-	    		}
-	    	}
+            Gdx.app.log(LOG_TAG, "tap x="+x+" y="+y);
+            processTouch(x, y);
 	        return false;
 	    }
 
@@ -319,6 +303,29 @@ public class WorldScreen implements Screen {
 				if (Math.abs(velY) < 0.01f) velY = 0;
 			}
 		}
+
+        private void processTouch(float x, float y) {
+            float wx = screenXToWorldX(x);
+            float wy = screenYToWorldY(y);
+            message = "x=" + x + " y=" +y + " wx= " + wx + " wy=" + wy;
+            for (Rectangle levelDoor : levelDoors) {
+                if (levelDoor.contains(wx, wy)) {
+                    int sx = (int)worldXToScreenX(levelDoor.x);
+                    int sy = (int)worldYToScreenY(levelDoor.y);
+                    int sw = (int)(levelDoor.width * screenOverCWWRatio);
+                    int sh = (int)(levelDoor.height * screenOverCWHRatio);
+
+                    levelDoorPixmap = ScreenshotFactory.getScreenshot(sx, sy, sw, sh, true);
+                    levelDoorTexture = new Texture(levelDoorPixmap);
+                    levelDoorSprite = new Sprite(levelDoorTexture);
+                    levelDoorSprite.setX(sx);
+                    levelDoorSprite.setY(sy);
+                    levelDoorSprite.setOrigin(0, 0);
+                    createPopUps(levelDoorSprite);
+                    mapTile.maximize(maximizeCallback);
+                }
+            }
+        }
 
 		private void clampCamera() {
 			if (camera.position.x < 0) {
