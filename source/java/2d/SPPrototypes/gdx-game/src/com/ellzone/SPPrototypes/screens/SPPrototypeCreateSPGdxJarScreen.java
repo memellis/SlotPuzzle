@@ -38,7 +38,7 @@ public class SPPrototypeCreateSPGdxJarScreen implements Screen {
 	//final FileHandle extractDir = Gdx.files.external("AppProjects/SPPrototypes/gdxjar");
 	final FileHandle extractDir = Gdx.files.external("SlotPuzzle/source/java/2d/SPPrototypes/gdxjar");
 	//final FileHandle javaFilesDir = Gdx.files.external("AppProjects/SPPrototypes/badlogic");
-	final FileHandle javaFilesDir = Gdx.files.external("SlotPuzzle/source/java/2d");
+	final FileHandle javaFilesDir = Gdx.files.external("SlotPuzzle/source/java/2d/SPPrototypes/badlogic");
 	
 	HashMap<String, FileHandle> javaFilehandles = new HashMap<String, FileHandle>();
 
@@ -131,7 +131,7 @@ public class SPPrototypeCreateSPGdxJarScreen implements Screen {
 		if (extractJarTask != null) {
 			if (extractJarTask.isDone()) {
 				message = "JAR archive file: " + jarArchive.file().getAbsolutePath() + " extracted";
-				findJavaFiles();
+				if(findJavaFilesTask != findJavaFiles();
 			} else {
 				message = "" + javaArchive.getNumJarElementsExtracted();
 			}
