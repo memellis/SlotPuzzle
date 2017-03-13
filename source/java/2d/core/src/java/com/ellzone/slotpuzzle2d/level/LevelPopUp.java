@@ -51,8 +51,8 @@ public class LevelPopUp {
 	}
 	
 	public void showLevelPopUp(TweenCallback callback) {
-		Gdx.app.log(LOG_TAG, "sW"+sW);
-        Gdx.app.log(LOG_TAG, "sH"+sH);
+		Gdx.app.log(LOG_TAG, "sW="+sW);
+        Gdx.app.log(LOG_TAG, "sH="+sH);
 
         Timeline timeline = Timeline.createSequence()
 		    .push(SlotPuzzleTween.set(sprites.get(0), SpriteAccessor.SCALE_XY).target(0.1f, 0))
