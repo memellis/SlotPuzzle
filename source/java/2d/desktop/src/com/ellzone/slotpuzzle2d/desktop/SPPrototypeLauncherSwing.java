@@ -41,8 +41,7 @@ import javax.swing.tree.TreeSelectionModel;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglAWTCanvas;
 
-
-public class Main extends JFrame {
+public class SPPrototypeLauncherSwing extends JFrame {
 	private static final long serialVersionUID = -4296204662394260962L;
 
 	public static String data;
@@ -85,7 +84,7 @@ public class Main extends JFrame {
 			new AppDesc("Experiment  6 - veil", 640, 480, com.ellzone.slotpuzzle2d.prototypes.tween.Veil.class),
 			new AppDesc("Experiment  7 - Game Over Pop-Up", 640, 480, com.ellzone.slotpuzzle2d.prototypes.tween.GameOverPopUp.class),
 			new AppDesc("Experiment  8 - Tile Input Select", 640, 480, com.ellzone.slotpuzzle2d.prototypes.tween.TileInputSelect.class),
-			new AppDesc("Experiment  9 - Level Pop-Up", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.tween.LevelPopUp.class),
+			new AppDesc("Experiment  9 - Level Pop-Up", 640, 480, com.ellzone.slotpuzzle2d.prototypes.tween.LevelPopUp.class),
 			new AppDesc("Experiment 10 - Level Pop-Up using LevelPopUp", 640, 480, com.ellzone.slotpuzzle2d.prototypes.tween.LevelPopUpUsingLevelPopUp.class),
 			new AppDesc("Experiment 11 - Level Over Pop-Up using LevelPopUp", 640, 480, com.ellzone.slotpuzzle2d.prototypes.tween.LevelOverPopUpUsingLevelPopUp.class),
 			new AppDesc("Experiment 12 - ReelLetterTile", 640, 480, com.ellzone.slotpuzzle2d.prototypes.tween.ReelLetterTilePlay.class)
@@ -110,7 +109,8 @@ public class Main extends JFrame {
 			"Map Experiments",
 			new AppDesc("Experiment 1 - Map 1 - scrollable world map using fling gesture", 640, 480, com.ellzone.slotpuzzle2d.prototypes.map.SmoothScrollingWorldMap.class),
 			new AppDesc("Experiment 2 - Map 2 - Select level animation w=640 by h=480", 640, 480, com.ellzone.slotpuzzle2d.prototypes.map.WorldMapLevelSelect.class),
-			new AppDesc("Experiment 3 - Map 3 - Select level animation - w=800 by h=480", 800, 480, com.ellzone.slotpuzzle2d.prototypes.map.WorldMapLevelSelect.class), 			new AppDesc("Experiment 4 - Map 4 - Select level animation - w=1280 by h=720", 1280, 720, com.ellzone.slotpuzzle2d.desktop.play.map.WorldMapLevelSelect.class),
+			new AppDesc("Experiment 3 - Map 3 - Select level animation - w=800 by h=480", 800, 480, com.ellzone.slotpuzzle2d.prototypes.map.WorldMapLevelSelect.class),
+			new AppDesc("Experiment 4 - Map 4 - Select level animation - w=1280 by h=720", 1280, 720, com.ellzone.slotpuzzle2d.prototypes.map.WorldMapLevelSelect.class),
 			new AppDesc("Experiment 4 - Map 4 - Select level animation - w=1280 by h=720", 1280, 720, com.ellzone.slotpuzzle2d.prototypes.map.WorldMapLevelSelect.class),
 			new AppDesc("Experiment 5 - Map 5 - Select level animation and return", 640, 480, com.ellzone.slotpuzzle2d.prototypes.map.WorldMapLevelSelectAndReturn.class),
 			new AppDesc("Experiment 6 - Map 6 - sub-pixel perfect smooth scrolling", 640, 480, com.ellzone.slotpuzzle2d.prototypes.map.SubPixelPerfectSmoothScrolling.class)
@@ -153,10 +153,10 @@ public class Main extends JFrame {
 	
 	public static void main(String[] args) throws Throwable {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		new Main();
+		new SPPrototypeLauncherSwing();
 	}
 	
-	public Main() throws HeadlessException {
+	public SPPrototypeLauncherSwing() throws HeadlessException {
 		super("SlotPuzzle Play Prototypes|Experiments");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Container container = getContentPane();
