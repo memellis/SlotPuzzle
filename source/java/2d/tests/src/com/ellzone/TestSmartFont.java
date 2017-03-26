@@ -1,15 +1,28 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.ellzone;
 
 import static org.junit.Assert.*;
-
 import java.io.IOException;
-
 import org.jrenner.smartfont.SmartFontGenerator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -17,18 +30,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.slotpuzzle2d.utils.FileUtils;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+import de.tomgrill.gdxtesting.GdxTestRunnerGetAllTestClasses;
 
-import de.tomgrill.gdxtesting.GdxTestRunner;
-
-@RunWith(GdxTestRunner.class)
+@RunWith(GdxTestRunnerGetAllTestClasses.class)
 public class TestSmartFont {
-	
-	/**************************************************************************
-	 * TestSmartFont 
-	 * No errors when loading means test passed.
-	 * 
-	 * @throws Exception
-	 */
 
 	private static final int EXO_FONT_SMALL_SIZE = 24;
 	private static final String SLOT_PUZZLE_REEL_TEXT = "Slot Puzzle";
@@ -39,13 +44,12 @@ public class TestSmartFont {
 	private FileHandle generatedFontDir;
 	private FileHandle exoFile;
 	private BitmapFont fontSmall;
-	private BitmapFont fontMedium;
-	private BitmapFont fontLarge;
 	
 	@Before
 	public void setUp() throws Exception {
 		fontGen = new SmartFontGenerator();
 		exoFileInternal = Gdx.files.internal("LiberationMono-Regular.ttf");
+		System.out.println(exoFileInternal.list());
 		generatedFontDir = Gdx.files.local("generated-fonts/");
 		generatedFontDir.mkdirs();
 		exoFile = Gdx.files.local("generated-fonts/LiberationMono-Regular.ttf");
@@ -65,8 +69,6 @@ public class TestSmartFont {
 	@Test
 	public void testDyanmicFontFileExists() {
 		fontSmall = fontGen.createFont(exoFile, "exo-small", 24);
-		fontMedium = fontGen.createFont(exoFile, "exo-medium", 48);
-		fontLarge = fontGen.createFont(exoFile, "exo-large", 64);
 		assertTrue(fontSmall != null);
 		FileHandle exoSmallFontFile = Gdx.files.local("generated-fonts/exo-small.fnt");
 		FileHandle exoSmallFontPngFile = Gdx.files.local("generated-fonts/exo-small/exo-small.png");
