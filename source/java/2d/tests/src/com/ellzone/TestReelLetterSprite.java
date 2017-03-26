@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
-import com.ellzone.slotpuzzle2d.screens.IntroScreen;
 import com.ellzone.slotpuzzle2d.sprites.ReelLetter;
 import com.ellzone.slotpuzzle2d.utils.FileUtils;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
@@ -20,9 +19,9 @@ import org.jrenner.smartfont.SmartFontGenerator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import de.tomgrill.gdxtesting.GdxTestRunner;
+import de.tomgrill.gdxtesting.GdxTestRunnerGetAllTestClasses;
 
-@RunWith(GdxTestRunner.class)
+@RunWith(GdxTestRunnerGetAllTestClasses.class)
 public class TestReelLetterSprite {
 
 	private static final String SLOT_PUZZLE_REEL_TEXT = "Slot Puzzle";
@@ -33,7 +32,6 @@ public class TestReelLetterSprite {
 	private static final int SCROLL_HEIGHT = 20;
 	private static final int SCROLL_STEP = 4;
 	private static final float SIXTY_FPS = 1.0f / 60.0f;
-	private SmartFontGenerator fontGen;
 	private BitmapFont fontSmall;
 	private FileHandle generatedFontDir;
 	private FileHandle exoFileInternal;

@@ -20,12 +20,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import com.badlogic.gdx.Gdx;
+import de.tomgrill.gdxtesting.GdxTestRunnerGetAllTestClasses;
 
-import de.tomgrill.gdxtesting.GdxTestRunner;
-
-@RunWith(GdxTestRunner.class)
+@RunWith(GdxTestRunnerGetAllTestClasses.class)
 public class AssetExistsExampleTest {
 
 	@Test
