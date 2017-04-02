@@ -76,6 +76,32 @@ public class WorldScreen implements Screen {
 		}
 	}
 
+	public class MapLevel2 extends Level {
+		@Override
+		public void initialise() {
+		}	
+
+		@Override
+		public String getImageName() {
+			return "MapTile";
+		}
+
+		@Override
+		public InputProcessor getInput() {
+			return null;
+		}
+
+		@Override
+		public String getTitle() {
+			String title = "World 1 Level 2";
+			return title;
+		}
+
+		@Override
+		public void dispose() {			
+		}
+	}
+	
     public static final String LOG_TAG = "SlotPuzzle_WorldScreen";
     private static final String WORLD_MAP = "levels/WorldMap.tmx";
     private static final String TILE_PACK_ATLAS = "tiles/tiles.pack.atlas";
@@ -170,6 +196,7 @@ public class WorldScreen implements Screen {
     
 	private void createPopUps(Sprite mapTileSprite) {
 		Level level1 = new MapLevel1();
+		Level level2 = new MapLevel2();
 		mapTile = new MapTile(20, 20, 200, 200, level1, tilesAtlas, cam, font, tweenManager, mapTileSprite);
 	}
 		
@@ -309,23 +336,27 @@ public class WorldScreen implements Screen {
             float wy = screenYToWorldY(y);
             for (Rectangle levelDoor : levelDoors) {
                 if (levelDoor.contains(wx, wy)) {
-                    int sx = (int)worldXToScreenX(levelDoor.x);
-                    int sy = (int)worldYToScreenY(levelDoor.y);
-                    int sw = (int)(levelDoor.width * screenOverCWWRatio);
-                    int sh = (int)(levelDoor.height * screenOverCWHRatio);
-
-                    levelDoorPixmap = ScreenshotFactory.getScreenshot(sx, sy, sw, sh, true);
-                    levelDoorTexture = new Texture(levelDoorPixmap);
-                    levelDoorSprite = new Sprite(levelDoorTexture);
-                    levelDoorSprite.setX(sx);
-                    levelDoorSprite.setY(sy);
-                    levelDoorSprite.setOrigin(0, 0);
-                    createPopUps(levelDoorSprite);
-                    mapTile.maximize(maximizeCallback);
+                    enterLevel(levelDoor);
                 }
             }
         }
-       
+ 
+        private void enterLevel(Rectangle levelDoor) {
+            int sx = (int)worldXToScreenX(levelDoor.x);
+            int sy = (int)worldYToScreenY(levelDoor.y);
+            int sw = (int)(levelDoor.width * screenOverCWWRatio);
+            int sh = (int)(levelDoor.height * screenOverCWHRatio);
+
+            levelDoorPixmap = ScreenshotFactory.getScreenshot(sx, sy, sw, sh, true);
+            levelDoorTexture = new Texture(levelDoorPixmap);
+            levelDoorSprite = new Sprite(levelDoorTexture);
+            levelDoorSprite.setX(sx);
+            levelDoorSprite.setY(sy);
+            levelDoorSprite.setOrigin(0, 0);
+            createPopUps(levelDoorSprite);
+            mapTile.maximize(maximizeCallback);        	
+        }
+        
 		private void clampCamera() {
 			if (camera.position.x < 0) {
 				camera.position.x = 0;
