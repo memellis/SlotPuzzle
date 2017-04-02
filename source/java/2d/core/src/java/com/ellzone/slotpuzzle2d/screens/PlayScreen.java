@@ -482,11 +482,8 @@ public class PlayScreen implements Screen {
 		Array<TupleValueIndex> matchedSlots;
 		matchedSlots = puzzleGrid.matchGridSlots(grid);
 		for (TupleValueIndex matchedSlot : matchedSlots) {
-            System.out.println("ms i="+matchedSlot.index);
-            System.out.println(levelReel.get(matchedSlot.index).isReelTileDeleted());
 			levelReel.get(matchedSlot.index).setScore(matchedSlot.value);
 		}
-		PuzzleGridType.printGrid(grid);
  		flashMatchedSlots(matchedSlots);
 		return hiddenPatternRevealed(grid);	
 	}
