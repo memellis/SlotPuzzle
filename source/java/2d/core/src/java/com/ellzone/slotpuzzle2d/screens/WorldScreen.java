@@ -251,7 +251,6 @@ public class WorldScreen implements Screen {
 
 	    @Override
 	    public boolean tap(float x, float y, int count, int button) {
-            Gdx.app.log(LOG_TAG, "tap x="+x+" y="+y);
             processTouch(x, y);
 	        return false;
 	    }
@@ -326,9 +325,7 @@ public class WorldScreen implements Screen {
                 }
             }
         }
-
-        
-        
+       
 		private void clampCamera() {
 			if (camera.position.x < 0) {
 				camera.position.x = 0;
