@@ -26,7 +26,6 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
@@ -78,6 +77,9 @@ public class WorldScreen implements Screen {
 	}
 
     public static final String LOG_TAG = "SlotPuzzle_WorldScreen";
+    private static final String WORLD_MAP = "levels/WorldMap.tmx";
+    private static final String TILE_PACK_ATLAS = "tiles/tiles.pack.atlas";
+    private static final String WORLD_MAP_LEVEL_DOORS = "Level Doors";
 	private SlotPuzzle game;
 	private OrthographicCamera cam;
 	private TiledMap worldMap;
@@ -95,7 +97,6 @@ public class WorldScreen implements Screen {
 	private MapTile mapTile, selectedTile;
 	private TweenManager tweenManager;
     private int mapWidth, mapHeight, tilePixelWidth, tilePixelHeight;
-    private SpriteBatch batch;
     private String message = "";
     
     public WorldScreen(SlotPuzzle game) {
@@ -112,8 +113,8 @@ public class WorldScreen implements Screen {
     }
 
 	private void getAssets() {
-		 worldMap = game.assetManager.get("levels/WorldMap.tmx");
-	     tilesAtlas = game.assetManager.get("tiles/tiles.pack.atlas", TextureAtlas.class);  
+		 worldMap = game.assetManager.get(WORLD_MAP);
+	     tilesAtlas = game.assetManager.get(TILE_PACK_ATLAS, TextureAtlas.class);  
 	}
 	
     private void initialiseCamera() {
@@ -153,7 +154,7 @@ public class WorldScreen implements Screen {
     private void loadWorld() {
         getMapProperties();
     	levelDoors = new Array<Rectangle>();
-		for (MapObject mapObject : worldMap.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)) {
+		for (MapObject mapObject : worldMap.getLayers().get(WORLD_MAP_LEVEL_DOORS).getObjects().getByType(RectangleMapObject.class)) {
 			Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
 			levelDoors.add(mapRectangle);
 		}
@@ -307,7 +308,6 @@ public class WorldScreen implements Screen {
         private void processTouch(float x, float y) {
             float wx = screenXToWorldX(x);
             float wy = screenYToWorldY(y);
-            message = "x=" + x + " y=" +y + " wx= " + wx + " wy=" + wy;
             for (Rectangle levelDoor : levelDoors) {
                 if (levelDoor.contains(wx, wy)) {
                     int sx = (int)worldXToScreenX(levelDoor.x);
@@ -327,6 +327,8 @@ public class WorldScreen implements Screen {
             }
         }
 
+        
+        
 		private void clampCamera() {
 			if (camera.position.x < 0) {
 				camera.position.x = 0;
