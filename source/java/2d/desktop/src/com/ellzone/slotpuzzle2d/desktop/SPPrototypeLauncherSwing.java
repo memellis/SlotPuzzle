@@ -117,8 +117,8 @@ public class SPPrototypeLauncherSwing extends JFrame {
 		},
 		new Object[] {
 				"Game Asset Creation Experiments",
-				new AppDesc("Experiment 1 - Game Asset 1 - generated text reels saved as tileset", 640, 480, com.ellzone.slotpuzzle2d.prototypes.assets.CreateLevelReels.class)
-				//new AppDesc("Experiment 12 - ReelLetterTile", 640, 480, com.ellzone.slotpuzzle2d.desktop.play.assets.CreateLevelReels.class)
+				new AppDesc("Experiment 1 - Game Asset 1 - generated text reels saved as tileset", 640, 480, com.ellzone.slotpuzzle2d.prototypes.assets.CreateLevelReels.class),
+				new AppDesc("Experiment 2 - Game Asset 2 - create playing cards", 640, 480, com.ellzone.slotpuzzle2d.prototypes.assets.CreatePlayingCards.class)
 		},
 		new Object[] {
 			"Basic2d Experiments",
