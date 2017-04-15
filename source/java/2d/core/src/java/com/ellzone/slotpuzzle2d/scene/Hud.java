@@ -38,6 +38,7 @@ public class Hud implements Disposable {
     private float timeCount;
     private static Integer score;
     private static Integer lives;
+    private static String levelName;
     private static Label scoreLabel, livesLeftLabel;
     private Label countdownLabel, livesLabel, timeLabel, levelLabel, worldLabel, slotPuzzle;
 
@@ -46,6 +47,7 @@ public class Hud implements Disposable {
         timeCount = 0;
         score = 0;
         lives = 3;
+        levelName = "1-1";
         timeUp = false;
         startWorldTimer = false;
 
@@ -60,7 +62,7 @@ public class Hud implements Disposable {
         scoreLabel = new Label(String.format("%06d", score), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         livesLeftLabel = new Label(String.format("%03d", lives), new Label.LabelStyle(new BitmapFont(), Color.WHITE));        
         timeLabel = new Label("TIME", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        levelLabel = new Label("1-1", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        levelLabel = new Label(levelName, new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         worldLabel = new Label("WORLD", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         slotPuzzle = new Label("Slot Puzzle", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         livesLabel = new Label("LIVES", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
@@ -105,6 +107,13 @@ public class Hud implements Disposable {
     @Override
     public void dispose() { 
     	stage.dispose(); 
+    }
+    
+    public void setLevelName(String name) {
+    	levelName = name;
+    	if (levelLabel != null) {
+    	    levelLabel.setText(levelName);
+    	}
     }
 
     public boolean isTimeUp() { 

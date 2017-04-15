@@ -67,11 +67,13 @@ public class LoadingScreen implements Screen{
 		game.assetManager = new AssetManager();
 		game.assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
 		game.assetManager.load("levels/WorldMap.tmx", TiledMap.class);
-		game.assetManager.load("levels/level 1.tmx", TiledMap.class);
+		game.assetManager.load("levels/level 1 - 40x40.tmx", TiledMap.class);
+		game.assetManager.load("levels/level 2 - 40x40.tmx", TiledMap.class);		
 		game.assetManager.load("loading_screen/progress_bar.png", Texture.class);
 		game.assetManager.load("loading_screen/progress_bar_base.png", Texture.class);
 		game.assetManager.load("reel/reels.pack.atlas", TextureAtlas.class);
 		game.assetManager.load("tiles/tiles.pack.atlas", TextureAtlas.class);
+		game.assetManager.load("playingcards/carddeck.atlas", TextureAtlas.class);
  		game.assetManager.finishLoading();
 		Gdx.app.log(TAG, "Assets loaded");
     }

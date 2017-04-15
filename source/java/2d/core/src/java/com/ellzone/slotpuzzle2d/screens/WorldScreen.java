@@ -18,7 +18,6 @@ package com.ellzone.slotpuzzle2d.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -35,12 +34,13 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
-import com.ellzone.slotpuzzle2d.level.Level;
+import com.ellzone.slotpuzzle2d.level.LevelDoor;
+import com.ellzone.slotpuzzle2d.level.MapLevel1;
+import com.ellzone.slotpuzzle2d.level.MapLevel2;
 import com.ellzone.slotpuzzle2d.scene.MapTile;
 import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
@@ -49,58 +49,6 @@ import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.ScreenshotFactory;
 
 public class WorldScreen implements Screen {
-
-	public class MapLevel1 extends Level {
-		@Override
-		public void initialise() {
-		}	
-
-		@Override
-		public String getImageName() {
-			return "MapTile";
-		}
-
-		@Override
-		public InputProcessor getInput() {
-			return null;
-		}
-
-		@Override
-		public String getTitle() {
-			String title = "World 1 Level 1";
-			return title;
-		}
-
-		@Override
-		public void dispose() {			
-		}
-	}
-
-	public class MapLevel2 extends Level {
-		@Override
-		public void initialise() {
-		}	
-
-		@Override
-		public String getImageName() {
-			return "MapTile";
-		}
-
-		@Override
-		public InputProcessor getInput() {
-			return null;
-		}
-
-		@Override
-		public String getTitle() {
-			String title = "World 1 Level 2";
-			return title;
-		}
-
-		@Override
-		public void dispose() {			
-		}
-	}
 	
     public static final String LOG_TAG = "SlotPuzzle_WorldScreen";
     private static final String WORLD_MAP = "levels/WorldMap.tmx";
@@ -111,7 +59,8 @@ public class WorldScreen implements Screen {
 	private TiledMap worldMap;
 	private GestureDetector gestureDetector;
 	private MapGestureListener mapGestureListener;
-	private Array<Rectangle> levelDoors;
+	private Array<LevelDoor> levelDoors;
+	private Array<MapTile> mapTiles;
 	private OrthogonalTiledMapRenderer renderer;
 	private BitmapFont font;
 	private float w, h, cww, cwh, aspectRatio;
@@ -120,7 +69,7 @@ public class WorldScreen implements Screen {
 	private Texture levelDoorTexture;
 	private Sprite levelDoorSprite;
     private TextureAtlas tilesAtlas;
-	private MapTile mapTile, selectedTile;
+	private MapTile selectedTile;
 	private TweenManager tweenManager;
     private int mapWidth, mapHeight, tilePixelWidth, tilePixelHeight;
     private String message = "";
@@ -179,10 +128,13 @@ public class WorldScreen implements Screen {
     
     private void loadWorld() {
         getMapProperties();
-    	levelDoors = new Array<Rectangle>();
+    	levelDoors = new Array<LevelDoor>();
 		for (MapObject mapObject : worldMap.getLayers().get(WORLD_MAP_LEVEL_DOORS).getObjects().getByType(RectangleMapObject.class)) {
-			Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
-			levelDoors.add(mapRectangle);
+			LevelDoor levelDoor = new LevelDoor();
+			levelDoor.levelName = ((RectangleMapObject) mapObject).getName();
+			levelDoor.levelType = (String) ((RectangleMapObject) mapObject).getProperties().get("type");
+			levelDoor.doorPosition = ((RectangleMapObject) mapObject).getRectangle();
+			levelDoors.add(levelDoor);
 		}
     }
 
@@ -195,9 +147,9 @@ public class WorldScreen implements Screen {
     }
     
 	private void createPopUps(Sprite mapTileSprite) {
-		Level level1 = new MapLevel1();
-		Level level2 = new MapLevel2();
-		mapTile = new MapTile(20, 20, 200, 200, level1, tilesAtlas, cam, font, tweenManager, mapTileSprite);
+		mapTiles = new Array<MapTile>();
+		mapTiles.add(new MapTile(20, 20, 200, 200, new MapLevel1(), tilesAtlas, cam, font, tweenManager, mapTileSprite));
+		mapTiles.add(new MapTile(20, 20, 200, 200, new MapLevel2(), tilesAtlas, cam, font, tweenManager, mapTileSprite));
 	}
 		
 	private final TweenCallback maximizeCallback = new TweenCallback() {
@@ -205,7 +157,9 @@ public class WorldScreen implements Screen {
 		public void onEvent(int type, BaseTween<?> source) {
 			selectedTile = (MapTile) source.getUserData();
 			selectedTile.getLevel().initialise();
-			game.setScreen(new PlayScreen(game));
+			int levelNumber = selectedTile.getLevel().getLevelNumber();
+			levelDoors.get(levelNumber).id = levelNumber;
+			game.setScreen(new PlayScreen(game, levelDoors.get(levelNumber)));
 		}
 	};
     
@@ -230,8 +184,12 @@ public class WorldScreen implements Screen {
 		if(levelDoorSprite != null) {
 			levelDoorSprite.draw(game.batch);
 		}
-		if (mapTile != null) {
-			mapTile.draw(game.batch);
+		if (mapTiles != null) {
+		    for (MapTile mapTile : mapTiles) {
+		        if (mapTile != null) {
+			        mapTile.draw(game.batch);
+		        }
+		    }
 		}
         font.draw(game.batch, message, 80, 100);
 		game.batch.end();
@@ -312,7 +270,7 @@ public class WorldScreen implements Screen {
 	    public boolean zoom (float originalDistance, float currentDistance){
 			float ratio = originalDistance / currentDistance;
 			camera.zoom = initialScale * ratio;
-	       return false;
+	        return false;
 	    }
 	 
 		@Override
@@ -334,18 +292,20 @@ public class WorldScreen implements Screen {
         private void processTouch(float x, float y) {
             float wx = screenXToWorldX(x);
             float wy = screenYToWorldY(y);
-            for (Rectangle levelDoor : levelDoors) {
-                if (levelDoor.contains(wx, wy)) {
-                    enterLevel(levelDoor);
+            int levelDoorIndex = 0;
+            for (LevelDoor levelDoor : levelDoors) {
+                if (levelDoor.doorPosition.contains(wx, wy)) {
+                    enterLevel(levelDoor, levelDoorIndex);
                 }
+                levelDoorIndex++;
             }
         }
  
-        private void enterLevel(Rectangle levelDoor) {
-            int sx = (int)worldXToScreenX(levelDoor.x);
-            int sy = (int)worldYToScreenY(levelDoor.y);
-            int sw = (int)(levelDoor.width * screenOverCWWRatio);
-            int sh = (int)(levelDoor.height * screenOverCWHRatio);
+        private void enterLevel(LevelDoor levelDoor, int levelDoorIndex) {
+            int sx = (int)worldXToScreenX(levelDoor.doorPosition.x);
+            int sy = (int)worldYToScreenY(levelDoor.doorPosition.y);
+            int sw = (int)(levelDoor.doorPosition.width * screenOverCWWRatio);
+            int sh = (int)(levelDoor.doorPosition.height * screenOverCWHRatio);
 
             levelDoorPixmap = ScreenshotFactory.getScreenshot(sx, sy, sw, sh, true);
             levelDoorTexture = new Texture(levelDoorPixmap);
@@ -354,7 +314,7 @@ public class WorldScreen implements Screen {
             levelDoorSprite.setY(sy);
             levelDoorSprite.setOrigin(0, 0);
             createPopUps(levelDoorSprite);
-            mapTile.maximize(maximizeCallback);        	
+            mapTiles.get(levelDoorIndex).maximize(maximizeCallback);
         }
         
 		private void clampCamera() {

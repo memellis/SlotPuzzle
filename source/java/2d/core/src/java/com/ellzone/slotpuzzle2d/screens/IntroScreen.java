@@ -78,7 +78,7 @@ public class IntroScreen implements Screen {
     private static final String SLOT_PUZZLE_REEL_TEXT = "Slot Puzzle";
     private static final String BY_TEXT = "by";
     private static final String AUTHOR_TEXT = "Mark Ellis";
-    private static final String COPYRIGHT_YEAR_AUTHOR_TEXT = COPYRIGHT + "2016 Mark Ellis";
+    private static final String COPYRIGHT_YEAR_AUTHOR_TEXT = COPYRIGHT + "2017 Mark Ellis";
     private SlotPuzzle game;
     private Texture textTexture;
     private Pixmap slotReelPixmap;

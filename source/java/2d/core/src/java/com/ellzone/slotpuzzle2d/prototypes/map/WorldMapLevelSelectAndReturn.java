@@ -75,6 +75,11 @@ public class WorldMapLevelSelectAndReturn extends SPPrototype {
         @Override
         public void dispose() {
         }
+
+		@Override
+		public int getLevelNumber() {
+			return 1;
+		}
     }
 
     public static final String LOG_TAG = "SlotPuzzle_WorldScreen";

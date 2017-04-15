@@ -20,7 +20,6 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.ellzone.slotpuzzle2d.screens.SplashScreen;
 import com.ellzone.slotpuzzle2d.screens.TweenGraphsScreen;
 
 public class DrawTweenGraphs extends Game {
@@ -70,17 +69,14 @@ public class DrawTweenGraphs extends Game {
     }
 
     @Override
-    public void resize(int width, int height)
-    {
+    public void resize(int width, int height) {
     }
 
     @Override
-    public void pause()
-    {
+    public void pause() {
     }
 
     @Override
-    public void resume()
-    {
+    public void resume() {
     }
 }

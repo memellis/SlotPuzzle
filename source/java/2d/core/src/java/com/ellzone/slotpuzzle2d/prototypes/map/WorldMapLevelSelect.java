@@ -16,7 +16,6 @@
 
 package com.ellzone.slotpuzzle2d.prototypes.map;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
@@ -77,6 +76,11 @@ public class WorldMapLevelSelect extends SPPrototype {
         @Override
         public void dispose() {
         }
+
+		@Override
+		public int getLevelNumber() {
+			return 1;
+		}
     }
 
     public static final String LOG_TAG = "SlotPuzzle_WorldScreen";

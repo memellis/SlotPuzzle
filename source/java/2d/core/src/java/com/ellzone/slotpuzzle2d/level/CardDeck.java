@@ -16,18 +16,25 @@
 
 package com.ellzone.slotpuzzle2d.level;
 
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
-public abstract class Level {
-
-	public Level () {
+public class CardDeck {
+	private final Card[][] cards;
+	
+	public CardDeck(TextureAtlas atlas, int backIndex) {
+		cards = new Card[Suit.values().length][];
+		for (Suit suit : Suit.values()) {
+			cards[suit.index] = new Card[Pip.values().length];
+			for (Pip pip : Pip.values()) {
+				Sprite front = atlas.createSprite(suit.name, pip.value);
+				Sprite back = atlas.createSprite("back", backIndex);
+				cards[suit.index][pip.index] = new Card(suit, pip, back, front);
+			}
+		}
 	}
 	
-	public abstract void initialise();
-	public abstract String getImageName();
-	public abstract String getTitle();
-	public abstract int getLevelNumber();
-	public abstract void dispose();
-	public abstract InputProcessor getInput();
-	
-}
+	public Card getCard(Suit suit, Pip pip) {
+		return cards[suit.index][pip.index];
+	}
+}	

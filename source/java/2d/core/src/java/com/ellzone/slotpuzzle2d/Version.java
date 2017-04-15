@@ -18,12 +18,9 @@ package com.ellzone.slotpuzzle2d;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** The version of libgdx
- * 
- * @author mellis */
 public class Version {
 	/** the current version of SlotPuzzle as a String in the major.minor.revision format **/
-	public static final String VERSION = "0.0.1";
+	public static final String VERSION = "0.0.2";
 
 	/** the current major version of SlotPuzzle **/
 	public static final int MAJOR;

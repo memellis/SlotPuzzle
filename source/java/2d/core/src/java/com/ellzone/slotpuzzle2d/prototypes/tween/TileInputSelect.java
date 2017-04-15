@@ -66,6 +66,11 @@ public class TileInputSelect extends SPPrototype {
         @Override
         public void dispose() {
         }
+
+		@Override
+		public int getLevelNumber() {
+			return 1;
+		}
     }
 
     public class TestLevel2 extends Level {
@@ -99,6 +104,11 @@ public class TileInputSelect extends SPPrototype {
                 return true;
             }
         };
+
+		@Override
+		public int getLevelNumber() {
+			return 2;
+		}
 
     }
 

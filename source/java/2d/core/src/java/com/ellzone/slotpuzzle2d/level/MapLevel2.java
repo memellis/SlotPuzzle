@@ -18,16 +18,32 @@ package com.ellzone.slotpuzzle2d.level;
 
 import com.badlogic.gdx.InputProcessor;
 
-public abstract class Level {
+public class MapLevel2 extends Level {
+	@Override
+	public void initialise() {
+	}	
 
-	public Level () {
+	@Override
+	public String getImageName() {
+		return "MapTile";
+	}
+
+	@Override
+	public InputProcessor getInput() {
+		return null;
+	}
+
+	@Override
+	public String getTitle() {
+		String title = "Level 2";
+		return title;
 	}
 	
-	public abstract void initialise();
-	public abstract String getImageName();
-	public abstract String getTitle();
-	public abstract int getLevelNumber();
-	public abstract void dispose();
-	public abstract InputProcessor getInput();
-	
+	public int getLevelNumber() {
+		return 1;
+	}
+
+	@Override
+	public void dispose() {			
+	}
 }

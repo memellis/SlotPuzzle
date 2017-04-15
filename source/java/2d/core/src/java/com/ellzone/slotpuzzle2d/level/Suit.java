@@ -16,18 +16,12 @@
 
 package com.ellzone.slotpuzzle2d.level;
 
-import com.badlogic.gdx.InputProcessor;
-
-public abstract class Level {
-
-	public Level () {
+public enum Suit {
+	Clubs("clubs", 0), Diamonds("diamonds", 1), Hearts("hearts", 2), Spades("spades", 3);
+	public final String name;
+	public final int index;
+	private Suit(String name, int index) {
+		this.name = name;
+		this.index = index;
 	}
-	
-	public abstract void initialise();
-	public abstract String getImageName();
-	public abstract String getTitle();
-	public abstract int getLevelNumber();
-	public abstract void dispose();
-	public abstract InputProcessor getInput();
-	
 }

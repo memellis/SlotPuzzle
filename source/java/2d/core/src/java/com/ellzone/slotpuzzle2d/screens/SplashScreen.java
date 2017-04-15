@@ -238,7 +238,7 @@ public class SplashScreen implements Screen {
 				game.setScreen(new IntroScreen(game));
 				break;
 			case PLAYSCREEN:
-			    game.setScreen(new PlayScreen(game));
+			    game.setScreen(new PlayScreen(game, null));
 				break;
 			case ENDOFGAMESCREEN:
 			    game.setScreen(new EndOfGameScreen(game));

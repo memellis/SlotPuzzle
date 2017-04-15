@@ -1,7 +1,6 @@
 package com.ellzone.slotpuzzle2d.scene;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -13,39 +12,11 @@ import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
-
 import aurelienribon.tweenengine.equations.Cubic;
 import aurelienribon.tweenengine.equations.Quad;
 import aurelienribon.tweenengine.primitives.MutableFloat;
 
 public class MapTile {
-
-	public class MapTileLevel1 extends Level {
-		@Override
-		public void initialise() {
-		}	
-
-		@Override
-		public String getImageName() {
-			return "GamePopUp";
-		}
-
-		@Override
-		public InputProcessor getInput() {
-			return null;
-		}
-
-		@Override
-		public String getTitle() {
-			String title = "World 1 Level 1";
-			return title;
-		}
-
-		@Override
-		public void dispose() {			
-		}
-	}
-
 	private float x, y;
 	private Level level;
 	private BitmapFont font;
