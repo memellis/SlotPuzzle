@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="12" tilewidth="40" tileheight="40" nextobjectid="160">
+ <properties>
+  <property name="Number Of Cards" value="2"/>
+ </properties>
+ <tileset firstgid="1" name="light_pink_transparent 40x40" tilewidth="40" tileheight="40" tilecount="1" columns="1">
+  <image source="light_pink_transparent 40x40.png" width="40" height="40"/>
+ </tileset>
+ <tileset firstgid="2" name="blue" tilewidth="40" tileheight="40" tilecount="1" columns="1">
+  <image source="blue.png" width="49" height="49"/>
+ </tileset>
+ <objectgroup name="Hidden Pattern Object">
+  <object id="149" name="Card1" type="PlayingCard" x="200" y="120" width="80" height="120"/>
+  <object id="150" name="Card2" type="PlayingCard" x="280" y="120" width="80" height="120">
+   <properties>
+    <property name="Number Of Cards" value="2"/>
+   </properties>
+  </object>
+  <object id="151" name="Card3" type="PlayingCard" x="360" y="120" width="80" height="120"/>
+  <object id="152" name="Card4" type="PlayingCard" x="440" y="120" width="80" height="120"/>
+  <object id="153" name="Card5" type="PlayingCard" x="520" y="120" width="80" height="120"/>
+  <object id="154" name="Card6" type="PlayingCard" x="200" y="280" width="80" height="120"/>
+  <object id="156" name="Card7" type="PlayingCard" x="280" y="280" width="80" height="120"/>
+  <object id="157" name="Card8" type="PlayingCard" x="360" y="280" width="80" height="120"/>
+  <object id="158" name="Card9" type="PlayingCard" x="440" y="280" width="80" height="120"/>
+  <object id="159" name="Card10" type="PlayingCard" x="520" y="280" width="80" height="120"/>
+ </objectgroup>
+ <layer name="Hidden Pattern" width="20" height="12" visible="0">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,2,2,0,0,0,2,2,2,0,0,0,0,0,0,
+0,0,0,0,0,2,0,0,2,0,0,2,0,0,2,0,0,0,0,0,
+0,0,0,0,0,2,0,0,0,0,0,2,0,0,2,0,0,0,0,0,
+0,0,0,0,0,0,2,2,0,0,0,2,2,2,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,2,0,0,2,0,0,0,0,0,0,0,0,
+0,0,0,0,0,2,0,0,2,0,0,2,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,2,2,0,0,0,2,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup name="Reels">
+  <object id="8" name="Reel" x="160" y="80" width="40" height="40"/>
+  <object id="9" name="Reel" x="200" y="80" width="40" height="40"/>
+  <object id="10" name="Reel" x="280" y="80" width="40" height="40"/>
+  <object id="11" name="Reel" x="240" y="80" width="40" height="40"/>
+  <object id="12" name="Reel" x="320" y="120" width="40" height="40"/>
+  <object id="13" name="Reel" x="360" y="120" width="40" height="40"/>
+  <object id="14" name="Reel" x="400" y="120" width="40" height="40"/>
+  <object id="15" name="Reel" x="440" y="120" width="40" height="40"/>
+  <object id="16" name="Reel" x="480" y="120" width="40" height="40"/>
+  <object id="17" name="Reel" x="520" y="120" width="40" height="40"/>
+  <object id="18" name="Reel" x="560" y="120" width="40" height="40"/>
+  <object id="19" name="Reel" x="160" y="120" width="40" height="40"/>
+  <object id="20" name="Reel" x="200" y="120" width="40" height="40"/>
+  <object id="21" name="Reel" x="240" y="120" width="40" height="40"/>
+  <object id="22" name="Reel" x="280" y="120" width="40" height="40"/>
+  <object id="23" name="Reel" x="200" y="160" width="40" height="40"/>
+  <object id="24" name="Reel" x="480" y="160" width="40" height="40"/>
+  <object id="25" name="Reel" x="240" y="160" width="40" height="40"/>
+  <object id="26" name="Reel" x="360" y="160" width="40" height="40"/>
+  <object id="27" name="Reel" x="520" y="160" width="40" height="40"/>
+  <object id="28" name="Reel" x="560" y="160" width="40" height="40"/>
+  <object id="29" name="Reel" x="320" y="160" width="40" height="40"/>
+  <object id="30" name="Reel" x="160" y="160" width="40" height="40"/>
+  <object id="31" name="Reel" x="400" y="160" width="40" height="40"/>
+  <object id="32" name="Reel" x="280" y="160" width="40" height="40"/>
+  <object id="33" name="Reel" x="440" y="160" width="40" height="40"/>
+  <object id="34" name="Reel" x="200" y="200" width="40" height="40"/>
+  <object id="35" name="Reel" x="480" y="200" width="40" height="40"/>
+  <object id="36" name="Reel" x="240" y="200" width="40" height="40"/>
+  <object id="37" name="Reel" x="360" y="200" width="40" height="40"/>
+  <object id="38" name="Reel" x="520" y="200" width="40" height="40"/>
+  <object id="39" name="Reel" x="560" y="200" width="40" height="40"/>
+  <object id="40" name="Reel" x="320" y="200" width="40" height="40"/>
+  <object id="41" name="Reel" x="160" y="200" width="40" height="40"/>
+  <object id="42" name="Reel" x="400" y="200" width="40" height="40"/>
+  <object id="43" name="Reel" x="280" y="200" width="40" height="40"/>
+  <object id="44" name="Reel" x="440" y="200" width="40" height="40"/>
+  <object id="45" name="Reel" x="200" y="240" width="40" height="40"/>
+  <object id="46" name="Reel" x="480" y="240" width="40" height="40"/>
+  <object id="47" name="Reel" x="240" y="240" width="40" height="40"/>
+  <object id="48" name="Reel" x="360" y="240" width="40" height="40"/>
+  <object id="49" name="Reel" x="520" y="240" width="40" height="40"/>
+  <object id="50" name="Reel" x="560" y="240" width="40" height="40"/>
+  <object id="51" name="Reel" x="320" y="240" width="40" height="40"/>
+  <object id="52" name="Reel" x="160" y="240" width="40" height="40"/>
+  <object id="53" name="Reel" x="400" y="240" width="40" height="40"/>
+  <object id="54" name="Reel" x="280" y="240" width="40" height="40"/>
+  <object id="55" name="Reel" x="440" y="240" width="40" height="40"/>
+  <object id="56" name="Reel" x="200" y="280" width="40" height="40"/>
+  <object id="57" name="Reel" x="480" y="280" width="40" height="40"/>
+  <object id="58" name="Reel" x="240" y="280" width="40" height="40"/>
+  <object id="59" name="Reel" x="360" y="280" width="40" height="40"/>
+  <object id="60" name="Reel" x="520" y="280" width="40" height="40"/>
+  <object id="61" name="Reel" x="560" y="280" width="40" height="40"/>
+  <object id="62" name="Reel" x="320" y="280" width="40" height="40"/>
+  <object id="63" name="Reel" x="160" y="280" width="40" height="40"/>
+  <object id="64" name="Reel" x="400" y="280" width="40" height="40"/>
+  <object id="65" name="Reel" x="280" y="280" width="40" height="40"/>
+  <object id="66" name="Reel" x="440" y="280" width="40" height="40"/>
+  <object id="68" name="Reel" x="480" y="320" width="40" height="40"/>
+  <object id="69" name="Reel" x="240" y="320" width="40" height="40"/>
+  <object id="70" name="Reel" x="360" y="320" width="40" height="40"/>
+  <object id="71" name="Reel" x="520" y="320" width="40" height="40"/>
+  <object id="72" name="Reel" x="560" y="320" width="40" height="40"/>
+  <object id="73" name="Reel" x="320" y="320" width="40" height="40"/>
+  <object id="74" name="Reel" x="160" y="320" width="40" height="40"/>
+  <object id="75" name="Reel" x="400" y="320" width="40" height="40"/>
+  <object id="76" name="Reel" x="280" y="320" width="40" height="40"/>
+  <object id="77" name="Reel" x="440" y="320" width="40" height="40"/>
+  <object id="78" name="Reel" x="200" y="360" width="40" height="40"/>
+  <object id="79" name="Reel" x="480" y="360" width="40" height="40"/>
+  <object id="80" name="Reel" x="240" y="360" width="40" height="40"/>
+  <object id="81" name="Reel" x="360" y="360" width="40" height="40"/>
+  <object id="82" name="Reel" x="520" y="360" width="40" height="40"/>
+  <object id="83" name="Reel" x="560" y="360" width="40" height="40"/>
+  <object id="84" name="Reel" x="320" y="360" width="40" height="40"/>
+  <object id="85" name="Reel" x="160" y="360" width="40" height="40"/>
+  <object id="86" name="Reel" x="400" y="360" width="40" height="40"/>
+  <object id="87" name="Reel" x="280" y="360" width="40" height="40"/>
+  <object id="88" name="Reel" x="440" y="360" width="40" height="40"/>
+  <object id="89" name="Reel" x="200" y="400" width="40" height="40"/>
+  <object id="91" name="Reel" x="240" y="400" width="40" height="40"/>
+  <object id="92" name="Reel" x="360" y="400" width="40" height="40"/>
+  <object id="93" name="Reel" x="520" y="400" width="40" height="40"/>
+  <object id="94" name="Reel" x="560" y="400" width="40" height="40"/>
+  <object id="95" name="Reel" x="320" y="400" width="40" height="40"/>
+  <object id="97" name="Reel" x="400" y="400" width="40" height="40"/>
+  <object id="98" name="Reel" x="280" y="400" width="40" height="40"/>
+  <object id="99" name="Reel" x="440" y="400" width="40" height="40"/>
+  <object id="100" name="Reel" x="320" y="80" width="40" height="40"/>
+  <object id="101" name="Reel" x="400" y="80" width="40" height="40"/>
+  <object id="102" name="Reel" x="360" y="80" width="40" height="40"/>
+  <object id="103" name="Reel" x="560" y="80" width="40" height="40"/>
+  <object id="104" name="Reel" x="480" y="80" width="40" height="40"/>
+  <object id="105" name="Reel" x="520" y="80" width="40" height="40"/>
+  <object id="106" name="Reel" x="440" y="80" width="40" height="40"/>
+  <object id="135" name="Reel" x="480" y="400" width="40" height="40"/>
+  <object id="136" name="Reel" x="160" y="400" width="40" height="40"/>
+  <object id="137" name="Reel" x="200" y="320" width="40" height="40"/>
+  <object id="138" name="Reel" x="600" y="80" width="40" height="40"/>
+  <object id="139" name="Reel" x="600" y="120" width="40" height="40"/>
+  <object id="140" name="Reel" x="600" y="160" width="40" height="40"/>
+  <object id="141" name="Reel" x="600" y="200" width="40" height="40"/>
+  <object id="142" name="Reel" x="600" y="240" width="40" height="40"/>
+  <object id="143" name="Reel" x="600" y="280" width="40" height="40"/>
+  <object id="144" name="Reel" x="600" y="320" width="40" height="40"/>
+  <object id="145" name="Reel" x="600" y="360" width="40" height="40"/>
+  <object id="146" name="Reel" x="600" y="400" width="40" height="40"/>
+ </objectgroup>
+ <layer name="Tiles" width="20" height="12">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,
+0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,
+0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,
+0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,
+0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,
+0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,
+0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,
+0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,
+0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+</map>
