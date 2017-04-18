@@ -69,6 +69,7 @@ public class MapTile {
 	}
 
 	public void maximize(TweenCallback callback) {
+		System.out.println("maximise called");
 		tweenManager.killTarget(textOpacity);
 		tweenManager.killTarget(sprite);
 
