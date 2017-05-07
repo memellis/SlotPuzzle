@@ -79,7 +79,7 @@ public class SpinningSlots extends SPPrototype {
          Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
          Assets.inst().load("sounds/cha-ching.mp3", Sound.class);
          Assets.inst().load("sounds/pull-lever1.mp3", Sound.class);
-         Assets.inst().load("sounds/reel-spinning.mp3", Sound.class);
+         Assets.inst().load("sounds/click1.wav", Sound.class);
          Assets.inst().load("sounds/reel-stopped.mp3", Sound.class);
          Assets.inst().update();
          Assets.inst().finishLoading();
@@ -103,7 +103,7 @@ public class SpinningSlots extends SPPrototype {
          
          chaChingSound = Assets.inst().get("sounds/cha-ching.mp3");
          pullLeverSound = Assets.inst().get("sounds/pull-lever1.mp3");
-         reelSpinningSound = Assets.inst().get("sounds/reel-spinning.mp3");
+         reelSpinningSound = Assets.inst().get("sounds/click1.wav");
          reelStoppingSound = Assets.inst().get("sounds/reel-stopped.mp3");
     }
 
@@ -134,7 +134,7 @@ public class SpinningSlots extends SPPrototype {
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         for (int i=0; i<3; i++) {
-            AnimatedReel reel = new AnimatedReel(slotReelScrollTexture, 0, 0, spriteWidth, spriteHeight, 0, reelSpinningSound, tweenManager);
+            AnimatedReel reel = new AnimatedReel(slotReelScrollTexture, 0, 0, spriteWidth, spriteHeight, 0, reelSpinningSound, reelStoppingSound, tweenManager);
             reel.setX(i*spriteWidth + cam.viewportWidth / 2);
             reel.setY(cam.viewportHeight / 2);
             reel.setSx(0);

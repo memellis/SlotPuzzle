@@ -33,12 +33,12 @@ public class AnimatedReel {
 	private float tileWidth;
 	private float tileHeight;
 	private int endReel;
-	private Sound spinningSound;
+	private Sound spinningSound, stoppingSound;
 	private int reelScrollHeight;
 	private TweenManager tweenManager;
 	private float reelSlowingTargetTime;
 	
-	public AnimatedReel(Texture texture, float x, float y, float tileWidth, float tileHeight, int endReel, Sound spinningSound, TweenManager tweenManager) {
+	public AnimatedReel(Texture texture, float x, float y, float tileWidth, float tileHeight, int endReel, Sound spinningSound, Sound stoppingSound, TweenManager tweenManager) {
 		this.texture = texture;
 		this.x = x;
 		this.y = y;
@@ -46,6 +46,7 @@ public class AnimatedReel {
 		this.tileHeight = tileHeight;
 		this.endReel = endReel;
 		this.spinningSound = spinningSound;
+		this.stoppingSound = stoppingSound;
 		this.tweenManager = tweenManager;
 		initialiseAnimatedReel();
 	}
@@ -78,6 +79,8 @@ public class AnimatedReel {
 	
 	private void delegateDSCallback(int type, SPPhysicsEvent source) {
 		if (type == SPPhysicsCallback.PARTICLE_UPDATE) {
+			reel.stopSpinningSound();
+			this.stoppingSound.play();
 			DampenedSineParticle ds = (DampenedSineParticle)source.getSource();
 			ReelTile reel = (ReelTile)ds.getUserData();
 			Timeline endReelSeq = Timeline.createSequence();
@@ -104,6 +107,7 @@ public class AnimatedReel {
 	
 	private void delegateSlowingSpinning(int type, BaseTween<?> source) {
 		ReelTile reel = (ReelTile)source.getUserData();
+		System.out.println("In delegateSlowingSpinning");
 		if (type == TweenCallback.END) {
 			reel.stopSpinning();
 			reel.processEvent(new ReelStoppedSpinningEvent());

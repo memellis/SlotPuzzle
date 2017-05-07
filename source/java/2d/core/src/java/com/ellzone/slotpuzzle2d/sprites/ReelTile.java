@@ -32,7 +32,6 @@ public class ReelTile extends ReelSprite {
     private float y;
     private float sx = 0;
     private float sy = 0;
-    private float oldSyModulus;
 	private boolean tileDeleted;
 	private boolean reelFlash;
 	private boolean reelFlashTween;
@@ -68,7 +67,6 @@ public class ReelTile extends ReelSprite {
 		reelFlashState = FlashState.FLASH_OFF;
 		flashColor = Color.RED;
         tileDeleted = false;
-        oldSyModulus = 0;
     }
 
 	@Override
@@ -82,14 +80,11 @@ public class ReelTile extends ReelSprite {
     }
 	
 	private void processSpinningState() {
-        float syModulus = sy % texture.getHeight();
-        System.out.println("oldSyModulus="+oldSyModulus);
-        System.out.println("syModulus="+syModulus);
-        System.out.println("difference syModulus-oldSyModulus="+(syModulus-oldSyModulus));
+        float syModulus = sy % texture.getHeight();        
         region.setRegion((int) sx, (int) syModulus, (int)tileWidth, (int)tileHeight);
         setRegion(region);
         if (this.spinningSound != null) {
-        	this.spinngPitch = this.spinngPitch % 0.9f;
+        	this.spinngPitch = this.spinngPitch * 0.999f;
         	this.spinningSound.setPitch(this.spinningSoundId, this.spinngPitch);
         }
  	}
@@ -142,8 +137,8 @@ public class ReelTile extends ReelSprite {
 
 	private void startSpinningSound() {
 		System.out.println("Start spinning sound");
-		this.spinngPitch = 10.0f;
-		this.spinningSoundId = this.spinningSound.play(3.0f, this.spinngPitch, 0.5f);
+		this.spinngPitch = 1.0f;
+		this.spinningSoundId = this.spinningSound.play(1.0f, this.spinngPitch, 1.0f);
 		this.spinningSound.setLooping(this.spinningSoundId, true);
 	}
 	
