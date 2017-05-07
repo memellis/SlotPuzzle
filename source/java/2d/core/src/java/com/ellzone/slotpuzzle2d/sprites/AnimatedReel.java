@@ -107,7 +107,6 @@ public class AnimatedReel {
 	
 	private void delegateSlowingSpinning(int type, BaseTween<?> source) {
 		ReelTile reel = (ReelTile)source.getUserData();
-		System.out.println("In delegateSlowingSpinning");
 		if (type == TweenCallback.END) {
 			reel.stopSpinning();
 			reel.processEvent(new ReelStoppedSpinningEvent());

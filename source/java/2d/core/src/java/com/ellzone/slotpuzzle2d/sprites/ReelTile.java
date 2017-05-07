@@ -128,7 +128,6 @@ public class ReelTile extends ReelSprite {
 	}
 	
 	public void startSpinning() {
-		System.out.println("setSpinning true");
 		super.setSpinning(true);
 		if (this.spinningSound != null) {
 			startSpinningSound();
@@ -136,7 +135,6 @@ public class ReelTile extends ReelSprite {
 	}
 
 	private void startSpinningSound() {
-		System.out.println("Start spinning sound");
 		this.spinngPitch = 1.0f;
 		this.spinningSoundId = this.spinningSound.play(1.0f, this.spinngPitch, 1.0f);
 		this.spinningSound.setLooping(this.spinningSoundId, true);
