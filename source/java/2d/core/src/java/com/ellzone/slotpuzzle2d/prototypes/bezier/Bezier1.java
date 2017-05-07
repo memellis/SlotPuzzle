@@ -105,7 +105,7 @@ public class Bezier1 extends SPPrototype {
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         reelScrollHeight = slotReelScrollTexture.getHeight();
-        reelSlot = new ReelTile(slotReelScrollTexture, 0, 32, spriteWidth, spriteHeight, 0);
+        reelSlot = new ReelTile(slotReelScrollTexture, 0, 32, spriteWidth, spriteHeight, 0, null);
         reelSlot.setX(0);
         reelSlot.setY(0);
         reelSlot.setSx(0);

@@ -26,7 +26,6 @@ public abstract class ReelSprite extends Sprite {
     private int endReel;
 
     public abstract void update(float dt);
-
     public abstract void dispose();
 
     public boolean isSpinning() {

@@ -109,7 +109,7 @@ public class Dynamic extends SPPrototype {
         slotReelScrollPixmap = new Pixmap(spriteWidth, spriteHeight, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-        reelSlot = new ReelTile(slotReelScrollTexture, 0, 32, spriteWidth, spriteHeight, 0);
+        reelSlot = new ReelTile(slotReelScrollTexture, 0, 32, spriteWidth, spriteHeight, 0, null);
         reelSlot.setX(0);
         reelSlot.setY(0);
         reelSlot.setOrigin(16, 16);

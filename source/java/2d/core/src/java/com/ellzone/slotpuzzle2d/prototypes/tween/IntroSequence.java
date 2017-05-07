@@ -17,7 +17,6 @@
 package com.ellzone.slotpuzzle2d.prototypes.tween;
 
 import java.util.Random;
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -116,7 +115,7 @@ public class IntroSequence extends SPPrototype {
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         for (int i=0; i<15; i++) {
-            ReelTile reel = new ReelTile(slotReelScrollTexture, 0, 0, spriteWidth, spriteHeight, 0);
+            ReelTile reel = new ReelTile(slotReelScrollTexture, 0, 0, spriteWidth, spriteHeight, 0, null);
             reel.setX(i*spriteHeight);
             reel.setY(i*spriteWidth);
             reel.setSx(0);

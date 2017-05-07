@@ -116,7 +116,7 @@ public class Flash extends SPPrototype {
         slotReelScrollPixmap = new Pixmap(spriteWidth, spriteHeight, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-        ReelTile reel = new ReelTile(slotReelScrollTexture, 0, 32, spriteWidth, spriteHeight, 0);
+        ReelTile reel = new ReelTile(slotReelScrollTexture, 0, 32, spriteWidth, spriteHeight, 0, null);
         reel.setX(0);
         reel.setY(0);
         reel.setSx(0);

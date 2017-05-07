@@ -83,6 +83,7 @@ public class WorldMapLevelSelectAndReturn extends SPPrototype {
     }
 
     public static final String LOG_TAG = "SlotPuzzle_WorldScreen";
+    private static final String WORLD_MAP_LEVEL_DOORS = "Level Doors";
     private OrthographicCamera cam;
     private SpriteBatch batch;
     private TiledMap worldMap;
@@ -99,7 +100,7 @@ public class WorldMapLevelSelectAndReturn extends SPPrototype {
     private TextureAtlas tilesAtlas;
     private MapTile mapTile, selectedTile;
     private TweenManager tweenManager;
-    private int mapWidth, mapHeight, tilePixelWidth, tilePixelHeight;
+    private int tilePixelWidth, tilePixelHeight;
 
     @Override
     public void create() {
@@ -160,7 +161,7 @@ public class WorldMapLevelSelectAndReturn extends SPPrototype {
     private void loadWorld() {
         getMapProperties();
         levelDoors = new Array<Rectangle>();
-        for (MapObject mapObject : worldMap.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject mapObject : worldMap.getLayers().get(WORLD_MAP_LEVEL_DOORS).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
             levelDoors.add(mapRectangle);
         }
@@ -168,8 +169,6 @@ public class WorldMapLevelSelectAndReturn extends SPPrototype {
 
     private void getMapProperties() {
         MapProperties worldProps = worldMap.getProperties();
-        mapWidth = worldProps.get("width", Integer.class);
-        mapHeight = worldProps.get("height", Integer.class);
         tilePixelWidth = worldProps.get("tilewidth", Integer.class);
         tilePixelHeight = worldProps.get("tileheight", Integer.class);
     }

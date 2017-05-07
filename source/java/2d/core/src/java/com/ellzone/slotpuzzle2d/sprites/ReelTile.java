@@ -16,6 +16,7 @@
 
 package com.ellzone.slotpuzzle2d.sprites;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -31,6 +32,7 @@ public class ReelTile extends ReelSprite {
     private float y;
     private float sx = 0;
     private float sy = 0;
+    private float oldSyModulus;
 	private boolean tileDeleted;
 	private boolean reelFlash;
 	private boolean reelFlashTween;
@@ -38,14 +40,18 @@ public class ReelTile extends ReelSprite {
 	private FlashState reelFlashState;
 	private Color flashColor;
 	private int score;
+	private Sound spinningSound;
+	private long spinningSoundId;
+	private float spinngPitch;
 
-    public ReelTile(Texture texture, float x, float y, float tileWidth, float tileHeight, int endReel) {
+    public ReelTile(Texture texture, float x, float y, float tileWidth, float tileHeight, int endReel, Sound spinningSound) {
         this.texture = texture;
         this.x = x;
         this.y = y;
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
         super.setEndReel(endReel);
+        this.spinningSound = spinningSound;
         defineReelSlotTileScroll();
     }
 
@@ -57,12 +63,12 @@ public class ReelTile extends ReelSprite {
         region.setRegion((int)0, (int)0, (int)tileWidth, (int)tileHeight);
         setBounds((int)this.x, (int)this.y, (int)tileWidth, (int)tileHeight);
         setRegion(region);
-		super.setSpinning(true);
-		reelFlash = false;
+        reelFlash = false;
 		reelFlashTween = false;
 		reelFlashState = FlashState.FLASH_OFF;
 		flashColor = Color.RED;
         tileDeleted = false;
+        oldSyModulus = 0;
     }
 
 	@Override
@@ -77,8 +83,15 @@ public class ReelTile extends ReelSprite {
 	
 	private void processSpinningState() {
         float syModulus = sy % texture.getHeight();
+        System.out.println("oldSyModulus="+oldSyModulus);
+        System.out.println("syModulus="+syModulus);
+        System.out.println("difference syModulus-oldSyModulus="+(syModulus-oldSyModulus));
         region.setRegion((int) sx, (int) syModulus, (int)tileWidth, (int)tileHeight);
         setRegion(region);
+        if (this.spinningSound != null) {
+        	this.spinngPitch = this.spinngPitch % 0.9f;
+        	this.spinningSound.setPitch(this.spinningSoundId, this.spinngPitch);
+        }
  	}
 		
 	private void processFlashTweenState(float delta) {
@@ -119,10 +132,32 @@ public class ReelTile extends ReelSprite {
 		this.tileDeleted = true;
 	}
 	
-	public void setSpinning() {
+	public void startSpinning() {
+		System.out.println("setSpinning true");
 		super.setSpinning(true);
-	}	
+		if (this.spinningSound != null) {
+			startSpinningSound();
+		}
+	}
 
+	private void startSpinningSound() {
+		System.out.println("Start spinning sound");
+		this.spinngPitch = 10.0f;
+		this.spinningSoundId = this.spinningSound.play(3.0f, this.spinngPitch, 0.5f);
+		this.spinningSound.setLooping(this.spinningSoundId, true);
+	}
+	
+	public void stopSpinning() {
+		super.setSpinning(false);
+		if (this.spinningSound != null) {
+			stopSpinningSound();
+		}
+	}
+	
+	public void stopSpinningSound() {
+		this.spinningSound.stop(this.spinningSoundId);
+	}
+	
 	public FlashState getFlashState() {
 		return this.reelFlashState;
 	}

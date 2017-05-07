@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -68,12 +69,16 @@ public class LoadingScreen implements Screen{
 		game.assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
 		game.assetManager.load("levels/WorldMap.tmx", TiledMap.class);
 		game.assetManager.load("levels/level 1 - 40x40.tmx", TiledMap.class);
-		game.assetManager.load("levels/level 2 - 40x40.tmx", TiledMap.class);		
+		game.assetManager.load("levels/level 2 - 40x40.tmx", TiledMap.class);
+		game.assetManager.load("levels/level 3 - 40x40.tmx", TiledMap.class);
+		game.assetManager.load("levels/level 4 - 40x40.tmx", TiledMap.class);
+		game.assetManager.load("levels/level 5 - 40x40.tmx", TiledMap.class);
 		game.assetManager.load("loading_screen/progress_bar.png", Texture.class);
 		game.assetManager.load("loading_screen/progress_bar_base.png", Texture.class);
 		game.assetManager.load("reel/reels.pack.atlas", TextureAtlas.class);
 		game.assetManager.load("tiles/tiles.pack.atlas", TextureAtlas.class);
 		game.assetManager.load("playingcards/carddeck.atlas", TextureAtlas.class);
+		game.assetManager.load("sounds/cha-ching.mp3", Sound.class);
  		game.assetManager.finishLoading();
 		Gdx.app.log(TAG, "Assets loaded");
     }

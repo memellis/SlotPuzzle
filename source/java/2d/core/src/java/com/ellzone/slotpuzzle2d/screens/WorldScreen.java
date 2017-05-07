@@ -41,6 +41,9 @@ import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.level.LevelDoor;
 import com.ellzone.slotpuzzle2d.level.MapLevel1;
 import com.ellzone.slotpuzzle2d.level.MapLevel2;
+import com.ellzone.slotpuzzle2d.level.MapLevel3;
+import com.ellzone.slotpuzzle2d.level.MapLevel4;
+import com.ellzone.slotpuzzle2d.level.MapLevel5;
 import com.ellzone.slotpuzzle2d.scene.MapTile;
 import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
@@ -76,6 +79,7 @@ public class WorldScreen implements Screen {
     
     public WorldScreen(SlotPuzzle game) {
 		this.game = game;
+		this.game.setWorldScreen(this);
 		createWorldScreen();		
 	}
     
@@ -150,6 +154,9 @@ public class WorldScreen implements Screen {
 		mapTiles = new Array<MapTile>();
 		mapTiles.add(new MapTile(20, 20, 200, 200, new MapLevel1(), tilesAtlas, cam, font, tweenManager, mapTileSprite));
 		mapTiles.add(new MapTile(20, 20, 200, 200, new MapLevel2(), tilesAtlas, cam, font, tweenManager, mapTileSprite));
+		mapTiles.add(new MapTile(20, 20, 200, 200, new MapLevel3(), tilesAtlas, cam, font, tweenManager, mapTileSprite));
+		mapTiles.add(new MapTile(20, 20, 200, 200, new MapLevel4(), tilesAtlas, cam, font, tweenManager, mapTileSprite));
+		mapTiles.add(new MapTile(20, 20, 200, 200, new MapLevel5(), tilesAtlas, cam, font, tweenManager, mapTileSprite));		
 	}
 		
 	private final TweenCallback maximizeCallback = new TweenCallback() {
@@ -160,11 +167,13 @@ public class WorldScreen implements Screen {
 			int levelNumber = selectedTile.getLevel().getLevelNumber();
 			levelDoors.get(levelNumber).id = levelNumber;
 			game.setScreen(new PlayScreen(game, levelDoors.get(levelNumber)));
+			tweenManager.killAll();
 		}
 	};
     
 	@Override
 	public void show() {
+		System.out.println("WorldScreen: show");
 	}
 	
 	public void update(float delta) {
@@ -197,26 +206,30 @@ public class WorldScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
+		System.out.println("WorldScreen: resize");
 	}
 
 	@Override
 	public void pause() {
+		System.out.println("WorldScreen: pause");
 	}
 
 	@Override
 	public void resume() {
+		System.out.println("WorldScreen: resume");
 	}
 
 	@Override
 	public void hide() {
+		System.out.println("WorldScreen: hide");
 	}
 
 	@Override
 	public void dispose() {
+		System.out.println("WorldScreen: dispose");
 	}
 	
 	public class MapGestureListener implements GestureListener {
-
 		private final OrthographicCamera camera;
 		float velX, velY;
 		boolean flinging = false;
@@ -302,7 +315,7 @@ public class WorldScreen implements Screen {
         }
  
         private void enterLevel(LevelDoor levelDoor, int levelDoorIndex) {
-            int sx = (int)worldXToScreenX(levelDoor.doorPosition.x);
+        	int sx = (int)worldXToScreenX(levelDoor.doorPosition.x);
             int sy = (int)worldYToScreenY(levelDoor.doorPosition.y);
             int sw = (int)(levelDoor.doorPosition.width * screenOverCWWRatio);
             int sh = (int)(levelDoor.doorPosition.height * screenOverCWHRatio);
@@ -348,4 +361,10 @@ public class WorldScreen implements Screen {
 			return (wy - ((camera.position.y - 10) * tilePixelHeight)) * screenOverCWHRatio;
 		}
 	}	
+	
+	public void worldScreenCallBack() {
+		tweenManager.killAll();
+		levelDoorSprite = null;
+		mapTiles = null;
+	}
 }

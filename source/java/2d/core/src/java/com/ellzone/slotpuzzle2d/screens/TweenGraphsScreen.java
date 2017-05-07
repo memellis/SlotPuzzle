@@ -195,7 +195,7 @@ public class TweenGraphsScreen implements Screen {
         slotReelScrollPixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-        reelTile = new ReelTile(slotReelScrollTexture, (int) spriteWidth, (int) spriteHeight, 0, 32, 0);
+        reelTile = new ReelTile(slotReelScrollTexture, (int) spriteWidth, (int) spriteHeight, 0, 32, 0, null);
         reelTile.setX(0);
         reelTile.setY(32);
         reelTile.setEndReel(random.nextInt(sprites.length));
@@ -211,7 +211,7 @@ public class TweenGraphsScreen implements Screen {
                 .start(tweenManager);
         tweens.add(tween);
 
-        reelTile = new ReelTile(slotReelScrollTexture, (int) spriteWidth, (int) spriteHeight, 32, 32, 0);
+        reelTile = new ReelTile(slotReelScrollTexture, (int) spriteWidth, (int) spriteHeight, 32, 32, 0, null);
         reelTile.setX(32);
         reelTile.setY(32);
         reelTile.setEndReel(random.nextInt(sprites.length));
@@ -228,7 +228,7 @@ public class TweenGraphsScreen implements Screen {
                 .start(tweenManager);
         tweens.add(tween);
 
-        reelTile = new ReelTile(slotReelScrollTexture, (int) spriteWidth, (int) spriteHeight, 64, 32, 0);
+        reelTile = new ReelTile(slotReelScrollTexture, (int) spriteWidth, (int) spriteHeight, 64, 32, 0, null);
         reelTile.setX(64);
         reelTile.setY(32);
         reelTile.setEndReel(random.nextInt(sprites.length));
