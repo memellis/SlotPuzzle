@@ -62,7 +62,7 @@ public class SpinningSlots extends SPPrototype {
     private Array<AnimatedReel> reels;
     private Timeline introSequence;
     private TweenManager tweenManager;
- 	private Sound chaChingSound, pullLeverSound, reelSpinningSound, reelStoppingSound;
+ 	private Sound pullLeverSound, reelSpinningSound, reelStoppingSound;
 	private Vector2 touch;
 
     @Override
@@ -77,10 +77,9 @@ public class SpinningSlots extends SPPrototype {
 
      private void loadAssets() {
          Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
-         Assets.inst().load("sounds/cha-ching.mp3", Sound.class);
-         Assets.inst().load("sounds/pull-lever1.mp3", Sound.class);
+         Assets.inst().load("sounds/pull-lever1.wav", Sound.class);
          Assets.inst().load("sounds/click2.wav", Sound.class);
-         Assets.inst().load("sounds/reel-stopped.mp3", Sound.class);
+         Assets.inst().load("sounds/reel-stopped.wav", Sound.class);
          Assets.inst().update();
          Assets.inst().finishLoading();
 
@@ -101,10 +100,9 @@ public class SpinningSlots extends SPPrototype {
          spriteWidth = (int) sprites[0].getWidth();
          spriteHeight = (int) sprites[0].getHeight();
          
-         chaChingSound = Assets.inst().get("sounds/cha-ching.mp3");
-         pullLeverSound = Assets.inst().get("sounds/pull-lever1.mp3");
+         pullLeverSound = Assets.inst().get("sounds/pull-lever1.wav");
          reelSpinningSound = Assets.inst().get("sounds/click2.wav");
-         reelStoppingSound = Assets.inst().get("sounds/reel-stopped.mp3");
+         reelStoppingSound = Assets.inst().get("sounds/reel-stopped.wav");
     }
 
     private void initialiseCamera() {
