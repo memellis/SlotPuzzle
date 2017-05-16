@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.utils.FileUtils;
 
 import aurelienribon.tweenengine.TweenManager;
@@ -61,9 +62,9 @@ public class MenuScreen implements Screen {
 		}
 		
 		if (localFile.exists()) {
-			Gdx.app.log(SlotPuzzle.SLOT_PUZZLE, localFile.file().getAbsolutePath() + " exists");
+			Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE, localFile.file().getAbsolutePath() + " exists");
 		} else {
-			Gdx.app.log(SlotPuzzle.SLOT_PUZZLE, localFile.path() + " does not exist");			
+			Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE, localFile.path() + " does not exist");			
 		}
 
 	}

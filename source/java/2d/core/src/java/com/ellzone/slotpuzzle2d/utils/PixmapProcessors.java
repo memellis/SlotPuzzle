@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,18 +25,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.ellzone.slotpuzzle2d.SlotPuzzle;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import java.io.File;
 
 public class PixmapProcessors {
 	private static int counter = 0;
-	
+
 	public static boolean arePixmapsEqual(Pixmap pixmap1, Pixmap pixmap2) {
 		final int width1 = pixmap1.getWidth();
 		final int height1 = pixmap1.getHeight();
 		final int width2 = pixmap2.getWidth();
 		final int height2 = pixmap2.getHeight();
-		
+
 		if ((width1 == width2) & (height1 == height2)) {
 			for (int x = 0; x < width1; x++) {
 				for (int y = 0; y < height1; y++) {
@@ -50,7 +50,7 @@ public class PixmapProcessors {
 			return false;
 		}
 	}
-	
+
 	public static Pixmap rotatePixmap(Pixmap src, float angle) {
 	    final int width = src.getWidth();
 	    final int height = src.getHeight();
@@ -73,7 +73,7 @@ public class PixmapProcessors {
 	    }
 	    return rotated;
 	}
-	
+
 	public static Pixmap flipPixmap(Pixmap src) {
 	    final int width = src.getWidth();
 	    final int height = src.getHeight();
@@ -86,12 +86,12 @@ public class PixmapProcessors {
 	    }
 	    return flipped;
 	}
-	
+
 	public static Pixmap scrollPixmap(Pixmap src, int scrollSize, boolean scrollInXDirection) {
 		final int width = src.getWidth();
 		final int height = src.getHeight();
 		Pixmap scrolledPixmap = new Pixmap(width, height, src.getFormat());
-		
+
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				if(scrollInXDirection) {
@@ -108,7 +108,7 @@ public class PixmapProcessors {
 		final int width = src.getWidth();
 		final int height = src.getHeight();
 		Pixmap scrolledPixmap = new Pixmap(width, height, src.getFormat());
-		
+
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				scrolledPixmap.drawPixel(x, y, src.getPixel(x, y + scrollSize));
@@ -119,10 +119,10 @@ public class PixmapProcessors {
 				scrolledPixmap.drawPixel(x, y, src.getPixel(x, y - height + scrollSize +1));
 			}
 		}
-		
+
 		return scrolledPixmap;
 	}
-	
+
 	public static void copyPixmapHorizontally(Pixmap src, Pixmap dest, int offset) {		
 		for (int x = 0; x < src.getWidth(); x++) {
 			for (int y = 0; y < src.getHeight(); y++) {
@@ -138,18 +138,18 @@ public class PixmapProcessors {
 			}
 		}
 	}
-	
+
 	public static Pixmap createDynamicVerticalFontText(BitmapFont font, String text, Pixmap src) {
 		final int width = src.getWidth();
 	    final int height = src.getHeight();
-	    
+
 	    Pixmap verticalFontText = new Pixmap(width, height, src.getFormat());
 	    BitmapFont.BitmapFontData fontData = font.getData();
 
 		if (fontData.imagePaths.length == 0) {
 			System.out.println("Doh! The length of the imagepaths is zero");
 		} else {
-			Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, fontData.getImagePath(0));
+			Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, fontData.getImagePath(0));
 			Pixmap fontPixmap = new Pixmap(Gdx.files.local(fontData.getImagePath(0)));
 			BitmapFont.Glyph glyph;
 			verticalFontText.setColor(Color.BLACK);
@@ -162,14 +162,14 @@ public class PixmapProcessors {
 				int startY = i * verticalFontText.getHeight() / text.length() + 2;
 				int offSetY = -glyph.yoffset;
 				offSetY = startY + offSetY - glyph.height;
-				
+
  				verticalFontText.drawPixmap(fontPixmap,
 						offSetX,
 						offSetY,
 						glyph.srcX, glyph.srcY, glyph.width, glyph.height);
  			}
-				
-		}		
+
+		}
 		return verticalFontText;
 	}
 
@@ -184,7 +184,7 @@ public class PixmapProcessors {
 		for (int i = 0; i < text.length() * xFactor; i++) {
 			scrolledText = PixmapProcessors.scrollPixmapWrap(scrolledText, scrollStep);
 			PixmapProcessors.copyPixmapVertically(scrolledText, scrollAnimatedVerticalText, scrolledText.getWidth() * (i + 1));
-		}		
+		}
 		return scrollAnimatedVerticalText;
 	}
 
@@ -212,7 +212,7 @@ public class PixmapProcessors {
 			pixmap = getPixmapFromSprite(sprites[i]);
 			PixmapProcessors.copyPixmapHorizontally(pixmap, pixmapToAnimate, (int) i * pixmap.getHeight());
 		}
-		
+
 		Pixmap scrolledPixmap = new Pixmap(pixmapToAnimate.getWidth(), pixmapToAnimate.getHeight(), pixmapToAnimate.getFormat());
 		PixmapProcessors.copyPixmapVertically(pixmapToAnimate, scrolledPixmap, 0);
 
@@ -221,44 +221,44 @@ public class PixmapProcessors {
 			pixmapFile.delete();
 		}
 		savePixmap(pixmapToAnimate, pixmapFile.file());
-		
+
 		Pixmap scrollAnimatedVerticalPixmap = new Pixmap(pixmap.getWidth() * sprites.length * scrollStep, sprites.length * pixmap.getHeight(), pixmap.getFormat());
 		PixmapProcessors.copyPixmapVertically(pixmapToAnimate, scrollAnimatedVerticalPixmap, 0);
 
 		for (int i = 0; i < sprites.length * scrollStep ; i++) {
 			scrolledPixmap = PixmapProcessors.scrollPixmapWrap(scrolledPixmap, scrollStep);
 			PixmapProcessors.copyPixmapVertically(scrolledPixmap, scrollAnimatedVerticalPixmap, scrolledPixmap.getWidth() * (i + 1));
-		}			
+		}
 		return scrollAnimatedVerticalPixmap;
 	}
 
 	public static void savePixmap(Pixmap pixmap) {
-		try {
-            FileHandle fh;
-            do {
-                fh = new FileHandle(Gdx.files.getLocalStoragePath() + "pixmap" + counter++ + ".png");
-            } while (fh.exists());
-            PixmapIO.writePNG(fh, pixmap);
-        } catch (Exception e){
-        	Gdx.app.error(SlotPuzzle.SLOT_PUZZLE, "Could not save pixmap to PNG file " + e.getMessage());
-        }
+	    try {
+                FileHandle fh;
+                do {
+                    fh = new FileHandle(Gdx.files.getLocalStoragePath() + "pixmap" + counter++ + ".png");
+                } while (fh.exists());
+                PixmapIO.writePNG(fh, pixmap);
+            } catch (Exception e){
+        	Gdx.app.error(SlotPuzzleConstants.SLOT_PUZZLE, "Could not save pixmap to PNG file " + e.getMessage());
+            }
 	}
-	
+
 	public static void savePixmap(Pixmap pixmap, File file) {
-		if (file.exists()) {
-			file.delete();
-		}
-		try {
-			FileHandle fh;
-            do {
-                fh = new FileHandle(file);
-            } while (fh.exists());
-            PixmapIO.writePNG(fh, pixmap);
-        } catch (Exception e){
-        	Gdx.app.error(SlotPuzzle.SLOT_PUZZLE, "Could not save pixmap to PNG file " + e.getMessage());
-        }
+	    if (file.exists()) {
+		file.delete();
+	    }
+	    try {
+		FileHandle fh;
+                do {
+                    fh = new FileHandle(file);
+                } while (fh.exists());
+                PixmapIO.writePNG(fh, pixmap);
+            } catch (Exception e){
+        	Gdx.app.error(SlotPuzzleConstants.SLOT_PUZZLE, "Could not save pixmap to PNG file " + e.getMessage());
+            }
 	}
-	
+
     public static void savePixmap(Pixmap pixmap, String pixmapFileName) {
         FileHandle pixmapFile = Gdx.files.local(pixmapFileName);
         if (pixmapFile.exists()) {
@@ -266,15 +266,15 @@ public class PixmapProcessors {
         }
         PixmapProcessors.savePixmap(pixmap, pixmapFile.file());
     }
-    
+
 	public static void saveTextureRegion(TextureRegion textureRegion) {
 		savePixmap(getPixmapFromTextureRegion(textureRegion));		
 	}
-	
+
 	public static void saveTextureRegion(TextureRegion textureRegion, File file) {
 		savePixmap(getPixmapFromTextureRegion(textureRegion), file);		
 	}
-	
+
 	public static Pixmap getPixmapFromTextureRegion(TextureRegion textureRegion) {
 		Texture texture = textureRegion.getTexture();
 		if (!texture.getTextureData().isPrepared()) {
@@ -289,7 +289,7 @@ public class PixmapProcessors {
 		}
 		return destinationPixmap;
 	}
-	
+
 	public static Pixmap getPixmapFromSprite(Sprite sprite) {
 		Texture texture = sprite.getTexture();
 		if (!texture.getTextureData().isPrepared()) {
@@ -304,7 +304,7 @@ public class PixmapProcessors {
 		}
 		return destinationPixmap;
 	}
-	
+
 	public static void writeTextToPixmap(Pixmap destPixmap, Pixmap fontPixmap, BitmapFont.BitmapFontData fontData, int startX, int startY, String text) {
 	    int cursor = startX;
 
@@ -317,7 +317,6 @@ public class PixmapProcessors {
 	        BitmapFont.Glyph glyph = fontData.getGlyph(chars[i]);
 	        destPixmap.drawPixmap(fontPixmap, glyph.srcX, glyph.srcY, glyph.width, glyph.height, cursor + glyph.xoffset, startY + glyph.yoffset, glyph.width, glyph.height);
 	        cursor += glyph.xadvance;
-			System.out.println("glpgh.yoffset="+glyph.yoffset);
 	    }
 	}
 }
