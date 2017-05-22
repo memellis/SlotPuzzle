@@ -32,8 +32,8 @@ import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.physics.DampenedSineParticle;
-import com.ellzone.slotpuzzle2d.physics.Vector;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
+import com.ellzone.slotpuzzle2d.sprites.AnimatedHandle;
 import com.ellzone.slotpuzzle2d.sprites.AnimatedReel;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
@@ -64,6 +64,9 @@ public class SpinningSlots extends SPPrototype {
     private TweenManager tweenManager;
  	private Sound pullLeverSound, reelSpinningSound, reelStoppingSound;
 	private Vector2 touch;
+	private AnimatedHandle animatedHandle;
+	private TextureAtlas handleAtlas;
+	private int reelSpriteHelp;
 
     @Override
      public void create() {
@@ -77,6 +80,7 @@ public class SpinningSlots extends SPPrototype {
 
      private void loadAssets() {
          Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
+         Assets.inst().load("handle/handle.pack.atlas", TextureAtlas.class);
          Assets.inst().load("sounds/pull-lever1.wav", Sound.class);
          Assets.inst().load("sounds/click2.wav", Sound.class);
          Assets.inst().load("sounds/reel-stopped.wav", Sound.class);
@@ -93,6 +97,8 @@ public class SpinningSlots extends SPPrototype {
          pear = atlas.createSprite("pear");
          tomato = atlas.createSprite("tomato");
 
+         handleAtlas = Assets.inst().get("handle/handle.pack.atlas", TextureAtlas.class);
+         
          sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
          for (Sprite sprite : sprites) {
              sprite.setOrigin(0, 0);
@@ -140,6 +146,7 @@ public class SpinningSlots extends SPPrototype {
             reel.setEndReel(random.nextInt(sprites.length - 1));
             reels.add(reel);
         }
+        animatedHandle = new AnimatedHandle(handleAtlas, displayWindowWidth - 250, 50);
     }
 
     private void createIntroSequence() {
@@ -213,13 +220,14 @@ public class SpinningSlots extends SPPrototype {
     }
 
     public void handleInput(float delta) {
-        for (AnimatedReel animatedReel : reels) {
-            if (Gdx.input.justTouched()) {
-                touch = touch.set(Gdx.input.getX(), cam.viewportHeight - Gdx.input.getY());
+        if (Gdx.input.justTouched()) {
+            touch = touch.set(Gdx.input.getX(), cam.viewportHeight - Gdx.input.getY());
+            for (AnimatedReel animatedReel : reels) {
                 if(animatedReel.getReel().getBoundingRectangle().contains(touch)) {
                 	if (animatedReel.getReel().isSpinning()) {
                         if (animatedReel.getDampenedSineState() == DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE) {
-                            animatedReel.getReel().setEndReel(animatedReel.getReel().getCurrentReel());
+                            reelSpriteHelp = animatedReel.getReel().getCurrentReel();
+                        	animatedReel.getReel().setEndReel(reelSpriteHelp);
                         }
                     } else {
                         animatedReel.setEndReel(random.nextInt(sprites.length - 1));
@@ -227,6 +235,26 @@ public class SpinningSlots extends SPPrototype {
                         animatedReel.getReel().startSpinning();
                     }
                 }
+            }
+            if(animatedHandle.getBoundingRectangle().contains(touch)) {
+            	boolean reelsNotSpinning = true;
+                for  (AnimatedReel animatedReel : reels) {
+                    if (animatedReel.getReel().isSpinning()) {
+                    	reelsNotSpinning = false;
+                    };
+                }
+                if (reelsNotSpinning) {
+                    animatedHandle.setAnimated(true);
+                    pullLeverSound.play();
+                    for  (AnimatedReel animatedReel : reels) {
+                        animatedReel.setEndReel(random.nextInt(sprites.length - 1));
+                        animatedReel.reinitialise();
+                        animatedReel.getReel().startSpinning();
+                    }
+                } else {
+                	reelStoppingSound.play();
+                }
+ 
             }
         }
     }
@@ -236,6 +264,7 @@ public class SpinningSlots extends SPPrototype {
         for (AnimatedReel reel : reels) {
             reel.update(delta);
         }
+        animatedHandle.update(delta);
     }
 
     @Override
@@ -248,9 +277,10 @@ public class SpinningSlots extends SPPrototype {
         batch.begin();
         for (AnimatedReel reel : reels) {
             reel.draw(batch);
-            sprites[reel.getEndReel()].setX(32);
-            sprites[reel.getEndReel()].draw(batch);
+            sprites[reelSpriteHelp].setX(32);
+            sprites[reelSpriteHelp].draw(batch);
         }
+        animatedHandle.draw(batch);
         batch.end();
     }
 
