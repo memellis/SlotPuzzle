@@ -27,6 +27,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.physics.Particle;
 import com.ellzone.slotpuzzle2d.physics.Vector;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
@@ -38,7 +41,9 @@ public class Particle1 extends SPPrototype {
 
     private static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
     private static final float VELOCITY_MIN = 2.0f;
-    private PerspectiveCamera cam;
+	private FitViewport viewport;
+	private Stage stage;
+	private PerspectiveCamera cam;
     private Sprite cheesecake;
     private Sprite cherry;
     private Sprite grapes;
@@ -66,8 +71,9 @@ public class Particle1 extends SPPrototype {
         loadAssets();
         initialiseReelSlots();
         intialiseParticles();
-        initialiseCamera();
         batch = new SpriteBatch();
+		initialiseScreen();
+        initialiseCamera();
     }
 
     private void loadAssets() {
@@ -119,6 +125,11 @@ public class Particle1 extends SPPrototype {
         dampPoint = slotReelScrollTexture.getHeight() * 20 + reelTiles.get(0).getEndReel()*32;
     }
 
+	private void initialiseScreen() {
+		viewport = new FitViewport(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT);
+		stage = new Stage(viewport, batch);
+	}
+	
     private void initialiseCamera() {
         cam = new PerspectiveCamera();
         cam.position.set(0, 0, 10);
@@ -137,6 +148,7 @@ public class Particle1 extends SPPrototype {
         cam.position.set(0, 0, distance);
         cam.lookAt(0, 0, 0);
         cam.update();
+		viewport.update(width, height);
     }
 
     private void update(float delta) {
@@ -162,13 +174,14 @@ public class Particle1 extends SPPrototype {
     public void render() {
         final float delta = Math.min(1/30f, Gdx.graphics.getDeltaTime());
         update(delta);
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         batch.begin();
         for (ReelTile reelSlot : reelTiles) {
             reelSlot.draw(batch);
         }
         batch.end();
+		stage.draw();
     }
 
     @Override
@@ -182,6 +195,7 @@ public class Particle1 extends SPPrototype {
     @Override
     public void dispose() {
         batch.dispose();
+		stage.dispose();
         Assets.inst().dispose();
     }
 }

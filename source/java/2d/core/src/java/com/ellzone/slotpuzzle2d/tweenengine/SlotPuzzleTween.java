@@ -1,7 +1,5 @@
 package com.ellzone.slotpuzzle2d.tweenengine;
 
-import com.ellzone.slotpuzzle2d.SlotPuzzle;
-
 import aurelienribon.tweenengine.TweenAccessor;
 import aurelienribon.tweenengine.TweenEquation;
 import aurelienribon.tweenengine.TweenPath;

@@ -50,7 +50,14 @@ public class AnimatedReel {
 		this.tweenManager = tweenManager;
 		initialiseAnimatedReel();
 	}
-	
+
+	private SPPhysicsCallback dsCallback = new SPPhysicsCallback() {
+		@Override
+		public void onEvent(int type, SPPhysicsEvent source) {
+			delegateDSCallback(type, source); 
+		}
+	};
+
 	private void initialiseAnimatedReel() {
 		reel = new ReelTile(this.texture, this.x, this.y, this.tileWidth, this.tileHeight, this.endReel, this.spinningSound);
 		reelScrollHeight = this.texture.getHeight();
@@ -69,13 +76,6 @@ public class AnimatedReel {
 		dampenedSine.setCallbackTriggers(SPPhysicsCallback.PARTICLE_UPDATE);
 		dampenedSine.setUserData(reel);
 	}
-	
-	private SPPhysicsCallback dsCallback = new SPPhysicsCallback() {
-		@Override
-		public void onEvent(int type, SPPhysicsEvent source) {
-			delegateDSCallback(type, source); 
-		}
-	};
 	
 	private void delegateDSCallback(int type, SPPhysicsEvent source) {
 		if (type == SPPhysicsCallback.PARTICLE_UPDATE) {

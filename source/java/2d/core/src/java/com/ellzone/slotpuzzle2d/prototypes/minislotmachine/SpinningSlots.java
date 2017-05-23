@@ -16,40 +16,30 @@
 
 package com.ellzone.slotpuzzle2d.prototypes.minislotmachine;
 
-import java.util.Random;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
-import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
-import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
-import com.ellzone.slotpuzzle2d.physics.DampenedSineParticle;
-import com.ellzone.slotpuzzle2d.physics.Vector;
-import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
-import com.ellzone.slotpuzzle2d.sprites.AnimatedReel;
-import com.ellzone.slotpuzzle2d.sprites.ReelTile;
-import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
-import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
-import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
-import com.ellzone.slotpuzzle2d.utils.Assets;
-import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
-import aurelienribon.tweenengine.equations.Back;
-import aurelienribon.tweenengine.equations.Cubic;
-import aurelienribon.tweenengine.equations.Quad;
-import aurelienribon.tweenengine.equations.Quart;
+import aurelienribon.tweenengine.equations.*;
+import com.badlogic.gdx.*;
+import com.badlogic.gdx.audio.*;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.viewport.*;
+import com.ellzone.slotpuzzle2d.*;
+import com.ellzone.slotpuzzle2d.effects.*;
+import com.ellzone.slotpuzzle2d.physics.*;
+import com.ellzone.slotpuzzle2d.prototypes.*;
+import com.ellzone.slotpuzzle2d.sprites.*;
+import com.ellzone.slotpuzzle2d.tweenengine.*;
+import com.ellzone.slotpuzzle2d.utils.*;
+import java.util.*;
 
 public class SpinningSlots extends SPPrototype {
     private static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
     private PerspectiveCamera cam;
+	private FitViewport viewport;
     private SpriteBatch batch;
+	private Stage stage;
     private Sprite cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato;
     private Sprite[] sprites;
     private int spriteWidth;
@@ -62,14 +52,16 @@ public class SpinningSlots extends SPPrototype {
     private Array<AnimatedReel> reels;
     private Timeline introSequence;
     private TweenManager tweenManager;
- 	private Sound chaChingSound, pullLeverSound, reelSpinningSound, reelStoppingSound;
+ 	private Sound pullLeverSound, reelSpinningSound, reelStoppingSound;
 	private Vector2 touch;
+	private int reelSpriteHelp;
 
     @Override
      public void create() {
          loadAssets();
-         initialiseCamera();
          initialiseLibGdx();
+		 initialiseScreen();
+         initialiseCamera();
          initialiseUniversalTweenEngine();
          initialiseReelSlots();
          createIntroSequence();
@@ -77,10 +69,9 @@ public class SpinningSlots extends SPPrototype {
 
      private void loadAssets() {
          Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
-         Assets.inst().load("sounds/cha-ching.mp3", Sound.class);
-         Assets.inst().load("sounds/pull-lever1.mp3", Sound.class);
+         Assets.inst().load("sounds/pull-lever1.wav", Sound.class);
          Assets.inst().load("sounds/click2.wav", Sound.class);
-         Assets.inst().load("sounds/reel-stopped.mp3", Sound.class);
+         Assets.inst().load("sounds/reel-stopped.wav", Sound.class);
          Assets.inst().update();
          Assets.inst().finishLoading();
 
@@ -101,18 +92,23 @@ public class SpinningSlots extends SPPrototype {
          spriteWidth = (int) sprites[0].getWidth();
          spriteHeight = (int) sprites[0].getHeight();
          
-         chaChingSound = Assets.inst().get("sounds/cha-ching.mp3");
-         pullLeverSound = Assets.inst().get("sounds/pull-lever1.mp3");
+         pullLeverSound = Assets.inst().get("sounds/pull-lever1.wav");
          reelSpinningSound = Assets.inst().get("sounds/click2.wav");
-         reelStoppingSound = Assets.inst().get("sounds/reel-stopped.mp3");
+         reelStoppingSound = Assets.inst().get("sounds/reel-stopped.wav");
     }
 
+	private void initialiseScreen() {
+		viewport = new FitViewport(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT);
+		stage = new Stage(viewport, batch); 
+	
+	}
+	
     private void initialiseCamera() {
         cam = new PerspectiveCamera();
         cam.position.set(0, 0, 10);
         cam.lookAt(0, 0, 0);
-        displayWindowWidth = Gdx.graphics.getWidth();
-        displayWindowHeight = Gdx.graphics.getHeight();
+        displayWindowWidth = SlotPuzzleConstants.V_WIDTH;
+        displayWindowHeight = SlotPuzzleConstants.V_HEIGHT;
     }
 
     private void initialiseLibGdx() {
@@ -212,16 +208,20 @@ public class SpinningSlots extends SPPrototype {
         cam.position.set(0, 0, distance);
         cam.lookAt(0, 0, 0);
         cam.update();
+		viewport.update(width, height);
     }
 
     public void handleInput(float delta) {
-        for (AnimatedReel animatedReel : reels) {
-            if (Gdx.input.justTouched()) {
-                touch = touch.set(Gdx.input.getX(), cam.viewportHeight - Gdx.input.getY());
+        if (Gdx.input.justTouched()) {
+            touch = touch.set(Gdx.input.getX(), Gdx.input.getY());
+		    touch = viewport.unproject(touch);
+			for (AnimatedReel animatedReel : reels) {	
                 if(animatedReel.getReel().getBoundingRectangle().contains(touch)) {
                 	if (animatedReel.getReel().isSpinning()) {
                         if (animatedReel.getDampenedSineState() == DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE) {
-                            animatedReel.getReel().setEndReel(animatedReel.getReel().getCurrentReel());
+							Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE, "animatedReel.getReel().getEndReel()="+animatedReel.getReel().getEndReel());
+                            reelSpriteHelp = animatedReel.getReel().getCurrentReel();
+							animatedReel.getReel().setEndReel(reelSpriteHelp);
                         }
                     } else {
                         animatedReel.setEndReel(random.nextInt(sprites.length - 1));
@@ -250,10 +250,11 @@ public class SpinningSlots extends SPPrototype {
         batch.begin();
         for (AnimatedReel reel : reels) {
             reel.draw(batch);
-            sprites[reel.getEndReel()].setX(32);
-            sprites[reel.getEndReel()].draw(batch);
+            sprites[reelSpriteHelp].setX(32);
+            sprites[reelSpriteHelp].draw(batch);
         }
         batch.end();
+		stage.draw();
     }
 
     @Override
@@ -267,6 +268,7 @@ public class SpinningSlots extends SPPrototype {
     @Override
     public void dispose() {
         batch.dispose();
+		stage.dispose();
         Assets.inst().dispose();
     }
 }
