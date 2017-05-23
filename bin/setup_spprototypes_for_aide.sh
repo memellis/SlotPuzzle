@@ -43,7 +43,7 @@ define_environment_variables() {
     fi
 
     if [ -z "${SLOTPUZZLE_SPPROTOTYPE_JAVA_FILE_LIST}" ] ; then
-        SLOTPUZZLE_SPPROTOTYPE_JAVA_FILE_LIST="${SLOTPUZZLE_GIT_DIR}/etc/SPPrototypeTemplateJavaFiles.conf"
+        SLOTPUZZLE_SPPROTOTYPE_JAVA_FILE_LIST="${SLOTPUZZLE_GIT_DIR}/etc/SPPrototypesTemplateJavaFiles.conf"
     fi
 }
 
@@ -52,16 +52,18 @@ copy_files_from_src_to_dst_via_conf_file() {
     SRC_DIR=${1}
     DST_DIR=${2}
     CONF_FILE=${3}
-    for file_to_copy in `cat ${CONF_FILE}`
+    for FILE_TO_COPY in `cat ${CONF_FILE}`
     do
-        SRC_FILE="${SRC_DIR}/${file_to_copy}"
-        DST_FILE="${DST_DIR}/${file_to_copy}"
+        SRC_FILE="${FILE_TO_COPY##*/}"
+        DST_PATH_PREFIX="${FILE_TO_COPY##*src/}"
+        DST_PATH_PREFIX="${DST_PATH_PREFIX%/*}"
+        DST_FILE="${DST_DIR}/${DST_PATH_PREFIX}/${SRC_FILE}"
         DST_DIRNAME="$(dirname ${DST_FILE})"
-        if [ -f ${SRC_FILE} ] ; then
-	    echo "Copying file ${SRC_FILE}"
+        if [ -f ${file_to_copy} ] ; then
+	    echo "Copying file ${FILE_TO_COPY}"
             echo "To file ${DST_FILE}"
             mkdir -p ${DST_DIRNAME}
-            cp ${SRC_FILE} ${DST_FILE}
+            cp ${FILE_TO_COPY} ${DST_FILE}
         else
             echo "Cannot copy file ${SRC_FILE} - it does not exist" 
         fi
@@ -70,29 +72,12 @@ copy_files_from_src_to_dst_via_conf_file() {
 
 # Main program starts here
 
-
 get_location_of_this_script_execution
 echo "${LOCATION_OF_THIS_SCRIPT}"
 
 define_environment_variables
 
 copy_files_from_src_to_dst_via_conf_file \
-    ${SLOTPUZZLE_SPPROTOTYPE_HOME} \
-    ${SLOTPUZZLE_TEMPLATE_AIDE_HOME} \
-    ${SLOTPUZZLE_SPPROTOTYPE_TEMPLATE_FILE_LIST}
-
-#copy_files_from_src_to_dst_via_conf_file \
-#    ${SLOTPUZZLE_CORE_SRC} \
-#    ${SLOTPUZZLE_TEMPLATE_AIDE_SRC_HOME} \
-#    ${SLOTPUZZLE_SPPROTOTYPE_JAVA_FILE_LIST}
-
-# Copy custom Java files which comments out dependencies that are not currently working
-#cp ${SLOTPUZZLE_SPPROTOTYPE_HOME}/spprototypes/src/com/ellzone/slotpuzzle2d/prototypes/SPPrototypes.java \
-#   ${SLOTPUZZLE_TEMPLATE_AIDE_SRC_HOME}/com/ellzone/slotpuzzle2d/prototypes
-
-#cp ${SLOTPUZZLE_SPPROTOTYPE_HOME}/spprototypes/src/com/ellzone/slotpuzzle2d/prototypes/minislotmachine/SpinningSlots.java \
-#   ${SLOTPUZZLE_TEMPLATE_AIDE_SRC_HOME}/com/ellzone/slotpuzzle2d/prototypes/minislotmachine
- 
-#cp ${SLOTPUZZLE_SPPROTOTYPE_HOME}/spprototypes/src/com/ellzone/slotpuzzle2d/utils/PixmapProcessors.java \
-#   ${SLOTPUZZLE_TEMPLATE_AIDE_SRC_HOME}/com/ellzone/slotpuzzle2d/utils
-
+    ${SLOTPUZZLE_TEMPLATE_AIDE_SRC_HOME} \
+    ${SLOTPUZZLE_CORE_SRC} \
+    ${SLOTPUZZLE_SPPROTOTYPE_JAVA_FILE_LIST}
