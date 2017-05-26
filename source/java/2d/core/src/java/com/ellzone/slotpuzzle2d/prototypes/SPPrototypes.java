@@ -17,6 +17,7 @@
 package com.ellzone.slotpuzzle2d.prototypes;
 
 import com.badlogic.gdx.utils.reflect.*;
+import com.ellzone.slotpuzzle2d.prototypes.SPPrototypesGame;
 import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.*;
 import com.ellzone.slotpuzzle2d.prototypes.particle.Particle1;
 import com.ellzone.slotpuzzle2d.prototypes.particle.Particle2;
@@ -28,7 +29,7 @@ import com.ellzone.slotpuzzle2d.prototypes.particle.Particle1ExtendingParticleTe
 import com.ellzone.slotpuzzle2d.prototypes.particle.Particle2ExtendingParticleTemplate;
 import com.ellzone.slotpuzzle2d.prototypes.particle.Particle3ExtendingParticleTemplate;
 import java.util.*;
-import com.ellzone.slotpuzzle2d.prototypes.particle.*;
+
 
 public class SPPrototypes {
     public static final List<Class<? extends SPPrototype>> tests = new ArrayList<Class<? extends SPPrototype>>((Collection<? extends Class<? extends SPPrototype>>) Arrays.asList(
@@ -41,7 +42,7 @@ public class SPPrototypes {
         //SubPixelPerfectSmoothScrolling.class,
         //WorldMapLevelSelect.class,
         //WorldMapLevelSelectAndReturn.class,
-        Particle1.class,
+		Particle1.class,
         Particle2.class,
         Particle3.class,
         Particle4.class,
@@ -50,9 +51,9 @@ public class SPPrototypes {
 		Particle1ExtendingParticleTemplate.class,																										   
 		Particle2ExtendingParticleTemplate.class,					
 		Particle3ExtendingParticleTemplate.class,																																														   //Dynamic.class,																						   
-	    Particle4ExtendingParticleTemplate.class,																										   
-		Particle5ExtendingParticleTemplate.class,
-		Particle6ExtendingParticleTemplate.class,
+	    //Particle4ExtendingParticleTemplate.class,																										   
+		//Particle5ExtendingParticleTemplate.class,
+		//Particle6ExtendingParticleTemplate.class,
 		//Dynamic.class,																			   
 		//Flash.class,
         //GameOverPopUp.class,
@@ -65,7 +66,8 @@ public class SPPrototypes {
         //Veil.class,
         //WayPoints1.class,
         //WayPoints2.class
-	    SpinningSlots.class
+	    SpinningSlots.class,
+		SPPrototypesGame.class
     ));
 
     public static List<String> getNames () {
