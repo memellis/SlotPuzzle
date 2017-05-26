@@ -1,4 +1,4 @@
-#!/bun/bash
+#!/bin/bash
 # Generate ${SLOTPUZZLE_GIT_DIR}/etc/SPPrototypesTemplateJavaFileso.conf
 
 define_environment_variables() {
