@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="12" tilewidth="40" tileheight="40" nextobjectid="160">
  <properties>
-  <property name="Number Of Cards" value="2"/>
+  <property name="Number Of Cards" value="4"/>
  </properties>
  <tileset firstgid="1" name="light_pink_transparent 40x40" tilewidth="40" tileheight="40" tilecount="1" columns="1">
   <image source="light_pink_transparent 40x40.png" width="40" height="40"/>
@@ -10,9 +10,6 @@
   <image source="blue.png" width="49" height="49"/>
  </tileset>
  <objectgroup name="Hidden Pattern Object">
-  <properties>
-   <property name="Number Of Cards" value="2"/>
-  </properties>
   <object id="149" name="Card1" type="PlayingCard" x="200" y="120" width="80" height="120"/>
   <object id="150" name="Card2" type="PlayingCard" x="280" y="120" width="80" height="120">
    <properties>

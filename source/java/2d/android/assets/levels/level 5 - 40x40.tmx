@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="12" tilewidth="40" tileheight="40" nextobjectid="160">
- <properties>
-  <property name="Number Of Cards" value="2"/>
- </properties>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="12" tilewidth="40" tileheight="40" nextobjectid="148">
  <tileset firstgid="1" name="light_pink_transparent 40x40" tilewidth="40" tileheight="40" tilecount="1" columns="1">
   <image source="light_pink_transparent 40x40.png" width="40" height="40"/>
  </tileset>
@@ -10,25 +7,34 @@
   <image source="blue.png" width="49" height="49"/>
  </tileset>
  <objectgroup name="Hidden Pattern Object">
-  <properties>
-   <property name="Number Of Cards" value="2"/>
-  </properties>
-  <object id="149" name="Card1" type="PlayingCard" x="200" y="120" width="80" height="120"/>
-  <object id="150" name="Card2" type="PlayingCard" x="280" y="120" width="80" height="120">
-   <properties>
-    <property name="Number Of Cards" value="2"/>
-   </properties>
-  </object>
-  <object id="151" name="Card3" type="PlayingCard" x="360" y="120" width="80" height="120"/>
-  <object id="152" name="Card4" type="PlayingCard" x="440" y="120" width="80" height="120"/>
-  <object id="153" name="Card5" type="PlayingCard" x="520" y="120" width="80" height="120"/>
-  <object id="154" name="Card6" type="PlayingCard" x="200" y="280" width="80" height="120"/>
-  <object id="156" name="Card7" type="PlayingCard" x="280" y="280" width="80" height="120"/>
-  <object id="157" name="Card8" type="PlayingCard" x="360" y="280" width="80" height="120"/>
-  <object id="158" name="Card9" type="PlayingCard" x="440" y="280" width="80" height="120"/>
-  <object id="159" name="Card10" type="PlayingCard" x="520" y="280" width="80" height="120"/>
+  <object id="109" name="Reel" x="240" y="360" width="40" height="40"/>
+  <object id="110" name="Reel" x="280" y="360" width="40" height="40"/>
+  <object id="111" name="Reel" x="320" y="320" width="40" height="40"/>
+  <object id="112" name="Reel" x="320" y="280" width="40" height="40"/>
+  <object id="113" name="Reel" x="280" y="240" width="40" height="40"/>
+  <object id="114" name="Reel" x="240" y="240" width="40" height="40"/>
+  <object id="115" name="Reel" x="200" y="200" width="40" height="40"/>
+  <object id="116" name="Reel" x="200" y="160" width="40" height="40"/>
+  <object id="117" name="Reel" x="240" y="120" width="40" height="40"/>
+  <object id="118" name="Reel" x="280" y="120" width="40" height="40"/>
+  <object id="119" name="Reel" x="319" y="159" width="40" height="40"/>
+  <object id="120" name="Reel" x="440" y="360" width="40" height="40"/>
+  <object id="121" name="Reel" x="440" y="320" width="40" height="40"/>
+  <object id="122" name="Reel" x="440" y="280" width="40" height="40"/>
+  <object id="123" name="Reel" x="440" y="200" width="40" height="40"/>
+  <object id="124" name="Reel" x="440" y="240" width="40" height="40"/>
+  <object id="125" name="Reel" x="440" y="160" width="40" height="40"/>
+  <object id="126" name="Reel" x="440" y="120" width="40" height="40"/>
+  <object id="127" name="Reel" x="440" y="240" width="40" height="40"/>
+  <object id="128" name="Reel" x="480" y="240" width="40" height="40"/>
+  <object id="129" name="Reel" x="520" y="240" width="40" height="40"/>
+  <object id="130" name="Reel" x="479" y="120" width="40" height="40"/>
+  <object id="131" name="Reel" x="520" y="120" width="40" height="40"/>
+  <object id="132" name="Reel" x="560" y="160" width="40" height="40"/>
+  <object id="133" name="Reel" x="560" y="200" width="40" height="40"/>
+  <object id="147" name="Reel" x="200" y="320" width="40" height="40"/>
  </objectgroup>
- <layer name="Hidden Pattern" width="20" height="12" visible="0">
+ <layer name="Hidden Pattern" width="20" height="12">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
