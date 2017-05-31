@@ -123,6 +123,9 @@ public class SPPrototypeLauncherSwing extends JFrame {
 		new Object[] {
 			"Basic2d Experiments",
 			new AppDesc("Basic2d", 640,480, com.ellzone.slotpuzzle2d.prototypes.basic2d.Basic2D.class)
+		},
+		new Object[] {
+			new AppDesc("Mini Slot Machine Experiements", 640,480, com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlots.class)
 		}
 	};
 	
