@@ -27,7 +27,9 @@ import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototypes;
 
 public class SPPrototypeLauncher extends JFrame implements SPPrototypeList.SPPrototypeLauncher {
-    public SPPrototypeLauncher () throws HeadlessException {
+	private static final long serialVersionUID = -3515677987227635114L;
+
+	public SPPrototypeLauncher () throws HeadlessException {
         super("SlotPuzzle Prototypes");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(new SPPrototypeList(this));
@@ -53,15 +55,10 @@ public class SPPrototypeLauncher extends JFrame implements SPPrototypeList.SPPro
             config.title = testName;
             config.forceExit = false;
 
-            System.out.println("");
-
             new LwjglApplication(spPrototype, config);
-
             dispose();
-
             return true;
         }
-
         return false;
     }
 }
