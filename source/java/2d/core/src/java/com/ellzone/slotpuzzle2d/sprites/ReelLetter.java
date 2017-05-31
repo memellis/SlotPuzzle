@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 
 public class ReelLetter extends ReelSprite {
 	
@@ -78,7 +79,7 @@ public class ReelLetter extends ReelSprite {
 			}
 		}
 
-		reelAnimationFast = new Animation(frameRate, reelFrames);
+		reelAnimationFast = new Animation<TextureRegion>(frameRate, reelFrames);
 		reelAnimationFast.setPlayMode(Animation.PlayMode.LOOP);
 		stateTime = 0f;
 		endStateTime = 0f;
@@ -94,21 +95,21 @@ public class ReelLetter extends ReelSprite {
 		stateTime += dt;
 		reelSpinTime -= dt;
 		if (reelSpinTime > 0) {
-			setRegion(reelAnimationFast.getKeyFrame(stateTime, true));
+			setRegion((TextureRegion) reelAnimationFast.getKeyFrame(stateTime, true));
 		} else {
 			if (endStateTime == 0) {
 				float remainder = (((stateTime / frameRate)) % reelCols) * frameRate;
                 endStateTime = stateTime + (getEndReelFrame() * frameRate)  - remainder  - 1;
 			}
 			if (stateTime < endStateTime) {
-				setRegion(reelAnimationFast.getKeyFrame(stateTime, true));
+				setRegion((TextureRegion) reelAnimationFast.getKeyFrame(stateTime, true));
 			} else {
     			setRegion(reelFrames[getEndReelFrame()]);
 				if (!animationCompleted) {
 					animationCompleted = true;
 					setSpinning(false);
 					ReelLetter.instanceCount--;
-					Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "Reel stopped spinning - instanceCount="+String.valueOf(ReelLetter.instanceCount + " reelId=" + reelId));
+					Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "Reel stopped spinning - instanceCount="+String.valueOf(ReelLetter.instanceCount + " reelId=" + reelId));
 				}
 			}
 		}
