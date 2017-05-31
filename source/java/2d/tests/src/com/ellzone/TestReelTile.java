@@ -63,7 +63,7 @@ public class TestReelTile {
         int endReel = random.nextInt(sprites.length);
         spriteWidth = sprites[0].getWidth();
         spriteHeight = sprites[0].getHeight();;
-        ReelTile reelTile = new ReelTile(slotReelScrollTexture, 0, 0, (int) spriteWidth, (int) spriteHeight, endReel);
+        ReelTile reelTile = new ReelTile(slotReelScrollTexture, 0, 0, (int) spriteWidth, (int) spriteHeight, endReel, null);
         reelTile.setX(0);
         reelTile.setY(0);
         reelTile.setSx(0);
