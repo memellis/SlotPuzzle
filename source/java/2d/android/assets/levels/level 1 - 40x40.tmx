@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="12" tilewidth="40" tileheight="40" nextobjectid="147">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="12" tilewidth="40" tileheight="40" nextobjectid="148">
  <tileset firstgid="1" name="light_pink_transparent 40x40" tilewidth="40" tileheight="40" tilecount="1" columns="1">
   <image source="light_pink_transparent 40x40.png" width="40" height="40"/>
  </tileset>
@@ -18,33 +18,20 @@
   <object id="117" name="Reel" x="240" y="120" width="40" height="40"/>
   <object id="118" name="Reel" x="280" y="120" width="40" height="40"/>
   <object id="119" name="Reel" x="319" y="159" width="40" height="40"/>
-  <object id="120" name="Reel" x="440" y="360" width="40" height="40"/>
-  <object id="121" name="Reel" x="440" y="320" width="40" height="40"/>
-  <object id="122" name="Reel" x="440" y="280" width="40" height="40"/>
-  <object id="123" name="Reel" x="440" y="200" width="40" height="40"/>
-  <object id="124" name="Reel" x="440" y="240" width="40" height="40"/>
-  <object id="125" name="Reel" x="440" y="160" width="40" height="40"/>
-  <object id="126" name="Reel" x="440" y="120" width="40" height="40"/>
-  <object id="127" name="Reel" x="440" y="240" width="40" height="40"/>
-  <object id="128" name="Reel" x="480" y="240" width="40" height="40"/>
-  <object id="129" name="Reel" x="520" y="240" width="40" height="40"/>
-  <object id="130" name="Reel" x="479" y="120" width="40" height="40"/>
-  <object id="131" name="Reel" x="520" y="120" width="40" height="40"/>
-  <object id="132" name="Reel" x="560" y="160" width="40" height="40"/>
-  <object id="133" name="Reel" x="560" y="200" width="40" height="40"/>
+  <object id="147" name="Reel" x="200" y="320" width="40" height="40"/>
  </objectgroup>
  <layer name="Hidden Pattern" width="20" height="12">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,2,2,0,0,0,2,2,2,0,0,0,0,0,0,
-0,0,0,0,0,2,0,0,2,0,0,2,0,0,2,0,0,0,0,0,
-0,0,0,0,0,2,0,0,0,0,0,2,0,0,2,0,0,0,0,0,
-0,0,0,0,0,0,2,2,0,0,0,2,2,2,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,2,0,0,2,0,0,0,0,0,0,0,0,
-0,0,0,0,0,2,0,0,2,0,0,2,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,2,2,0,0,0,2,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,2,0,0,2,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,2,0,0,2,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
