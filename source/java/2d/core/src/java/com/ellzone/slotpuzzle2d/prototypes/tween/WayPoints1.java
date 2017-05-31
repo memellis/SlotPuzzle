@@ -37,71 +37,54 @@ import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import aurelienribon.tweenengine.equations.Back;
+import com.ellzone.slotpuzzle2d.prototypes.SPPrototypeTemplate;
 
-public class WayPoints1 extends SPPrototype {
+public class WayPoints1 extends SPPrototypeTemplate {
 
-    private static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
-    private PerspectiveCamera cam;
-    private Sprite cheesecake;
-    private Sprite cherry;
-    private Sprite grapes;
-    private Sprite jelly;
-    private Sprite lemon;
-    private Sprite peach;
-    private Sprite pear;
-    private Sprite tomato;
-    private Sprite[] sprites;
-    private int spriteWidth;
-    private int spriteHeight;
+
+	
     private Pixmap slotReelScrollPixmap;
     private Texture slotReelScrollTexture;
     private Random random;
     private ReelTile reelTile;
     private Array<ReelTile> reelTiles;
-    private TweenManager tweenManager;
-    private SpriteBatch batch;
     private float tweenDuration;
 
-    @Override
-    public void create() {
-        initialiseUniversalTweenEngine();
-        loadAssets();
-        initialiseReelSlots();
+	@Override
+	protected void initialiseOverride() {
+		initialiseReelSlots();
         initialiseTweens();
-        initialiseCamera();
-        batch = new SpriteBatch();
-    }
+	}
 
-    private void initialiseUniversalTweenEngine() {
-        SlotPuzzleTween.setWaypointsLimit(10);
-        SlotPuzzleTween.setCombinedAttributesLimit(3);
-        SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelAccessor());
-        tweenManager = new TweenManager();
-    }
+	@Override
+	protected void loadAssetsOverride() {
+	}
 
-    private void loadAssets() {
-        Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
-        Assets.inst().update();
-        Assets.inst().finishLoading();
+	@Override
+	protected void disposeOverride() {
+	}
 
-        TextureAtlas atlas = Assets.inst().get("reel/reels.pack.atlas", TextureAtlas.class);
-        cherry = atlas.createSprite("cherry");
-        cheesecake = atlas.createSprite("cheesecake");
-        grapes = atlas.createSprite("grapes");
-        jelly = atlas.createSprite("jelly");
-        lemon = atlas.createSprite("lemon");
-        peach = atlas.createSprite("peach");
-        pear = atlas.createSprite("pear");
-        tomato = atlas.createSprite("tomato");
-
-        sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
-        for (Sprite sprite : sprites) {
-            sprite.setOrigin(0, 0);
+	@Override
+	protected void updateOverride(float dt) {
+        for(ReelTile reelSlot : reelTiles) {
+            reelSlot.update(dt);
         }
-        spriteWidth = (int) sprites[0].getWidth();
-        spriteHeight = (int) sprites[0].getHeight();
-    }
+	}
 
+	@Override
+	protected void renderOverride(float dt) {
+        batch.begin();
+        for (ReelTile reelTile : reelTiles) {
+            reelTile.draw(batch);
+        }
+        batch.end();
+	}
+
+	@Override
+	protected void initialiseUniversalTweenEngineOverride() {
+        SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelAccessor());
+ 	}
+	
     private void initialiseReelSlots() {
         random = new Random();
         reelTiles = new Array<ReelTile>();
@@ -124,59 +107,5 @@ public class WayPoints1 extends SPPrototype {
                         0,  slotReelScrollTexture.getHeight()*12)
                 .ease(Back.OUT)
                 .start(tweenManager);
-    }
-
-    private void initialiseCamera() {
-        cam = new PerspectiveCamera();
-        cam.position.set(0, 0, 10);
-        cam.lookAt(0, 0, 0);
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        float halfHeight = MINIMUM_VIEWPORT_SIZE * 0.5f;
-        if (height > width)
-            halfHeight *= (float)height / (float)width;
-        float halfFovRadians = MathUtils.degreesToRadians * cam.fieldOfView * 0.5f;
-        float distance = halfHeight / (float)Math.tan(halfFovRadians);
-        cam.viewportWidth = width;
-        cam.viewportHeight = height;
-        cam.position.set(0, 0, distance);
-        cam.lookAt(0, 0, 0);
-        cam.update();
-    }
-
-    private void update(float delta) {
-        tweenManager.update(delta);
-        for(ReelTile reelSlot : reelTiles) {
-            reelSlot.update(delta);
-        }
-    }
-
-    @Override
-    public void render() {
-        final float delta = Math.min(1/30f, Gdx.graphics.getDeltaTime());
-        update(delta);
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        batch.begin();
-        for (ReelTile reelSlot : reelTiles) {
-            reelSlot.draw(batch);
-        }
-        batch.end();
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void dispose() {
-        batch.dispose();
-        Assets.inst().dispose();
     }
 }

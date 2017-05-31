@@ -35,28 +35,17 @@ import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+import com.ellzone.slotpuzzle2d.prototypes.SPPrototypeTemplate;
 
-public class Bezier2 extends SPPrototype {
+public class Bezier2 extends SPPrototypeTemplate {
 
-    private static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
-    private PerspectiveCamera cam;
-    private Sprite cheesecake;
-    private Sprite cherry;
-    private Sprite grapes;
-    private Sprite jelly;
-    private Sprite lemon;
-    private Sprite peach;
-    private Sprite pear;
-    private Sprite tomato;
-    private Sprite[] sprites;
-    private int spriteWidth;
-    private int spriteHeight;
+
+	
     private Pixmap slotReelScrollPixmap;
     private Texture slotReelScrollTexture;
     private ReelTile reelTile;
     private Array<ReelTile> reelTiles;
     private Random random;
-    private SpriteBatch batch;
     private ShapeRenderer shapeRenderer;
     private Array<Vector2> points = new Array<Vector2>();
     private Array<Vector2> reelSpinBezier = new Array<Vector2>();
@@ -64,38 +53,50 @@ public class Bezier2 extends SPPrototype {
     private int graphSize = 512;
     private Vector2[] reelSpinPath;
 
-    @Override
-    public void create() {
-        loadAssets();
-        initialiseReelSlots();
+	@Override
+	protected void initialiseOverride() {
+		initialiseReelSlots();
         initialiseBezier();
-        initialiseCamera();
-        batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
-    }
+	}
 
-    private void loadAssets() {
-        Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
-        Assets.inst().update();
-        Assets.inst().finishLoading();
-        TextureAtlas atlas = Assets.inst().get("reel/reels.pack.atlas", TextureAtlas.class);
-        cherry = atlas.createSprite("cherry");
-        cheesecake = atlas.createSprite("cheesecake");
-        grapes = atlas.createSprite("grapes");
-        jelly = atlas.createSprite("jelly");
-        lemon = atlas.createSprite("lemon");
-        peach = atlas.createSprite("peach");
-        pear = atlas.createSprite("pear");
-        tomato = atlas.createSprite("tomato");
+	@Override
+	protected void loadAssetsOverride() {
+	}
 
-        sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
-        for (Sprite sprite : sprites) {
-            sprite.setOrigin(0, 0);
+	@Override
+	protected void disposeOverride() {
+	}
+
+	@Override
+	protected void updateOverride(float dt) {
+        for(ReelTile reelTile : reelTiles) {
+            if (graphStep < reelSpinBezier.size - (graphSize/reelSpinPath.length)) {
+                reelTile.setSy(reelSpinBezier.get(graphStep).y);
+            }
+            reelTile.update(dt);
         }
-        spriteWidth = (int) sprites[0].getWidth();
-        spriteHeight = (int) sprites[0].getHeight();
-    }
+	}
 
+	@Override
+	protected void renderOverride(float dt) {
+        batch.begin();
+        for (ReelTile reelTile : reelTiles) {
+            reelTile.draw(batch);
+        }
+        batch.end();
+        if (graphStep < reelSpinBezier.size - (graphSize/reelSpinPath.length)) {
+            drawGraphPoint(shapeRenderer, new Vector2(graphStep % Gdx.graphics.getWidth(), reelSpinBezier.get(graphStep).y + Gdx.graphics.getHeight() / 4 % Gdx.graphics.getHeight()));
+            graphStep++;
+        } else {
+            graphStep = 0;
+        }	
+	}
+
+	@Override
+	protected void initialiseUniversalTweenEngineOverride() {
+	}
+	
     private void initialiseReelSlots() {
         random = new Random();
         reelTiles = new Array<ReelTile>();
@@ -138,35 +139,6 @@ public class Bezier2 extends SPPrototype {
         }
     }
 
-    private void initialiseCamera() {
-        cam = new PerspectiveCamera();
-        cam.position.set(0, 0, 10);
-        cam.lookAt(0, 0, 0);
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        float halfHeight = MINIMUM_VIEWPORT_SIZE * 0.5f;
-        if (height > width)
-            halfHeight *= (float)height / (float)width;
-        float halfFovRadians = MathUtils.degreesToRadians * cam.fieldOfView * 0.5f;
-        float distance = halfHeight / (float)Math.tan(halfFovRadians);
-        cam.viewportWidth = width;
-        cam.viewportHeight = height;
-        cam.position.set(0, 0, distance);
-        cam.lookAt(0, 0, 0);
-        cam.update();
-    }
-
-    private void update(float delta) {
-        for(ReelTile reelTile : reelTiles) {
-            if (graphStep < reelSpinBezier.size - (graphSize/reelSpinPath.length)) {
-                reelTile.setSy(reelSpinBezier.get(graphStep).y);
-            }
-            reelTile.update(delta);
-        }
-    }
-
     private void drawGraphPoint(ShapeRenderer shapeRenderer, Vector2 newPoint) {
         if (points.size >= 2) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -177,38 +149,5 @@ public class Bezier2 extends SPPrototype {
             shapeRenderer.end();
         }
         points.add(newPoint);
-    }
-
-    @Override
-    public void render() {
-        final float delta = Math.min(1/30f, Gdx.graphics.getDeltaTime());
-        update(delta);
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        batch.begin();
-        for (ReelTile reelTile : reelTiles) {
-            reelTile.draw(batch);
-        }
-        batch.end();
-        if (graphStep < reelSpinBezier.size - (graphSize/reelSpinPath.length)) {
-            drawGraphPoint(shapeRenderer, new Vector2(graphStep % Gdx.graphics.getWidth(), reelSpinBezier.get(graphStep).y + Gdx.graphics.getHeight() / 4 % Gdx.graphics.getHeight()));
-            graphStep++;
-        } else {
-            graphStep = 0;
-        }
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void dispose() {
-        batch.dispose();
-        Assets.inst().dispose();
     }
 }

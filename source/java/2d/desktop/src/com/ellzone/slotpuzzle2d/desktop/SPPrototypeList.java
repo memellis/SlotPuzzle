@@ -38,8 +38,9 @@ import com.badlogic.gdx.files.FileHandle;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototypes;
 
 class SPPrototypeList extends JPanel {
+	private static final long serialVersionUID = 4871155599055981034L;
 
-    public interface SPPrototypeLauncher {
+	public interface SPPrototypeLauncher {
         boolean launchSPPrototype(String sampleName);
     }
 
@@ -52,7 +53,7 @@ class SPPrototypeList extends JPanel {
 
         final JButton button = new JButton("Run SPPrototype");
 
-        final JList list = new JList(SPPrototypes.getNames().toArray());
+        final JList<Object> list = new JList<Object>(SPPrototypes.getNames().toArray());
         JScrollPane pane = new JScrollPane(list);
 
         DefaultListSelectionModel m = new DefaultListSelectionModel();

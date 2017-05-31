@@ -29,6 +29,9 @@ import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public abstract class SPPrototypeTemplate extends SPPrototype {
 
@@ -38,12 +41,15 @@ public abstract class SPPrototypeTemplate extends SPPrototype {
     protected final TweenManager tweenManager = new TweenManager();
     protected Sprite cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato;
     protected Sprite[] sprites;
-
+	protected int spriteWidth, spriteHeight;
     protected PerspectiveCamera cam;
-
     protected SpriteBatch batch;
     protected final Random random = new Random();
     protected BitmapFont font;
+	protected FitViewport viewport;
+	protected Stage stage;
+	protected int displayWindowHeight;
+	protected int displayWindowWidth;
 
     protected abstract void initialiseOverride();
     protected abstract void loadAssetsOverride();
@@ -59,11 +65,11 @@ public abstract class SPPrototypeTemplate extends SPPrototype {
             return;
         }
 
-        loadAssets();
-        initialiseCamera();
         initialiseLibGdx();
+		initialiseScreen();
+		initialiseCamera();
+        loadAssets();
         initialiseUniversalTweenEngine();
-
         initialiseOverride();
     }
 
@@ -88,20 +94,27 @@ public abstract class SPPrototypeTemplate extends SPPrototype {
 
         int i = 0;
         sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
+		spriteWidth = (int) cherry.getWidth();
+		spriteHeight = (int) cherry.getWidth();
+        float startPosition = (displayWindowWidth - sprites.length * cherry.getWidth()) / 2;
         for (Sprite sprite : sprites) {
             sprite.setOrigin(0, 0);
-            sprite.setPosition(192 + i * sprite.getWidth(), Gdx.graphics.getHeight() / 2 - sprite.getHeight() / 2);
+            sprite.setX(startPosition + i * sprite.getWidth());
+			sprite.setY((float) displayWindowHeight / 2 - sprite.getHeight() / 2);
             i++;
         }
 
         loadAssetsOverride();
     }
 
+	
     protected void initialiseCamera() {
         cam = new PerspectiveCamera();
         cam.position.set(0, 0, 10);
         cam.lookAt(0, 0, 0);
         cam.update();
+		displayWindowWidth = SlotPuzzleConstants.V_WIDTH;
+        displayWindowHeight = SlotPuzzleConstants.V_HEIGHT;
     }
 
     protected void initialiseLibGdx() {
@@ -109,10 +122,14 @@ public abstract class SPPrototypeTemplate extends SPPrototype {
         font = new BitmapFont();
     }
 
+	protected void initialiseScreen() {
+		viewport = new FitViewport(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT);
+		stage = new Stage(viewport, batch); 
+	}
+	
     protected void initialiseUniversalTweenEngine() {
         SlotPuzzleTween.setWaypointsLimit(10);
         SlotPuzzleTween.setCombinedAttributesLimit(3);
-        SlotPuzzleTween.registerAccessor(Sprite.class, new SpriteAccessor());
         initialiseUniversalTweenEngineOverride();
     }
 
@@ -128,11 +145,11 @@ public abstract class SPPrototypeTemplate extends SPPrototype {
         cam.position.set(0, 0, distance);
         cam.lookAt(0, 0, 0);
         cam.update();
+		viewport.update(width, height);
     }
 
     private void update(float delta) {
         tweenManager.update(delta);
-
         updateOverride(delta);
     }
 
@@ -146,13 +163,8 @@ public abstract class SPPrototypeTemplate extends SPPrototype {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         update(delta);
-        batch.begin();
-        for (Sprite sprite : sprites) {
-            sprite.draw(batch);
-        }
-        batch.end();
-
         renderOverride(delta);
+		stage.draw();
     }
 
     @Override
@@ -172,6 +184,9 @@ public abstract class SPPrototypeTemplate extends SPPrototype {
         if (batch != null) {
             batch.dispose();
         }
+		if (stage != null) {
+			stage.dispose();
+		}
         for (Sprite sprite : sprites) {
             sprite.getTexture().dispose();
         }

@@ -230,6 +230,13 @@ public class WorldScreen implements Screen {
 	}
 	
 	public class MapGestureListener implements GestureListener {
+
+		@Override
+		public void pinchStop()
+		{
+			// TODO: Implement this method
+		}
+
 		private final OrthographicCamera camera;
 		float velX, velY;
 		boolean flinging = false;

@@ -18,7 +18,7 @@ package com.ellzone.slotpuzzle2d.puzzlegrid;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import com.ellzone.slotpuzzle2d.SlotPuzzle;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 
 public class PuzzleGridType {
 	
@@ -48,11 +48,11 @@ public class PuzzleGridType {
                                             match = false;
                                         }
                                     } else {
-                                        Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "r=" + r + " c=" + c + " is Null - ignoring this tile.");
+                                        Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "r=" + r + " c=" + c + " is Null - ignoring this tile.");
                                         match = false;
                                     }
                                 } else {
-                                    Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "r=" + r + " co=" + co + " is Null - ignoring this tile.");
+                                    Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "r=" + r + " co=" + co + " is Null - ignoring this tile.");
                                     match = false;
                                 }
                             }
@@ -96,12 +96,12 @@ public class PuzzleGridType {
                                             match = false;
                                         }
                                     } else {
-                                        Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "r=" + r + " c=" + c + " is Null - ignoring this tile.");
+                                        Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "r=" + r + " c=" + c + " is Null - ignoring this tile.");
                                         System.out.println("r=" + r + " c=" + c + " is Null - ignoring this tile.");
                                         match = false;
                                     }
                                 } else {
-                                    Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "r=" + r + " co=" + co + " is Null - ignoring this tile.");
+                                    Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "r=" + r + " co=" + co + " is Null - ignoring this tile.");
                                     System.out.println("r=" + r + " co=" + co + " is Null - ignoring this tile.");
                                     match = false;
                                 }
@@ -273,11 +273,11 @@ public class PuzzleGridType {
                                             match = false;
                                         }
                                     } else {
-                                        Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "r=" + r + " c=" + c + " is Null - ignoring this tile.");
+                                        Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "r=" + r + " c=" + c + " is Null - ignoring this tile.");
                                         match = false;
                                     }
                                 } else {
-                                    Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "r=" + r + " co=" + co + " is Null - ignoring this tile.");
+                                    Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "r=" + r + " co=" + co + " is Null - ignoring this tile.");
                                     match = false;
                                 }
                             }
@@ -321,12 +321,12 @@ public class PuzzleGridType {
                                             match = false;
                                         }
                                     } else {
-                                        Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "r=" + r + " c=" + c + " is Null - ignoring this tile.");
+                                        Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "r=" + r + " c=" + c + " is Null - ignoring this tile.");
                                         System.out.println("r=" + r + " c=" + c + " is Null - ignoring this tile.");
                                         match = false;
                                     }
                                 } else {
-                                    Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "r=" + r + " co=" + co + " is Null - ignoring this tile.");
+                                    Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "r=" + r + " co=" + co + " is Null - ignoring this tile.");
                                     System.out.println("r=" + r + " co=" + co + " is Null - ignoring this tile.");
                                     match = false;
                                 }
@@ -359,7 +359,7 @@ public class PuzzleGridType {
 				if (puzzleGrid[r][c].value == -1) {
 					System.out.print(puzzleGrid[r][c].value + " ");
 				} else {
-					System.out.print(" " + puzzleGrid[r][c].value + " ");					
+					System.out.print(" " + puzzleGrid[r][c].value + " ");
 				}
 			}
 			System.out.println();

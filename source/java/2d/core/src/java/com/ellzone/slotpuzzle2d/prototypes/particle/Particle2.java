@@ -17,7 +17,6 @@
 package com.ellzone.slotpuzzle2d.prototypes.particle;
 
 import java.util.Random;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -36,6 +35,9 @@ import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public class Particle2 extends SPPrototype {
 
@@ -70,14 +72,17 @@ public class Particle2 extends SPPrototype {
     private float savedSy;
     private boolean saveAmplitude;
     private float plotTime;
+	private FitViewport viewport;
+	private Stage stage;
 
     @Override
     public void create() {
+        batch = new SpriteBatch();
         loadAssets();
         initialiseReelSlots();
         intialiseParticles();
+		initialiseScreen();
         initialiseCamera();
-        batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         graphStep = 0;
         savedAmplitude = 0;
@@ -122,7 +127,7 @@ public class Particle2 extends SPPrototype {
         reelTile.setSy(slotReelScrollTexture.getHeight() + 128 + reelTile.getEndReel() * 32 );
         reelTiles.add(reelTile);
     }
-
+	
     private void intialiseParticles() {
         accelerator = new Vector(0, 3f);
         reelParticles = new Array<Particle>();
@@ -138,6 +143,11 @@ public class Particle2 extends SPPrototype {
         return (float) (initialAmplitude * Math.exp(-lambda * time) *  Math.cos(angularFrequency * time + phaseAngle));
     }
 
+	private void initialiseScreen() {
+		viewport = new FitViewport(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT);
+		stage = new Stage(viewport, batch);
+	}
+	
     private void initialiseCamera() {
         cam = new PerspectiveCamera();
         cam.position.set(0, 0, 10);
@@ -156,6 +166,7 @@ public class Particle2 extends SPPrototype {
         cam.position.set(0, 0, distance);
         cam.lookAt(0, 0, 0);
         cam.update();
+		viewport.update(width, height);
     }
 
     private void update(float delta) {
@@ -179,7 +190,6 @@ public class Particle2 extends SPPrototype {
                     reelSlot.setSy(savedSy+ds);
 
                 }
-
             }
             reelSlot.update(delta);
         }
@@ -211,6 +221,7 @@ public class Particle2 extends SPPrototype {
         float dsine = dampenedSine(savedAmplitude, 1.0f, (float) (2 * Math.PI), graphStep / 75, (float) Math.PI/2);
         drawGraphPoint(shapeRenderer, new Vector2(graphStep % Gdx.graphics.getWidth(), 200 + dsine % Gdx.graphics.getHeight()));
         graphStep++;
+		stage.draw();
     }
 
     @Override

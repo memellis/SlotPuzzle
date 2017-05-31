@@ -58,7 +58,7 @@ public class Particle5 extends SPPrototype {
     private Array<Vector2> points = new Array<Vector2>();
     private float graphStep;
     private Vector2 touch;
-
+	
     @Override
     public void create() {
         loadAssets();

@@ -25,7 +25,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.ellzone.slotpuzzle2d.SlotPuzzle;
+import aurelienribon.tweenengine.equations.Elastic;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.effects.ReelLetterAccessor;
 import com.ellzone.slotpuzzle2d.physics.DampenedSineParticle;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
@@ -39,7 +40,8 @@ import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.utils.FileUtils;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
-import aurelienribon.tweenengine.equations.Elastic;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 
 public class ReelLetterTilePlay extends SPPrototypeTemplate {
 
@@ -81,7 +83,7 @@ public class ReelLetterTilePlay extends SPPrototypeTemplate {
         try {
             FileUtils.copyFile(internalFontFile, generatedFontFile);
         } catch (IOException ex) {
-            Gdx.app.error(SlotPuzzle.SLOT_PUZZLE, "Could not copy " + internalFontFile.file().getPath() + " to file " + generatedFontFile.file().getAbsolutePath() + " " + ex.getMessage());
+            Gdx.app.error(SlotPuzzleConstants.SLOT_PUZZLE, "Could not copy " + internalFontFile.file().getPath() + " to file " + generatedFontFile.file().getAbsolutePath() + " " + ex.getMessage());
         }
         fontSmall = fontGen.createFont(generatedFontFile, FONT_SMALL, FONT_SMALL_SIZE);
     }
@@ -94,9 +96,11 @@ public class ReelLetterTilePlay extends SPPrototypeTemplate {
     }
 
     private void initialiseFontReel(String reelText) {
-        reelLetterTiles = new Array<ReelLetterTile>();
+		int startPosition = (displayWindowWidth - reelText.length() * REEL_WIDTH) / 2;
+		reelLetterTiles = new Array<ReelLetterTile>();
         for (int i = 0; i < reelText.length(); i++) {
-            ReelLetterTile reelLetter = new ReelLetterTile(textTexture, (float)(100 + i * REEL_WIDTH), 150f, (float)REEL_WIDTH, (float)REEL_HEIGHT, i);
+
+            ReelLetterTile reelLetter = new ReelLetterTile(textTexture, (float) startPosition + i * REEL_WIDTH, (float)  displayWindowHeight / 3, (float) REEL_WIDTH, (float) REEL_HEIGHT, i);
             reelLetter.setSy(random.nextInt(reelText.length() - 1) * REEL_HEIGHT);
             reelLetter.setSpinning();
             reelLetterTiles.add(reelLetter);
@@ -191,7 +195,6 @@ public class ReelLetterTilePlay extends SPPrototypeTemplate {
         }
     }
 
-
     @Override
     protected void loadAssetsOverride() {
     }
@@ -216,6 +219,9 @@ public class ReelLetterTilePlay extends SPPrototypeTemplate {
         for (ReelLetterTile reel : reelLetterTiles) {
             reel.draw(batch);
         }
+		for (Sprite sprite : sprites) {
+			sprite.draw(batch);
+		}
         batch.end();
     }
 
@@ -255,6 +261,5 @@ public class ReelLetterTilePlay extends SPPrototypeTemplate {
     @Override
     protected void initialiseUniversalTweenEngineOverride() {
         SlotPuzzleTween.registerAccessor(ReelLetterTile.class, new ReelLetterAccessor());
-
     }
 }

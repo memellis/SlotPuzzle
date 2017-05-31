@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
-import com.ellzone.slotpuzzle2d.SlotPuzzle;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
@@ -38,8 +38,8 @@ public class LevelPopUp {
 	private BitmapFont levelFont, font;
 	private String currentLevel;
 	private String levelDescription;
-	private int sW = SlotPuzzle.V_WIDTH;
-	private int sH = SlotPuzzle.V_HEIGHT;
+	private int sW = SlotPuzzleConstants.V_WIDTH;
+	private int sH = SlotPuzzleConstants.V_HEIGHT;
 	
 	public LevelPopUp(SpriteBatch batch, TweenManager tweenManager, Array<Sprite> sprites, BitmapFont levelFont, String currentLevel, String levelDescription) {
 		this.tweenManager = tweenManager;

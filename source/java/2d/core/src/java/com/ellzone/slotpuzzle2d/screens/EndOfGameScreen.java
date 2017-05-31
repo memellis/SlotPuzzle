@@ -1,3 +1,19 @@
+/***************************************************6****************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.ellzone.slotpuzzle2d.screens;
 
 import java.io.IOException;
@@ -20,6 +36,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.effects.ReelLetterAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
@@ -39,23 +56,9 @@ import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
 import aurelienribon.tweenengine.equations.Elastic;
 
-/*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
 
 public class EndOfGameScreen implements Screen {
+
 	public static final int TEXT_SPACING_SIZE = 30;
 	public static final float SIXTY_FPS = 0.0166f;
 	public static final int EXO_FONT_SMALL_SIZE = 24;
@@ -119,10 +122,10 @@ public class EndOfGameScreen implements Screen {
         SlotPuzzleTween.setWaypointsLimit(10);
         SlotPuzzleTween.setCombinedAttributesLimit(3);
         SlotPuzzleTween.registerAccessor(Sprite.class, new SpriteAccessor());
-        SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelAccessor());    	
-        SlotPuzzleTween.registerAccessor(ReelLetterTile.class, new ReelLetterAccessor());    	
+        SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelAccessor());
+        SlotPuzzleTween.registerAccessor(ReelLetterTile.class, new ReelLetterAccessor());
     }
-	
+
     private void initialiseFonts() {
         SmartFontGenerator fontGen = new SmartFontGenerator();
         FileHandle exoFileInternal = Gdx.files.internal(LIBERATION_MONO_REGULAR_FONT_NAME);
@@ -134,7 +137,7 @@ public class EndOfGameScreen implements Screen {
         try {
             FileUtils.copyFile(exoFileInternal, exoFile);
         } catch (IOException ex) {
-            Gdx.app.error(SlotPuzzle.SLOT_PUZZLE, "Could not copy " + exoFileInternal.file().getPath() + " to file " + exoFile.file().getAbsolutePath() + " " + ex.getMessage());
+            Gdx.app.error(SlotPuzzleConstants.SLOT_PUZZLE, "Could not copy " + exoFileInternal.file().getPath() + " to file " + exoFile.file().getAbsolutePath() + " " + ex.getMessage());
         }
 
         fontSmall = fontGen.createFont(exoFile, FONT_SMALL, 24);
@@ -146,7 +149,7 @@ public class EndOfGameScreen implements Screen {
 		Texture textTexture = new Texture(textPixmap);
 		return textTexture;
 	}
-	
+
 	private void initialiseFontReel(String reelText, float x, float y) {
 		Texture textTexture = initialiseFontTexture(reelText);
 		for (int i = 0; i < reelText.length(); i++) {
@@ -163,7 +166,7 @@ public class EndOfGameScreen implements Screen {
 		numReelLettersSpinning = reelLetterTiles.size;
 		numReelLetterSpinLoops = 10;
     }
-    
+
 	private void initialiseDampenedSine() {
 		velocityY = 4.0f;
 		velocityYMin = 2.0f;
@@ -185,14 +188,14 @@ public class EndOfGameScreen implements Screen {
 			dampenedSines.add(dampenedSine);
 		}
 	}
-	
+
 	private SPPhysicsCallback dsCallback = new SPPhysicsCallback() {
 		@Override
 		public void onEvent(int type, SPPhysicsEvent source) {
 			delegateDSCallback(type, source); 
 		}
 	};
-	
+
 	private void delegateDSCallback(int type, SPPhysicsEvent source) {
 		if (type == SPPhysicsCallback.PARTICLE_UPDATE) {
 			DampenedSineParticle ds = (DampenedSineParticle)source.getSource();
@@ -211,14 +214,14 @@ public class EndOfGameScreen implements Screen {
 	        				.start(tweenManager);
 		}
 	}
-	
+
 	private TweenCallback slowingSpinningCallback = new TweenCallback() {
 		@Override
 		public void onEvent(int type, BaseTween<?> source) {
 			delegateSlowingSpinning(type, source);
 		}
 	};
-	
+
 	private void delegateSlowingSpinning(int type, BaseTween<?> source) {
 		ReelLetterTile reel = (ReelLetterTile)source.getUserData();
 		if (type == TweenCallback.END) {
@@ -261,13 +264,13 @@ public class EndOfGameScreen implements Screen {
 	}
 
     @Override
-	public void show() {		
+	public void show() {
 	}
 
 	private void update(float delta) {
 		tweenManager.update(delta);
 		int dsIndex = 0;
-		for (ReelLetterTile reel : reelLetterTiles) { 		  
+		for (ReelLetterTile reel : reelLetterTiles) {
 			dampenedSines.get(dsIndex).update();
          	if (dampenedSines.get(dsIndex).getDSState() == DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE) {
          		reel.setSy(dampenedSines.get(dsIndex).position.y);
@@ -280,7 +283,7 @@ public class EndOfGameScreen implements Screen {
 	        dispose();
 	    }
  	}
-	
+
 	@Override
 	public void render(float delta) {
 		update(delta);
@@ -291,7 +294,7 @@ public class EndOfGameScreen implements Screen {
 			reel.draw(game.batch);
 		}
 		game.batch.end();
-	    stage.draw();	
+	    stage.draw();
 	}
 
 	@Override
@@ -301,7 +304,7 @@ public class EndOfGameScreen implements Screen {
 	}
 
 	@Override
-	public void pause() {		
+	public void pause() {
 	}
 
 	@Override

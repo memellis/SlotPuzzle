@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.ellzone.slotpuzzle2d.SlotPuzzle;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
 public class ReelSlotTile extends ReelSprite {
@@ -114,7 +114,7 @@ public class ReelSlotTile extends ReelSprite {
 					processEvent(new ReelStoppedSpinningEvent());
 					ReelSlotTile.instanceCount--;
 					ReelSlotTile.reelsSpinning--;
-					Gdx.app.debug(SlotPuzzle.SLOT_PUZZLE, "Reel stopped spinning - instanceCount="+String.valueOf(ReelLetter.instanceCount + " reelId=" + reelId));
+					Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "Reel stopped spinning - instanceCount="+String.valueOf(ReelLetter.instanceCount + " reelId=" + reelId));
 				} else {
 					if (reelFlash) {
 						reelFlashTimer -= dt;

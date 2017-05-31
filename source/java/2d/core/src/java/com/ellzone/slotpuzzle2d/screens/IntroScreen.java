@@ -1,11 +1,11 @@
 /* Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -60,6 +60,7 @@ import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.FileUtils;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import aurelienribon.tweenengine.equations.Bounce;
 import aurelienribon.tweenengine.equations.Elastic;
 
@@ -117,11 +118,11 @@ public class IntroScreen implements Screen {
         initialiseTweenEngine();
         initialiseFonts();
         initialiseIntroScreenText();
-		initialiseDampenedSine();
-        initialiseUiStage();        
+	    initialiseDampenedSine();
+        initialiseUiStage();
         initialiseIntroSequence();
     }
-    
+
     private void initialiseIntroScreen() {
         viewport = new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, camera);
         stage = new Stage(viewport, game.batch);
@@ -138,7 +139,7 @@ public class IntroScreen implements Screen {
         SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelAccessor());    	
         SlotPuzzleTween.registerAccessor(ReelLetterTile.class, new ReelLetterAccessor());    	
     }
-    
+
     private void initialiseFonts() {
         SmartFontGenerator fontGen = new SmartFontGenerator();
         FileHandle exoFileInternal = Gdx.files.internal(LIBERATION_MONO_REGULAR_FONT_NAME);
@@ -150,21 +151,21 @@ public class IntroScreen implements Screen {
         try {
             FileUtils.copyFile(exoFileInternal, exoFile);
         } catch (IOException ex) {
-            Gdx.app.error(SlotPuzzle.SLOT_PUZZLE, "Could not copy " + exoFileInternal.file().getPath() + " to file " + exoFile.file().getAbsolutePath() + " " + ex.getMessage());
+            Gdx.app.error(SlotPuzzleConstants.SLOT_PUZZLE, "Could not copy " + exoFileInternal.file().getPath() + " to file " + exoFile.file().getAbsolutePath() + " " + ex.getMessage());
         }
 
         fontSmall = fontGen.createFont(exoFile, FONT_SMALL, 24);
         fontMedium = fontGen.createFont(exoFile, FONT_MEDIUM, 48);
         fontLarge = fontGen.createFont(exoFile, FONT_LARGE, 64);    	
     }
-    
+
 	private Texture initialiseFontTexture(String reelText) {
 		Pixmap textPixmap = new Pixmap(REEL_WIDTH, reelText.length() * REEL_HEIGHT, Pixmap.Format.RGBA8888);
 		textPixmap = PixmapProcessors.createDynamicVerticalFontText(fontSmall, reelText, textPixmap);
 		Texture textTexture = new Texture(textPixmap);
 		return textTexture;
 	}
-	
+
 	private void initialiseFontReel(String reelText, float x, float y) {
 		Texture textTexture = initialiseFontTexture(reelText);
 		for (int i = 0; i < reelText.length(); i++) {
@@ -175,18 +176,17 @@ public class IntroScreen implements Screen {
 		}
 	}
 
-    
     private void initialiseIntroScreenText() {
-		reelLetterTiles = new Array<ReelLetterTile>();
+	reelLetterTiles = new Array<ReelLetterTile>();
     	initialiseFontReel(SLOT_PUZZLE_REEL_TEXT, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + TEXT_SPACING_SIZE + 10);
     	initialiseFontReel(BY_TEXT, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + TEXT_SPACING_SIZE + 10);
     	initialiseFontReel(AUTHOR_TEXT, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + TEXT_SPACING_SIZE + 10);
     	initialiseFontReel(COPYRIGHT_YEAR_AUTHOR_TEXT, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 2.0f + TEXT_SPACING_SIZE + 10);
         initialiseFontReel("v"+ Version.VERSION, viewport.getWorldWidth() / 3.2f, viewport.getWorldHeight() / 4.0f + TEXT_SPACING_SIZE + 10);
         numReelLettersSpinning = reelLetterTiles.size;
-		numReelLetterSpinLoops = 10;
+        numReelLetterSpinLoops = 10;
     }
-        
+
     private void initialiseUiStage() {
         skin = new Skin();
         buttonAtlas = new TextureAtlas(Gdx.files.internal("ui/ui-blue.atlas"));
@@ -257,7 +257,7 @@ public class IntroScreen implements Screen {
                 .start(tweenManager);
 
         initialiseAssets();
-        
+
         slotReelPixmap = new Pixmap(REEL_WIDTH, REEL_HEIGHT, Pixmap.Format.RGBA8888);
         slotReelPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelTexture = new Texture(slotReelPixmap);
@@ -273,7 +273,7 @@ public class IntroScreen implements Screen {
                 push(SlotPuzzleTween.to(reelTile, ReelAccessor.SCROLL_XY, 5.0f).target(0f, 32.0f * 8 * 3 + random.nextInt(slotReelTexture.getHeight() / 32) * 32).ease(Elastic.OUT)).
                 start(tweenManager);
     }
-    
+
     private void initialiseAssets() {
         Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
         Assets.inst().update();
@@ -295,7 +295,7 @@ public class IntroScreen implements Screen {
             sprite.setOrigin(0, 0);
         }
     }
-    
+
 	private void initialiseDampenedSine() {
 		velocityY = 4.0f;
 		velocityYMin = 2.0f;
@@ -317,14 +317,14 @@ public class IntroScreen implements Screen {
 			dampenedSines.add(dampenedSine);
 		}
 	}
-	
+
 	private SPPhysicsCallback dsCallback = new SPPhysicsCallback() {
 		@Override
 		public void onEvent(int type, SPPhysicsEvent source) {
 			delegateDSCallback(type, source); 
 		}
 	};
-	
+
 	private void delegateDSCallback(int type, SPPhysicsEvent source) {
 		if (type == SPPhysicsCallback.PARTICLE_UPDATE) {
 			DampenedSineParticle ds = (DampenedSineParticle)source.getSource();
@@ -343,14 +343,14 @@ public class IntroScreen implements Screen {
 	        				.start(tweenManager);
 		}
 	}
-	
+
 	private TweenCallback slowingSpinningCallback = new TweenCallback() {
 		@Override
 		public void onEvent(int type, BaseTween<?> source) {
 			delegateSlowingSpinning(type, source);
 		}
 	};
-	
+
 	private void delegateSlowingSpinning(int type, BaseTween<?> source) {
 		ReelLetterTile reel = (ReelLetterTile)source.getUserData();
 		if (type == TweenCallback.END) {
@@ -456,13 +456,13 @@ public class IntroScreen implements Screen {
         	tweenManager.killAll();
         }
         if (slotReelPixmap != null) {
-        	slotReelPixmap.dispose();
+        	//slotReelPixmap.dispose();
         }
         if (slotReelTexture != null) {
-        	slotReelTexture.dispose();
+        	//slotReelTexture.dispose();
         }
         if (textTexture != null) {
-        	textTexture.dispose();
+        	//textTexture.dispose();
         }
         if (fontSmall != null) {
         	fontSmall.dispose();

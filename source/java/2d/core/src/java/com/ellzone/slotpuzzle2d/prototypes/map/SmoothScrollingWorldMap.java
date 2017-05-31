@@ -164,6 +164,7 @@ public class SmoothScrollingWorldMap extends SPPrototype {
 
     public class MapGestureListener implements GestureListener {
 
+
         private final OrthographicCamera camera;
         float velX, velY;
         boolean flinging = false;
@@ -256,7 +257,11 @@ public class SmoothScrollingWorldMap extends SPPrototype {
         public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
             return false;
         }
-
+		
+		@Override
+		public void pinchStop() {
+		}
+		
         public void update () {
             if (flinging) {
                 velX *= 0.9f;

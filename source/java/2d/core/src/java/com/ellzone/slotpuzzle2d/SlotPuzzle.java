@@ -22,11 +22,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.ellzone.slotpuzzle2d.screens.LoadingScreen;
 import com.ellzone.slotpuzzle2d.screens.WorldScreen;
 
-public class SlotPuzzle extends Game
-{
-	public final static String SLOT_PUZZLE = "Slot Puzzle";
-	public final static int V_WIDTH = 800; 
-	public final static int V_HEIGHT = 480;
+public class SlotPuzzle extends Game {
 	public SpriteBatch batch;
 	public AssetManager assetManager;
 	private WorldScreen worldScreen;
@@ -77,17 +73,17 @@ public class SlotPuzzle extends Game
 
 	@Override
 	public void resize(int width, int height) {
-		Gdx.app.log(SLOT_PUZZLE, "resize");
+		Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE, "resize");
 	}
 
 	@Override
 	public void pause() {
-		Gdx.app.log(SLOT_PUZZLE, "pause");
+		Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE, "pause");
 	}
 
 	@Override
 	public void resume() {
-		Gdx.app.log(SLOT_PUZZLE, "resume");
+		Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE, "resume");
 	}
 	
 	public void setWorldScreen(WorldScreen worldScreen) {

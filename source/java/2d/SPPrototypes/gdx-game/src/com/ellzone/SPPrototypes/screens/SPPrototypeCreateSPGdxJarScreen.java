@@ -131,7 +131,9 @@ public class SPPrototypeCreateSPGdxJarScreen implements Screen {
 		if (extractJarTask != null) {
 			if (extractJarTask.isDone()) {
 				message = "JAR archive file: " + jarArchive.file().getAbsolutePath() + " extracted";
-				if(findJavaFilesTask != findJavaFiles();
+				if (findJavaFilesTask != findJavaFiles()) {
+					
+				};
 			} else {
 				message = "" + javaArchive.getNumJarElementsExtracted();
 			}

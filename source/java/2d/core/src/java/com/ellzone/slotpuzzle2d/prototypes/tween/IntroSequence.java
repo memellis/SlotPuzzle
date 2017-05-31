@@ -41,73 +41,50 @@ import aurelienribon.tweenengine.equations.Back;
 import aurelienribon.tweenengine.equations.Cubic;
 import aurelienribon.tweenengine.equations.Quad;
 import aurelienribon.tweenengine.equations.Quart;
+import com.ellzone.slotpuzzle2d.prototypes.SPPrototypeTemplate;
 
-public class IntroSequence extends SPPrototype {
+public class IntroSequence extends SPPrototypeTemplate {
 
-    private static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
-    private PerspectiveCamera cam;
-    private SpriteBatch batch;
-    private Sprite cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato;
-    private Sprite[] sprites;
-    private int spriteWidth;
-    private int spriteHeight;
     private Pixmap slotReelScrollPixmap;
     private Texture slotReelScrollTexture;
     private Random random;
     private Array<ReelTile> reels;
     private Timeline introSequence;
-    private TweenManager tweenManager;
 
-    @Override
-    public void create() {
-        loadAssets();
-        initialiseCamera();
-        initialiseLibGdx();
-        initialiseUniversalTweenEngine();
-        initialiseReelSlots();
-        createIntroSequence();
-    }
+	@Override
+	protected void initialiseOverride() {
+	    initialiseReelSlots();
+		createIntroSequence();
+	}
 
-    private void loadAssets() {
-        Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
-        Assets.inst().update();
-        Assets.inst().finishLoading();
+	@Override
+	protected void loadAssetsOverride() {
+	}
 
-        TextureAtlas atlas = Assets.inst().get("reel/reels.pack.atlas", TextureAtlas.class);
-        cherry = atlas.createSprite("cherry");
-        cheesecake = atlas.createSprite("cheesecake");
-        grapes = atlas.createSprite("grapes");
-        jelly = atlas.createSprite("jelly");
-        lemon = atlas.createSprite("lemon");
-        peach = atlas.createSprite("peach");
-        pear = atlas.createSprite("pear");
-        tomato = atlas.createSprite("tomato");
+	@Override
+	protected void disposeOverride() {
+	}
 
-        sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
-        for (Sprite sprite : sprites) {
-            sprite.setOrigin(0, 0);
+	@Override
+	protected void updateOverride(float dt) {
+	}
+
+	@Override
+	protected void renderOverride(float dt) {
+        batch.begin();
+        for (ReelTile reel : reels) {
+            reel.draw(batch);
+            sprites[reel.getEndReel()].setX(32);
+            sprites[reel.getEndReel()].draw(batch);
         }
-        spriteWidth = (int) sprites[0].getWidth();
-        spriteHeight = (int) sprites[0].getHeight();
-    }
+        batch.end();
+	}
 
-    private void initialiseCamera() {
-        cam = new PerspectiveCamera();
-        cam.position.set(0, 0, 10);
-        cam.lookAt(0, 0, 0);
-    }
-
-    private void initialiseLibGdx() {
-        batch = new SpriteBatch();
-    }
-
-    private void initialiseUniversalTweenEngine() {
-        SlotPuzzleTween.setWaypointsLimit(10);
-        SlotPuzzleTween.setCombinedAttributesLimit(3);
+	@Override
+	protected void initialiseUniversalTweenEngineOverride() {
         SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelAccessor());
-        tweenManager = new TweenManager();
-    }
-
+	}
+	
     private void initialiseReelSlots() {
         random = new Random();
         reels = new Array<ReelTile>();
@@ -170,63 +147,13 @@ public class IntroSequence extends SPPrototype {
             case 0:
                 return new Vector2(-1 * random.nextFloat(), -1 * random.nextFloat());
             case 1:
-                return new Vector2(-1 * random.nextFloat(), 800 + random.nextFloat());
+                return new Vector2(-1 * random.nextFloat(), displayWindowWidth + random.nextFloat());
             case 2:
-                return new Vector2(480 + random.nextFloat(), -1 * random.nextFloat());
+                return new Vector2(displayWindowHeight + random.nextFloat(), -1 * random.nextFloat());
             case 3:
-                return new Vector2(480 + random.nextFloat(), 800 + random.nextFloat());
+                return new Vector2(displayWindowHeight + random.nextFloat(), displayWindowWidth + random.nextFloat());
             default:
                 return new Vector2(-0.5f, -0.5f);
         }
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        float halfHeight = MINIMUM_VIEWPORT_SIZE * 0.5f;
-        if (height > width)
-            halfHeight *= (float)height / (float)width;
-        float halfFovRadians = MathUtils.degreesToRadians * cam.fieldOfView * 0.5f;
-        float distance = halfHeight / (float)Math.tan(halfFovRadians);
-        cam.viewportWidth = width;
-        cam.viewportHeight = height;
-        cam.position.set(0, 0, distance);
-        cam.lookAt(0, 0, 0);
-        cam.update();
-    }
-
-    private void update(float delta) {
-        tweenManager.update(delta);
-        for (ReelTile reel : reels) {
-            reel.update(delta);
-        }
-    }
-
-    @Override
-    public void render() {
-        final float delta = Math.min(1/30f, Gdx.graphics.getDeltaTime());
-        update(delta);
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        batch.begin();
-        for (ReelTile reel : reels) {
-            reel.draw(batch);
-            sprites[reel.getEndReel()].setX(32);
-            sprites[reel.getEndReel()].draw(batch);
-        }
-        batch.end();
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void dispose() {
-        batch.dispose();
-        Assets.inst().dispose();
     }
 }
