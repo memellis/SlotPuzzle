@@ -132,7 +132,7 @@ public class Particle2ExtendingParticleTemplate extends ParticleTemplate {
         }
         batch.end();
         float dsine = dampenedSine(savedAmplitude, 1.0f, (float) (2 * Math.PI), graphStep / 75, (float) Math.PI/2);
-        drawGraphPoint(shapeRenderer, new Vector2(graphStep % Gdx.graphics.getWidth(), 200 + dsine % Gdx.graphics.getHeight()));
+        drawGraphPoint(shapeRenderer, new Vector2(graphStep % Gdx.graphics.getWidth(), (200 + dsine) % Gdx.graphics.getHeight()));
         graphStep++;
 	}
 

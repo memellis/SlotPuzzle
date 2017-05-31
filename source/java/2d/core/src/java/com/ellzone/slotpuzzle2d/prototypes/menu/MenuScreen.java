@@ -31,7 +31,7 @@ public class MenuScreen implements Screen {
 
     public MenuScreen(SPPrototypesGame game) {
         this.game = game;
-	defineMenuScreen();
+	    defineMenuScreen();
     }
 
     private void defineMenuScreen() {
@@ -45,20 +45,20 @@ public class MenuScreen implements Screen {
     }
 
     private void initialiseScreen(){
-	viewport = new FitViewport(SPPrototypesGame.V_WIDTH, SPPrototypesGame.V_HEIGHT, game.camera);
-	stage = new Stage(viewport, game.batch);
+	    viewport = new FitViewport(SPPrototypesGame.V_WIDTH, SPPrototypesGame.V_HEIGHT, game.camera);
+	    stage = new Stage(viewport, game.batch);
     }
 
     private void createButtons() {
         TextButton button = new TextButton("Get libGDX version", skin); // Use the initialized skin
         button.setPosition(SPPrototypesGame.V_WIDTH/2 - SPPrototypesGame.V_WIDTH/8 , SPPrototypesGame.V_HEIGHT/2 - button.getHeight());
         stage.addActor(button);
-	button.addListener(new ChangeListener() {
+	    button.addListener(new ChangeListener() {
             @Override
-	    public void changed(ChangeEvent event, Actor actor) {
-		gdxVersion = SPPrototypesGame.gdxVersion.VERSION;
-	    }
-	});
+	        public void changed(ChangeEvent event, Actor actor) {
+		        gdxVersion = SPPrototypesGame.gdxVersion.VERSION;
+	        }
+	    });
     }
 
     @Override

@@ -16,32 +16,33 @@
 
 package com.ellzone.slotpuzzle2d.prototypes.bezier;
 
-        import java.util.Arrays;
-        import java.util.Random;
-        import com.badlogic.gdx.ApplicationListener;
-        import com.badlogic.gdx.Gdx;
-        import com.badlogic.gdx.Input;
-        import com.badlogic.gdx.InputProcessor;
-        import com.badlogic.gdx.files.FileHandle;
-        import com.badlogic.gdx.graphics.GL20;
-        import com.badlogic.gdx.graphics.PerspectiveCamera;
-        import com.badlogic.gdx.graphics.Pixmap;
-        import com.badlogic.gdx.graphics.Texture;
-        import com.badlogic.gdx.graphics.g2d.Sprite;
-        import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-        import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-        import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-        import com.badlogic.gdx.math.CatmullRomSpline;
-        import com.badlogic.gdx.math.MathUtils;
-        import com.badlogic.gdx.math.Vector2;
-        import com.badlogic.gdx.utils.Array;
-        import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
-        import com.ellzone.slotpuzzle2d.sprites.ReelTile;
-        import com.ellzone.slotpuzzle2d.utils.Assets;
-        import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+import java.util.Arrays;
+import java.util.Random;
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.CatmullRomSpline;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
+import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
+import com.ellzone.slotpuzzle2d.sprites.ReelTile;
+import com.ellzone.slotpuzzle2d.utils.Assets;
+import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+import com.ellzone.slotpuzzle2d.prototypes.SPPrototypeTemplate;
 
-public class Bezier3 extends SPPrototype {
-
+public class Bezier3 extends SPPrototypeTemplate {
+	
     public class MyInputProcessor implements InputProcessor {
         @Override
         public boolean keyDown(int keycode){
@@ -95,25 +96,11 @@ public class Bezier3 extends SPPrototype {
         }
     }
 
-    private static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
-    private PerspectiveCamera cam;
-    private Sprite cheesecake;
-    private Sprite cherry;
-    private Sprite grapes;
-    private Sprite jelly;
-    private Sprite lemon;
-    private Sprite peach;
-    private Sprite pear;
-    private Sprite tomato;
-    private Sprite[] sprites;
-    private int spriteWidth;
-    private int spriteHeight;
     private Pixmap slotReelScrollPixmap;
     private Texture slotReelScrollTexture;
     private Random random;
     private ReelTile reelTile;
     private Array<ReelTile> reelTiles;
-    private SpriteBatch batch;
     private ShapeRenderer shapeRenderer;
     private Array<Vector2> points = new Array<Vector2>();
     private Array<Vector2> reelSpinBezier = new Array<Vector2>();
@@ -125,37 +112,53 @@ public class Bezier3 extends SPPrototype {
     private int dragControlPoint;
     CatmullRomSpline<Vector2> myCatmull;
 
-    @Override
-    public void create() {
-        loadAssets();
+	@Override
+	protected void initialiseOverride() {
         initialiseReelSlots();
         initialiseBezier();
-        initialiseCamera();
-        initialiseTheRest();
-    }
+        shapeRenderer = new ShapeRenderer();
+        inputProcessor = new MyInputProcessor();
+        Gdx.input.setInputProcessor(inputProcessor);
+        dragHit = false;
+	}
 
-    private void loadAssets() {
-        Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
-        Assets.inst().update();
-        Assets.inst().finishLoading();
+	@Override
+	protected void loadAssetsOverride() {
+	}
 
-        TextureAtlas atlas = Assets.inst().get("reel/reels.pack.atlas", TextureAtlas.class);
-        cherry = atlas.createSprite("cherry");
-        cheesecake = atlas.createSprite("cheesecake");
-        grapes = atlas.createSprite("grapes");
-        jelly = atlas.createSprite("jelly");
-        lemon = atlas.createSprite("lemon");
-        peach = atlas.createSprite("peach");
-        pear = atlas.createSprite("pear");
-        tomato = atlas.createSprite("tomato");
+	@Override
+	protected void disposeOverride() {
+	}
 
-        sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
-        for (Sprite sprite : sprites) {
-            sprite.setOrigin(0, 0);
+	@Override
+	protected void updateOverride(float dt) {
+        for(ReelTile reelTile : reelTiles) {
+            if (graphStep < reelSpinBezier.size - (graphSize/reelSpinPath.length)) {
+                reelTile.setSy(reelSpinBezier.get(graphStep).y);
+            }
+            reelTile.update(dt);
         }
-        spriteWidth = (int) sprites[0].getWidth();
-        spriteHeight = (int) sprites[0].getHeight();
-    }
+	}
+
+	@Override
+	protected void renderOverride(float dt) {
+        batch.begin();
+        for (ReelTile reelSlot : reelTiles) {
+            reelSlot.draw(batch);
+        }
+        batch.end();
+        if (graphStep < reelSpinBezier.size) {
+            drawGraphPoint(shapeRenderer, new Vector2(reelSpinBezier.get(graphStep).x, reelSpinBezier.get(graphStep).y + Gdx.graphics.getHeight() / 4 % Gdx.graphics.getHeight()));
+            graphStep++;
+        } else {
+            graphStep = 0;
+        }
+        drawControlPoints(shapeRenderer, reelSpinPath);
+	}
+
+	@Override
+	protected void initialiseUniversalTweenEngineOverride() {
+	}
 
     private void initialiseReelSlots() {
         random = new Random();
@@ -191,44 +194,6 @@ public class Bezier3 extends SPPrototype {
         renewSpline();
     }
 
-    private void initialiseCamera() {
-        cam = new PerspectiveCamera();
-        cam.position.set(0, 0, 10);
-        cam.lookAt(0, 0, 0);
-    }
-
-    private void initialiseTheRest() {
-        batch = new SpriteBatch();
-        shapeRenderer = new ShapeRenderer();
-        inputProcessor = new MyInputProcessor();
-        Gdx.input.setInputProcessor(inputProcessor);
-        dragHit = false;
-    }
-
-
-    @Override
-    public void resize(int width, int height) {
-        float halfHeight = MINIMUM_VIEWPORT_SIZE * 0.5f;
-        if (height > width)
-            halfHeight *= (float)height / (float)width;
-        float halfFovRadians = MathUtils.degreesToRadians * cam.fieldOfView * 0.5f;
-        float distance = halfHeight / (float)Math.tan(halfFovRadians);
-        cam.viewportWidth = width;
-        cam.viewportHeight = height;
-        cam.position.set(0, 0, distance);
-        cam.lookAt(0, 0, 0);
-        cam.update();
-    }
-
-    private void update(float delta) {
-        for(ReelTile reelSlot : reelTiles) {
-            if (graphStep < reelSpinBezier.size - (graphSize/reelSpinPath.length)) {
-                reelSlot.setSy(reelSpinBezier.get(graphStep).y);
-            }
-            reelSlot.update(delta);
-        }
-    }
-
     private void drawGraphPoint(ShapeRenderer shapeRenderer, Vector2 newPoint) {
         if (points.size >= 2) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -239,26 +204,6 @@ public class Bezier3 extends SPPrototype {
             shapeRenderer.end();
         }
         points.add(newPoint);
-    }
-
-    @Override
-    public void render() {
-        final float delta = Math.min(1/30f, Gdx.graphics.getDeltaTime());
-        update(delta);
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        batch.begin();
-        for (ReelTile reelSlot : reelTiles) {
-            reelSlot.draw(batch);
-        }
-        batch.end();
-        if (graphStep < reelSpinBezier.size) {
-            drawGraphPoint(shapeRenderer, new Vector2(reelSpinBezier.get(graphStep).x, reelSpinBezier.get(graphStep).y + Gdx.graphics.getHeight() / 4 % Gdx.graphics.getHeight()));
-            graphStep++;
-        } else {
-            graphStep = 0;
-        }
-        drawControlPoints(shapeRenderer, reelSpinPath);
     }
 
     private void drawControlPoints(ShapeRenderer shapeRenderer, Vector2[] reelSpinPath) {
@@ -284,13 +229,16 @@ public class Bezier3 extends SPPrototype {
     }
 
     private void addControlPoint(int x, int y) {
+        Vector2 touchPoint = new Vector2(x, y);
+		touchPoint = viewport.unproject(touchPoint);		
         reelSpinPath = Arrays.copyOf(reelSpinPath, reelSpinPath.length+1);
-        reelSpinPath[reelSpinPath.length-1] = new Vector2(x, y - Gdx.graphics.getHeight() / 4);
+        reelSpinPath[reelSpinPath.length - 1] = touchPoint;
         renewSpline();
     }
 
     private void dragControlPoint(int x, int y) {
-        Vector2 touchPoint = new Vector2(x, Gdx.graphics.getHeight() - y);
+        Vector2 touchPoint = new Vector2(x, y);
+		touchPoint = viewport.unproject(touchPoint);
         if(dragHit) {
             reelSpinPath[dragControlPoint].x = touchPoint.x;
             reelSpinPath[dragControlPoint].y = touchPoint.y - Gdx.graphics.getHeight() / 4;
@@ -337,19 +285,5 @@ public class Bezier3 extends SPPrototype {
             reelSpinPath = tempControlPoints;
         }
         renewSpline();
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void dispose() {
-        batch.dispose();
-        Assets.inst().dispose();
     }
 }

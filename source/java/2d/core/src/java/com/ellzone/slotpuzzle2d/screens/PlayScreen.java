@@ -103,7 +103,7 @@ public class PlayScreen implements Screen {
 	private final OrthographicCamera camera = new OrthographicCamera();
 	private Viewport viewport;
 	private Stage stage;
-Ã	private Sprite cheesecake, cherry, grapes, jelly, lemon, peach, pear, tomato;
+    private Sprite cheesecake, cherry, grapes, jelly, lemon, peach, pear, tomato;
 	private float spriteWidth, spriteHeight;
 	private float sW, sH;
  	private final TweenManager tweenManager = new TweenManager();
@@ -127,14 +127,14 @@ public class PlayScreen implements Screen {
 	private boolean displaySpinHelp;
 	private int displaySpinHelpSprite;
 	private Sprite[] sprites;
-        private Hud hud;
-        private Array<Score> scores;
+    private Hud hud;
+    private Array<Score> scores;
 	private Vector accelerator, velocityMin;
 	private float acceleratorY, accelerateY, acceleratorFriction, velocityFriction, velocityY, velocityYMin;
 	private Array<Timeline> endReelSeqs;
 	private float slotReelScrollheight;
-	float reelSlowingTargetTime;
-        private BitmapFont font;
+	private float reelSlowingTargetTime;
+    private BitmapFont font;
 	private LevelPopUp levelPopUp, levelLostPopUp, levelWonPopUp;
 	private Array<Sprite> popUpSprites, levelLostSprites, levelWonSprites;
 	private BitmapFont currentLevelFont;

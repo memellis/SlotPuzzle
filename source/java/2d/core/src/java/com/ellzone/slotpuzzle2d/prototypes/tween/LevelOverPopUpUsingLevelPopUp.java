@@ -28,6 +28,8 @@ import com.ellzone.slotpuzzle2d.prototypes.SPPrototypeTemplate;
 import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.utils.Assets;
+import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
+import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 
 public class LevelOverPopUpUsingLevelPopUp extends SPPrototypeTemplate {
 
@@ -41,7 +43,6 @@ public class LevelOverPopUpUsingLevelPopUp extends SPPrototypeTemplate {
     private LevelPopUp levelLostPopUp, levelWonPopUp;
     private Array<Sprite> levelLostSprites, levelWonSprites;
     private BitmapFont currentLevelFont;
-    private int sW, sH;
 
     @Override
     protected void initialiseOverride() {
@@ -61,9 +62,6 @@ public class LevelOverPopUpUsingLevelPopUp extends SPPrototypeTemplate {
         Assets.inst().finishLoading();
         TextureAtlas tilesAtlas = Assets.inst().get("tiles/tiles.pack.atlas", TextureAtlas.class);
 
-        sW = Gdx.graphics.getWidth();
-        sH = Gdx.graphics.getHeight();
-
         levelLostSprites = new Array<Sprite>();
         levelLostSprites.add(tilesAtlas.createSprite("GamePopUp"));
         levelLostSprites.add(tilesAtlas.createSprite("level"));
@@ -80,17 +78,17 @@ public class LevelOverPopUpUsingLevelPopUp extends SPPrototypeTemplate {
     }
 
     private void setLevelLostSpritePositions() {
-        levelLostSprites.get(0).setPosition(sW / 2 - levelLostSprites.get(0).getWidth() / 2, sH / 2 - levelLostSprites.get(0).getHeight() /2);
-        levelLostSprites.get(1).setPosition(-200, sH / 2 - levelLostSprites.get(1).getHeight() / 2);
-        levelLostSprites.get(2).setPosition(-200, sH / 2 - levelLostSprites.get(2).getHeight() / 2 + 40);
-        levelLostSprites.get(3).setPosition(200 + sW, sH / 2 - levelLostSprites.get(3).getHeight() / 2 + 40);
+        levelLostSprites.get(0).setPosition(displayWindowWidth / 2 - levelLostSprites.get(0).getWidth() / 2, displayWindowHeight / 2 - levelLostSprites.get(0).getHeight() /2);
+        levelLostSprites.get(1).setPosition(-200, displayWindowHeight / 2 - levelLostSprites.get(1).getHeight() / 2);
+        levelLostSprites.get(2).setPosition(-200, displayWindowHeight / 2 - levelLostSprites.get(2).getHeight() / 2 + 40);
+        levelLostSprites.get(3).setPosition(200 + displayWindowWidth, displayWindowHeight / 2 - levelLostSprites.get(3).getHeight() / 2 + 40);
     }
 
     private void setLevelWonSpritePositions() {
-        levelWonSprites.get(0).setPosition(sW / 2 - levelWonSprites.get(0).getWidth() / 2, sH / 2 - levelWonSprites.get(0).getHeight() /2);
-        levelWonSprites.get(1).setPosition(-200, sH / 2 - levelWonSprites.get(1).getHeight() / 2);
-        levelWonSprites.get(2).setPosition(-200, sH / 2 - levelWonSprites.get(2).getHeight() / 2 + 40);
-        levelWonSprites.get(3).setPosition(200 + sW, sH / 2 - levelWonSprites.get(3).getHeight() / 2 + 40);
+        levelWonSprites.get(0).setPosition(displayWindowWidth / 2 - levelWonSprites.get(0).getWidth() / 2, displayWindowHeight / 2 - levelWonSprites.get(0).getHeight() /2);
+        levelWonSprites.get(1).setPosition(-200, displayWindowHeight / 2 - levelWonSprites.get(1).getHeight() / 2);
+        levelWonSprites.get(2).setPosition(-200, displayWindowHeight / 2 - levelWonSprites.get(2).getHeight() / 2 + 40);
+        levelWonSprites.get(3).setPosition(200 + displayWindowWidth, displayWindowHeight / 2 - levelWonSprites.get(3).getHeight() / 2 + 40);
     }
 
     @Override
@@ -116,7 +114,8 @@ public class LevelOverPopUpUsingLevelPopUp extends SPPrototypeTemplate {
 
     @Override
     protected void initialiseUniversalTweenEngineOverride() {
-    }
+		SlotPuzzleTween.registerAccessor(Sprite.class, new SpriteAccessor());        
+	}
 
     private TweenCallback switchLevelCallback = new TweenCallback() {
         @Override

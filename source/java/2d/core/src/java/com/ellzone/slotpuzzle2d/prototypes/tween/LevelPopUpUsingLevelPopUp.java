@@ -26,6 +26,8 @@ import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.level.LevelPopUp;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototypeTemplate;
 import com.ellzone.slotpuzzle2d.utils.Assets;
+import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
+import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 
 public class LevelPopUpUsingLevelPopUp extends SPPrototypeTemplate {
 
@@ -55,8 +57,8 @@ public class LevelPopUpUsingLevelPopUp extends SPPrototypeTemplate {
         sprites.add(tilesAtlas.createSprite("GamePopUp"));
         sprites.add(tilesAtlas.createSprite("level"));
 
-        sprites.get(0).setPosition(Gdx.graphics.getWidth() / 2 - sprites.get(0).getWidth() / 2, Gdx.graphics.getHeight() / 2 - sprites.get(0).getHeight() /2);
-        sprites.get(1).setPosition(-200, Gdx.graphics.getHeight() / 2 - sprites.get(1).getHeight() /2);
+        sprites.get(0).setPosition(displayWindowWidth / 2 - sprites.get(0).getWidth() / 2, displayWindowHeight / 2 - sprites.get(0).getHeight() /2);
+        sprites.get(1).setPosition(-200, displayWindowHeight / 2 - sprites.get(1).getHeight() /2);
     }
 
     @Override
@@ -75,7 +77,8 @@ public class LevelPopUpUsingLevelPopUp extends SPPrototypeTemplate {
 
     @Override
     protected void initialiseUniversalTweenEngineOverride() {
-    }
+		SlotPuzzleTween.registerAccessor(Sprite.class, new SpriteAccessor());
+	}
 
     private final InputProcessor inputProcessor = new InputAdapter() {
         @Override

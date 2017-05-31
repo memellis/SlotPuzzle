@@ -30,6 +30,7 @@ import com.ellzone.slotpuzzle2d.physics.DampenedSine;
 import com.badlogic.gdx.math.Vector2;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsEvent;
+import com.badlogic.gdx.Gdx;
 
 public class Particle4ExtendingParticleTemplate extends ParticleTemplate {
 	private Random random;
@@ -90,7 +91,7 @@ public class Particle4ExtendingParticleTemplate extends ParticleTemplate {
 
     private void delegateDSCallback(int type) {
         if (type == SPPhysicsCallback.PARTICLE_UPDATE) {
-            addGraphPoint(new Vector2(graphStep++ % displayWindowWidth, (displayWindowHeight / 2 + dampenedSines.get(0).dsEndReel)));
+            addGraphPoint(new Vector2(graphStep++ % Gdx.graphics.getWidth(), (Gdx.graphics.getHeight() / 2 + dampenedSines.get(0).dsEndReel)));
         } else {
             if (type == SPPhysicsCallback.END) {
                 reelTilesArray.get(0).setEndReel(random.nextInt(reelSprites.length - 1));

@@ -60,6 +60,7 @@ import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.FileUtils;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import aurelienribon.tweenengine.equations.Bounce;
 import aurelienribon.tweenengine.equations.Elastic;
 
@@ -117,7 +118,7 @@ public class IntroScreen implements Screen {
         initialiseTweenEngine();
         initialiseFonts();
         initialiseIntroScreenText();
-	initialiseDampenedSine();
+	    initialiseDampenedSine();
         initialiseUiStage();
         initialiseIntroSequence();
     }
@@ -455,13 +456,13 @@ public class IntroScreen implements Screen {
         	tweenManager.killAll();
         }
         if (slotReelPixmap != null) {
-        	slotReelPixmap.dispose();
+        	//slotReelPixmap.dispose();
         }
         if (slotReelTexture != null) {
-        	slotReelTexture.dispose();
+        	//slotReelTexture.dispose();
         }
         if (textTexture != null) {
-        	textTexture.dispose();
+        	//textTexture.dispose();
         }
         if (fontSmall != null) {
         	fontSmall.dispose();

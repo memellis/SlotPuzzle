@@ -78,7 +78,7 @@ public class ReelLetter extends ReelSprite {
 			}
 		}
 
-		reelAnimationFast = new Animation(frameRate, reelFrames);
+		reelAnimationFast = new Animation<TextureRegion>(frameRate, reelFrames);
 		reelAnimationFast.setPlayMode(Animation.PlayMode.LOOP);
 		stateTime = 0f;
 		endStateTime = 0f;
@@ -94,14 +94,14 @@ public class ReelLetter extends ReelSprite {
 		stateTime += dt;
 		reelSpinTime -= dt;
 		if (reelSpinTime > 0) {
-			setRegion(reelAnimationFast.getKeyFrame(stateTime, true));
+			setRegion((TextureRegion) reelAnimationFast.getKeyFrame(stateTime, true));
 		} else {
 			if (endStateTime == 0) {
 				float remainder = (((stateTime / frameRate)) % reelCols) * frameRate;
                 endStateTime = stateTime + (getEndReelFrame() * frameRate)  - remainder  - 1;
 			}
 			if (stateTime < endStateTime) {
-				setRegion(reelAnimationFast.getKeyFrame(stateTime, true));
+				setRegion((TextureRegion)reelAnimationFast.getKeyFrame(stateTime, true));
 			} else {
     			setRegion(reelFrames[getEndReelFrame()]);
 				if (!animationCompleted) {

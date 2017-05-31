@@ -25,8 +25,7 @@ public class ScoreAccessor implements TweenAccessor<Score> {
 	public static final int SCALE_XY = 3;
 	public static final int OPACITY = 5;
 	public static final int TINT = 6;
-
-	@Override
+	
 	public int getValues(Score target, int tweenType, float[] returnValues) {
 		switch (tweenType) {
 			case POS_XY:

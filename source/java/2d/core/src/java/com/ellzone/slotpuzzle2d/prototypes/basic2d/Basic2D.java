@@ -19,7 +19,6 @@ package com.ellzone.slotpuzzle2d.prototypes.basic2d;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -29,9 +28,10 @@ import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
+import com.ellzone.slotpuzzle2d.prototypes.*;
 
-public class Basic2D extends SPPrototype {
-    SpriteBatch batch;
+public class Basic2D extends SPPrototypeTemplate {
+	
     List<Sprite> sprites;
 
     Texture textureFromPixmap (Gdx2DPixmap pixmap) {
@@ -110,22 +110,21 @@ public class Basic2D extends SPPrototype {
         return pixmaps;
     }
 
-    @Override
-    public void create() {
-        batch = new SpriteBatch();
+	@Override
+	protected void initialiseOverride() {
         sprites = new ArrayList<Sprite>();
         Gdx2DPixmap[] pixmaps = testPixmaps();
 
         Gdx2DPixmap composite = new Gdx2DPixmap(512, 256, Gdx2DPixmap.GDX2D_FORMAT_RGBA8888);
         composite.clear(0);
-        Gdx2DPixmap.setBlend(Gdx2DPixmap.GDX2D_BLEND_NONE);
+        composite.setBlend(Gdx2DPixmap.GDX2D_BLEND_NONE);
         for (int i = 0; i < pixmaps.length; i++) {
-            Gdx2DPixmap.setScale(Gdx2DPixmap.GDX2D_SCALE_NEAREST);
+            composite.setScale(Gdx2DPixmap.GDX2D_SCALE_NEAREST);
             composite.drawPixmap(pixmaps[i], 0, 0, 32, 32, i * 64, 0, 64, 64);
             composite.drawPixmap(pixmaps[i], 0, 0, 32, 32, i * 64, 64, 16, 16);
             composite.drawPixmap(pixmaps[i], 0, 0, 32, 32, i * 64, 0, 64, 64);
             composite.drawPixmap(pixmaps[i], 0, 0, 32, 32, i * 64, 64, 16, 16);
-            Gdx2DPixmap.setScale(Gdx2DPixmap.GDX2D_SCALE_LINEAR);
+            composite.setScale(Gdx2DPixmap.GDX2D_SCALE_LINEAR);
             composite.drawPixmap(pixmaps[i], 0, 0, 32, 32, i * 64, 100, 64, 64);
             composite.drawPixmap(pixmaps[i], 0, 0, 32, 32, i * 64, 164, 16, 16);
             composite.drawPixmap(pixmaps[i], 0, 0, 32, 32, i * 64, 100, 64, 64);
@@ -138,35 +137,30 @@ public class Basic2D extends SPPrototype {
         Sprite sprite = new Sprite(textureFromPixmap(composite));
         sprite.setPosition(10, 50);
         sprites.add(sprite);
-    }
+	}
 
-    @Override
-    public void render() {
-        Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	@Override
+	protected void loadAssetsOverride() {
+	}
+
+	@Override
+	protected void disposeOverride() {
+	}
+
+	@Override
+	protected void updateOverride(float dt) {
+	}
+
+	@Override
+	protected void renderOverride(float dt) {
         batch.begin();
         for (int i = 0; i < sprites.size(); i++) {
             sprites.get(i).draw(batch);
         }
         batch.end();
-    }
+	}
 
-    @Override
-    public void resize(int width, int height) {
-    }
-
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void dispose() {
-        batch.dispose();
-    }
-
+	@Override
+	protected void initialiseUniversalTweenEngineOverride() {
+	}
 }

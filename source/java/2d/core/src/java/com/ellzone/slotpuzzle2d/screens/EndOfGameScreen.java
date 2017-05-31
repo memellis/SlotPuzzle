@@ -58,6 +58,7 @@ import aurelienribon.tweenengine.equations.Elastic;
 
 
 public class EndOfGameScreen implements Screen {
+
 	public static final int TEXT_SPACING_SIZE = 30;
 	public static final float SIXTY_FPS = 0.0166f;
 	public static final int EXO_FONT_SMALL_SIZE = 24;
@@ -297,7 +298,7 @@ public class EndOfGameScreen implements Screen {
 	}
 
 	@Override
-	public void resise(int width, int height) {
+	public void resize(int width, int height) {
 		viewport.update(width,  height);
 		fontSmall.newFontCache();
 	}

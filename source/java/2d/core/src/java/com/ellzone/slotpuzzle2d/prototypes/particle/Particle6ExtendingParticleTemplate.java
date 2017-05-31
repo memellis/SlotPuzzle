@@ -85,6 +85,7 @@ public class Particle6ExtendingParticleTemplate extends ParticleTemplate {
 	private Label acceleratorFrictionLabel;
 	private Label velocityFrictionLabel;
 	private Label fpsLabel;
+	private Label pointsLabel;
 
 	@Override
 	protected void initialiseOverride() {
@@ -175,7 +176,7 @@ public class Particle6ExtendingParticleTemplate extends ParticleTemplate {
         if (type == TweenCallback.END) {
             reel.setSpinning(false);
         } else if (type == TweenCallback.STEP) {
-            addGraphPoint(new Vector2(graphStep++ % displayWindowWidth, (displayWindowHeight / 2 + (reel.getSy() % slotReelScrollheight))));
+            addGraphPoint(new Vector2(graphStep++ % (Gdx.graphics.getWidth() - 825), (Gdx.graphics.getHeight() / 2 + (reel.getSy() % slotReelScrollheight))));
         }
     }
 
@@ -195,7 +196,6 @@ public class Particle6ExtendingParticleTemplate extends ParticleTemplate {
     }
 	
 	private void initialiseUi() {
-        stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
@@ -230,49 +230,51 @@ public class Particle6ExtendingParticleTemplate extends ParticleTemplate {
         acceleratorFrictionLabel = new Label("Accelerator Friction:", skin);
         velocityFrictionLabel = new Label("Velocity Friction:", skin);
         fpsLabel = new Label("fps:", skin);
+		pointsLabel = new Label("points:", skin);
 
         Window window = new Window("Prototype Control", skin);
-        window.setPosition(Gdx.graphics.getWidth() - 200, Gdx.graphics.getHeight() - 30);
+        window.setPosition(displayWindowWidth - 250, displayWindowHeight - 30);
         window.defaults().spaceBottom(10);
         window.add(accelerateYLabel);
         window.row();
-        window.add(accelerateYSlider).minWidth(200).fillX().colspan(3);
+        window.add(accelerateYSlider).minWidth(250).fillX().colspan(3);
         window.row();
         window.add(acceleratorYLabel);
         window.row();
-        window.add(acceleratorYSlider).minWidth(200).fillX().colspan(3);
+        window.add(acceleratorYSlider).minWidth(250).fillX().colspan(3);
         window.row();
         window.add(velocityYMinLabel);
         window.row();
-        window.add(velocityYMinSlider).minWidth(200).fillX().colspan(3);
+        window.add(velocityYMinSlider).minWidth(250).fillX().colspan(3);
         window.row();
         window.add(velocityYLabel);
         window.row();
-        window.add(velocityYSlider).minWidth(200).fillX().colspan(3);
+        window.add(velocityYSlider).minWidth(250).fillX().colspan(3);
         window.row();
         window.add(acceleratorFrictionLabel);
         window.row();
-        window.add(acceleratorFrictionSlider).minWidth(200).fillX().colspan(3);
+        window.add(acceleratorFrictionSlider).minWidth(250).fillX().colspan(3);
         window.row();
         window.add(velocityFrictionLabel);
         window.row();
-        window.add(velocityFrictionSlider).minWidth(200).fillX().colspan(3);
+        window.add(velocityFrictionSlider).minWidth(250).fillX().colspan(3);
         window.row();
         window.row();
+    	window.add(pointsLabel);
         window.add(fpsLabel);
-        window.pack();
+	    window.pack();
         stage.addActor(window);
 
         acceleratorYSlider.addListener(new ChangeListener() {
 				public void changed (ChangeEvent event, Actor actor) {
-					accelerator.setY(acceleratorYSlider.getValue());
+					acceleratorY = acceleratorYSlider.getValue();
 					Gdx.app.log(PrototypeName, "acceleratorY: " + accelerator.getY());
 				}
 			});
 
         accelerateYSlider.addListener(new ChangeListener() {
 				public void changed (ChangeEvent event, Actor actor) {
-					accelerate.setY(accelerateYSlider.getValue());
+					accelerateY = accelerateYSlider.getValue();
 					Gdx.app.log(PrototypeName, "accelerateY: " + accelerate.getY());
 				}
 			});
@@ -329,7 +331,8 @@ public class Particle6ExtendingParticleTemplate extends ParticleTemplate {
         int dsIndex = 0;
         for (ReelTile reelTile : reelTilesArray) {
             if (Gdx.input.justTouched()) {
-                touch = touch.set(Gdx.input.getX(), cam.viewportHeight - Gdx.input.getY());
+                touch = touch.set(Gdx.input.getX(), Gdx.input.getY());
+				touch = viewport.unproject(touch);
                 if(reelTile.getBoundingRectangle().contains(touch)) {
                     if (reelTile.isSpinning()) {
                         if (dampenedSines.get(dsIndex).getDSState() == DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE) {
@@ -371,7 +374,12 @@ public class Particle6ExtendingParticleTemplate extends ParticleTemplate {
         acceleratorFrictionLabel.setText("AcceleratorFriction: " + acceleratorFriction);
         velocityFrictionLabel.setText("VeclocityFriction: " + velocityFriction);
 
-        fpsLabel.setText("fps: " + Gdx.graphics.getFramesPerSecond());
+		if (points.size == 0){
+			pointsLabel.setText("points.x=0");
+		} else {
+		    pointsLabel.setText("points.x=" + points.get(points.size - 1).x);
+        }
+		fpsLabel.setText("fps: " + Gdx.graphics.getFramesPerSecond());
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
 	}

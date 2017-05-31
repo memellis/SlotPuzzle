@@ -325,6 +325,10 @@ public class WorldMapLevelSelect extends SPPrototype {
             return false;
         }
 
+		@Override
+		public void pinchStop() {
+		}
+		
         public void update () {
             if (flinging) {
                 velX *= 0.98f;
