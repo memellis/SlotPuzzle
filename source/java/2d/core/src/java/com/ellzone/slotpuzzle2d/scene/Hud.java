@@ -26,7 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.ellzone.slotpuzzle2d.SlotPuzzle;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 
 public class Hud implements Disposable {
 
@@ -51,7 +51,7 @@ public class Hud implements Disposable {
         timeUp = false;
         startWorldTimer = false;
 
-        viewport = new FitViewport(SlotPuzzle.V_WIDTH, SlotPuzzle.V_HEIGHT, new OrthographicCamera());
+        viewport = new FitViewport(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, sb);
 
         Table table = new Table();
