@@ -26,9 +26,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
-import com.ellzone.slotpuzzle2d.prototypes.*;
+import com.ellzone.slotpuzzle2d.prototypes.SPPrototypeTemplate;
 
 public class Basic2D extends SPPrototypeTemplate {
 	
