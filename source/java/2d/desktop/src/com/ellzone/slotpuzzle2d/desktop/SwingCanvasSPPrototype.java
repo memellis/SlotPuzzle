@@ -10,11 +10,11 @@ import javax.swing.SwingUtilities;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
-import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototypes;
 
 public class SwingCanvasSPPrototype extends JFrame implements SPPrototypeList.SPPrototypeLauncher  {
-    LwjglCanvas canvas;
+  	private static final long serialVersionUID = -5512379626313409632L;
+	LwjglCanvas canvas;
     SPPrototypeList list;
 
     public SwingCanvasSPPrototype() {
