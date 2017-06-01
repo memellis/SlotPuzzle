@@ -1,0 +1,118 @@
+
+reels.pack.png
+size: 128,256
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+cheesecake
+  rotate: false
+  xy: 44, 120
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cheesecake 40x40
+  rotate: false
+  xy: 2, 196
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+cherry
+  rotate: false
+  xy: 2, 36
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cherry 40x40
+  rotate: false
+  xy: 2, 154
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+grapes
+  rotate: false
+  xy: 44, 86
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+grapes 40x40
+  rotate: false
+  xy: 44, 196
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+jelly
+  rotate: false
+  xy: 78, 120
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+jelly 40x40
+  rotate: false
+  xy: 86, 196
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+lemon
+  rotate: false
+  xy: 2, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+lemon 40x40
+  rotate: false
+  xy: 2, 112
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+peach
+  rotate: false
+  xy: 78, 86
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+peach 40x40
+  rotate: false
+  xy: 44, 154
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+pear
+  rotate: false
+  xy: 44, 52
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pear 40x40
+  rotate: false
+  xy: 86, 154
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+tomato
+  rotate: false
+  xy: 78, 52
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tomato 40x40
+  rotate: false
+  xy: 2, 70
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
