@@ -32,11 +32,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 
 public class LoadingScreen implements Screen{
 	private static final String TAG = "SlotPuzzleLoadingScreen";
-	private static final int VIEWPORT_WIDTH = 800;
-	private static final int VIEWPORT_HEIGHT = 480;
 
     private SlotPuzzle game;
 	private Viewport viewport;
@@ -60,7 +59,7 @@ public class LoadingScreen implements Screen{
     
     private void initialiseLoadingScreen() {
     	camera = new OrthographicCamera();
-		viewport = new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, camera);
+		viewport = new FitViewport(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT, camera);
         stage = new Stage(viewport, game.batch);
     }
     
@@ -90,7 +89,7 @@ public class LoadingScreen implements Screen{
     
     private void initialiseScreenPositions() {
 		pbPos = new Vector2();
-		pbPos.set((SlotPuzzle.V_WIDTH - progressBarBaseImg.getWidth()) >> 1, SlotPuzzle.V_HEIGHT >> 1);
+		pbPos.set((SlotPuzzleConstants.V_WIDTH - progressBarBaseImg.getWidth()) >> 1, SlotPuzzleConstants.V_HEIGHT >> 1);
     }
     
     private void loadSplashScreenAssets() {

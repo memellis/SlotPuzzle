@@ -29,7 +29,7 @@ import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 public class ReelSlotTile extends ReelSprite {
 	public static int instanceCount = 0;
 	public static int reelsSpinning = 0;
-	private Animation reelAnimationFast;
+	private Animation<TextureRegion> reelAnimationFast;
 	private Texture reelTexture;
 	private int reelRows;
 	private int reelCols;
@@ -81,7 +81,7 @@ public class ReelSlotTile extends ReelSprite {
 			}
 		}
 		
-		reelAnimationFast = new Animation(frameRate, reelFrames);
+		reelAnimationFast = new Animation<TextureRegion>(frameRate, reelFrames);
 		stateTime = 0f;
 		endStateTime = 0f;
 		reelSpinTime = reelAnimationFast.getAnimationDuration();
@@ -100,16 +100,16 @@ public class ReelSlotTile extends ReelSprite {
 		stateTime += dt;
 		reelSpinTime -= dt;
 		if (reelSpinTime > 0) {
-			setRegion(reelAnimationFast.getKeyFrame(stateTime, true));
+			setRegion((TextureRegion) reelAnimationFast.getKeyFrame(stateTime, true));
 		} else {
 			if (endStateTime == 0) {
 				endStateTime = stateTime;
 			}
 			if (stateTime <= endStateTime + ((reelRows - initialRow + getEndReel()) * reelCols) * frameRate) {
-				setRegion(reelAnimationFast.getKeyFrame(stateTime, true));
+				setRegion((TextureRegion) reelAnimationFast.getKeyFrame(stateTime, true));
 			} else {
 				if (isSpinning()) {
-					setRegion(reelAnimationFast.getKeyFrame(getEndReelFrameTime(), true));
+					setRegion((TextureRegion) reelAnimationFast.getKeyFrame(getEndReelFrameTime(), true));
 					super.setSpinning(false);
 					processEvent(new ReelStoppedSpinningEvent());
 					ReelSlotTile.instanceCount--;
@@ -128,11 +128,11 @@ public class ReelSlotTile extends ReelSprite {
 							} else {
 								if (reelFlashState == FlashState.FLASH_OFF) {
 									reelFlashState = FlashState.FLASH_ON;
-									TextureRegion flashReel = drawFlashOn(reelAnimationFast.getKeyFrame(getEndReelFrameTime(), true));
+									TextureRegion flashReel = drawFlashOn((TextureRegion) reelAnimationFast.getKeyFrame(getEndReelFrameTime(), true));
 									setRegion(flashReel);
 								} else {
 									reelFlashState = FlashState.FLASH_OFF;									
-									setRegion(reelAnimationFast.getKeyFrame(getEndReelFrameTime(), true));
+									setRegion((TextureRegion) reelAnimationFast.getKeyFrame(getEndReelFrameTime(), true));
 								}
 							}
 						}
