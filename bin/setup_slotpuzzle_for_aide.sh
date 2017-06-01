@@ -19,6 +19,11 @@ define_environment_variables() {
     SOURCE_URL="https://libgdx.badlogicgames.com/nightlies/libgdx-nightly-latest.zip"
     SOURCE="libgdx-nightly-latest"
     SOURCE_ARCHIVE="libgdx-nightly-latest.zip"
+	SLOTPUZZLE_NAME="slotpuzzle"
+	SPPROTOTYPES_NAME="spprototypes"
+	SPPROTOTYPES_TEMPLATE="${BUILD_DIR}/SlotPuzzle/source/java/2d/SPProtoypesTemplate"
+	SLOTPUZZLE_ANDROID="${BUILD_DIR}/SlotPuzzle/source/java/2d/android"
+	SLOTPUZZLE_CORE="${BUILD_DIR}/SlotPuzzle/source/java/2d/core"
 }
 
 source_my_functions() {
@@ -128,26 +133,40 @@ create_aide_target() {
     check_directory "${SRC_DIR}"
     check_directory "${INSTALL_DIR}"
 
-    #cp -r ${SRC_DIR}/core/src/com ${INSTALL_DIR}/gdx-game/src
-    #cp -r ${SRC_DIR}/core/src/org ${INSTALL_DIR}/gdx-game/src
-    mkdir -p ${INSTALL_DIR}/gdx-game/libs
-    cp ${SRC_DIR}/gdx.jar ${INSTALL_DIR}/gdx-game/libs
-    mkdir -p ${INSTALL_DIR}/gdx-game-android/libs
-    cp ${SRC_DIR}/gdx-backend-android.jar ${INSTALL_DIR}/gdx-game-android/libs
-    mkdir -p ${INSTALL_DIR}/gdx-game-android/libs/armeabi
-    cp ${SRC_DIR}/armeabi/libgdx.so ${INSTALL_DIR}/gdx-game-android/libs/armeabi
-    mkdir -p ${INSTALL_DIR}/gdx-game-android/libs/armeabi-v7a
-    cp ${SRC_DIR}/armeabi-v7a/libgdx.so ${INSTALL_DIR}/gdx-game-android/libs/armeabi-v7a
-    mkdir -p ${INSTALL_DIR}/gdx-game-android/libs/x86
-    cp ${SRC_DIR}/x86/libgdx.so ${INSTALL_DIR}/gdx-game-android/libs/x86
-    mkdir -p ${INSTALL_DIR}/gdx-game/libs
-    cp ${SRC_DIR}/extensions/gdx-freetype/gdx-freetype.jar ${INSTALL_DIR}/gdx-game/libs
-    cp ${SRC_DIR}/extensions/gdx-freetype/gdx-freetype-natives.jar ${INSTALL_DIR}/gdx-game/libs
-    cp ${SRC_DIR}/extensions/gdx-freetype/armeabi/libgdx-freetype.so ${INSTALL_DIR}/gdx-game-android/libs/armeabi
-    cp ${SRC_DIR}/extensions/gdx-freetype/armeabi-v7a/libgdx-freetype.so ${INSTALL_DIR}/gdx-game-android/libs/armeabi-v7a
-    cp ${SRC_DIR}/extensions/gdx-freetype/x86/libgdx-freetype.so ${INSTALL_DIR}/gdx-game-android/libs/x86
-    #cp ${SRC_DIR}/libs/tween-engine-api.jar ${INSTALL_DIR}/gdx-game/libs
-    #cp ${SRC_DIR}/libs/tween-engine-api-sources.jar ${INSTALL_DIR}/gdx-game/libs
+    cp -r ${SRC_DIR}/core/src/com ${INSTALL_DIR}/${SLOTPUZZLE_NAME}/src
+    cp -r ${SRC_DIR}/core/src/org ${INSTALL_DIR}/${SLOTPUZZLE_NAME}/src
+	mkdir -p ${INSTALL_DIR}/${SLOTPUZZLE_NAME} 
+	cp ${SPPROTOTYPES_TEMPLATE}/spprototypes/.classpath ${INSTALL_DIR}/${SLOTPUZZLE_NAME}
+	cp ${SPPROTOTYPES_TEMPLATE}/spprotoypes/.project ${INSTALL_DIR}/${SLOTPUZZLE_NAME}
+    mkdir -p ${INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
+    cp ${SRC_DIR}/gdx.jar ${INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
+    mkdir -p ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android
+	cp ${SPPROTOTYPES_TEMPLATE}/spprotoypes-android/.classpath ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android
+	cp ${SPPROTOTYPES_TEMPLATE}/spprotoypes-android/.project ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android
+	cp ${SPPROTOTYPES_TEMPLATE}/spprotoypes-android/project_properties ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android
+	cp ${SLOTPUZZLE_ANDROID}/AndroidManifest.xml ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android
+	mkdir -p ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets
+	mkdir -p ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/res/drawable-hdpi
+	mkdir -p ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/res/drawable-ldpi
+	mkdir -p ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/res/drawable-mdpi
+	mkdir -p ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/res/layout
+	mkdir -p ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/res/values
+	mkdir -p ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs
+    cp ${SRC_DIR}/gdx-backend-android.jar ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs
+    mkdir -p ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/armeabi
+    cp ${SRC_DIR}/armeabi/libgdx.so ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/armeabi
+    mkdir -p ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/armeabi-v7a
+    cp ${SRC_DIR}/armeabi-v7a/libgdx.so ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/armeabi-v7a
+    mkdir -p ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/x86
+    cp ${SRC_DIR}/x86/libgdx.so ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/x86
+    mkdir -p ${INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
+    cp ${SRC_DIR}/extensions/gdx-freetype/gdx-freetype.jar ${INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
+    cp ${SRC_DIR}/extensions/gdx-freetype/gdx-freetype-natives.jar ${INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
+    cp ${SRC_DIR}/extensions/gdx-freetype/armeabi/libgdx-freetype.so ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/armeabi
+    cp ${SRC_DIR}/extensions/gdx-freetype/armeabi-v7a/libgdx-freetype.so ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/armeabi-v7a
+    cp ${SRC_DIR}/extensions/gdx-freetype/x86/libgdx-freetype.so ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/x86
+    cp ${SRC_DIR}/libs/tween-engine-api.jar ${INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
+    cp ${SRC_DIR}/libs/tween-engine-api-sources.jar ${INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
 }
 
 # Main program starts here
