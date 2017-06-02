@@ -1,0 +1,55 @@
+
+tiles.pack.png
+size: 512,256
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+GamePopUp
+  rotate: false
+  xy: 2, 52
+  size: 250, 200
+  orig: 250, 200
+  offset: 0, 0
+  index: -1
+complete
+  rotate: false
+  xy: 2, 14
+  size: 156, 36
+  orig: 156, 36
+  offset: 0, 0
+  index: -1
+game
+  rotate: false
+  xy: 160, 14
+  size: 96, 36
+  orig: 96, 36
+  offset: 0, 0
+  index: -1
+interactive
+  rotate: false
+  xy: 443, 2
+  size: 35, 48
+  orig: 35, 48
+  offset: 0, 0
+  index: -1
+level
+  rotate: false
+  xy: 258, 14
+  size: 92, 36
+  orig: 92, 36
+  offset: 0, 0
+  index: -1
+over
+  rotate: false
+  xy: 352, 14
+  size: 89, 36
+  orig: 89, 36
+  offset: 0, 0
+  index: -1
+white
+  rotate: false
+  xy: 254, 52
+  size: 250, 200
+  orig: 250, 200
+  offset: 0, 0
+  index: -1
