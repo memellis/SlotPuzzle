@@ -152,6 +152,80 @@ create_aide_target() {
 	mkdir -p ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/res/layout
 	mkdir -p ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/res/values
 	mkdir -p ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs
+	mkdir -p ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets
+    mkdir -p ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
+    cp ${SLOTPUZZLE_ANDROID}/assets/levels/blue.png ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
+    cp ${SLOTPUZZLE_ANDROID}/assets/levels/entrance01.png ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
+    cp ${SLOTPUZZLE_ANDROID}/assets/levels/entrance02.png ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
+    cp "${SLOTPUZZLE_ANDROID}/assets/levels/level 1 - 40x40.tmx" ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
+    cp "${SLOTPUZZLE_ANDROID}/assets/levels/level 2 - 40x40.tmx" ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
+    cp "${SLOTPUZZLE_ANDROID}/assets/levels/level 3 - 40x40.tmx" ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
+    cp "${SLOTPUZZLE_ANDROID}/assets/levels/level 4 - 40x40.tmx" ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
+    cp "${SLOTPUZZLE_ANDROID}/assets/levels/level 5 - 40x40.tmx" ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
+    cp "${SLOTPUZZLE_ANDROID}/assets/levels/light_pink_transparent 1 40x40.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/levels/light_pink_transparent 40x40.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/levels/neon_tiles 40x40.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/levels/slot_puzzle_title.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/levels/WorldMap.tmx"
+    cp "${SLOTPUZZLE_ANDROID}/assets/levels/world_image.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/LiberationMono-Regular.ttf"
+	mkdir -p "${SLOTPUZZLE_ANDROID}/assets/loading_screen"
+    cp "${SLOTPUZZLE_ANDROID}/assets/loading_screen/progress_bar.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/loading_screen/progress_bar_base.png"
+    mkdir -p "${SLOTPUZZLE_ANDROID}/assets/playingcards"
+    cp "${SLOTPUZZLE_ANDROID}/assets/playingcards/carddeck.atlas"
+    cp "${SLOTPUZZLE_ANDROID}/assets/playingcards/carddeck.png"
+    mkdir -p "${SLOTPUZZLE_ANDROID}/assets/sounds"
+    cp "${SLOTPUZZLE_ANDROID}/assets/sounds/cha-ching.mp3"
+    cp "${SLOTPUZZLE_ANDROID}/assets/sounds/jackpot.mp3"
+    cp "${SLOTPUZZLE_ANDROID}/assets/sounds/pull-lever.mp3"
+    cp "${SLOTPUZZLE_ANDROID}/assets/sounds/pull-lever1.mp3"
+    cp "${SLOTPUZZLE_ANDROID}/assets/sounds/reel-spinning.mp3"
+    cp "${SLOTPUZZLE_ANDROID}/assets/sounds/reel-stopped.mp3"
+    mkdir -p "${SLOTPUZZLE_ANDROID}/assets/splash"
+    cp "${SLOTPUZZLE_ANDROID}/assets/splash/pack.atlas"
+    cp "${SLOTPUZZLE_ANDROID}/assets/splash/puzzle.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/splash/slot.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/splash/splash1.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/splash/splash2.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/splash/splash3.pack.atlas"
+    cp "${SLOTPUZZLE_ANDROID}/assets/splash/splash3.pack.png"
+    mkdir -p "${SLOTPUZZLE_ANDROID}/assets/tiles"
+    cp "${SLOTPUZZLE_ANDROID}/assets/tiles/complete.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/tiles/game.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/tiles/GamePopUp.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/tiles/interactive.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/tiles/level.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/tiles/over.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/tiles/tiles.pack.atlas"
+    cp "${SLOTPUZZLE_ANDROID}/assets/tiles/tiles.pack.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/tiles/white.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/default-font.fnt"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/default-font.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/default.fnt"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/default.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/ui-blue.atlas"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/ui-blue.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/ui-commons.atlas"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/ui-commons.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/ui-gray.atlas"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/ui-gray.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/ui-green.atlas"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/ui-green.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/ui-orange.atlas"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/ui-orange.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/ui-red.atlas"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/ui-red.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/ui-white.atlas"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/ui-white.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/ui-yellow.atlas"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/ui-yellow.png"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/uiskin.atlas"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/uiskin.json"
+    cp "${SLOTPUZZLE_ANDROID}/assets/ui/uiskin.png"
+
+
     cp ${SRC_DIR}/gdx-backend-android.jar ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs
     mkdir -p ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/armeabi
     cp ${SRC_DIR}/armeabi/libgdx.so ${INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/armeabi
