@@ -22,7 +22,7 @@ define_environment_variables() {
 	SLOTPUZZLE_NAME="slotpuzzle"
 	SPPROTOTYPES_NAME="spprototypes"
 	SLOTPUZZLE_HOME="${BUILD_DIR}/SlotPuzzle"
-	SLOTPUZZLE_2D_SOURCE="{SLOTPUZZLE_HOME}/source/java/2d"
+	SLOTPUZZLE_2D_SOURCE="${SLOTPUZZLE_HOME}/source/java/2d"
 	SPPROTOTYPES_TEMPLATE="${SLOTPUZZLE_2D_SOURCE}/SPProtoypesTemplate"
 	SLOTPUZZLE_ANDROID="${SLOTPUZZLE_2D_SOURCE}/android"
 	SLOTPUZZLE_CORE="{SLOTPUZZLE_2D_SOURCE}/core"
@@ -137,7 +137,6 @@ create_aide_target() {
 	local SLOTPUZZLE_NAME=${6}
 	
     check_directory "${LIBGDX_SRC_DIR}"
-	check_directory "${SLOTPUZZLE_SRC}"
     check_directory "${INSTALL_DIR}"
 	
     cp -r ${SLOTPUZZLE_CORE}/core/src/com ${INSTALL_DIR}/${SLOTPUZZLE_NAME}/src
