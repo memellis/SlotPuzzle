@@ -176,7 +176,7 @@ create_aide_target() {
     mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/loading_screen
     cp "${SLOTPUZZLE_ANDROID}/assets/loading_screen/progress_bar.png" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/loading_screen
     cp "${SLOTPUZZLE_ANDROID}/assets/loading_screen/progress_bar_base.png" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/loading_screen
-    mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/playing_cards
+    mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/playingcards
     cp "${SLOTPUZZLE_ANDROID}/assets/playingcards/carddeck.atlas" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/playingcards
     cp "${SLOTPUZZLE_ANDROID}/assets/playingcards/carddeck.png" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/playingcards
     mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/reel
