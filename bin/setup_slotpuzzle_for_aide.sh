@@ -247,6 +247,10 @@ create_aide_target() {
     cp ${LIBGDX_SRC_DIR}/extensions/gdx-freetype/x86/libgdx-freetype.so ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/x86
     cp ${SLOTPUZZLE_2D_SOURCE}/libs/tween-engine-api.jar ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
     cp ${SLOTPUZZLE_2D_SOURCE}/libs/tween-engine-api-sources.jar ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
+
+    cp -r ${AIDE_INSTALL_DIR}/slotpuzzle-android ${AIDE_INSTALL_DIR}/slotpuzzle-prototypes-android
+    cp ${SPPROTOTYPES_TEMPLATE}/spprototypes-android/AndroidManifest.xml ${AIDE_INSTALL_DIR}/slotpuzzle-prototypes-android
+    cp -r ${SPPROTOTYPES_TEMPLATE}/spprototypes-android/src ${AIDE_INSTALL_DIR}/slotpuzzle-prototypes-android
 }
 
 # Main program starts here
