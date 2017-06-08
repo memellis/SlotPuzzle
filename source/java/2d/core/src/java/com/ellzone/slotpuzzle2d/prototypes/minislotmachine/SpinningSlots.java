@@ -45,91 +45,77 @@ import aurelienribon.tweenengine.equations.Back;
 import aurelienribon.tweenengine.equations.Cubic;
 import aurelienribon.tweenengine.equations.Quad;
 import aurelienribon.tweenengine.equations.Quart;
+import com.ellzone.slotpuzzle2d.prototypes.*;
+import org.xml.sax.*;
 
-public class SpinningSlots extends SPPrototype {
-     private static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
-     private PerspectiveCamera cam;
-     private SpriteBatch batch;
-     private Sprite cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato;
-     private Sprite[] sprites;
-     private int spriteWidth;
-     private int spriteHeight;
-     private int displayWindowWidth;
-     private int displayWindowHeight;
-     private Pixmap slotReelScrollPixmap;
-     private Texture slotReelScrollTexture;
-     private Random random;
-     private Array<AnimatedReel> reels;
-     private Timeline introSequence;
-     private TweenManager tweenManager;
-     private Sound pullLeverSound, reelSpinningSound, reelStoppingSound;
+public class SpinningSlots extends SPPrototypeTemplate {
+	
+    private Pixmap slotReelScrollPixmap;
+    private Texture slotReelScrollTexture;
+    private Random random;
+    private Array<AnimatedReel> reels;
+    private Timeline introSequence;
+    private Sound pullLeverSound, reelSpinningSound, reelStoppingSound;
 	private Vector2 touch;
 	private AnimatedHandle animatedHandle;
 	private TextureAtlas handleAtlas;
 	private int reelSpriteHelp;
+	 
+	@Override
+	protected void initialiseOverride() {
+		touch = new Vector2();
+	}
 
-    @Override
-     public void create() {
-         loadAssets();
-         initialiseCamera();
-         initialiseLibGdx();
-         initialiseUniversalTweenEngine();
-         initialiseReelSlots();
-         createIntroSequence();
-     }
+	@Override
+	protected void loadAssetsOverride() {
+		Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
+		Assets.inst().load("handle/handle.pack.atlas", TextureAtlas.class);
+		Assets.inst().load("sounds/pull-lever1.wav", Sound.class);
+		Assets.inst().load("sounds/click2.wav", Sound.class);
+		Assets.inst().load("sounds/reel-stopped.wav", Sound.class);
+		Assets.inst().update();
+		Assets.inst().finishLoading();
+		
+		handleAtlas = Assets.inst().get("handle/handle.pack.atlas", TextureAtlas.class);
 
-     private void loadAssets() {
-         Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
-         Assets.inst().load("handle/handle.pack.atlas", TextureAtlas.class);
-         Assets.inst().load("sounds/pull-lever1.wav", Sound.class);
-         Assets.inst().load("sounds/click2.wav", Sound.class);
-         Assets.inst().load("sounds/reel-stopped.wav", Sound.class);
-         Assets.inst().update();
-         Assets.inst().finishLoading();
+		pullLeverSound = Assets.inst().get("sounds/pull-lever1.wav");
+		reelSpinningSound = Assets.inst().get("sounds/click2.wav");
+		reelStoppingSound = Assets.inst().get("sounds/reel-stopped.wav");
+	}
 
-         TextureAtlas atlas = Assets.inst().get("reel/reels.pack.atlas", TextureAtlas.class);
-         cherry = atlas.createSprite("cherry");
-         cheesecake = atlas.createSprite("cheesecake");
-         grapes = atlas.createSprite("grapes");
-         jelly = atlas.createSprite("jelly");
-         lemon = atlas.createSprite("lemon");
-         peach = atlas.createSprite("peach");
-         pear = atlas.createSprite("pear");
-         tomato = atlas.createSprite("tomato");
+	@Override
+	protected void disposeOverride() {
+	}
 
-         handleAtlas = Assets.inst().get("handle/handle.pack.atlas", TextureAtlas.class);
-         
-         sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
-         for (Sprite sprite : sprites) {
-             sprite.setOrigin(0, 0);
-         }
-         spriteWidth = (int) sprites[0].getWidth();
-         spriteHeight = (int) sprites[0].getHeight();
-         
-         pullLeverSound = Assets.inst().get("sounds/pull-lever1.wav");
-         reelSpinningSound = Assets.inst().get("sounds/click2.wav");
-         reelStoppingSound = Assets.inst().get("sounds/reel-stopped.wav");
-    }
+	@Override
+	protected void updateOverride(float dt) {
+		handleInput(dt);
+		tweenManager.update(dt);
+        for (AnimatedReel reel : reels) {
+            reel.update(dt);
+        }
+        animatedHandle.update(dt);
+		
+	}
 
-    private void initialiseCamera() {
-        cam = new PerspectiveCamera();
-        cam.position.set(0, 0, 10);
-        cam.lookAt(0, 0, 0);
-        displayWindowWidth = Gdx.graphics.getWidth();
-        displayWindowHeight = Gdx.graphics.getHeight();
-    }
+	@Override
+	protected void renderOverride(float dt) {
+		batch.begin();
+        for (AnimatedReel reel : reels) {
+            reel.draw(batch);
+            sprites[reelSpriteHelp].setX(32);
+            sprites[reelSpriteHelp].draw(batch);
+        }
+        animatedHandle.draw(batch);
+        batch.end();
+	}
 
-    private void initialiseLibGdx() {
-        batch = new SpriteBatch();
-        touch = new Vector2();
-    }
-
-    private void initialiseUniversalTweenEngine() {
-        SlotPuzzleTween.setWaypointsLimit(10);
-        SlotPuzzleTween.setCombinedAttributesLimit(3);
-        SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelAccessor());
-        tweenManager = new TweenManager();
-    }
+	@Override
+	protected void initialiseUniversalTweenEngineOverride() {
+		SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelAccessor());
+		initialiseReelSlots();
+		createIntroSequence();
+	}
 
     private void initialiseReelSlots() {
         random = new Random();
@@ -205,23 +191,10 @@ public class SpinningSlots extends SPPrototype {
         }
     }
 
-    @Override
-    public void resize(int width, int height) {
-        float halfHeight = MINIMUM_VIEWPORT_SIZE * 0.5f;
-        if (height > width)
-            halfHeight *= (float)height / (float)width;
-        float halfFovRadians = MathUtils.degreesToRadians * cam.fieldOfView * 0.5f;
-        float distance = halfHeight / (float)Math.tan(halfFovRadians);
-        cam.viewportWidth = width;
-        cam.viewportHeight = height;
-        cam.position.set(0, 0, distance);
-        cam.lookAt(0, 0, 0);
-        cam.update();
-    }
-
     public void handleInput(float delta) {
         if (Gdx.input.justTouched()) {
-            touch = touch.set(Gdx.input.getX(), cam.viewportHeight - Gdx.input.getY());
+            touch = touch.set(Gdx.input.getX(), Gdx.input.getY());
+			touch = viewport.unproject(touch);
             for (AnimatedReel animatedReel : reels) {
                 if(animatedReel.getReel().getBoundingRectangle().contains(touch)) {
                 	if (animatedReel.getReel().isSpinning()) {
@@ -241,7 +214,7 @@ public class SpinningSlots extends SPPrototype {
                 for  (AnimatedReel animatedReel : reels) {
                     if (animatedReel.getReel().isSpinning()) {
                     	reelsNotSpinning = false;
-                    };
+                    }
                 }
                 if (reelsNotSpinning) {
                     animatedHandle.setAnimated(true);
@@ -257,44 +230,5 @@ public class SpinningSlots extends SPPrototype {
  
             }
         }
-    }
-
-    private void update(float delta) {
-        tweenManager.update(delta);
-        for (AnimatedReel reel : reels) {
-            reel.update(delta);
-        }
-        animatedHandle.update(delta);
-    }
-
-    @Override
-    public void render() {
-        final float delta = Math.min(1/30f, Gdx.graphics.getDeltaTime());
-        update(delta);
-        handleInput(delta);
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        batch.begin();
-        for (AnimatedReel reel : reels) {
-            reel.draw(batch);
-            sprites[reelSpriteHelp].setX(32);
-            sprites[reelSpriteHelp].draw(batch);
-        }
-        animatedHandle.draw(batch);
-        batch.end();
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void dispose() {
-        batch.dispose();
-        Assets.inst().dispose();
     }
 }
