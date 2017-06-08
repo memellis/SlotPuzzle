@@ -24,6 +24,7 @@ define_environment_variables() {
     SPPROTOTYPES_NAME="spprototypes"
     SLOTPUZZLE_2D_SOURCE="${SLOTPUZZLE_HOME}/source/java/2d"
     SPPROTOTYPES_TEMPLATE="${SLOTPUZZLE_2D_SOURCE}/SPPrototypesTemplate"
+    SLOTPUZZLE_AIDE_TEMPLATE="${SLOTPUZZLE_2D_SOURCE}/SlotPuzzleAideTemplate"
     SLOTPUZZLE_ANDROID="${SLOTPUZZLE_2D_SOURCE}/android"
     SLOTPUZZLE_CORE="${SLOTPUZZLE_2D_SOURCE}/core"
 }
@@ -157,6 +158,13 @@ create_aide_target() {
     cp -r ${SLOTPUZZLE_ANDROID}/src/com ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/src
 
     mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets
+    mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/handle
+    cp ${SLOTPUZZLE_ANDROID}/assets/handle/handle.pack.atlas ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/handle
+    cp ${SLOTPUZZLE_ANDROID}/assets/handle/handle.pack.png ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/handle
+    cp ${SLOTPUZZLE_ANDROID}/assets/handle/handle.pack2.png ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/handle
+    cp ${SLOTPUZZLE_ANDROID}/assets/handle/handle.pack3.png ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/handle
+    cp ${SLOTPUZZLE_ANDROID}/assets/handle/handle.pack4.png ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/handle
+
     mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
     cp ${SLOTPUZZLE_ANDROID}/assets/levels/blue.png ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
     cp ${SLOTPUZZLE_ANDROID}/assets/levels/entrance01.png ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
@@ -184,11 +192,14 @@ create_aide_target() {
     cp "${SLOTPUZZLE_ANDROID}/assets/reel/reels.pack.png" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/reel
     mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/sounds
     cp "${SLOTPUZZLE_ANDROID}/assets/sounds/cha-ching.mp3" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/sounds
+    cp "${SLOTPUZZLE_ANDROID}/assets/sounds/click2.wav" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/sounds
     cp "${SLOTPUZZLE_ANDROID}/assets/sounds/jackpot.mp3" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/sounds
     cp "${SLOTPUZZLE_ANDROID}/assets/sounds/pull-lever.mp3" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/sounds
     cp "${SLOTPUZZLE_ANDROID}/assets/sounds/pull-lever1.mp3" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/sounds
+    cp "${SLOTPUZZLE_ANDROID}/assets/sounds/pull-lever1.wav" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/sounds
     cp "${SLOTPUZZLE_ANDROID}/assets/sounds/reel-spinning.mp3" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/sounds
     cp "${SLOTPUZZLE_ANDROID}/assets/sounds/reel-stopped.mp3" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/sounds
+    cp "${SLOTPUZZLE_ANDROID}/assets/sounds/reel-stopped.wav" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/sounds
     mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/splash
     cp "${SLOTPUZZLE_ANDROID}/assets/splash/pack.atlas" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/splash
     cp "${SLOTPUZZLE_ANDROID}/assets/splash/puzzle.png" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/splash
@@ -248,9 +259,8 @@ create_aide_target() {
     cp ${SLOTPUZZLE_2D_SOURCE}/libs/tween-engine-api.jar ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
     cp ${SLOTPUZZLE_2D_SOURCE}/libs/tween-engine-api-sources.jar ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
 
-    cp -r ${AIDE_INSTALL_DIR}/slotpuzzle-android ${AIDE_INSTALL_DIR}/slotpuzzle-prototypes-android
-    cp ${SPPROTOTYPES_TEMPLATE}/spprototypes-android/AndroidManifest.xml ${AIDE_INSTALL_DIR}/slotpuzzle-prototypes-android
-    cp -r ${SPPROTOTYPES_TEMPLATE}/spprototypes-android/src ${AIDE_INSTALL_DIR}/slotpuzzle-prototypes-android
+    cp -r ${SLOTPUZZLE_AIDE_TEMPLATE}/slotpuzzle-prototypes-android ${AIDE_INSTALL_DIR}
+    cp -r ${AIDE_INSTALL_DIR}/slotpuzzle-android/assets ${AIDE_INSTALL_DIR}/slotpuzzle-prototypes-android
 }
 
 # Main program starts here
