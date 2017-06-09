@@ -190,6 +190,10 @@ create_aide_target() {
     mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/reel
     cp "${SLOTPUZZLE_ANDROID}/assets/reel/reels.pack.atlas" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/reel
     cp "${SLOTPUZZLE_ANDROID}/assets/reel/reels.pack.png" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/reel
+    mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/slot_handle
+    cp ${SLOTPUZZLE_ANDROID}/assets/slot_handle/slot_handle.pack.atlas ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/slot_handle
+    cp ${SLOTPUZZLE_ANDROID}/assets/slot_handle/slot_handle.pack.png ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/slot_handle
+
     mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/sounds
     cp "${SLOTPUZZLE_ANDROID}/assets/sounds/cha-ching.mp3" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/sounds
     cp "${SLOTPUZZLE_ANDROID}/assets/sounds/click2.wav" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/sounds
