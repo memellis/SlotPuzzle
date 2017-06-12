@@ -19,6 +19,9 @@ package com.ellzone.slotpuzzle2d.prototypes;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlots;
+import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlotsRotateHandleSprite;
+import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlotsRotateHandleSpriteUsingTweenEngine;
+import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlotsUsingSlotHandleSprite;
 import com.ellzone.slotpuzzle2d.prototypes.menu.SlotPuzzleGame;
 import com.ellzone.slotpuzzle2d.prototypes.particle.Particle1;
 import com.ellzone.slotpuzzle2d.prototypes.particle.Particle2;
@@ -94,6 +97,9 @@ public class SPPrototypes {
         WayPoints1.class,
         WayPoints2.class,
 	    SpinningSlots.class,
+		SpinningSlotsRotateHandleSprite.class,
+		SpinningSlotsRotateHandleSpriteUsingTweenEngine.class,
+		SpinningSlotsUsingSlotHandleSprite.class,
 		SPPrototypesGame.class,
 		SlotPuzzleGame.class
     ));

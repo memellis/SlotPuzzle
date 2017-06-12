@@ -33,10 +33,13 @@ import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.physics.DampenedSineParticle;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
+import com.ellzone.slotpuzzle2d.prototypes.SPPrototypeTemplate;
 import com.ellzone.slotpuzzle2d.sprites.AnimatedHandle;
 import com.ellzone.slotpuzzle2d.sprites.AnimatedReel;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
+import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
+import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
@@ -45,22 +48,22 @@ import aurelienribon.tweenengine.equations.Back;
 import aurelienribon.tweenengine.equations.Cubic;
 import aurelienribon.tweenengine.equations.Quad;
 import aurelienribon.tweenengine.equations.Quart;
-import com.ellzone.slotpuzzle2d.prototypes.*;
-import org.xml.sax.*;
+import aurelienribon.tweenengine.equations.Sine;
+import com.badlogic.gdx.graphics.g2d.*;
 
-public class SpinningSlots extends SPPrototypeTemplate {
+public class SpinningSlotsRotateHandleSpriteUsingTweenEngine extends SPPrototypeTemplate {
 	
     private Pixmap slotReelScrollPixmap;
     private Texture slotReelScrollTexture;
     private Random random;
     private Array<AnimatedReel> reels;
-    private Timeline introSequence;
+    private Timeline introSequence, slotHandleSequence;
     private Sound pullLeverSound, reelSpinningSound, reelStoppingSound;
 	private Vector2 touch;
-	private AnimatedHandle animatedHandle;
-	private TextureAtlas handleAtlas;
+	private TextureAtlas slotHandleAtlas;
 	private int reelSpriteHelp;
-	 
+	private Sprite slotHandle, slotHandleBase;
+	
 	@Override
 	protected void initialiseOverride() {
 		touch = new Vector2();
@@ -69,15 +72,23 @@ public class SpinningSlots extends SPPrototypeTemplate {
 	@Override
 	protected void loadAssetsOverride() {
 		Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
-		Assets.inst().load("handle/handle.pack.atlas", TextureAtlas.class);
+		Assets.inst().load("slot_handle/slot_handle.pack.atlas", TextureAtlas.class);
 		Assets.inst().load("sounds/pull-lever1.wav", Sound.class);
 		Assets.inst().load("sounds/click2.wav", Sound.class);
 		Assets.inst().load("sounds/reel-stopped.wav", Sound.class);
 		Assets.inst().update();
 		Assets.inst().finishLoading();
-		
-		handleAtlas = Assets.inst().get("handle/handle.pack.atlas", TextureAtlas.class);
 
+		slotHandleAtlas = Assets.inst().get("slot_handle/slot_handle.pack.atlas", TextureAtlas.class);
+		slotHandle = slotHandleAtlas.createSprite("slot_handle");
+		slotHandleBase = slotHandleAtlas.createSprite("slot_handle_base");
+		Pixmap slotHandlePixmap = PixmapProcessors.getPixmapFromTextureRegion(slotHandle);
+		slotHandlePixmap.drawCircle(22, slotHandlePixmap.getHeight() - 10, 5);
+		slotHandle = new Sprite(new Texture(slotHandlePixmap));
+		slotHandle.setOrigin(22.0f, 10.0f);
+		slotHandle.setPosition(510, 95);
+		slotHandleBase.setPosition(500, 75);
+		
 		pullLeverSound = Assets.inst().get("sounds/pull-lever1.wav");
 		reelSpinningSound = Assets.inst().get("sounds/click2.wav");
 		reelStoppingSound = Assets.inst().get("sounds/reel-stopped.wav");
@@ -94,27 +105,29 @@ public class SpinningSlots extends SPPrototypeTemplate {
         for (AnimatedReel reel : reels) {
             reel.update(dt);
         }
-        animatedHandle.update(dt);
-		
 	}
-
+	
 	@Override
 	protected void renderOverride(float dt) {
 		batch.begin();
         for (AnimatedReel reel : reels) {
             reel.draw(batch);
+			
             sprites[reelSpriteHelp].setX(32);
             sprites[reelSpriteHelp].draw(batch);
         }
-        animatedHandle.draw(batch);
+		slotHandleBase.draw(batch);
+        slotHandle.draw(batch);
         batch.end();
 	}
 
 	@Override
 	protected void initialiseUniversalTweenEngineOverride() {
 		SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelAccessor());
+		SlotPuzzleTween.registerAccessor(Sprite.class, new SpriteAccessor());
 		initialiseReelSlots();
 		createIntroSequence();
+		createSlotHandleTween();
 	}
 
     private void initialiseReelSlots() {
@@ -132,7 +145,6 @@ public class SpinningSlots extends SPPrototypeTemplate {
             reel.setEndReel(random.nextInt(sprites.length - 1));
             reels.add(reel);
         }
-        animatedHandle = new AnimatedHandle(handleAtlas, displayWindowWidth - 250, 50);
     }
 
     private void createIntroSequence() {
@@ -183,14 +195,42 @@ public class SpinningSlots extends SPPrototypeTemplate {
             case 1:
                 return new Vector2(-1 * random.nextFloat(), displayWindowWidth + random.nextFloat());
             case 2:
-                return new Vector2(displayWindowHeight + random.nextFloat(), -1 * random.nextFloat());
+                return new Vector2(displayWindowWidth + random.nextFloat(), -1 * random.nextFloat());
            case 3:
-                return new Vector2(displayWindowHeight + random.nextFloat(), displayWindowWidth + random.nextFloat());
+                return new Vector2(displayWindowWidth + random.nextFloat(), displayWindowWidth + random.nextFloat());
            default:
                 return new Vector2(-0.5f, -0.5f);
         }
     }
 
+	private void createSlotHandleTween() {
+		slotHandleSequence = Timeline.createSequence();
+		slotHandleSequence.push(SlotPuzzleTween.set(slotHandle, SpriteAccessor.ROTATION)
+		                  .target(0)
+						  .ease(Sine.IN));
+						  
+        slotHandleSequence.push(SlotPuzzleTween.to(slotHandle, SpriteAccessor.ROTATION, 1.0f)
+		                  .target(-60.0f)
+						  .ease(Sine.OUT));
+						  
+        slotHandleSequence.push(SlotPuzzleTween.to(slotHandle, SpriteAccessor.ROTATION, 1.0f)
+						  .target(0.0f)
+						  .ease(Sine.OUT)
+						  .setCallback(slotHandleCallback)
+						  .setCallbackTriggers(TweenCallback.END));	 
+	}
+	
+	private TweenCallback slotHandleCallback = new TweenCallback() {
+        @Override
+        public void onEvent(int type, BaseTween<?> source) {
+            delegateSlotHandleCallback(type, source);
+        }
+    };
+
+    private void delegateSlotHandleCallback(int type, BaseTween<?> source) {
+        createSlotHandleTween();
+	}
+	
     public void handleInput(float delta) {
         if (Gdx.input.justTouched()) {
             touch = touch.set(Gdx.input.getX(), Gdx.input.getY());
@@ -209,7 +249,7 @@ public class SpinningSlots extends SPPrototypeTemplate {
                     }
                 }
             }
-            if(animatedHandle.getBoundingRectangle().contains(touch)) {
+            if (slotHandle.getBoundingRectangle().contains(touch)) {
             	boolean reelsNotSpinning = true;
                 for  (AnimatedReel animatedReel : reels) {
                     if (animatedReel.getReel().isSpinning()) {
@@ -217,9 +257,9 @@ public class SpinningSlots extends SPPrototypeTemplate {
                     }
                 }
                 if (reelsNotSpinning) {
-                    animatedHandle.setAnimated(true);
+			        slotHandleSequence = slotHandleSequence.start(tweenManager);
                     pullLeverSound.play();
-                    for  (AnimatedReel animatedReel : reels) {
+                    for (AnimatedReel animatedReel : reels) {
                         animatedReel.setEndReel(random.nextInt(sprites.length - 1));
                         animatedReel.reinitialise();
                         animatedReel.getReel().startSpinning();
@@ -227,7 +267,6 @@ public class SpinningSlots extends SPPrototypeTemplate {
                 } else {
                 	reelStoppingSound.play();
                 }
- 
             }
         }
     }

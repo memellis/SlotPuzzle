@@ -19,10 +19,13 @@ package com.ellzone.slotpuzzle2d.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
@@ -319,5 +322,20 @@ public class PixmapProcessors {
 	        cursor += glyph.xadvance;
 	    }
 	}
+	
+	public static Texture textureFromPixmap(Gdx2DPixmap pixmap) {
+        Texture texture = new Texture(pixmap.getWidth(), pixmap.getHeight(), Format.RGB565);
+        texture.bind();
+        Gdx.gl.glTexImage2D(GL20.GL_TEXTURE_2D,
+		                    0,
+							pixmap.getGLInternalFormat(),
+							pixmap.getWidth(),
+							pixmap.getHeight(),
+							0,
+							pixmap.getGLFormat(),
+							pixmap.getGLType(),
+							pixmap.getPixels());
+        return texture;
+    }
 }
 
