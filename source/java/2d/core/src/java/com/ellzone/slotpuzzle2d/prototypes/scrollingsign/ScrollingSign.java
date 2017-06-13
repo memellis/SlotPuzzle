@@ -32,7 +32,7 @@ import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import com.badlogic.gdx.math.Vector2;
 
 public class ScrollingSign extends SPPrototypeTemplate {
-	public static final String SLOT_PUZZLE = "Slot Puzzle";
+	public static final String SLOT_PUZZLE = "Slot Puzzle ";
     public static final String LIBERATION_MONO_REGULAR_FONT_NAME = "LiberationMono-Regular.ttf";
     public static final String GENERATED_FONTS_DIR = "generated-fonts/";
     public static final String FONT_SMALL = "exo-small";
@@ -43,12 +43,14 @@ public class ScrollingSign extends SPPrototypeTemplate {
     private Texture textTexture;
     private Vector2 touch;
 	private ScrollSign scrollSign;
+	private int sx;
 	
 	@Override
 	protected void initialiseOverride() {
 		initialiseFonts();
         initialiseFontTexture(SLOT_PUZZLE);
-		scrollSign = new ScrollSign(textTexture, 400, 400, SIGN_WIDTH * SLOT_PUZZLE.length(), SIGN_HEIGHT, ScrollSign.SignDirection.RIGHT);
+		scrollSign = new ScrollSign(textTexture, 400, 200, SIGN_WIDTH * SLOT_PUZZLE.length(), SIGN_HEIGHT, ScrollSign.SignDirection.RIGHT);
+		sx = 0;
 	}
 
 	private void initialiseFonts() {
@@ -70,6 +72,7 @@ public class ScrollingSign extends SPPrototypeTemplate {
         Pixmap textPixmap = new Pixmap(text.length() * SIGN_WIDTH, SIGN_WIDTH, Pixmap.Format.RGBA8888);
         textPixmap = PixmapProcessors.createDynamicHorizontalFontText(fontSmall, text, textPixmap);
         textTexture = new Texture(textPixmap);
+        PixmapProcessors.savePixmap(textPixmap);
         touch = new Vector2(0, 0);
 	}
 	
@@ -84,6 +87,7 @@ public class ScrollingSign extends SPPrototypeTemplate {
 	@Override
 	protected void updateOverride(float dt) {
 		scrollSign.update(dt);
+		scrollSign.setSx(sx++);
 	}
 
 	@Override

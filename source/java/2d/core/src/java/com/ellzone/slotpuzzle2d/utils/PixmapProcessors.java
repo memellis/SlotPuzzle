@@ -210,10 +210,12 @@ public class PixmapProcessors {
 
 			for (int i = 0; i < text.length(); i++) {
 				glyph = fontData.getGlyph(text.charAt(i));				
-				int offSetY = (horizontalFontText.getWidth() - glyph.width) / 2;
-				int startX = i * horizontalFontText.getHeight() / text.length() + 2;
-				int offSetX = -glyph.yoffset;
-				offSetX = startX + offSetX - glyph.width;
+				//int offSetY = (horizontalFontText.getWidth() - glyph.width) / 2;
+				int offSetY = 10;
+				int startX = i * horizontalFontText.getWidth() / text.length() + 2;
+				int offSetX = -glyph.xoffset;
+				//offSetX = startX + offSetX - glyph.width;
+				offSetX = startX;
 
  				horizontalFontText.drawPixmap(fontPixmap,
 											  offSetX,

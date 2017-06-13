@@ -16,7 +16,6 @@
 
 package com.ellzone.slotpuzzle2d.sprites;
 
-import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -41,12 +40,12 @@ public class ScrollSign extends Sprite {
 	void defineScrollSign() {
 		sx = 0;
 		sy = 0;
-		setPosition((int)getX(), (int)getY());
-        setOrigin((int)getX(), (int)getY());
+		setPosition((int)x, (int)y);
+        setOrigin((int)x, (int)y);
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         region = new TextureRegion(texture);
         region.setRegion(0, 0, (int)signWidth, (int)signHeight);
-        setBounds((int)getX(), (int)getY(), (int)signWidth, (int)signHeight);
+        setBounds((int)x, (int)y, (int)signWidth, (int)signHeight);
         setRegion(region);
 	}
 	
