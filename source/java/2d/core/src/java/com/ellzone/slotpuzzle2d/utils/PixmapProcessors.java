@@ -191,7 +191,40 @@ public class PixmapProcessors {
 		return scrollAnimatedVerticalText;
 	}
 
+	public static Pixmap createDynamicHorizontalFontText(BitmapFont font, String text, Pixmap src) {
+		final int width = src.getWidth();
+	    final int height = src.getHeight();
 
+	    Pixmap horizontalFontText = new Pixmap(width, height, src.getFormat());
+	    BitmapFont.BitmapFontData fontData = font.getData();
+
+		if (fontData.imagePaths.length == 0) {
+			System.out.println("Doh! The length of the imagepaths is zero");
+		} else {
+			Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, fontData.getImagePath(0));
+			Pixmap fontPixmap = new Pixmap(Gdx.files.local(fontData.getImagePath(0)));
+			BitmapFont.Glyph glyph;
+			horizontalFontText.setColor(Color.BLACK);
+			horizontalFontText.fillRectangle(0, 0, width, height);
+			horizontalFontText.setColor(Color.WHITE);
+
+			for (int i = 0; i < text.length(); i++) {
+				glyph = fontData.getGlyph(text.charAt(i));				
+				int offSetY = (horizontalFontText.getWidth() - glyph.width) / 2;
+				int startX = i * horizontalFontText.getHeight() / text.length() + 2;
+				int offSetX = -glyph.yoffset;
+				offSetX = startX + offSetX - glyph.width;
+
+ 				horizontalFontText.drawPixmap(fontPixmap,
+											  offSetX,
+											  offSetY,
+											  glyph.srcX, glyph.srcY, glyph.width, glyph.height);
+ 			}
+
+		}
+		return horizontalFontText;
+	}
+	
     public static Pixmap createPixmapToAnimate(Sprite[] sprites) {
         Pixmap pixmap = getPixmapFromSprite(sprites[0]);
         Pixmap pixmapToAnimate = new Pixmap(pixmap.getWidth(), pixmap.getHeight() * sprites.length, pixmap.getFormat());
