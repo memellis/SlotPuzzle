@@ -171,7 +171,7 @@ public class AnimatedReel {
 	
 	public void reinitialise() {
         this.reel.setSpinning(true);
-        this.reel.setSy(0);
+        //this.reel.setSy(0);
         dampenedSine.initialiseDampenedSine();
         dampenedSine.position.y = 0;
         dampenedSine.velocity = new Vector(0, velocityY);

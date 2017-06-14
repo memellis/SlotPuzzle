@@ -49,7 +49,7 @@ public class ScrollingSign extends SPPrototypeTemplate {
 	protected void initialiseOverride() {
 		initialiseFonts();
         initialiseFontTexture(SLOT_PUZZLE);
-		scrollSign = new ScrollSign(textTexture, (displayWindowWidth - textTexture.getWidth()) / 2, (displayWindowHeight - textTexture.getHeight()) / 2 , SIGN_WIDTH * SLOT_PUZZLE.length(), SIGN_HEIGHT, ScrollSign.SignDirection.RIGHT);
+		scrollSign = new ScrollSign(textTexture, (displayWindowWidth - textTexture.getWidth()) / 2, (displayWindowHeight - textTexture.getHeight()) / 2 , SIGN_WIDTH * 4, SIGN_HEIGHT, ScrollSign.SignDirection.RIGHT);
 		sx = 0;
 	}
 
