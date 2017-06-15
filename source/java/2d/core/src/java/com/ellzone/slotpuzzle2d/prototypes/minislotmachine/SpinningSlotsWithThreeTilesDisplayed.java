@@ -126,13 +126,12 @@ public class SpinningSlotsWithThreeTilesDisplayed extends SPPrototypeTemplate {
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         for (int i=0; i<3; i++) {
-            AnimatedReel reel = new AnimatedReel(slotReelScrollTexture, 0, 0, spriteWidth, spriteHeight * 3, 0, reelSpinningSound, reelStoppingSound, tweenManager);
-            reel.setX(i * spriteWidth + displayWindowWidth / 2);
-            reel.setY((displayWindowHeight + 3 * spriteHeight) / 2);
-            reel.setSx(0);
-            reel.setSy(random.nextInt(sprites.length - 1) * spriteHeight);
-            reel.setEndReel(random.nextInt(sprites.length - 1));
-            reels.add(reel);
+            AnimatedReel animatedReel = new AnimatedReel(slotReelScrollTexture, 0, 0, spriteWidth, spriteHeight * 3, 0, reelSpinningSound, reelStoppingSound, tweenManager);
+            animatedReel.setX(i * spriteWidth + displayWindowWidth / 2);
+            animatedReel.setY((displayWindowHeight + 3 * spriteHeight) / 2);
+            animatedReel.setSx(0);
+            animatedReel.setEndReel(random.nextInt(sprites.length - 1));
+            reels.add(animatedReel);
         }
     }
 

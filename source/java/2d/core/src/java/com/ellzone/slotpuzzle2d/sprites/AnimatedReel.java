@@ -16,6 +16,8 @@
 
 package com.ellzone.slotpuzzle2d.sprites;
 
+import java.util.Random;
+
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -33,6 +35,8 @@ import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import aurelienribon.tweenengine.equations.Elastic;
 
 public class AnimatedReel {
+	private static float VELOCITY_MIN = 1;
+	private static float VELOCITY_MAX = 3;
 	private ReelTile reel;
 	private DampenedSineParticle dampenedSine;
 	private float velocityY;
@@ -53,6 +57,8 @@ public class AnimatedReel {
 	private int reelScrollHeight;
 	private TweenManager tweenManager;
 	private float reelSlowingTargetTime;
+	private Vector accelerate;
+	private Random random;
 	
 	public AnimatedReel(Texture texture, float x, float y, float tileWidth, float tileHeight, int endReel, Sound spinningSound, Sound stoppingSound, TweenManager tweenManager) {
 		this.texture = texture;
@@ -68,11 +74,12 @@ public class AnimatedReel {
 	}
 	
 	private void initialiseAnimatedReel() {
+		random = new Random();
 		reel = new ReelTile(this.texture, this.x, this.y, this.tileWidth, this.tileHeight, this.endReel, this.spinningSound);
 		reelScrollHeight = this.texture.getHeight();
 		reel.setSpinning(false);
 		velocityY = 4.0f;
-		velocityYMin = 2.0f;
+		velocityYMin = getRandomVelocityMin();
 		velocityMin = new Vector(0, velocityYMin);
 		acceleratorY = 3.0f;
 		accelerator = new Vector(0, acceleratorY);
@@ -119,7 +126,7 @@ public class AnimatedReel {
 			delegateSlowingSpinning(type, source);
 		}
 	};
-	private Vector accelerate;
+	
 	
 	private void delegateSlowingSpinning(int type, BaseTween<?> source) {
 		ReelTile reel = (ReelTile)source.getUserData();
@@ -145,6 +152,14 @@ public class AnimatedReel {
 		reel.setSy(sy);
 	}
 	
+	public float getSx() {
+		return reel.getSx();
+	}
+	
+	public float getSy() {
+		return reel.getSy();
+	}
+	
 	public int getEndReel() {
 		return reel.getEndReel();
 	}
@@ -158,7 +173,7 @@ public class AnimatedReel {
 		dampenedSine.update();
 		if (dampenedSine.getDSState() == DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE) {
      		reel.setSy(dampenedSine.position.y);
-	    }
+ 	    }
 	}
 	
 	public void draw(SpriteBatch spriteBatch) {
@@ -171,18 +186,21 @@ public class AnimatedReel {
 	
 	public void reinitialise() {
         this.reel.setSpinning(true);
-        //this.reel.setSy(0);
         dampenedSine.initialiseDampenedSine();
-        dampenedSine.position.y = 0;
+        dampenedSine.position.y = reel.getSy();
         dampenedSine.velocity = new Vector(0, velocityY);
         accelerator = new Vector(0, acceleratorY);
         dampenedSine.accelerator = accelerator;
         accelerate = new Vector(0, accelerateY);
         dampenedSine.accelerate(accelerate);
-        dampenedSine.velocityMin.y = velocityMin.y;
+        dampenedSine.velocityMin.y = getRandomVelocityMin();
 	}
 	
 	public DampenedSineParticle.DSState getDampenedSineState() {
 		return dampenedSine.getDSState();
 	}
+
+    private float getRandomVelocityMin() {
+    	return random.nextFloat() * (VELOCITY_MAX - VELOCITY_MIN + 1.0f) + VELOCITY_MIN; 
+    }
 }

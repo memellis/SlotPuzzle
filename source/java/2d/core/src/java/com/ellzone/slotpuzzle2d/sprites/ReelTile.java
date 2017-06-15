@@ -16,6 +16,8 @@
 
 package com.ellzone.slotpuzzle2d.sprites;
 
+import java.util.Random;
+
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -42,7 +44,8 @@ public class ReelTile extends ReelSprite {
 	private Sound spinningSound;
 	private long spinningSoundId;
 	private float spinngPitch;
-
+	private Random random;
+	
     public ReelTile(Texture texture, float x, float y, float tileWidth, float tileHeight, int endReel, Sound spinningSound) {
         this.texture = texture;
         this.x = x;
@@ -55,11 +58,13 @@ public class ReelTile extends ReelSprite {
     }
 
     private void defineReelSlotTileScroll() {
+    	random = new Random();
         setPosition((int)this.x, (int)this.y);
         setOrigin((int)this.x, (int)this.y);
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         region = new TextureRegion(texture);
-        region.setRegion((int)0, (int)0, (int)tileWidth, (int)tileHeight);
+        int randomSy = random.nextInt(texture.getHeight() / texture.getWidth()) * texture.getWidth();
+        region.setRegion((int)0, randomSy, (int)tileWidth, (int)tileHeight);
         setBounds((int)this.x, (int)this.y, (int)tileWidth, (int)tileHeight);
         setRegion(region);
         reelFlash = false;
@@ -80,8 +85,8 @@ public class ReelTile extends ReelSprite {
     }
 	
 	private void processSpinningState() {
-        float syModulus = sy % texture.getHeight();        
-        region.setRegion((int) sx, (int) syModulus, (int)tileWidth, (int)tileHeight);
+        float syModulus = sy % texture.getHeight();      
+         region.setRegion((int) sx, (int) syModulus, (int)tileWidth, (int)tileHeight);
         setRegion(region);
         if (this.spinningSound != null) {
         	this.spinngPitch = this.spinngPitch * 0.999f;
