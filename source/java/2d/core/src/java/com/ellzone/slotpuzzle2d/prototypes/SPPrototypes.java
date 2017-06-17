@@ -18,6 +18,7 @@ package com.ellzone.slotpuzzle2d.prototypes;
 
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import com.ellzone.slotpuzzle2d.prototypes.box2d.Box2DLights;
 import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlots;
 import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlotsRotateHandleSprite;
 import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlotsRotateHandleSpriteUsingTweenEngine;
@@ -70,6 +71,7 @@ public class SPPrototypes {
         Bezier1.class,
         Bezier2.class,
         Bezier3.class,
+		Box2DLights.class,
         SmoothScrollingWorldMap.class,
         SubPixelPerfectSmoothScrolling.class,
         WorldMapLevelSelect.class,
