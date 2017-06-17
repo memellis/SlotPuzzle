@@ -17,9 +17,13 @@ define_environment_variables() {
     [ -z "${INSTALL_DIR}" ] && { INSTALL_DIR=/sdcard/AppProjects; }
 
     INTERACTIVE_MODE="No"
-    SOURCE_URL="https://libgdx.badlogicgames.com/nightlies/libgdx-nightly-latest.zip"
-    SOURCE="libgdx-nightly-latest"
-    SOURCE_ARCHIVE="libgdx-nightly-latest.zip"
+    LIBGDX_NIGHTIES_URL="https://libgdx.badlogicgames.com/nightlies/libgdx-nightly-latest.zip"
+    LIBGDX_NIGHTIES_SOURCE="libgdx-nightly-latest"
+    LIBGDX_NIGHTIES_SOURCE_ARCHIVE="libgdx-nightly-latest.zip"
+    LIBGDX_BOX2DLIGHTS_ARCHIVE_URL="http://libgdx.badlogicgames.com/box2dlights/box2dlights-1.5-SNAPSHOT.jar"
+    LIBGDX_BOX2DLIGHTS_ARCHIVE="box2dlights-1.5.jar"
+    LIBGDX_BOX2DLIGHTS_SOURCE_ARCHIVE_URL="http://libgdx.badlogicgames.com/box2dlights/box2dlights-1.5-SNAPSHOT-sources.jar"
+    LIBGDX_BOX2DLIGHTS_SOURCE_ARCHIVE="box2dlights-1.5-sources.jar"
     SLOTPUZZLE_NAME="slotpuzzle"
     SPPROTOTYPES_NAME="spprototypes"
     SLOTPUZZLE_2D_SOURCE="${SLOTPUZZLE_HOME}/source/java/2d"
@@ -82,16 +86,25 @@ get_archive() {
     local BUILD_DIR=${1}
     local SOURCE_ARCHIVE=${2}
     local SOURCE_URL=${3}
-    local SOURCE=${4}
-    local INTERACTIVE_MODE=${5}
-
 
     pushd ${BUILD_DIR} > /dev/null || { echo "Could not pushd ${BUILD_DIR}. Aborting..." ; exit 1; }
 
     if [ ! -f ${SOURCE_ARCHIVE} ]
     then
-        wget --no-check-certificate ${SOURCE_URL}
+        wget --no-check-certificate ${SOURCE_URL} -O ${SOURCE_ARCHIVE}
     fi
+}
+
+extract_archive() {
+    echo "unzip_archive..."
+    local BUILD_DIR=${1}
+    local SOURCE_ARCHIVE=${2}
+    local SOURCE_URL=${3}
+    local SOURCE=${4}
+    local INTERACTIVE_MODE=${5}
+
+
+    pushd ${BUILD_DIR} > /dev/null || { echo "Could not pushd ${BUILD_DIR}. Aborting..." ; exit 1; }
 
     if [ "${INTERACTIVE_MODE}" = "Yes" ]
     then
@@ -255,11 +268,21 @@ create_aide_target() {
     mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/x86
     cp ${LIBGDX_SRC_DIR}/x86/libgdx.so ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/x86
     mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
+
     cp ${LIBGDX_SRC_DIR}/extensions/gdx-freetype/gdx-freetype.jar ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
     cp ${LIBGDX_SRC_DIR}/extensions/gdx-freetype/gdx-freetype-natives.jar ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
     cp ${LIBGDX_SRC_DIR}/extensions/gdx-freetype/armeabi/libgdx-freetype.so ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/armeabi
     cp ${LIBGDX_SRC_DIR}/extensions/gdx-freetype/armeabi-v7a/libgdx-freetype.so ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/armeabi-v7a
     cp ${LIBGDX_SRC_DIR}/extensions/gdx-freetype/x86/libgdx-freetype.so ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/x86
+
+    cp ${LIBGDX_SRC_DIR}/extensions/gdx-box2d/gdx-box2d.jar ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
+    cp ${LIBGDX_SRC_DIR}/extensions/gdx-box2d/gdx-box2d-natives.jar ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
+    cp ${LIBGDX_SRC_DIR}/extensions/gdx-box2d/armeabi/libgdx-box2d.so ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/armeabi
+    cp ${LIBGDX_SRC_DIR}/extensions/gdx-box2d/armeabi-v7a/libgdx-box2d.so ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/armeabi-v7a
+    cp ${LIBGDX_SRC_DIR}/extensions/gdx-box2d/x86/libgdx-box2d.so ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/x86
+
+    cp ${BUILD_DIR}/${LIBGDX_BOX2DLIGHTS_ARCHIVE} ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
+    cp ${BUILD_DIR}/${LIBGDX_BOX2DLIGHTS_SOURCE_ARCHIVE} ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
     cp ${SLOTPUZZLE_2D_SOURCE}/libs/tween-engine-api.jar ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
     cp ${SLOTPUZZLE_2D_SOURCE}/libs/tween-engine-api-sources.jar ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
 
@@ -277,6 +300,13 @@ source_my_functions
 
 process_command_line_arguments "$*"
 
-get_archive ${BUILD_DIR} ${SOURCE_ARCHIVE} ${SOURCE_URL} ${SOURCE} ${INTERACTIVE_MODE}
+get_archive ${BUILD_DIR} ${LIBGDX_NIGHTIES_SOURCE_ARCHIVE} ${LIBGDX_NIGHTIES_URL}
 
-create_aide_target ${BUILD_DIR}/${SOURCE} ${INSTALL_DIR}/SlotPuzzle ${SPPROTOTYPES_TEMPLATE} ${SLOTPUZZLE_CORE} ${SLOTPUZZLE_ANDROID} ${SLOTPUZZLE_NAME}
+extract_archive ${BUILD_DIR} ${LIBGDX_NIGHTIES_SOURCE_ARCHIVE} ${LIBGDX_NIGHTIES_URL} ${LIBGDX_NIGHTIES_SOURCE} ${INTERACTIVE_MODE}
+
+get_archive ${BUILD_DIR} ${LIBGDX_BOX2DLIGHTS_ARCHIVE} ${LIBGDX_BOX2DLIGHTS_ARCHIVE_URL}
+
+get_archive ${BUILD_DIR} ${LIBGDX_BOX2DLIGHTS_SOURCE_ARCHIVE} ${LIBGDX_BOX2DLIGHTS_SOURCE_ARCHIVE_URL}
+
+create_aide_target ${BUILD_DIR}/${LIBGDX_NIGHTIES_SOURCE} ${INSTALL_DIR}/SlotPuzzle ${SPPROTOTYPES_TEMPLATE} ${SLOTPUZZLE_CORE} ${SLOTPUZZLE_ANDROID} ${SLOTPUZZLE_NAME}
+
