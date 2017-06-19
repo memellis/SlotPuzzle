@@ -10,4 +10,6 @@
 <classpathentry exported="true" kind="lib" path="/slotpuzzle/libs/tween-engine-api.jar"/>
 <classpathentry kind="lib" path="/storage/emulated/0/AppProjects/SlotPuzzle/slotpuzzle/libs/gdx-freetype.jar"/>
 <classpathentry kind="lib" path="/storage/emulated/0/AppProjects/SlotPuzzle/slotpuzzle/libs/gdx-freetype-natives.jar"/>
+<classpathentry kind="lib" path="/storage/emulated/0/AppProjects/SlotPuzzle/slotpuzzle/libs/box2dlights-1.5.jar"/>
+<classpathentry kind="lib" path="/storage/emulated/0/AppProjects/SlotPuzzle/slotpuzzle/libs/gdx-box2d.jar"/>
 </classpath>
