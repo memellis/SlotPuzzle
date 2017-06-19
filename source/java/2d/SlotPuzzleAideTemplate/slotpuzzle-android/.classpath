@@ -1,12 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="src" exported="true" path="/slotpuzzle" combineaccessrules="false"/>
-	<classpathentry kind="output" path="bin/classes"/>
-	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry kind="lib" exported="true" path="/slotpuzzle/libs/gdx.jar" />
-	
-	<classpathentry kind="lib" exported="true" path="libs/gdx-backend-android.jar" />
+<?xml version="1.0" encoding="UTF-8"?><classpath>
+<classpathentry kind="src" path="src"/>
+<classpathentry kind="src" path="gen"/>
+<classpathentry exported="true" kind="src" path="/slotpuzzle"/>
+<classpathentry kind="output" path="bin/classes"/>
+<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+<classpathentry exported="true" kind="lib" path="/slotpuzzle/libs/gdx.jar"/>
+<classpathentry exported="true" kind="lib" path="libs/gdx-backend-android.jar"/>
+<classpathentry exported="true" kind="lib" path="/slotpuzzle/libs/tween-engine-api.jar"/>
+<classpathentry kind="lib" path="/storage/emulated/0/AppProjects/SlotPuzzle/slotpuzzle/libs/gdx-freetype.jar"/>
+<classpathentry kind="lib" path="/storage/emulated/0/AppProjects/SlotPuzzle/slotpuzzle/libs/gdx-freetype-natives.jar"/>
 </classpath>

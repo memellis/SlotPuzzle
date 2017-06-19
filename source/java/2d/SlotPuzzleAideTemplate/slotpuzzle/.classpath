@@ -4,4 +4,9 @@
 	<classpathentry kind="output" path="bin"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" exported="true" path="libs/gdx.jar"/>
+	<classpathentry kind="lib" exported="true" path="libs/tween-engine-api.jar"/>
+	<classpathentry kind="lib" exported="true" path="libs/gdx-freetype.jar"/>
+	<classpathentry kind="lib" exported="true" path="libs/box2dlights-1.5.jar"/>
+	<classpathentry kind="lib" exported="true" path="libs/gdx-box2d.jar"/>		
 </classpath>
+
