@@ -111,10 +111,11 @@ public class Particle2ExtendingParticleTemplate extends ParticleTemplate {
             reelSlot.update(delta);
         }
 	}
-
+	
 	private void drawGraphPoint(ShapeRenderer shapeRenderer, Vector2 newPoint) {
         if (points.size >= 2) {
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
+			shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(0, 255, 255, 255);
             for (int i = 0; i < points.size - 1; i++) {
                 shapeRenderer.line(points.get(i).x, points.get(i).y, points.get(i + 1).x, points.get(i + 1).y);
@@ -132,7 +133,7 @@ public class Particle2ExtendingParticleTemplate extends ParticleTemplate {
         }
         batch.end();
         float dsine = dampenedSine(savedAmplitude, 1.0f, (float) (2 * Math.PI), graphStep / 75, (float) Math.PI/2);
-        drawGraphPoint(shapeRenderer, new Vector2(graphStep % Gdx.graphics.getWidth(), (200 + dsine) % Gdx.graphics.getHeight()));
+        drawGraphPoint(shapeRenderer, new Vector2(graphStep % displayWindowWidth, (200 + dsine) % displayWindowHeight));
         graphStep++;
 	}
 

@@ -91,7 +91,7 @@ public class Particle4ExtendingParticleTemplate extends ParticleTemplate {
 
     private void delegateDSCallback(int type) {
         if (type == SPPhysicsCallback.PARTICLE_UPDATE) {
-            addGraphPoint(new Vector2(graphStep++ % Gdx.graphics.getWidth(), (Gdx.graphics.getHeight() / 2 + dampenedSines.get(0).dsEndReel)));
+            addGraphPoint(new Vector2(graphStep++ % displayWindowWidth, (displayWindowHeight / 2 + dampenedSines.get(0).dsEndReel)));
         } else {
             if (type == SPPhysicsCallback.END) {
                 reelTilesArray.get(0).setEndReel(random.nextInt(reelSprites.length - 1));
@@ -132,6 +132,7 @@ public class Particle4ExtendingParticleTemplate extends ParticleTemplate {
 
     private void drawGraphPoint(ShapeRenderer shapeRenderer) {
         if (points.size >= 2) {
+            shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             int rr = 23;
             int rg = 32;

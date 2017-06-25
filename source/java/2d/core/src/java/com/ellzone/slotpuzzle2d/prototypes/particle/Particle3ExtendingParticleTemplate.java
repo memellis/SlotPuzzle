@@ -150,6 +150,7 @@ public class Particle3ExtendingParticleTemplate extends ParticleTemplate {
 
     private void drawGraphPoint(ShapeRenderer shapeRenderer) {
         if (points.size >= 2) {
+			shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             int rr = random.nextInt(255);
             int rg = random.nextInt(255);

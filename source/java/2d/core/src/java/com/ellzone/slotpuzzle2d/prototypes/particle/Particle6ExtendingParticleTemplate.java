@@ -176,7 +176,7 @@ public class Particle6ExtendingParticleTemplate extends ParticleTemplate {
         if (type == TweenCallback.END) {
             reel.setSpinning(false);
         } else if (type == TweenCallback.STEP) {
-            addGraphPoint(new Vector2(graphStep++ % (Gdx.graphics.getWidth() - 825), (Gdx.graphics.getHeight() / 2 + (reel.getSy() % slotReelScrollheight))));
+            addGraphPoint(new Vector2(graphStep++ % (displayWindowWidth - 250), (displayWindowHeight / 2 + (reel.getSy() % slotReelScrollheight))));
         }
     }
 
@@ -186,6 +186,7 @@ public class Particle6ExtendingParticleTemplate extends ParticleTemplate {
 
 	private void drawGraphPoint(ShapeRenderer shapeRenderer) {
         if (points.size >= 2) {
+            shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(Color.YELLOW);
             for (int i = 0; i < points.size - 1; i++) {

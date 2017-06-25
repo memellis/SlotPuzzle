@@ -101,7 +101,7 @@ public class Particle5ExtendingParticleTemplate extends ParticleTemplate {
 
     private void delegateDSCallback(int type, SPPhysicsEvent source) {
         if (type == SPPhysicsCallback.PARTICLE_UPDATE) {
-            addGraphPoint(new Vector2(graphStep++ % Gdx.graphics.getWidth(), (Gdx.graphics.getHeight() / 2 + dampenedSines.get(0).dsEndReel)));
+            addGraphPoint(new Vector2(graphStep++ % displayWindowWidth, (displayWindowHeight / 2 + dampenedSines.get(0).dsEndReel)));
         } else {
             if (type == SPPhysicsCallback.END) {
                 DampenedSine ds = (DampenedSine)source.getSource();
@@ -120,6 +120,7 @@ public class Particle5ExtendingParticleTemplate extends ParticleTemplate {
 	
 	private void drawGraphPoint(ShapeRenderer shapeRenderer) {
         if (points.size >= 2) {
+            shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(Color.YELLOW);
             for (int i = 0; i < points.size - 1; i++) {

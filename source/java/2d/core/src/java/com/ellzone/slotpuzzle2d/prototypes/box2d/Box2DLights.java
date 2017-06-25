@@ -37,10 +37,11 @@ public class Box2DLights extends SPPrototype {
  	private World world;
 	private Box2DDebugRenderer debugRenderer;
 	private RayHandler rayHandler;
-	private Light light;
-	ShapeRenderer sr;
+    private Light light;
+	private ShapeRenderer sr;
 	
-	@Override	public void create () {
+	@Override
+	public void create () {
 		super.create();
  		viewport = new FitViewport(SCENE_WIDTH, SCENE_HEIGHT);
 		// Center camera
