@@ -225,6 +225,34 @@ public class PixmapProcessors {
 		}
 		return horizontalFontText;
 	}
+
+	public static Pixmap createDynamicHorizontalFontTextCustom(BitmapFont font, Color fontColor, String text, Pixmap src, int startTextX, int startTextY) {
+	    BitmapFont.BitmapFontData fontData = font.getData();
+
+		if (fontData.imagePaths.length == 0) {
+			System.out.println("Doh! The length of the imagepaths is zero");
+		} else {
+			Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, fontData.getImagePath(0));
+			Pixmap fontPixmap = new Pixmap(Gdx.files.local(fontData.getImagePath(0)));
+			BitmapFont.Glyph glyph;
+			src.setColor(fontColor);
+			fontPixmap.setColor(fontColor);
+
+			for (int i = 0; i < text.length(); i++) {
+				glyph = fontData.getGlyph(text.charAt(i));
+				int startX = startTextX + i * src.getWidth() / text.length() + 2;
+				int offSetY = -glyph.xoffset;
+				offSetY = startTextY + offSetY - glyph.height;
+				int offSetX = startX;
+
+ 				src.drawPixmap(fontPixmap,
+				               offSetX,
+							   offSetY,
+							   glyph.srcX, glyph.srcY, glyph.width, glyph.height);
+ 			}
+		}
+		return src;
+	}
 	
     public static Pixmap createPixmapToAnimate(Sprite[] sprites) {
         Pixmap pixmap = getPixmapFromSprite(sprites[0]);

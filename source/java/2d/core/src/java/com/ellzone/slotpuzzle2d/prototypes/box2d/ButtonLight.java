@@ -90,10 +90,7 @@ public class ButtonLight extends SPPrototype {
 		buttonLight = ButtonState.LIGHT_OFF;
 		return buttonSprite;
 	}
-	
-	private void createBodies() {
-	}
-	
+		
 	@Override
 	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
 		if (button == Input.Buttons.LEFT) {
@@ -146,5 +143,4 @@ public class ButtonLight extends SPPrototype {
 		font.draw(batch, message, 10, 180);
 		batch.end();
 	}
-
 }
