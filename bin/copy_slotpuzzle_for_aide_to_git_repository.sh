@@ -1,4 +1,4 @@
-#!/bin/bash -xv
+#!/bin/bash
 #
 # Copy java code from SlotPuzzle for AIDE to the 
 # SlotPuzzle local git repository.
