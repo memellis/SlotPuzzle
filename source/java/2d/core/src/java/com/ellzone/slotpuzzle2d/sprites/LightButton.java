@@ -56,7 +56,6 @@ public class LightButton {
 		this.buttonFont = buttonFont;
 		this.buttonText = buttonText;
 		initialiseLightButton();
-		
 	}
 	
 	private void initialiseLightButton() {
@@ -64,10 +63,9 @@ public class LightButton {
 		light.setActive(false);
 		light.setColor(Color.PURPLE);
 		light.setDistance(1.5f);
-		float lightButtonCentreX = positionX + (buttonWidth / 200);
-		float lightButtonCentreY = positionY + (buttonHeight / 200);
-		//light.setPosition(lightButtonCentreX, lightButtonCentreY);
-		light.setPosition(positionX + 0.4f, positionY + 0.4f);
+		float lightButtonCentreX = positionX + (float)buttonWidth / 200.0f;
+		float lightButtonCentreY = positionY + (float)buttonHeight / 200.0f;
+		light.setPosition(lightButtonCentreX, lightButtonCentreY);
 		lightButtonSprite = new Sprite(createButton());
 		lightButtonSprite.setPosition(positionX, positionY);
 		lightButtonSprite.setSize(buttonWidth, buttonHeight);
