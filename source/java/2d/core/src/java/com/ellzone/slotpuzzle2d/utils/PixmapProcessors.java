@@ -142,6 +142,18 @@ public class PixmapProcessors {
 		}
 	}
 
+	public static void changePixmapColour(Pixmap src, Pixmap dest, Color srcColor, Color destColor) {
+		for (int x = 0; x < src.getWidth(); x++) {
+			for (int y = 0; y < src.getHeight(); y++) {
+                int srcPixel = src.getPixel(x, y);
+                Color mySrcColor = new Color(srcPixel);
+				if ((mySrcColor.r == 1) & (mySrcColor.g == 1) & (mySrcColor.g == 1)) {
+					dest.drawPixel(x, y, destColor.rgba8888(destColor));
+				}
+			}
+		}
+	}
+
 	public static Pixmap createDynamicVerticalFontText(BitmapFont font, String text, Pixmap src) {
 		final int width = src.getWidth();
 	    final int height = src.getHeight();
@@ -171,7 +183,6 @@ public class PixmapProcessors {
 						offSetY,
 						glyph.srcX, glyph.srcY, glyph.width, glyph.height);
  			}
-
 		}
 		return verticalFontText;
 	}
@@ -234,9 +245,11 @@ public class PixmapProcessors {
 		} else {
 			Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, fontData.getImagePath(0));
 			Pixmap fontPixmap = new Pixmap(Gdx.files.local(fontData.getImagePath(0)));
+			Pixmap fontPixmapModifiedFontColor = new Pixmap(fontPixmap.getWidth(), fontPixmap.getHeight(), fontPixmap.getFormat());
+			changePixmapColour(fontPixmap, fontPixmapModifiedFontColor, Color.WHITE, fontColor);
 			BitmapFont.Glyph glyph;
-			src.setColor(fontColor);
-			fontPixmap.setColor(fontColor);
+			//src.setColor(fontColor);
+			//fontPixmap.setColor(fontColor);
 
 			for (int i = 0; i < text.length(); i++) {
 				glyph = fontData.getGlyph(text.charAt(i));
@@ -245,7 +258,7 @@ public class PixmapProcessors {
 				offSetY = startTextY + offSetY - glyph.height;
 				int offSetX = startX;
 
- 				src.drawPixmap(fontPixmap,
+ 				src.drawPixmap(fontPixmapModifiedFontColor,
 				               offSetX,
 							   offSetY,
 							   glyph.srcX, glyph.srcY, glyph.width, glyph.height);
