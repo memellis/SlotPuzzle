@@ -18,11 +18,13 @@ package com.ellzone.slotpuzzle2d.sprites;
 
 import java.util.Random;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
 public class ReelTile extends ReelSprite {
@@ -63,7 +65,12 @@ public class ReelTile extends ReelSprite {
         setOrigin((int)this.x, (int)this.y);
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         region = new TextureRegion(texture);
-        int randomSy = random.nextInt(texture.getHeight() / texture.getWidth()) * texture.getWidth();
+		int numberOfReelsInTexture = texture.getHeight() / texture.getWidth();
+        int randomSy = 0;
+        if (numberOfReelsInTexture > 0) {
+            randomSy = random.nextInt(numberOfReelsInTexture) * texture.getWidth();
+        }
+		Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE, "numberOfReelsInTexture" + numberOfReelsInTexture);
         region.setRegion((int)0, randomSy, (int)tileWidth, (int)tileHeight);
         setBounds((int)this.x, (int)this.y, (int)tileWidth, (int)tileHeight);
         setRegion(region);
