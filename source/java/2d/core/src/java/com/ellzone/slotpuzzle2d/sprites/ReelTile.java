@@ -29,6 +29,7 @@ import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
 public class ReelTile extends ReelSprite {
     private Texture texture;
+    private int numberOfReelsInTexture = 0;
     private TextureRegion region;
     private float tileWidth;
     private float tileHeight;
@@ -59,19 +60,29 @@ public class ReelTile extends ReelSprite {
         defineReelSlotTileScroll();
     }
 
+    public ReelTile(Texture texture, int numberOfReelsInTexture, float x, float y, float tileWidth, float tileHeight, int endReel, Sound spinningSound) {
+        this.texture = texture;
+        this.numberOfReelsInTexture = numberOfReelsInTexture;
+        this.x = x;
+        this.y = y;
+        this.tileWidth = tileWidth;
+        this.tileHeight = tileHeight;
+        super.setEndReel(endReel);
+        this.spinningSound = spinningSound;
+        defineReelSlotTileScroll();
+    }
+
     private void defineReelSlotTileScroll() {
     	random = new Random();
         setPosition((int)this.x, (int)this.y);
         setOrigin((int)this.x, (int)this.y);
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         region = new TextureRegion(texture);
-		int numberOfReelsInTexture = texture.getHeight() / texture.getWidth();
         int randomSy = 0;
         if (numberOfReelsInTexture > 0) {
-            randomSy = random.nextInt(numberOfReelsInTexture) * texture.getWidth();
+            randomSy = random.nextInt(numberOfReelsInTexture) * texture.getHeight();
         }
-		Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE, "numberOfReelsInTexture" + numberOfReelsInTexture);
-        region.setRegion((int)0, randomSy, (int)tileWidth, (int)tileHeight);
+	    region.setRegion((int)0, randomSy, (int)tileWidth, (int)tileHeight);
         setBounds((int)this.x, (int)this.y, (int)tileWidth, (int)tileHeight);
         setRegion(region);
         reelFlash = false;

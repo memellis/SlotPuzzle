@@ -346,6 +346,7 @@ public class PlayScreen implements Screen {
 
 	private void addReel(Rectangle mapRectangle) {
         int endReel = random.nextInt(sprites.length);
+		Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE, "slotReelTexture.getWidth()="+slotReelTexture.getWidth() + "slotReelTexture.getHeight()="+slotReelTexture.getHeight());
 		ReelTile reel = new ReelTile(slotReelTexture, 0, 0, (int)spriteWidth, (int)spriteHeight, endReel, game.assetManager.get("sounds/reel-spinning.mp3", Sound.class));
 		reel.setX(mapRectangle.getX());
 		reel.setY(mapRectangle.getY());
