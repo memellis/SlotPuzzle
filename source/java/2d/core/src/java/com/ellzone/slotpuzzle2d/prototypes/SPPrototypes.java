@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.Box2DLights;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.ButtonLight;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.ButtonLightUsingLightButton;
+import com.ellzone.slotpuzzle2d.prototypes.box2d.ButtonLightUsingLightButtonViaFrameBuffer;
 import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlots;
 import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlotsRotateHandleSprite;
 import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlotsRotateHandleSpriteUsingTweenEngine;
@@ -76,6 +77,7 @@ public class SPPrototypes {
 		Box2DLights.class,
 		ButtonLight.class,
 		ButtonLightUsingLightButton.class,
+            ButtonLightUsingLightButtonViaFrameBuffer.class,
         SmoothScrollingWorldMap.class,
         SubPixelPerfectSmoothScrolling.class,
         WorldMapLevelSelect.class,

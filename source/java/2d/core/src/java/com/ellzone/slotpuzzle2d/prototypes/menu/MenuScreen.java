@@ -78,6 +78,7 @@ public class MenuScreen implements Screen {
 	    update(delta);
 	    game.batch.begin();
 	    fps = Gdx.graphics.getFramesPerSecond();
+        font.setColor(Color.YELLOW);
 	    font.draw(game.batch,"fps:" + fps, 10, 15);
 	    font.draw(game.batch, gdxVersion, SPPrototypesGame.V_WIDTH - 40, SPPrototypesGame.V_HEIGHT - 10);
 	    game.batch.end();

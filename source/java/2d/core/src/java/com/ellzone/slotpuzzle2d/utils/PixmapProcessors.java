@@ -27,9 +27,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
+import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
+
 import java.io.File;
+import java.nio.ByteBuffer;
 
 public class PixmapProcessors {
 	private static int counter = 0;
@@ -90,6 +95,19 @@ public class PixmapProcessors {
 	    return flipped;
 	}
 
+    public static Pixmap flipPixmapY(Pixmap src) {
+        final int width = src.getWidth();
+        final int height = src.getHeight();
+        Pixmap flipped = new Pixmap(width, height, src.getFormat());
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                flipped.drawPixel(x, y, src.getPixel(x, height - y - 1));
+            }
+        }
+        return flipped;
+    }
+
 	public static Pixmap scrollPixmap(Pixmap src, int scrollSize, boolean scrollInXDirection) {
 		final int width = src.getWidth();
 		final int height = src.getHeight();
@@ -144,13 +162,18 @@ public class PixmapProcessors {
 
 	public static void changePixmapColour(Pixmap src, Pixmap dest, Color srcColor, Color destColor) {
 		for (int x = 0; x < src.getWidth(); x++) {
+			System.out.print("x="+x+" ");
 			for (int y = 0; y < src.getHeight(); y++) {
                 int srcPixel = src.getPixel(x, y);
+
+				System.out.print(String.format(" 0x%08X", srcPixel));
                 Color mySrcColor = new Color(srcPixel);
-				if ((mySrcColor.r == 1) & (mySrcColor.g == 1) & (mySrcColor.g == 1)) {
+				if (!((mySrcColor.r == 0) & (mySrcColor.g == 0) & (mySrcColor.g == 0) & (mySrcColor.a == 0))) {
 					dest.drawPixel(x, y, destColor.rgba8888(destColor));
 				}
 			}
+
+			System.out.println();
 		}
 	}
 
@@ -245,11 +268,7 @@ public class PixmapProcessors {
 		} else {
 			Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, fontData.getImagePath(0));
 			Pixmap fontPixmap = new Pixmap(Gdx.files.local(fontData.getImagePath(0)));
-			Pixmap fontPixmapModifiedFontColor = new Pixmap(fontPixmap.getWidth(), fontPixmap.getHeight(), fontPixmap.getFormat());
-			changePixmapColour(fontPixmap, fontPixmapModifiedFontColor, Color.WHITE, fontColor);
 			BitmapFont.Glyph glyph;
-			//src.setColor(fontColor);
-			//fontPixmap.setColor(fontColor);
 
 			for (int i = 0; i < text.length(); i++) {
 				glyph = fontData.getGlyph(text.charAt(i));
@@ -258,16 +277,52 @@ public class PixmapProcessors {
 				offSetY = startTextY + offSetY - glyph.height;
 				int offSetX = startX;
 
- 				src.drawPixmap(fontPixmapModifiedFontColor,
-				               offSetX,
-							   offSetY,
-							   glyph.srcX, glyph.srcY, glyph.width, glyph.height);
- 			}
+                Pixmap fontGlyphPixmap = new Pixmap(glyph.width, glyph.height, fontPixmap.getFormat());
+                Pixmap fontPixmapModifiedFontColor = new Pixmap(glyph.width, glyph.height, fontPixmap.getFormat());
+
+                fontGlyphPixmap.drawPixmap(fontPixmap,
+                        0,
+                        0,
+                        glyph.srcX, glyph.srcY, glyph.width, glyph.height);
+
+                savePixmap(fontGlyphPixmap);
+
+                changePixmapColour(fontGlyphPixmap, fontPixmapModifiedFontColor, Color.WHITE, fontColor);
+
+				src.drawPixmap(fontPixmapModifiedFontColor,
+						offSetX,
+						offSetY,
+						0, 0, glyph.width, glyph.height);
+			}
 		}
 		return src;
 	}
-	
-    public static Pixmap createPixmapToAnimate(Sprite[] sprites) {
+
+	public static Pixmap createDynamicHorizontalFontTextViaFrameBuffer(BitmapFont font, Color fontColor, String text, Pixmap src, int startTextX, int startTextY) {
+        SpriteBatch spriteBatch = new SpriteBatch();
+        FrameBuffer frameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+        frameBuffer.begin();
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+		Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        font.setColor(fontColor);
+        spriteBatch.begin();
+        spriteBatch.draw(new Texture(src), 0, 0);
+        font.draw(spriteBatch, text, startTextX, startTextY);
+        spriteBatch.end();
+
+        ByteBuffer byteBuffer;
+        Pixmap destPixmap = new Pixmap(src.getWidth(), src.getHeight(), Pixmap.Format.RGB888);
+        byteBuffer = destPixmap.getPixels();
+        Gdx.gl.glReadPixels(0, 0, src.getWidth(), src.getHeight(), GL20.GL_RGB, GL20.GL_UNSIGNED_BYTE, byteBuffer);
+        frameBuffer.end();
+
+		return PixmapProcessors.flipPixmapY(destPixmap);
+	}
+
+	public static Pixmap createPixmapToAnimate(Sprite[] sprites) {
         Pixmap pixmap = getPixmapFromSprite(sprites[0]);
         Pixmap pixmapToAnimate = new Pixmap(pixmap.getWidth(), pixmap.getHeight() * sprites.length, pixmap.getFormat());
 
@@ -324,7 +379,7 @@ public class PixmapProcessors {
 
 	public static void savePixmap(Pixmap pixmap, File file) {
 	    if (file.exists()) {
-		file.delete();
+		    file.delete();
 	    }
 	    try {
 		FileHandle fh;

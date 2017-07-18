@@ -35,6 +35,7 @@ public class LightButton {
 	private int buttonWidth, buttonHeight;
 	private BitmapFont buttonFont;
 	private String buttonText;
+    private String buttonTextUsingFrameBuffer;
 	
 	public LightButton(World world, RayHandler rayHandler, float positionX, float positionY, int buttonWidth, int buttonHeight) {
 		this.world = world;
@@ -57,11 +58,24 @@ public class LightButton {
 		this.buttonText = buttonText;
 		initialiseLightButton();
 	}
-	
-	private void initialiseLightButton() {
+
+    public LightButton(World world, RayHandler rayHandler, float positionX, float positionY, int buttonWidth, int buttonHeight, BitmapFont buttonFont, String buttonText, String buttonTextUsingFrameBuffer) {
+        this.world = world;
+        this.rayHandler = rayHandler;
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.buttonWidth = buttonWidth;
+        this.buttonHeight = buttonHeight;
+        this.buttonFont = buttonFont;
+        this.buttonText = buttonText;
+        this.buttonTextUsingFrameBuffer = buttonTextUsingFrameBuffer;
+        initialiseLightButton();
+    }
+
+    private void initialiseLightButton() {
 		light = new PointLight(rayHandler, 32);
 		light.setActive(false);
-		light.setColor(Color.PURPLE);
+		light.setColor(Color.RED);
 		light.setDistance(1.5f);
 		float lightButtonCentreX = positionX + (float)buttonWidth / 200.0f;
 		float lightButtonCentreY = positionY + (float)buttonHeight / 200.0f;
@@ -73,17 +87,25 @@ public class LightButton {
 	
 	private Texture createButton() {
 		Pixmap button = new Pixmap(buttonWidth, buttonHeight, Pixmap.Format.RGBA8888);
-		button.setColor(0, 200, 0, 127);
+		Color myOrange = new Color(Color.ORANGE);
+		myOrange.a = 60;
+		button.setColor(myOrange);
 		button.fillRectangle(0, 0, buttonWidth, buttonHeight);
-		button.setColor(225, 0, 0 , 164);
+		Color myOrangeTranparent = myOrange;
+		myOrange.a = 120;
+		button.setColor(myOrange);
 		button.fillRectangle(6, 6, buttonWidth - 12, buttonHeight - 12);
 		button.setColor(Color.BROWN);
 		button.drawRectangle(0, 0, buttonWidth, buttonHeight);
 		button.setColor(Color.YELLOW);
-		if (buttonText != null) {
-		    button = createText(buttonFont, buttonText, button);
-		}
-		button.setColor(0, 200, 200, 0);
+        if (buttonTextUsingFrameBuffer != null) {
+            button = createTextUsingFrameBuffer(buttonFont, buttonTextUsingFrameBuffer, button);
+        } else {
+            if (buttonText != null) {
+                button = createText(buttonFont, buttonText, button);
+            }
+        }
+		button.setColor(0, 200, 200, 20);
 		button.fillRectangle(0, 0, buttonWidth, buttonHeight);
 		return new Texture(button);
 	}
@@ -91,7 +113,11 @@ public class LightButton {
 	private Pixmap createText(BitmapFont font, String text, Pixmap pixmap) {
 		return PixmapProcessors.createDynamicHorizontalFontTextCustom(font, Color.YELLOW, text, pixmap, 3, 45);
 	}
-	
+
+    private Pixmap createTextUsingFrameBuffer(BitmapFont font, String text, Pixmap pixmap) {
+        return PixmapProcessors.createDynamicHorizontalFontTextViaFrameBuffer(font, Color.YELLOW, text, pixmap, 20, 45);
+    }
+
 	public PointLight getLight() {
 		return this.light;
 	}
