@@ -16,6 +16,7 @@
 
 package com.ellzone.slotpuzzle2d.prototypes.box2d;
 
+import com.badlogic.gdx.graphics.Color;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
 import com.ellzone.slotpuzzle2d.sprites.LightButton;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -24,6 +25,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+
+import box2dLight.ConeLight;
+import box2dLight.Light;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.Gdx;

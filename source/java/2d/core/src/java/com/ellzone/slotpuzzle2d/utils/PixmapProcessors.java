@@ -260,7 +260,7 @@ public class PixmapProcessors {
 		return horizontalFontText;
 	}
 
-	public static Pixmap createDynamicHorizontalFontTextCustom(BitmapFont font, Color fontColor, String text, Pixmap src, int startTextX, int startTextY) {
+	public static Pixmap createDynamicHorizontalFontTextColor(BitmapFont font, Color fontColor, String text, Pixmap src, int startTextX, int startTextY) {
 	    BitmapFont.BitmapFontData fontData = font.getData();
 
 		if (fontData.imagePaths.length == 0) {

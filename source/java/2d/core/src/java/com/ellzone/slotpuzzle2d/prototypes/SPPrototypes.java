@@ -27,6 +27,7 @@ import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlotsRotateHa
 import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlotsRotateHandleSpriteUsingTweenEngine;
 import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlotsUsingSlotHandleSprite;
 import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlotsWithThreeTilesDisplayed;
+import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlotsWithHoldButtons;
 import com.ellzone.slotpuzzle2d.prototypes.menu.SlotPuzzleGame;
 import com.ellzone.slotpuzzle2d.prototypes.particle.Particle1;
 import com.ellzone.slotpuzzle2d.prototypes.particle.Particle2;
@@ -77,7 +78,7 @@ public class SPPrototypes {
 		Box2DLights.class,
 		ButtonLight.class,
 		ButtonLightUsingLightButton.class,
-            ButtonLightUsingLightButtonViaFrameBuffer.class,
+        ButtonLightUsingLightButtonViaFrameBuffer.class,
         SmoothScrollingWorldMap.class,
         SubPixelPerfectSmoothScrolling.class,
         WorldMapLevelSelect.class,
@@ -112,6 +113,7 @@ public class SPPrototypes {
 		SpinningSlotsRotateHandleSpriteUsingTweenEngine.class,
 		SpinningSlotsUsingSlotHandleSprite.class,
 		SpinningSlotsWithThreeTilesDisplayed.class,
+        SpinningSlotsWithHoldButtons.class,
 		SPPrototypesGame.class,
 		SlotPuzzleGame.class
     ));

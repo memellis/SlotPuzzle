@@ -76,7 +76,7 @@ public class LightButton {
 		light = new PointLight(rayHandler, 32);
 		light.setActive(false);
 		light.setColor(Color.RED);
-		light.setDistance(1.5f);
+		light.setDistance(0.4f);
 		float lightButtonCentreX = positionX + (float)buttonWidth / 200.0f;
 		float lightButtonCentreY = positionY + (float)buttonHeight / 200.0f;
 		light.setPosition(lightButtonCentreX, lightButtonCentreY);
@@ -92,9 +92,9 @@ public class LightButton {
 		button.setColor(myOrange);
 		button.fillRectangle(0, 0, buttonWidth, buttonHeight);
 		Color myOrangeTranparent = myOrange;
-		myOrange.a = 120;
-		button.setColor(myOrange);
-		button.fillRectangle(6, 6, buttonWidth - 12, buttonHeight - 12);
+		myOrangeTranparent.a = 120;
+		button.setColor(myOrangeTranparent);
+		button.fillRectangle(2, 2, buttonWidth - 4, buttonHeight - 4);
 		button.setColor(Color.BROWN);
 		button.drawRectangle(0, 0, buttonWidth, buttonHeight);
 		button.setColor(Color.YELLOW);
@@ -105,17 +105,17 @@ public class LightButton {
                 button = createText(buttonFont, buttonText, button);
             }
         }
-		button.setColor(0, 200, 200, 20);
+		button.setColor(0, 200, 200, 255);
 		button.fillRectangle(0, 0, buttonWidth, buttonHeight);
 		return new Texture(button);
 	}
 	
 	private Pixmap createText(BitmapFont font, String text, Pixmap pixmap) {
-		return PixmapProcessors.createDynamicHorizontalFontTextCustom(font, Color.YELLOW, text, pixmap, 3, 45);
+		return PixmapProcessors.createDynamicHorizontalFontTextColor(font, Color.YELLOW, text, pixmap, 3, 45);
 	}
 
     private Pixmap createTextUsingFrameBuffer(BitmapFont font, String text, Pixmap pixmap) {
-        return PixmapProcessors.createDynamicHorizontalFontTextViaFrameBuffer(font, Color.YELLOW, text, pixmap, 20, 45);
+        return PixmapProcessors.createDynamicHorizontalFontTextViaFrameBuffer(font, Color.YELLOW, text, pixmap, 1, 20);
     }
 
 	public PointLight getLight() {

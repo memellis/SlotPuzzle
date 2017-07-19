@@ -62,7 +62,8 @@ public class ButtonLightUsingLightButtonViaFrameBuffer extends SPPrototype {
         debugRenderer = new Box2DDebugRenderer();
 
         rayHandler = new RayHandler(world);
-        rayHandler.setAmbientLight(0.2f, 0.2f, 0.2f, 0.25f);
+        rayHandler.useDiffuseLight(true);
+        rayHandler.setAmbientLight(0.5f, 0.5f, 0.5f, 0.1f);
 
         lightButtons = new Array<LightButton>();
         for (int i = 0; i < 3; i++) {
