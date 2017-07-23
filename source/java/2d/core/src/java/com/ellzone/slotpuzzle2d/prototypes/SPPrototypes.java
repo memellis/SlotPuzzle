@@ -62,6 +62,7 @@ import com.ellzone.slotpuzzle2d.prototypes.map.SmoothScrollingWorldMap;
 import com.ellzone.slotpuzzle2d.prototypes.map.SubPixelPerfectSmoothScrolling;
 import com.ellzone.slotpuzzle2d.prototypes.map.WorldMapLevelSelect;
 import com.ellzone.slotpuzzle2d.prototypes.map.WorldMapLevelSelectAndReturn;
+import com.ellzone.slotpuzzle2d.prototypes.map.WorldMapDynamicDoors;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,6 +84,7 @@ public class SPPrototypes {
         SubPixelPerfectSmoothScrolling.class,
         WorldMapLevelSelect.class,
         WorldMapLevelSelectAndReturn.class,
+        WorldMapDynamicDoors.class,
 		Particle1.class,
         Particle2.class,
         Particle3.class,

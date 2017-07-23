@@ -72,7 +72,6 @@ public class ScrollingSign extends SPPrototypeTemplate {
         Pixmap textPixmap = new Pixmap(text.length() * SIGN_WIDTH, SIGN_WIDTH, Pixmap.Format.RGBA8888);
         textPixmap = PixmapProcessors.createDynamicHorizontalFontText(fontSmall, text, textPixmap);
         textTexture = new Texture(textPixmap);
-        PixmapProcessors.savePixmap(textPixmap);
         touch = new Vector2(0, 0);
 	}
 	

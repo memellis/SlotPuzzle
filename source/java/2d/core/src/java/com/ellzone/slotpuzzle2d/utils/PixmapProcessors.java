@@ -82,7 +82,7 @@ public class PixmapProcessors {
 	    return rotated;
 	}
 
-	public static Pixmap flipPixmap(Pixmap src) {
+	public static Pixmap flipPixmapX(Pixmap src) {
 	    final int width = src.getWidth();
 	    final int height = src.getHeight();
 	    Pixmap flipped = new Pixmap(width, height, src.getFormat());
@@ -318,8 +318,8 @@ public class PixmapProcessors {
         byteBuffer = destPixmap.getPixels();
         Gdx.gl.glReadPixels(0, 0, src.getWidth(), src.getHeight(), GL20.GL_RGB, GL20.GL_UNSIGNED_BYTE, byteBuffer);
         frameBuffer.end();
-
-		return PixmapProcessors.flipPixmapY(destPixmap);
+		Pixmap flippedPixmap = PixmapProcessors.flipPixmapY(destPixmap);
+		return flippedPixmap;
 	}
 
 	public static Pixmap createPixmapToAnimate(Sprite[] sprites) {
@@ -415,9 +415,15 @@ public class PixmapProcessors {
 		}
 		Pixmap pixmap = texture.getTextureData().consumePixmap();
 		Pixmap destinationPixmap = new Pixmap(textureRegion.getRegionWidth(), textureRegion.getRegionHeight(), pixmap.getFormat());
-		for (int x = 0; x < textureRegion.getRegionWidth(); x++) {
+
+        for (int x = 0; x < textureRegion.getRegionWidth(); x++) {
 		    for (int y = 0; y < textureRegion.getRegionHeight(); y++) {
-		        destinationPixmap.drawPixel(x, y, pixmap.getPixel(textureRegion.getRegionX() + x, textureRegion.getRegionY() + y));
+                int regionWidthTextureWidthDifference = textureRegion.getRegionX() + x - pixmap.getWidth();
+                if (regionWidthTextureWidthDifference > 0) {
+                    destinationPixmap.drawPixel(x, y, pixmap.getPixel(regionWidthTextureWidthDifference, textureRegion.getRegionY() + y));
+                } else {
+                    destinationPixmap.drawPixel(x, y, pixmap.getPixel(textureRegion.getRegionX() + x, textureRegion.getRegionY() + y));
+                }
 		    }
 		}
 		return destinationPixmap;
