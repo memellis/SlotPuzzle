@@ -64,6 +64,8 @@ import org.jrenner.smartfont.SmartFontGenerator;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import static com.badlogic.gdx.scenes.scene2d.ui.Table.Debug.cell;
+
 public class WorldMapDynamicDoors extends SPPrototype {
 
     public class MapLevel1 extends Level {
@@ -130,7 +132,6 @@ public class WorldMapDynamicDoors extends SPPrototype {
     private BitmapFont fontSmall;
     private Array<ScrollSign> scrollSigns;
     private Array<LevelEntrance> levelEntrances;
-    private int sx = 0;
 
     @Override
     public void create() {
@@ -213,7 +214,7 @@ public class WorldMapDynamicDoors extends SPPrototype {
         Pixmap textPixmap = new Pixmap(text.length() * 16, SIGN_HEIGHT, Pixmap.Format.RGBA8888);
         textPixmap.setColor(Color.CLEAR);
         textPixmap.fillRectangle(0, 0, textPixmap.getWidth(), textPixmap.getHeight());
-        textPixmap = PixmapProcessors.createDynamicHorizontalFontTextViaFrameBuffer(fontSmall, Color.BLUE, text, textPixmap, 0, 28);
+        textPixmap = PixmapProcessors.createDynamicHorizontalFontTextViaFrameBuffer(fontSmall, Color.BLUE, text, textPixmap, 0, 20);
         return new Texture(textPixmap);
     }
 
@@ -227,7 +228,7 @@ public class WorldMapDynamicDoors extends SPPrototype {
         layer = (TiledMapTileLayer) worldMap.getLayers().get("Tile Layer 1");
 
         for (int levelNumber = 0; levelNumber < levelDoors.size; levelNumber++) {
-            ScrollSign scrollSign = addScrollSign(levelNumber, levelEntrances.get(levelNumber).getLevelEntrance().getWidth() - 16);
+            ScrollSign scrollSign = addScrollSign(levelNumber, levelEntrances.get(levelNumber).getLevelEntrance().getWidth());
             scrollSigns.add(scrollSign);
 
             TextureRegion[][] splitTiles = TextureRegion.split(levelEntrances.get(levelNumber).getLevelEntrance(), 40, 40);
@@ -241,16 +242,6 @@ public class WorldMapDynamicDoors extends SPPrototype {
                 }
             }
         }
-    }
-
-    private void addScrollSignToLevelEntrance(int levelNumber) {
-        Texture levelEntranceTexture = levelEntrances.get(levelNumber).getLevelEntrance();
-        Pixmap levelEntrancePixmap = levelEntranceTexture.getTextureData().consumePixmap();
-        Pixmap scrollSignPixmap = PixmapProcessors.getPixmapFromTextureRegion(scrollSigns.get(levelNumber));
-        levelEntrancePixmap.drawPixmap(scrollSignPixmap, 8, 8, 0, 0, levelEntranceTexture.getWidth() - 16, scrollSignPixmap.getHeight());
-        levelEntranceTexture = new Texture(levelEntrancePixmap);
-        levelEntrancePixmap.dispose();
-        levelEntrances.get(levelNumber).setLevelEntrance(levelEntranceTexture);
     }
 
     private ScrollSign addScrollSign(int levelNumber, int scrollSignWidth) {
@@ -295,16 +286,15 @@ public class WorldMapDynamicDoors extends SPPrototype {
             levelDoorX,
             levelDoorY,
             levelDoorHeight;
+        TiledMapTileLayer.Cell cell;
 
         for (Rectangle levelDoor : levelDoors) {
-            addScrollSignToLevelEntrance(levelNumber);
-            TextureRegion[][] splitEntrance =  new TextureRegion(levelEntrances.get(levelNumber).getLevelEntrance()).split(40,40);
-            for (int col = 0; col < splitEntrance[0].length; col++) {
-                TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-                levelDoorX = (int) levelDoor.getX() / 40;
-                levelDoorY = (int) levelDoor.getY() / 40;
-                levelDoorHeight = (int) levelDoor.getHeight() / 40;
-                cell.setTile(new StaticTiledMapTile(splitEntrance[0][col]));
+            levelDoorX = (int) levelDoor.getX() / 40;
+            levelDoorY = (int) levelDoor.getY() / 40;
+            levelDoorHeight = (int) levelDoor.getHeight() / 40;
+            for (int col = 0; col < (scrollSigns.get(levelNumber).getSignWidth()) / 40; col++) {
+                cell = new TiledMapTileLayer.Cell();
+                cell.setTile(new StaticTiledMapTile(new TextureRegion(scrollSigns.get(levelNumber), col * 40, 0, 40, 40)));
                 layer.setCell(levelDoorX + col, levelDoorY + levelDoorHeight, cell);
             }
             levelNumber++;

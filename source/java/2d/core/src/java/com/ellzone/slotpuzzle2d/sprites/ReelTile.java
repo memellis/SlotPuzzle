@@ -82,6 +82,8 @@ public class ReelTile extends ReelSprite {
         if (numberOfReelsInTexture > 0) {
             randomSy = random.nextInt(numberOfReelsInTexture) * texture.getHeight();
         }
+        System.out.println("randomSy="+randomSy);
+		System.out.println("numberOfReelsInTexture="+numberOfReelsInTexture);
 	    region.setRegion((int)0, randomSy, (int)tileWidth, (int)tileHeight);
         setBounds((int)this.x, (int)this.y, (int)tileWidth, (int)tileHeight);
         setRegion(region);

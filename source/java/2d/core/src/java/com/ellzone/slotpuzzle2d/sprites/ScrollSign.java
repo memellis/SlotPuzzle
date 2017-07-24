@@ -19,6 +19,7 @@ package com.ellzone.slotpuzzle2d.sprites;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
 public class ScrollSign extends Sprite {
     Texture texture;
@@ -69,6 +70,22 @@ public class ScrollSign extends Sprite {
 
     public void setSy(float sy) {
         this.sy = sy;
+    }
+
+    public int getSignWidth() {
+        return (int) this.signWidth;
+    }
+
+    public int getSignHeight() {
+        return (int) this.signHeight;
+    }
+
+    public TextureRegion getRegion() {
+        return this.region;
+    }
+
+    public int getTextureWidth() {
+        return texture.getWidth();
     }
 	
 	public void dispose() {
