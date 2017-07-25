@@ -22,6 +22,7 @@ import com.ellzone.slotpuzzle2d.prototypes.box2d.Box2DLights;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.ButtonLight;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.ButtonLightUsingLightButton;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.ButtonLightUsingLightButtonViaFrameBuffer;
+import com.ellzone.slotpuzzle2d.prototypes.framebuffer.FrameBufferParticleEffectSample;
 import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlots;
 import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlotsRotateHandleSprite;
 import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlotsRotateHandleSpriteUsingTweenEngine;
@@ -80,6 +81,7 @@ public class SPPrototypes {
 		ButtonLight.class,
 		ButtonLightUsingLightButton.class,
         ButtonLightUsingLightButtonViaFrameBuffer.class,
+		FrameBufferParticleEffectSample.class,
         SmoothScrollingWorldMap.class,
         SubPixelPerfectSmoothScrolling.class,
         WorldMapLevelSelect.class,
