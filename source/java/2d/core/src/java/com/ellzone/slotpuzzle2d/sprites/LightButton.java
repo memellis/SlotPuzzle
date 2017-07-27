@@ -100,6 +100,7 @@ public class LightButton {
 		button.setColor(Color.YELLOW);
         if (buttonTextUsingFrameBuffer != null) {
             button = createTextUsingFrameBuffer(buttonFont, buttonTextUsingFrameBuffer, button);
+			PixmapProcessors.savePixmap(button);
         } else {
             if (buttonText != null) {
                 button = createText(buttonFont, buttonText, button);

@@ -35,6 +35,7 @@ import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
 
 import java.io.File;
 import java.nio.ByteBuffer;
+import com.badlogic.gdx.utils.*;
 
 public class PixmapProcessors {
 	private static int counter = 0;
@@ -285,8 +286,6 @@ public class PixmapProcessors {
                         0,
                         glyph.srcX, glyph.srcY, glyph.width, glyph.height);
 
-                savePixmap(fontGlyphPixmap);
-
                 changePixmapColour(fontGlyphPixmap, fontPixmapModifiedFontColor, Color.WHITE, fontColor);
 
 				src.drawPixmap(fontPixmapModifiedFontColor,
@@ -312,14 +311,10 @@ public class PixmapProcessors {
         spriteBatch.draw(new Texture(src), 0, 0);
         font.draw(spriteBatch, text, startTextX, startTextY);
         spriteBatch.end();
-
-        ByteBuffer byteBuffer;
-        Pixmap destPixmap = new Pixmap(src.getWidth(), src.getHeight(), Pixmap.Format.RGB888);
-        byteBuffer = destPixmap.getPixels();
-        Gdx.gl.glReadPixels(0, 0, src.getWidth(), src.getHeight(), GL20.GL_RGB, GL20.GL_UNSIGNED_BYTE, byteBuffer);
-        frameBuffer.end();
-		Pixmap flippedPixmap = PixmapProcessors.flipPixmapY(destPixmap);
-		return flippedPixmap;
+        Pixmap destPixmap= ScreenshotFactory.getScreenshot(0, 0, src.getWidth(), src.getHeight(), true);
+		frameBuffer.end();
+		
+		return destPixmap;
 	}
 
 	public static Pixmap createPixmapToAnimate(Sprite[] sprites) {
@@ -369,7 +364,7 @@ public class PixmapProcessors {
 	    try {
                 FileHandle fh;
                 do {
-                    fh = new FileHandle(Gdx.files.getLocalStoragePath() + "pixmap" + counter++ + ".png");
+                    fh = new FileHandle("/sdcard/AppProjects/" + "pixmap" + counter++ + ".png");
                 } while (fh.exists());
                 PixmapIO.writePNG(fh, pixmap);
             } catch (Exception e){
