@@ -10,7 +10,7 @@ check_for_dependencies() {
 }
 
 define_environment_variables() {
-    echo "define_enironment_variables..." 
+    echo "define_enironment_variables..."
 
     [ -z "${SLOTPUZZLE_HOME}" ] && { SLOTPUZZLE_HOME=/usr/local/src/SlotPuzzle; }
     [ -z "${BUILD_DIR}" ] && { BUILD_DIR=${SLOTPUZZLE_HOME}/build; mkdir -p ${BUILD_DIR}; }
@@ -190,9 +190,18 @@ create_aide_target() {
     cp "${SLOTPUZZLE_ANDROID}/assets/levels/WorldMap.tmx" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
     cp "${SLOTPUZZLE_ANDROID}/assets/levels/world_image.png" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
     cp "${SLOTPUZZLE_ANDROID}/assets/LiberationMono-Regular.ttf" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets
+
     mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/loading_screen
     cp "${SLOTPUZZLE_ANDROID}/assets/loading_screen/progress_bar.png" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/loading_screen
     cp "${SLOTPUZZLE_ANDROID}/assets/loading_screen/progress_bar_base.png" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/loading_screen
+
+    mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/particles
+    cp "${SLOTPUZZLE_ANDROID}/assets/particles/explosion.particle" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/particles
+    cp "${SLOTPUZZLE_ANDROID}/assets/particles/fire.particle" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/particles
+    cp "${SLOTPUZZLE_ANDROID}/assets/particles/fire.png" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/particles
+    cp "${SLOTPUZZLE_ANDROID}/assets/particles/ice.particle" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/particles
+    cp "${SLOTPUZZLE_ANDROID}/assets/particles/stars.particle" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/particles
+
     mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/playingcards
     cp "${SLOTPUZZLE_ANDROID}/assets/playingcards/carddeck.atlas" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/playingcards
     cp "${SLOTPUZZLE_ANDROID}/assets/playingcards/carddeck.png" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/playingcards
