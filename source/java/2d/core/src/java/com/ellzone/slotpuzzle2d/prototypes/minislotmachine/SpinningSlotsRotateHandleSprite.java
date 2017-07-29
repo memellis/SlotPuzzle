@@ -144,7 +144,7 @@ public class SpinningSlotsRotateHandleSprite extends SPPrototypeTemplate {
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         for (int i=0; i<3; i++) {
-            AnimatedReel reel = new AnimatedReel(slotReelScrollTexture, 0, 0, spriteWidth, spriteHeight, 0, reelSpinningSound, reelStoppingSound, tweenManager);
+            AnimatedReel reel = new AnimatedReel(slotReelScrollTexture, 0, 0, spriteWidth, spriteHeight, spriteWidth, spriteHeight, 0, reelSpinningSound, reelStoppingSound, tweenManager);
             reel.setX(i*spriteWidth + cam.viewportWidth / 2);
             reel.setY(cam.viewportHeight / 2);
             reel.setSx(0);

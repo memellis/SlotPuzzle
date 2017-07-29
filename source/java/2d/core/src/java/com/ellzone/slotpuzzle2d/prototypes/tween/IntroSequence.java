@@ -92,7 +92,7 @@ public class IntroSequence extends SPPrototypeTemplate {
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         for (int i=0; i<15; i++) {
-            ReelTile reel = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getHeight(), 0, 0, spriteWidth, spriteHeight, 0, null);
+            ReelTile reel = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getHeight(), 0, 0, spriteWidth, spriteHeight, spriteWidth, spriteHeight, 0, null);
             reel.setX(i*spriteHeight);
             reel.setY(i*spriteWidth);
             reel.setSx(0);

@@ -17,7 +17,6 @@
 package com.ellzone.slotpuzzle2d.sprites;
 
 import java.util.Random;
-
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -31,7 +30,6 @@ import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
-
 import aurelienribon.tweenengine.equations.Elastic;
 
 public class AnimatedReel {
@@ -52,6 +50,8 @@ public class AnimatedReel {
 	private float y;
 	private float tileWidth;
 	private float tileHeight;
+    private float reelDisplayWidth;
+    private float reelDisplayHeight;
 	private int endReel;
 	private Sound spinningSound, stoppingSound;
 	private int reelScrollHeight;
@@ -60,13 +60,15 @@ public class AnimatedReel {
 	private Vector accelerate;
 	private Random random;
 	
-	public AnimatedReel(Texture texture, float x, float y, float tileWidth, float tileHeight, int endReel, Sound spinningSound, Sound stoppingSound, TweenManager tweenManager) {
+	public AnimatedReel(Texture texture, float x, float y, float tileWidth, float tileHeight, float reelDisplayWidth, float reelDisplayHeight, int endReel, Sound spinningSound, Sound stoppingSound, TweenManager tweenManager) {
 		this.texture = texture;
 		this.x = x;
 		this.y = y;
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
-		this.endReel = endReel;
+        this.reelDisplayWidth = reelDisplayWidth;
+        this.reelDisplayHeight = reelDisplayHeight;
+ 		this.endReel = endReel;
 		this.spinningSound = spinningSound;
 		this.stoppingSound = stoppingSound;
 		this.tweenManager = tweenManager;
@@ -75,7 +77,7 @@ public class AnimatedReel {
 	
 	private void initialiseAnimatedReel() {
 		random = new Random();
-		reel = new ReelTile(this.texture, this.x, this.y, this.tileWidth, this.tileHeight, this.endReel, this.spinningSound);
+		reel = new ReelTile(this.texture, (int) (this.texture.getHeight() / this.tileWidth), this.x, this.y, this.tileWidth, this.tileHeight, this.reelDisplayWidth, this.reelDisplayHeight, this.endReel, this.spinningSound);
 		reelScrollHeight = this.texture.getHeight();
 		reel.setSpinning(false);
 		velocityY = 4.0f;
@@ -107,7 +109,7 @@ public class AnimatedReel {
 			DampenedSineParticle ds = (DampenedSineParticle)source.getSource();
 			ReelTile reel = (ReelTile)ds.getUserData();
 			Timeline endReelSeq = Timeline.createSequence();
-			float endSy = (reel.getEndReel() * this.tileHeight) % this.reelScrollHeight;		
+			float endSy = (reel.getEndReel() * this.tileWidth) % this.reelScrollHeight;
 			reel.setSy(reel.getSy() % (this.reelScrollHeight));
 	        endReelSeq = endReelSeq.push(SlotPuzzleTween.to(reel, ReelAccessor.SCROLL_XY, reelSlowingTargetTime)
 	        		               .target(0f, endSy)

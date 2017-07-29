@@ -29,8 +29,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="gdx-1.9.6" level="project" />
     <orderEntry type="library" exported="" name="gdx-box2d-1.9.6" level="project" />
-    <orderEntry type="library" exported="" name="gdx-freetype-1.9.6" level="project" />
     <orderEntry type="library" exported="" name="box2dlights-1.4" level="project" />
+    <orderEntry type="library" exported="" name="gdx-freetype-1.9.6" level="project" />
     <orderEntry type="library" exported="" name="tween-engine-api-sources" level="project" />
     <orderEntry type="library" exported="" name="tween-engine-api" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="junit-4.12" level="project" />

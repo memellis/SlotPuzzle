@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,14 +17,11 @@
 package com.ellzone.slotpuzzle2d.sprites;
 
 import java.util.Random;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
 public class ReelTile extends ReelSprite {
@@ -33,6 +30,7 @@ public class ReelTile extends ReelSprite {
     private TextureRegion region;
     private float tileWidth;
     private float tileHeight;
+    private float reelDisplayWidth = 0, reelDisplayHeight = 0;
     private float x;
     private float y;
     private float sx = 0;
@@ -60,13 +58,15 @@ public class ReelTile extends ReelSprite {
         defineReelSlotTileScroll();
     }
 
-    public ReelTile(Texture texture, int numberOfReelsInTexture, float x, float y, float tileWidth, float tileHeight, int endReel, Sound spinningSound) {
+    public ReelTile(Texture texture, int numberOfReelsInTexture, float x, float y, float tileWidth, float tileHeight, float reelDisplayWidth, float reelDisplayHeight, int endReel, Sound spinningSound) {
         this.texture = texture;
         this.numberOfReelsInTexture = numberOfReelsInTexture;
         this.x = x;
         this.y = y;
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
+        this.reelDisplayWidth = reelDisplayWidth;
+        this.reelDisplayHeight = reelDisplayHeight;
         super.setEndReel(endReel);
         this.spinningSound = spinningSound;
         defineReelSlotTileScroll();
@@ -80,12 +80,16 @@ public class ReelTile extends ReelSprite {
         region = new TextureRegion(texture);
         int randomSy = 0;
         if (numberOfReelsInTexture > 0) {
-            randomSy = random.nextInt(numberOfReelsInTexture) * texture.getHeight();
+            randomSy = random.nextInt(numberOfReelsInTexture) * (int)tileHeight;
         }
-        System.out.println("randomSy="+randomSy);
-		System.out.println("numberOfReelsInTexture="+numberOfReelsInTexture);
-	    region.setRegion((int)0, randomSy, (int)tileWidth, (int)tileHeight);
-        setBounds((int)this.x, (int)this.y, (int)tileWidth, (int)tileHeight);
+
+        if ((reelDisplayWidth == 0) && (reelDisplayHeight == 0)) {
+            region.setRegion((int) 0, randomSy, (int) tileWidth, (int) tileHeight);
+            setBounds((int) this.x, (int) this.y, (int) tileWidth, (int) tileHeight);
+        } else {
+            region.setRegion((int) 0, randomSy, (int) reelDisplayWidth, (int) reelDisplayHeight);
+            setBounds((int) this.x, (int) this.y, (int) reelDisplayWidth, (int) reelDisplayHeight);
+        }
         setRegion(region);
         reelFlash = false;
 		reelFlashTween = false;
@@ -106,7 +110,7 @@ public class ReelTile extends ReelSprite {
 	
 	private void processSpinningState() {
         float syModulus = sy % texture.getHeight();      
-         region.setRegion((int) sx, (int) syModulus, (int)tileWidth, (int)tileHeight);
+        region.setRegion((int) sx, (int) syModulus, (int)reelDisplayWidth, (int)reelDisplayHeight);
         setRegion(region);
         if (this.spinningSound != null) {
         	this.spinngPitch = this.spinngPitch * 0.999f;
@@ -115,7 +119,7 @@ public class ReelTile extends ReelSprite {
  	}
 		
 	private void processFlashTweenState(float delta) {
-		setFlashOn();
+        setFlashOn();
 	}
 
     public float getSx() {
@@ -145,11 +149,11 @@ public class ReelTile extends ReelSprite {
 	}
 
 	public boolean isReelTileDeleted() {
-		return this.tileDeleted;
+        return this.tileDeleted;
 	}
 	
 	public void deleteReelTile() {
-		this.tileDeleted = true;
+        this.tileDeleted = true;
 	}
 	
 	public void startSpinning() {
@@ -173,35 +177,35 @@ public class ReelTile extends ReelSprite {
 	}
 	
 	public void stopSpinningSound() {
-		this.spinningSound.stop(this.spinningSoundId);
+        this.spinningSound.stop(this.spinningSoundId);
 	}
 	
 	public FlashState getFlashState() {
-		return this.reelFlashState;
+        return this.reelFlashState;
 	}
 	
 	public boolean isFlashing() {
-		return this.reelFlash;
+        return this.reelFlash;
 	}
 	
 	public void setFlashMode(boolean reelFlash) {
-		this.reelFlash = reelFlash;
+        this.reelFlash = reelFlash;
 	}
 	
 	public Color getFlashColor() {
-		return this.flashColor;
+        return this.flashColor;
 	}
 	
 	public void setFlashColor(Color flashColor) {
-		this.flashColor = flashColor;
+        this.flashColor = flashColor;
 	}
 	
 	public void setFlashTween(boolean reelFlashTween) {
-		this.reelFlashTween = reelFlashTween;
+        this.reelFlashTween = reelFlashTween;
 	}
 	
 	public boolean getFlashTween() {
-		return this.reelFlashTween;
+        return this.reelFlashTween;
 	}
 	
 	public void setFlashOn() {
@@ -210,7 +214,7 @@ public class ReelTile extends ReelSprite {
 	}
 	
 	public void setFlashOff() {
-		setRegion(region);
+        setRegion(region);
 	}
 	
 	private TextureRegion drawFlashOn(TextureRegion reel) {
@@ -219,20 +223,19 @@ public class ReelTile extends ReelSprite {
 		reelPixmap.drawRectangle(0, 0, (int)tileWidth    , (int)tileHeight);
 		reelPixmap.drawRectangle(1, 1, (int)tileWidth - 2, (int)tileHeight - 2);
 		reelPixmap.drawRectangle(2, 2, (int)tileWidth - 4, (int)tileHeight - 4);
-		TextureRegion textureRegion = new TextureRegion(new Texture(reelPixmap));
-		return textureRegion;
+		return new TextureRegion(new Texture(reelPixmap));
 	}
 	
 	public void setScore(int score) {
-		this.score = score;
+        this.score = score;
 	}
 	
 	public int getScore() {
-		return this.score;
+        return this.score;
 	}
 	
 	public TextureRegion getRegion() {
-		return this.region;
+        return this.region;
 	}
 
 	@Override
