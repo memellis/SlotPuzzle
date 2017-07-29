@@ -18,36 +18,28 @@ package com.ellzone.slotpuzzle2d.prototypes.minislotmachine;
 import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.physics.DampenedSineParticle;
-import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototypeTemplate;
-import com.ellzone.slotpuzzle2d.sprites.AnimatedHandle;
 import com.ellzone.slotpuzzle2d.sprites.AnimatedReel;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
-import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
-import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
-import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
+
 import aurelienribon.tweenengine.equations.Back;
 import aurelienribon.tweenengine.equations.Cubic;
 import aurelienribon.tweenengine.equations.Quad;
 import aurelienribon.tweenengine.equations.Quart;
-import aurelienribon.tweenengine.equations.Sine;
+
 import com.ellzone.slotpuzzle2d.sprites.SlotHandleSprite;
 
 public class SpinningSlotsWithThreeTilesDisplayed extends SPPrototypeTemplate {
@@ -90,7 +82,7 @@ public class SpinningSlotsWithThreeTilesDisplayed extends SPPrototypeTemplate {
 
 	@Override
 	protected void updateOverride(float dt) {
-		handleInput(dt);
+		handleInput();
 		tweenManager.update(dt);
         for (AnimatedReel reel : reels) {
             reel.update(dt);
@@ -126,7 +118,7 @@ public class SpinningSlotsWithThreeTilesDisplayed extends SPPrototypeTemplate {
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         for (int i = 0; i < 3; i++) {
-            AnimatedReel animatedReel = new AnimatedReel(slotReelScrollTexture, 0, 0, spriteWidth, spriteHeight * 3, 0, reelSpinningSound, reelStoppingSound, tweenManager);
+            AnimatedReel animatedReel = new AnimatedReel(slotReelScrollTexture, 0, 0, spriteWidth, spriteHeight, spriteWidth, spriteHeight * 3, 0, reelSpinningSound, reelStoppingSound, tweenManager);
             animatedReel.setX(i * spriteWidth + displayWindowWidth / 2);
             animatedReel.setY((displayWindowHeight + 3 * spriteHeight) / 2);
             animatedReel.setSx(0);
@@ -191,7 +183,7 @@ public class SpinningSlotsWithThreeTilesDisplayed extends SPPrototypeTemplate {
         }
     }
 	
-    public void handleInput(float delta) {
+    public void handleInput() {
         if (Gdx.input.justTouched()) {
             touch = touch.set(Gdx.input.getX(), Gdx.input.getY());
 			touch = viewport.unproject(touch);
@@ -200,7 +192,7 @@ public class SpinningSlotsWithThreeTilesDisplayed extends SPPrototypeTemplate {
                 	if (animatedReel.getReel().isSpinning()) {
                         if (animatedReel.getDampenedSineState() == DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE) {
                             reelSpriteHelp = animatedReel.getReel().getCurrentReel();
-                        	animatedReel.getReel().setEndReel(reelSpriteHelp);
+                        	animatedReel.getReel().setEndReel(reelSpriteHelp - 1 < 0 ? 0 : reelSpriteHelp - 1);
                         }
                     } else {
                         animatedReel.setEndReel(random.nextInt(sprites.length - 1));

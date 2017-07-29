@@ -49,7 +49,7 @@ import aurelienribon.tweenengine.equations.Back;
 import aurelienribon.tweenengine.equations.Cubic;
 import aurelienribon.tweenengine.equations.Quad;
 import aurelienribon.tweenengine.equations.Quart;
-import com.badlogic.gdx.physics.box2d.World;
+
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
@@ -119,7 +119,7 @@ public class SpinningSlotsWithHoldButtons extends SPPrototypeTemplate {
 
         lightButtons = new Array<LightButton>();
         for (int i = 0; i < 3; i++) {
-            LightButton lightButton = new LightButton(world, rayHandler, i * 32 / PIXELS_PER_METER + SlotPuzzleConstants.V_WIDTH / (PIXELS_PER_METER * 2) - (3 * 32 / PIXELS_PER_METER) / 2, (int) SlotPuzzleConstants.V_HEIGHT / (PIXELS_PER_METER * 4), 32, 32, new BitmapFont(), "", "Hold");
+            LightButton lightButton = new LightButton(world, rayHandler, i * 32 / PIXELS_PER_METER + SlotPuzzleConstants.V_WIDTH / (PIXELS_PER_METER * 2) - (3 * 32 / PIXELS_PER_METER) / 2, SlotPuzzleConstants.V_HEIGHT / (PIXELS_PER_METER * 4), 32, 32, new BitmapFont(), "", "Hold");
             lightButton.getSprite().setSize(32 / PIXELS_PER_METER, 32 / PIXELS_PER_METER);
             lightButtons.add(lightButton);
         }
@@ -157,7 +157,7 @@ public class SpinningSlotsWithHoldButtons extends SPPrototypeTemplate {
 
     @Override
     protected void updateOverride(float dt) {
-        handleInput(dt);
+        handleInput();
         tweenManager.update(dt);
         for (AnimatedReel reel : reels) {
             reel.update(dt);
@@ -201,7 +201,7 @@ public class SpinningSlotsWithHoldButtons extends SPPrototypeTemplate {
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         for (int i = 0; i < 3; i++) {
-            AnimatedReel animatedReel = new AnimatedReel(slotReelScrollTexture, 0, 0, spriteWidth, spriteHeight * 3, 0, reelSpinningSound, reelStoppingSound, tweenManager);
+            AnimatedReel animatedReel = new AnimatedReel(slotReelScrollTexture, 0, 0, spriteWidth, spriteHeight, spriteWidth, spriteHeight * 3, 0, reelSpinningSound, reelStoppingSound, tweenManager);
             animatedReel.setX(i * spriteWidth + displayWindowWidth / 2);
             animatedReel.setY((displayWindowHeight + 3 * spriteHeight) / 2);
             animatedReel.setSx(0);
@@ -266,7 +266,7 @@ public class SpinningSlotsWithHoldButtons extends SPPrototypeTemplate {
         }
     }
 
-    public void handleInput(float delta) {
+    public void handleInput() {
         if (Gdx.input.justTouched()) {
             touch = touch.set(Gdx.input.getX(), Gdx.input.getY());
             touch = viewport.unproject(touch);
@@ -275,7 +275,7 @@ public class SpinningSlotsWithHoldButtons extends SPPrototypeTemplate {
                     if (animatedReel.getReel().isSpinning()) {
                         if (animatedReel.getDampenedSineState() == DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE) {
                             reelSpriteHelp = animatedReel.getReel().getCurrentReel();
-                            animatedReel.getReel().setEndReel(reelSpriteHelp);
+                            animatedReel.getReel().setEndReel(reelSpriteHelp - 1 < 0 ? 0 : reelSpriteHelp - 1);
                         }
                     } else {
                         animatedReel.setEndReel(random.nextInt(sprites.length - 1));

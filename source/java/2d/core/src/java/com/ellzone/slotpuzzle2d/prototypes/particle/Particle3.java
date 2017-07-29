@@ -113,7 +113,7 @@ public class Particle3 extends SPPrototype {
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         slotReelScrollheight = slotReelScrollTexture.getHeight();
-        reelTile = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getHeight(), 0, 32, spriteWidth, spriteHeight, 0, null);
+        reelTile = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getHeight(), 0, 32, spriteWidth, spriteHeight, spriteWidth, spriteHeight, 0, null);
         reelTile.setX(0);
         reelTile.setY(0);
         reelTile.setSx(0);
