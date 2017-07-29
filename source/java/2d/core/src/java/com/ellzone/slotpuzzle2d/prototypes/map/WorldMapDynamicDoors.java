@@ -65,6 +65,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import static com.badlogic.gdx.scenes.scene2d.ui.Table.Debug.cell;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 
 public class WorldMapDynamicDoors extends SPPrototype {
 
@@ -109,8 +110,8 @@ public class WorldMapDynamicDoors extends SPPrototype {
     public static final String LEVEL_TEXT = "Level";
     public static final String ENTRANCE_TEXT = "Entrance";
     public static final char SPACE = ' ';
-
     private static final String WORLD_MAP_LEVEL_DOORS = "Level Doors";
+
     private OrthographicCamera cam;
     private SpriteBatch batch;
     private TiledMap worldMap;
@@ -137,7 +138,6 @@ public class WorldMapDynamicDoors extends SPPrototype {
     public void create() {
         scrollSigns = new Array<ScrollSign>();
         levelEntrances = new Array<LevelEntrance>();
-
         loadAssets();
         getAssets();
         loadWorld();
@@ -231,6 +231,7 @@ public class WorldMapDynamicDoors extends SPPrototype {
             ScrollSign scrollSign = addScrollSign(levelNumber, levelEntrances.get(levelNumber).getLevelEntrance().getWidth());
             scrollSigns.add(scrollSign);
 
+			drawLevelEntrance(levelNumber, layer);
             TextureRegion[][] splitTiles = TextureRegion.split(levelEntrances.get(levelNumber).getLevelEntrance(), 40, 40);
             int xx = (int) levelDoors.get(levelNumber).getX() / 40;
             int yy = (int) levelDoors.get(levelNumber).getY() / 40;
@@ -248,6 +249,44 @@ public class WorldMapDynamicDoors extends SPPrototype {
         Texture scrollSignTexture = initialiseFontTexture(LEVEL_TEXT + SPACE + (levelNumber + 1) + SPACE + ENTRANCE_TEXT + SPACE);
         return new ScrollSign(scrollSignTexture, 0, 0, scrollSignWidth, SIGN_HEIGHT, ScrollSign.SignDirection.RIGHT);
     }
+	
+	private void drawLevelEntrance(int levelNumber, TiledMapTileLayer layer) {
+		int levelDoorX = (int) levelDoors.get(levelNumber).getX() / 40;
+        int levelDoorY = (int) levelDoors.get(levelNumber).getY() / 40;
+		int levelDoorWidth = (int) levelDoors.get(levelNumber).getWidth() / 40;
+		int levelDoorHeight = (int) levelDoors.get(levelNumber).getHeight() / 40;
+		TiledMapTileLayer.Cell cell = layer.getCell(levelDoorX -  1, levelDoorY + levelDoorHeight);
+		TiledMapTile tile = cell.getTile();
+		Pixmap tilePixmap = PixmapProcessors.getPixmapFromTextureRegion(tile.getTextureRegion());
+		int tileWidth = tilePixmap.getWidth();
+		int tileHeight = tilePixmap.getHeight();
+		tilePixmap.setColor(Color.RED);
+		tilePixmap.fillRectangle(tileWidth - 4, 0, 4, tileHeight);
+		Texture tileTexture = new Texture(tilePixmap);
+		TextureRegion tileTextureRegion = new TextureRegion(tileTexture);
+		cell.setTile(new StaticTiledMapTile(tileTextureRegion));
+		layer.setCell(levelDoorX -  1, levelDoorY + levelDoorHeight, cell);
+		for (int ceilingX = levelDoorX; ceilingX < levelDoorX + levelDoorWidth; ceilingX++) {
+		    cell = layer.getCell(ceilingX, levelDoorY + levelDoorHeight + 1);
+			tile = cell.getTile();
+			tilePixmap = PixmapProcessors.getPixmapFromTextureRegion(tile.getTextureRegion());
+			tilePixmap.setColor(Color.RED);
+			tilePixmap.fillRectangle(0, tileHeight - 4, tileWidth, tileHeight);
+			tileTexture = new Texture(tilePixmap);
+			tileTextureRegion = new TextureRegion(tileTexture);
+			cell.setTile(new StaticTiledMapTile(tileTextureRegion));
+			layer.setCell(ceilingX, levelDoorY + levelDoorHeight + 1, cell);
+		}
+		cell = layer.getCell(levelDoorX + levelDoorWidth, levelDoorY + levelDoorHeight);
+		tile = cell.getTile();
+		tilePixmap = PixmapProcessors.getPixmapFromTextureRegion(tile.getTextureRegion());
+		tilePixmap.setColor(Color.RED);
+		tilePixmap.fillRectangle(0, 0, 4, tileHeight);
+		tileTexture = new Texture(tilePixmap);
+		tileTextureRegion = new TextureRegion(tileTexture);
+		cell.setTile(new StaticTiledMapTile(tileTextureRegion));
+		layer.setCell(levelDoorX + levelDoorWidth, levelDoorY + levelDoorHeight, cell);
+	}
 
     private void loadWorld() {
         getMapProperties();
