@@ -50,22 +50,50 @@ import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.ScreenshotFactory;
+import org.jrenner.smartfont.SmartFontGenerator;
+import com.badlogic.gdx.files.FileHandle;
+import com.ellzone.slotpuzzle2d.utils.FileUtils;
+import java.io.IOException;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
+import com.badlogic.gdx.graphics.Color;
+import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+import com.ellzone.slotpuzzle2d.sprites.LevelEntrance;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.ellzone.slotpuzzle2d.sprites.ScrollSign;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.maps.tiled.*;
 
 public class WorldScreen implements Screen {
 	
     public static final String LOG_TAG = "SlotPuzzle_WorldScreen";
+    public static final String LIBERATION_MONO_REGULAR_FONT_NAME = "LiberationMono-Regular.ttf";
+    public static final String GENERATED_FONTS_DIR = "generated-fonts/";
+    public static final String FONT_SMALL = "exo-small";
+    public static final int FONT_SMALL_SIZE = 24;
+    public static final int SIGN_WIDTH = 96;
+    public static final int SIGN_HEIGHT = 32;
+
     private static final String WORLD_MAP = "levels/WorldMap.tmx";
     private static final String TILE_PACK_ATLAS = "tiles/tiles.pack.atlas";
     private static final String WORLD_MAP_LEVEL_DOORS = "Level Doors";
+	public static final String LEVEL_TEXT = "Level";
+    public static final String ENTRANCE_TEXT = "Entrance";
+    public static final char SPACE = ' ';
+	
 	private SlotPuzzle game;
 	private OrthographicCamera cam;
 	private TiledMap worldMap;
 	private GestureDetector gestureDetector;
 	private MapGestureListener mapGestureListener;
+	private TiledMapTileLayer mapTextureLayer;
 	private Array<LevelDoor> levelDoors;
 	private Array<MapTile> mapTiles;
+	private Array<LevelEntrance> levelEntrances;
+	private Array<ScrollSign> scrollSigns;
 	private OrthogonalTiledMapRenderer renderer;
 	private BitmapFont font;
+	private BitmapFont fontSmall;
 	private float w, h, cww, cwh, aspectRatio;
     private float screenOverCWWRatio, screenOverCWHRatio;
 	private Pixmap levelDoorPixmap;
@@ -76,7 +104,7 @@ public class WorldScreen implements Screen {
 	private TweenManager tweenManager;
     private int mapWidth, mapHeight, tilePixelWidth, tilePixelHeight;
     private String message = "";
-    
+	   
     public WorldScreen(SlotPuzzle game) {
 		this.game = game;
 		this.game.setWorldScreen(this);
@@ -84,11 +112,16 @@ public class WorldScreen implements Screen {
 	}
     
     private void createWorldScreen() {
-    	getAssets();
+		scrollSigns = new Array<ScrollSign>();
+        levelEntrances = new Array<LevelEntrance>();
+		getAssets();
         loadWorld();
     	initialiseCamera();
     	initialiseUniversalTweenEngine();
     	initialiseLibGdx();
+		initialiseFonts();
+		createLevelEntrances();
+        initialiseMap();
     }
 
 	private void getAssets() {
@@ -129,19 +162,112 @@ public class WorldScreen implements Screen {
 	    SlotPuzzleTween.registerAccessor(Sprite.class, new SpriteAccessor());
 	    tweenManager = new TweenManager();
 	}
-    
-    private void loadWorld() {
-        getMapProperties();
-    	levelDoors = new Array<LevelDoor>();
-		for (MapObject mapObject : worldMap.getLayers().get(WORLD_MAP_LEVEL_DOORS).getObjects().getByType(RectangleMapObject.class)) {
-			LevelDoor levelDoor = new LevelDoor();
-			levelDoor.levelName = ((RectangleMapObject) mapObject).getName();
-			levelDoor.levelType = (String) ((RectangleMapObject) mapObject).getProperties().get("type");
-			levelDoor.doorPosition = ((RectangleMapObject) mapObject).getRectangle();
-			levelDoors.add(levelDoor);
-		}
+
+    private void initialiseFonts() {
+        SmartFontGenerator fontGen = new SmartFontGenerator();
+        FileHandle internalFontFile = Gdx.files.internal(LIBERATION_MONO_REGULAR_FONT_NAME);
+        FileHandle generatedFontDir = Gdx.files.local(GENERATED_FONTS_DIR);
+        generatedFontDir.mkdirs();
+
+        FileHandle generatedFontFile = Gdx.files.local("generated-fonts/LiberationMono-Regular.ttf");
+        try {
+            FileUtils.copyFile(internalFontFile, generatedFontFile);
+        } catch (IOException ex) {
+            Gdx.app.error(SlotPuzzleConstants.SLOT_PUZZLE, "Could not copy " + internalFontFile.file().getPath() + " to file " + generatedFontFile.file().getAbsolutePath() + " " + ex.getMessage());
+        }
+        fontSmall = fontGen.createFont(generatedFontFile, FONT_SMALL, FONT_SMALL_SIZE);
     }
 
+    private Texture initialiseFontTexture(String text) {
+        Pixmap textPixmap = new Pixmap(text.length() * 16, SIGN_HEIGHT, Pixmap.Format.RGBA8888);
+        textPixmap.setColor(Color.CLEAR);
+        textPixmap.fillRectangle(0, 0, textPixmap.getWidth(), textPixmap.getHeight());
+        textPixmap = PixmapProcessors.createDynamicHorizontalFontTextViaFrameBuffer(fontSmall, Color.BLUE, text, textPixmap, 0, 20);
+        return new Texture(textPixmap);
+    }
+
+    private void createLevelEntrances() {
+        for (int i = 0; i < levelDoors.size; i++) {
+            levelEntrances.add(new LevelEntrance((int) levelDoors.get(i).doorPosition.getWidth(), (int) levelDoors.get(i).doorPosition.getHeight()));
+        }
+    }
+
+    private void initialiseMap() {
+		mapTextureLayer = (TiledMapTileLayer) worldMap.getLayers().get("Tile Layer 1");
+
+        for (int levelNumber = 0; levelNumber < levelDoors.size; levelNumber++) {
+            ScrollSign scrollSign = addScrollSign(levelNumber, levelEntrances.get(levelNumber).getLevelEntrance().getWidth());
+            scrollSigns.add(scrollSign);
+
+            drawLevelEntrance(levelNumber, mapTextureLayer);
+            TextureRegion[][] splitTiles = TextureRegion.split(levelEntrances.get(levelNumber).getLevelEntrance(), 40, 40);
+            int xx = (int) levelDoors.get(levelNumber).doorPosition.getX() / 40;
+            int yy = (int) levelDoors.get(levelNumber).doorPosition.getY() / 40;
+            for (int row = 0; row < splitTiles.length; row++) {
+                for (int col = 0; col < splitTiles[row].length; col++) {
+                    TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
+                    cell.setTile(new StaticTiledMapTile(splitTiles[row][col]));
+                    mapTextureLayer.setCell(xx + col, yy + (splitTiles.length - row), cell);
+                }
+            }
+        }
+    }
+
+    private ScrollSign addScrollSign(int levelNumber, int scrollSignWidth) {
+        Texture scrollSignTexture = initialiseFontTexture(LEVEL_TEXT + SPACE + (levelNumber + 1) + SPACE + ENTRANCE_TEXT + SPACE);
+        return new ScrollSign(scrollSignTexture, 0, 0, scrollSignWidth, SIGN_HEIGHT, ScrollSign.SignDirection.RIGHT);
+    }
+
+    private void drawLevelEntrance(int levelNumber, TiledMapTileLayer layer) {
+        int levelDoorX = (int) levelDoors.get(levelNumber).doorPosition.getX() / 40;
+        int levelDoorY = (int) levelDoors.get(levelNumber).doorPosition.getY() / 40;
+        int levelDoorWidth = (int) levelDoors.get(levelNumber).doorPosition.getWidth() / 40;
+        int levelDoorHeight = (int) levelDoors.get(levelNumber).doorPosition.getHeight() / 40;
+        TiledMapTileLayer.Cell cell = layer.getCell(levelDoorX - 1, levelDoorY + levelDoorHeight);
+        TiledMapTile tile = cell.getTile();
+        Pixmap tilePixmap = PixmapProcessors.getPixmapFromTextureRegion(tile.getTextureRegion());
+        int tileWidth = tilePixmap.getWidth();
+        int tileHeight = tilePixmap.getHeight();
+        tilePixmap.setColor(Color.RED);
+        tilePixmap.fillRectangle(tileWidth - 4, 0, 4, tileHeight);
+        Texture tileTexture = new Texture(tilePixmap);
+        TextureRegion tileTextureRegion = new TextureRegion(tileTexture);
+        cell.setTile(new StaticTiledMapTile(tileTextureRegion));
+        layer.setCell(levelDoorX - 1, levelDoorY + levelDoorHeight, cell);
+        for (int ceilingX = levelDoorX; ceilingX < levelDoorX + levelDoorWidth; ceilingX++) {
+            cell = layer.getCell(ceilingX, levelDoorY + levelDoorHeight + 1);
+            tile = cell.getTile();
+            tilePixmap = PixmapProcessors.getPixmapFromTextureRegion(tile.getTextureRegion());
+            tilePixmap.setColor(Color.RED);
+            tilePixmap.fillRectangle(0, tileHeight - 4, tileWidth, tileHeight);
+            tileTexture = new Texture(tilePixmap);
+            tileTextureRegion = new TextureRegion(tileTexture);
+            cell.setTile(new StaticTiledMapTile(tileTextureRegion));
+            layer.setCell(ceilingX, levelDoorY + levelDoorHeight + 1, cell);
+        }
+        cell = layer.getCell(levelDoorX + levelDoorWidth, levelDoorY + levelDoorHeight);
+        tile = cell.getTile();
+        tilePixmap = PixmapProcessors.getPixmapFromTextureRegion(tile.getTextureRegion());
+        tilePixmap.setColor(Color.RED);
+        tilePixmap.fillRectangle(0, 0, 4, tileHeight);
+        tileTexture = new Texture(tilePixmap);
+        tileTextureRegion = new TextureRegion(tileTexture);
+        cell.setTile(new StaticTiledMapTile(tileTextureRegion));
+        layer.setCell(levelDoorX + levelDoorWidth, levelDoorY + levelDoorHeight, cell);
+    }
+
+    private void loadWorld() {
+        getMapProperties();
+        levelDoors = new Array<LevelDoor>();
+        for (MapObject mapObject : worldMap.getLayers().get(WORLD_MAP_LEVEL_DOORS).getObjects().getByType(RectangleMapObject.class)) {
+            LevelDoor levelDoor = new LevelDoor();
+            levelDoor.levelName = ((RectangleMapObject) mapObject).getName();
+            levelDoor.levelType = (String) ((RectangleMapObject) mapObject).getProperties().get("type");
+            levelDoor.doorPosition = ((RectangleMapObject) mapObject).getRectangle();
+            levelDoors.add(levelDoor);
+        }
+    }
+    
     private void getMapProperties() {
         MapProperties worldProps = worldMap.getProperties();
         mapWidth = worldProps.get("width", Integer.class);
@@ -176,8 +302,33 @@ public class WorldScreen implements Screen {
 		System.out.println("WorldScreen: show");
 	}
 	
+	private void updateDynamicDoors(float dt) {
+        int levelNumber = 0,
+			levelDoorX,
+			levelDoorY,
+			levelDoorHeight;
+        TiledMapTileLayer.Cell cell;
+
+        for (LevelDoor levelDoor : levelDoors) {
+            levelDoorX = (int) levelDoor.doorPosition.getX() / 40;
+            levelDoorY = (int) levelDoor.doorPosition.getY() / 40;
+            levelDoorHeight = (int) levelDoor.doorPosition.getHeight() / 40;
+            for (int col = 0; col < (scrollSigns.get(levelNumber).getSignWidth()) / 40; col++) {
+                cell = new TiledMapTileLayer.Cell();
+                cell.setTile(new StaticTiledMapTile(new TextureRegion(scrollSigns.get(levelNumber), col * 40, 0, 40, 40)));
+                mapTextureLayer.setCell(levelDoorX + col, levelDoorY + levelDoorHeight, cell);
+            }
+            levelNumber++;
+        }
+        for (ScrollSign scrollSign : scrollSigns) {
+            scrollSign.update(dt);
+            scrollSign.setSx(scrollSign.getSx() + 1);
+        }
+    }
+	
 	public void update(float delta) {
 		tweenManager.update(delta);
+		updateDynamicDoors(delta);
 	}
 
 	@Override
