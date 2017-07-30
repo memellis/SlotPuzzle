@@ -66,6 +66,7 @@ import java.nio.ByteBuffer;
 
 import static com.badlogic.gdx.scenes.scene2d.ui.Table.Debug.cell;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.ellzone.slotpuzzle2d.level.LevelDoor;
 
 public class WorldMapDynamicDoors extends SPPrototype {
 
@@ -120,7 +121,7 @@ public class WorldMapDynamicDoors extends SPPrototype {
     private BitmapFont font;
     private GestureDetector gestureDetector;
     private MapGestureListener mapGestureListener;
-    private Array<Rectangle> levelDoors;
+    private Array<LevelDoor> levelDoors;
     private float w, h, cww, cwh, aspectRatio;
     private float screenOverCWWRatio, screenOverCWHRatio;
     private Pixmap levelDoorPixmap;
@@ -220,7 +221,7 @@ public class WorldMapDynamicDoors extends SPPrototype {
 
     private void createLevelEntrances() {
         for (int i = 0; i < levelDoors.size; i++) {
-            levelEntrances.add(new LevelEntrance((int) levelDoors.get(i).getWidth(), (int) levelDoors.get(i).getHeight()));
+            levelEntrances.add(new LevelEntrance((int) levelDoors.get(i).doorPosition.getWidth(), (int) levelDoors.get(i).doorPosition.getHeight()));
         }
     }
 
@@ -233,8 +234,8 @@ public class WorldMapDynamicDoors extends SPPrototype {
 
 			drawLevelEntrance(levelNumber, layer);
             TextureRegion[][] splitTiles = TextureRegion.split(levelEntrances.get(levelNumber).getLevelEntrance(), 40, 40);
-            int xx = (int) levelDoors.get(levelNumber).getX() / 40;
-            int yy = (int) levelDoors.get(levelNumber).getY() / 40;
+            int xx = (int) levelDoors.get(levelNumber).doorPosition.getX() / 40;
+            int yy = (int) levelDoors.get(levelNumber).doorPosition.getY() / 40;
             for (int row = 0; row < splitTiles.length; row++) {
                 for (int col = 0; col < splitTiles[row].length; col++) {
                     TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
@@ -251,10 +252,10 @@ public class WorldMapDynamicDoors extends SPPrototype {
     }
 	
 	private void drawLevelEntrance(int levelNumber, TiledMapTileLayer layer) {
-		int levelDoorX = (int) levelDoors.get(levelNumber).getX() / 40;
-        int levelDoorY = (int) levelDoors.get(levelNumber).getY() / 40;
-		int levelDoorWidth = (int) levelDoors.get(levelNumber).getWidth() / 40;
-		int levelDoorHeight = (int) levelDoors.get(levelNumber).getHeight() / 40;
+		int levelDoorX = (int) levelDoors.get(levelNumber).doorPosition.getX() / 40;
+        int levelDoorY = (int) levelDoors.get(levelNumber).doorPosition.getY() / 40;
+		int levelDoorWidth = (int) levelDoors.get(levelNumber).doorPosition.getWidth() / 40;
+		int levelDoorHeight = (int) levelDoors.get(levelNumber).doorPosition.getHeight() / 40;
 		TiledMapTileLayer.Cell cell = layer.getCell(levelDoorX -  1, levelDoorY + levelDoorHeight);
 		TiledMapTile tile = cell.getTile();
 		Pixmap tilePixmap = PixmapProcessors.getPixmapFromTextureRegion(tile.getTextureRegion());
@@ -290,11 +291,14 @@ public class WorldMapDynamicDoors extends SPPrototype {
 
     private void loadWorld() {
         getMapProperties();
-        levelDoors = new Array<Rectangle>();
+        levelDoors = new Array<LevelDoor>();
         for (MapObject mapObject : worldMap.getLayers().get(WORLD_MAP_LEVEL_DOORS).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
-            levelDoors.add(mapRectangle);
-        }
+            LevelDoor levelDoor = new LevelDoor();
+			levelDoor.levelName = ((RectangleMapObject) mapObject).getName();
+			levelDoor.levelType = (String) ((RectangleMapObject) mapObject).getProperties().get("type");
+			levelDoor.doorPosition = ((RectangleMapObject) mapObject).getRectangle();
+			levelDoors.add(levelDoor);
+		}
     }
 
     private void getMapProperties() {
@@ -327,10 +331,10 @@ public class WorldMapDynamicDoors extends SPPrototype {
             levelDoorHeight;
         TiledMapTileLayer.Cell cell;
 
-        for (Rectangle levelDoor : levelDoors) {
-            levelDoorX = (int) levelDoor.getX() / 40;
-            levelDoorY = (int) levelDoor.getY() / 40;
-            levelDoorHeight = (int) levelDoor.getHeight() / 40;
+        for (LevelDoor levelDoor : levelDoors) {
+            levelDoorX = (int) levelDoor.doorPosition.getX() / 40;
+            levelDoorY = (int) levelDoor.doorPosition.getY() / 40;
+            levelDoorHeight = (int) levelDoor.doorPosition.getHeight() / 40;
             for (int col = 0; col < (scrollSigns.get(levelNumber).getSignWidth()) / 40; col++) {
                 cell = new TiledMapTileLayer.Cell();
                 cell.setTile(new StaticTiledMapTile(new TextureRegion(scrollSigns.get(levelNumber), col * 40, 0, 40, 40)));
@@ -395,46 +399,13 @@ public class WorldMapDynamicDoors extends SPPrototype {
         public boolean touchDown(float x, float y, int pointer, int button) {
             flinging = false;
             initialScale = camera.zoom;
+			processTouch(x, y);
             return false;
         }
 
         @Override
         public boolean tap(float x, float y, int count, int button) {
-            float wx = screenXToWorldX(x);
-            float wy = screenYToWorldY(y);
-            for (Rectangle levelDoor : levelDoors) {
-                if (levelDoor.contains(wx, wy)) {
-                    int sx = (int)worldXToScreenX(levelDoor.x);
-                    int sy = (int)worldYToScreenY(levelDoor.y);
-                    int sw = (int)(levelDoor.width * screenOverCWWRatio);
-                    int sh = (int)(levelDoor.height * screenOverCWHRatio);
-                    levelDoorPixmap = ScreenshotFactory.getScreenshot(sx, sy, sw, sh, true);
-                    levelDoorTexture = new Texture(levelDoorPixmap);
-                    levelDoorSprite = new Sprite(levelDoorTexture);
-                    levelDoorSprite.setPosition(sx, sy);
-                    createPopUps(levelDoorSprite);
-                    mapTile.maximize(maximizeCallback);
-                    System.out.println("Found level door at ("+wx+","+wy+")");
-                    Gdx.app.log(LOG_TAG, "ldx="+levelDoor.x);
-                    Gdx.app.log(LOG_TAG, "ldy="+levelDoor.y);
-                    Gdx.app.log(LOG_TAG, "x="+x);
-                    Gdx.app.log(LOG_TAG, "y="+y);
-                    Gdx.app.log(LOG_TAG, "w="+w);
-                    Gdx.app.log(LOG_TAG, "h="+h);
-                    Gdx.app.log(LOG_TAG, "sx="+sx);
-                    Gdx.app.log(LOG_TAG, "sy="+sy);
-                    Gdx.app.log(LOG_TAG, "wx="+wx);
-                    Gdx.app.log(LOG_TAG, "wy="+wy);
-                    Gdx.app.log(LOG_TAG, "cx="+camera.position.x);
-                    Gdx.app.log(LOG_TAG, "cy="+camera.position.y);
-                    Gdx.app.log(LOG_TAG, "cvpw="+camera.viewportWidth);
-                    Gdx.app.log(LOG_TAG, "cvp="+camera.viewportHeight);
-                    Gdx.app.log(LOG_TAG, "aspectRatio="+aspectRatio);
-                    Gdx.app.log(LOG_TAG, "screenOverCWWRatio="+screenOverCWWRatio);
-                    Gdx.app.log(LOG_TAG, "screenOverCWHRatio="+screenOverCWHRatio);
-
-                }
-            }
+            processTouch(x, y);
             return false;
         }
 
@@ -447,14 +418,14 @@ public class WorldMapDynamicDoors extends SPPrototype {
         @Override
         public boolean fling(float velocityX, float velocityY, int button) {
             flinging = true;
-            velX = camera.zoom * velocityX * 0.1f;
-            velY = camera.zoom * velocityY * 0.1f;
+            velX = camera.zoom * velocityX * 0.01f;
+            velY = camera.zoom * velocityY * 0.01f;
             return false;
         }
 
         @Override
         public boolean pan(float x, float y, float deltaX, float deltaY) {
-            camera.position.add(-deltaX * camera.zoom * 0.1f, deltaY * camera.zoom * 0.1f, 0);
+            camera.position.add(-deltaX * camera.zoom * 0.01f, deltaY * camera.zoom * 0.1f, 0);
             clampCamera();
             return false;
         }
@@ -482,15 +453,43 @@ public class WorldMapDynamicDoors extends SPPrototype {
 
         public void update () {
             if (flinging) {
-                velX *= 0.98f;
-                velY *= 0.98f;
+                velX *= 0.9f;
+                velY *= 0.9f;
                 camera.position.add(-velX * Gdx.graphics.getDeltaTime(), velY * Gdx.graphics.getDeltaTime(), 0);
                 clampCamera();
                 if (Math.abs(velX) < 0.01f) velX = 0;
                 if (Math.abs(velY) < 0.01f) velY = 0;
             }
         }
+		
+		private void processTouch(float x, float y) {
+            float wx = screenXToWorldX(x);
+            float wy = screenYToWorldY(y);
+            int levelDoorIndex = 0;
+            for (LevelDoor levelDoor : levelDoors) {
+                if (levelDoor.doorPosition.contains(wx, wy)) {
+                    enterLevel(levelDoor, levelDoorIndex);
+                }
+                levelDoorIndex++;
+            }
+        }
+		
+		private void enterLevel(LevelDoor levelDoor, int levelDoorIndex) {
+        	int sx = (int)worldXToScreenX(levelDoor.doorPosition.x);
+            int sy = (int)worldYToScreenY(levelDoor.doorPosition.y);
+            int sw = (int)(levelDoor.doorPosition.width * screenOverCWWRatio);
+            int sh = (int)(levelDoor.doorPosition.height * screenOverCWHRatio);
 
+            levelDoorPixmap = ScreenshotFactory.getScreenshot(sx, sy, sw, sh, true);
+            levelDoorTexture = new Texture(levelDoorPixmap);
+            levelDoorSprite = new Sprite(levelDoorTexture);
+            levelDoorSprite.setX(sx);
+            levelDoorSprite.setY(sy);
+            levelDoorSprite.setOrigin(0, 0);
+            createPopUps(levelDoorSprite);
+            mapTile.maximize(maximizeCallback);
+        }
+		
         private void clampCamera() {
             if (camera.position.x < 0) {
                 camera.position.x = 0;
