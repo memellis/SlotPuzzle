@@ -117,6 +117,7 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        compile "com.badlogicgames.box2dlights:box2dlights:1.4"
         compile fileTree(dir: '../libs', include: '*.jar')
     }
 }
@@ -127,23 +128,6 @@ project(":tests") {
     sourceSets.test.java.srcDirs = ["src/"]
 
     dependencies {
-
-        /**
-         * If you do have some classes to test in os specific code you may want to uncomment
-         * some of these lines.
-         * 
-         * BUT: I recommend to create seperate test sub projects for each platform. Trust me :)
-         * 
-         */
-
-//        compile project(":android")
-//        compile project(":html")
-//        compile project(":desktop")
-
-
-//        if(System.getProperty("os.name").toLowerCase().indexOf("mac") >= 0) {
-//          compile project(":ios")
-//        }
 
         compile project(":core")
 
