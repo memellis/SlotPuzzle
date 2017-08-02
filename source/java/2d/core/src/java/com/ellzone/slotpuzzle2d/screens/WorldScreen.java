@@ -66,22 +66,22 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.maps.tiled.*;
 
 public class WorldScreen implements Screen {
+	
+    public static final String LOG_TAG = "SlotPuzzle_WorldScreen";
+    public static final String LIBERATION_MONO_REGULAR_FONT_NAME = "LiberationMono-Regular.ttf";
+    public static final String GENERATED_FONTS_DIR = "generated-fonts/";
+    public static final String FONT_SMALL = "exo-small";
+    public static final int FONT_SMALL_SIZE = 24;
+    public static final int SIGN_WIDTH = 96;
+    public static final int SIGN_HEIGHT = 32;
 
-	public static final String LOG_TAG = "SlotPuzzle_WorldScreen";
-	public static final String LIBERATION_MONO_REGULAR_FONT_NAME = "LiberationMono-Regular.ttf";
-	public static final String GENERATED_FONTS_DIR = "generated-fonts/";
-	public static final String FONT_SMALL = "exo-small";
-	public static final int FONT_SMALL_SIZE = 24;
-	public static final int SIGN_WIDTH = 96;
-	public static final int SIGN_HEIGHT = 32;
-
-	private static final String WORLD_MAP = "levels/WorldMap.tmx";
-	private static final String TILE_PACK_ATLAS = "tiles/tiles.pack.atlas";
-	private static final String WORLD_MAP_LEVEL_DOORS = "Level Doors";
+    private static final String WORLD_MAP = "levels/WorldMap.tmx";
+    private static final String TILE_PACK_ATLAS = "tiles/tiles.pack.atlas";
+    private static final String WORLD_MAP_LEVEL_DOORS = "Level Doors";
 	public static final String LEVEL_TEXT = "Level";
-	public static final String ENTRANCE_TEXT = "Entrance";
-	public static final char SPACE = ' ';
-
+    public static final String ENTRANCE_TEXT = "Entrance";
+    public static final char SPACE = ' ';
+	
 	private SlotPuzzle game;
 	private OrthographicCamera cam;
 	private TiledMap worldMap;
@@ -105,7 +105,8 @@ public class WorldScreen implements Screen {
 	private int mapWidth, mapHeight, tilePixelWidth, tilePixelHeight;
 	private String message = "";
 
-	public WorldScreen(SlotPuzzle game) {
+	   
+    public WorldScreen(SlotPuzzle game) {
 		this.game = game;
 		this.game.setWorldScreen(this);
 		createWorldScreen();
@@ -124,7 +125,7 @@ public class WorldScreen implements Screen {
 		initialiseMap();
 		createPopUps();
 	}
-
+    
 	private void getAssets() {
 		worldMap = game.assetManager.get(WORLD_MAP);
 		tilesAtlas = game.assetManager.get(TILE_PACK_ATLAS, TextureAtlas.class);
@@ -163,8 +164,8 @@ public class WorldScreen implements Screen {
 		SlotPuzzleTween.registerAccessor(Sprite.class, new SpriteAccessor());
 		tweenManager = new TweenManager();
 	}
-
-	private void initialiseFonts() {
+	
+        private void initialiseFonts() {
 		SmartFontGenerator fontGen = new SmartFontGenerator();
 		FileHandle internalFontFile = Gdx.files.internal(LIBERATION_MONO_REGULAR_FONT_NAME);
 		FileHandle generatedFontDir = Gdx.files.local(GENERATED_FONTS_DIR);
@@ -320,9 +321,6 @@ public class WorldScreen implements Screen {
 				cell.setTile(new StaticTiledMapTile(new TextureRegion(scrollSigns.get(levelNumber), col * 40, 0, 40, 40)));
 				mapTextureLayer.setCell(levelDoorX + col, levelDoorY + levelDoorHeight, cell);
 
-				if (mapTiles == null) {
-					System.out.println("mapTiles is null!");
-				}
 				if (mapTiles.get(levelNumber).getLevel().isLevelCompleted()) {
 					updateScrollSignToLevelCompleted(mapTiles.get(levelNumber));
 				}
@@ -339,6 +337,7 @@ public class WorldScreen implements Screen {
 
 	}
 
+	
 	public void update(float delta) {
 		tweenManager.update(delta);
 		updateDynamicDoors(delta);
@@ -354,11 +353,9 @@ public class WorldScreen implements Screen {
 		renderer.setView(cam);
 		cam.update();
 		game.batch.begin();
-		if (mapTiles != null) {
-			for (MapTile mapTile : mapTiles) {
-				if (!mapTile.getLevel().isLevelCompleted()) {
-					mapTile.draw(game.batch);
-				}
+		for (MapTile mapTile : mapTiles) {
+			if (!mapTile.getLevel().isLevelCompleted()) {
+				mapTile.draw(game.batch);
 			}
 		}
 		font.draw(game.batch, message, 80, 100);
