@@ -124,4 +124,8 @@ public class MapTile {
 	public Level getLevel() {
 		return level;
 	}
+
+	public void setSprite(Sprite sprite) {
+        this.sprite = sprite;
+    }
 }

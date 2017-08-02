@@ -35,7 +35,7 @@ public class MapLevel1 extends Level {
 
 	@Override
 	public String getTitle() {
-		String title = "Level 1";
+		String title = "1-1";
 		return title;
 	}
 	

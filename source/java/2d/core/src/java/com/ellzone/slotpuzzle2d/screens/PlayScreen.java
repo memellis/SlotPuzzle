@@ -60,6 +60,7 @@ import com.ellzone.slotpuzzle2d.physics.Vector;
 import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGridType;
 import com.ellzone.slotpuzzle2d.puzzlegrid.TupleValueIndex;
 import com.ellzone.slotpuzzle2d.scene.Hud;
+import com.ellzone.slotpuzzle2d.scene.MapTile;
 import com.ellzone.slotpuzzle2d.sprites.ReelTileEvent;
 import com.ellzone.slotpuzzle2d.sprites.ReelTileListener;
 import com.ellzone.slotpuzzle2d.sprites.ReelStoppedFlashingEvent;
@@ -95,7 +96,7 @@ public class PlayScreen implements Screen {
 	public static final String SLOTPUZZLE_SCREEN = "PlayScreen";
 	public static final String LEVEL_TIP_DESC =  "Reveal the hidden pattern to complete the level.";
 	public static final String LEVEL_LOST_DESC =  "Sorry you lost that level. Touch/Press to restart the level.";
-	public static final String LEVEL_WON_DESC =  "Well done you've won that level. Touch/Press to start the nextlevel.";	
+	public static final String LEVEL_WON_DESC =  "Well done you've won that level. Touch/Press to start the nextlevel.";
 
 	public enum PlayStates {INITIALISING, INTRO_SEQUENCE, INTRO_POPUP, INTRO_SPINNING, INTRO_FLASHING, PLAYING, LEVEL_LOST, WON_LEVEL, RESTARTING_LEVEL};
 	private PlayStates playState;
@@ -141,10 +142,12 @@ public class PlayScreen implements Screen {
 	private LevelDoor levelDoor;
 	private Array<Integer> hiddenPlayingCards;
 	private Array<Card> cards;
+	private final MapTile mapTile;
 
-    public PlayScreen(SlotPuzzle game, LevelDoor levelDoor) {
+    public PlayScreen(SlotPuzzle game, LevelDoor levelDoor, MapTile mapTile) {
 		this.game = game;
 		this.levelDoor = levelDoor;
+		this.mapTile = mapTile;
 		createPlayScreen();
 	}
 
@@ -805,6 +808,7 @@ public class PlayScreen implements Screen {
 		gameOver = true;
 	    win = true;
 	    playState = PlayStates.WON_LEVEL;
+		mapTile.getLevel().setLevelCompleted();
 	    setLevelWonSpritePositions();
 	    levelWonPopUp.showLevelPopUp(null);
 	}
