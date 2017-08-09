@@ -45,6 +45,7 @@ import com.ellzone.slotpuzzle2d.level.MapLevel3;
 import com.ellzone.slotpuzzle2d.level.MapLevel4;
 import com.ellzone.slotpuzzle2d.level.MapLevel5;
 import com.ellzone.slotpuzzle2d.level.MapLevel6;
+import com.ellzone.slotpuzzle2d.pixmap.PixmapDrawAction;
 import com.ellzone.slotpuzzle2d.scene.MapTile;
 import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
@@ -200,8 +201,7 @@ public class WorldScreen implements Screen {
 		for (int levelNumber = 0; levelNumber < levelDoors.size; levelNumber++) {
 			ScrollSign scrollSign = addScrollSign(levelNumber, levelEntrances.get(levelNumber).getLevelEntrance().getWidth());
 			scrollSigns.add(scrollSign);
-
-			drawLevelEntrance(levelNumber, mapTextureLayer);
+            drawLevelEntrance(levelNumber, mapTextureLayer);
 			TextureRegion[][] splitTiles = TextureRegion.split(levelEntrances.get(levelNumber).getLevelEntrance(), 40, 40);
 			int xx = (int) levelDoors.get(levelNumber).doorPosition.getX() / 40;
 			int yy = (int) levelDoors.get(levelNumber).doorPosition.getY() / 40;
@@ -220,42 +220,53 @@ public class WorldScreen implements Screen {
 		return new ScrollSign(scrollSignTexture, 0, 0, scrollSignWidth, SIGN_HEIGHT, ScrollSign.SignDirection.RIGHT);
 	}
 
+	private void drawOnCell(TiledMapTileLayer layer, int cellX, int cellY, PixmapDrawAction drawAction) {
+        TiledMapTileLayer.Cell cell = layer.getCell(cellX, cellY);
+		TiledMapTile tile = cell.getTile();
+		Pixmap tilePixmap = PixmapProcessors.getPixmapFromTextureRegion(tile.getTextureRegion());
+		drawAction.drawAction(tilePixmap);
+        Texture tileTexture = new Texture(tilePixmap);
+        TextureRegion tileTextureRegion = new TextureRegion(tileTexture);
+        cell.setTile(new StaticTiledMapTile(tileTextureRegion));
+        layer.setCell(cellX, cellY, cell);
+    }
+
 	private void drawLevelEntrance(int levelNumber, TiledMapTileLayer layer) {
 		int levelDoorX = (int) levelDoors.get(levelNumber).doorPosition.getX() / 40;
 		int levelDoorY = (int) levelDoors.get(levelNumber).doorPosition.getY() / 40;
 		int levelDoorWidth = (int) levelDoors.get(levelNumber).doorPosition.getWidth() / 40;
 		int levelDoorHeight = (int) levelDoors.get(levelNumber).doorPosition.getHeight() / 40;
-		TiledMapTileLayer.Cell cell = layer.getCell(levelDoorX - 1, levelDoorY + levelDoorHeight);
-		TiledMapTile tile = cell.getTile();
-		Pixmap tilePixmap = PixmapProcessors.getPixmapFromTextureRegion(tile.getTextureRegion());
-		int tileWidth = tilePixmap.getWidth();
-		int tileHeight = tilePixmap.getHeight();
-		tilePixmap.setColor(Color.RED);
-		tilePixmap.fillRectangle(tileWidth - 4, 0, 4, tileHeight);
-		Texture tileTexture = new Texture(tilePixmap);
-		TextureRegion tileTextureRegion = new TextureRegion(tileTexture);
-		cell.setTile(new StaticTiledMapTile(tileTextureRegion));
-		layer.setCell(levelDoorX - 1, levelDoorY + levelDoorHeight, cell);
+
+        drawOnCell(layer, levelDoorX - 1, levelDoorY + levelDoorHeight, new PixmapDrawAction() {
+            @Override
+            public void drawAction(Pixmap pixmap) {
+                pixmap.setColor(Color.RED);
+                int tileWidth = pixmap.getWidth();
+                int tileHeight = pixmap.getHeight();
+                pixmap.fillRectangle(tileWidth - 4, 0, 4, tileHeight);
+            }
+        });
+
 		for (int ceilingX = levelDoorX; ceilingX < levelDoorX + levelDoorWidth; ceilingX++) {
-			cell = layer.getCell(ceilingX, levelDoorY + levelDoorHeight + 1);
-			tile = cell.getTile();
-			tilePixmap = PixmapProcessors.getPixmapFromTextureRegion(tile.getTextureRegion());
-			tilePixmap.setColor(Color.RED);
-			tilePixmap.fillRectangle(0, tileHeight - 4, tileWidth, tileHeight);
-			tileTexture = new Texture(tilePixmap);
-			tileTextureRegion = new TextureRegion(tileTexture);
-			cell.setTile(new StaticTiledMapTile(tileTextureRegion));
-			layer.setCell(ceilingX, levelDoorY + levelDoorHeight + 1, cell);
-		}
-		cell = layer.getCell(levelDoorX + levelDoorWidth, levelDoorY + levelDoorHeight);
-		tile = cell.getTile();
-		tilePixmap = PixmapProcessors.getPixmapFromTextureRegion(tile.getTextureRegion());
-		tilePixmap.setColor(Color.RED);
-		tilePixmap.fillRectangle(0, 0, 4, tileHeight);
-		tileTexture = new Texture(tilePixmap);
-		tileTextureRegion = new TextureRegion(tileTexture);
-		cell.setTile(new StaticTiledMapTile(tileTextureRegion));
-		layer.setCell(levelDoorX + levelDoorWidth, levelDoorY + levelDoorHeight, cell);
+            drawOnCell(layer, ceilingX, levelDoorY + levelDoorHeight + 1, new PixmapDrawAction() {
+                @Override
+                public void drawAction(Pixmap pixmap) {
+                    pixmap.setColor(Color.RED);
+                    int tileWidth = pixmap.getWidth();
+                    int tileHeight = pixmap.getHeight();
+                    pixmap.fillRectangle(0, tileHeight - 4, tileWidth, tileHeight);
+                }
+            });
+ 		}
+
+		drawOnCell(layer, levelDoorX + levelDoorWidth, levelDoorY + levelDoorHeight, new PixmapDrawAction() {
+            @Override
+            public void drawAction(Pixmap pixmap) {
+                pixmap.setColor(Color.RED);
+                int tileHeight = pixmap.getHeight();
+                pixmap.fillRectangle(0, 0, 4, tileHeight);
+            }
+        });
 	}
 
 	private void loadWorld() {
@@ -355,7 +366,7 @@ public class WorldScreen implements Screen {
 		game.batch.begin();
 		for (MapTile mapTile : mapTiles) {
 			if (!mapTile.getLevel().isLevelCompleted()) {
-				mapTile.draw(game.batch);
+				//mapTile.draw(game.batch);
 			}
 		}
 		font.draw(game.batch, message, 80, 100);
@@ -528,7 +539,5 @@ public class WorldScreen implements Screen {
 
 	public void worldScreenCallBack() {
 		tweenManager.killAll();
-		//levelDoorSprite = null;
-		//mapTiles = null;
 	}
 }
