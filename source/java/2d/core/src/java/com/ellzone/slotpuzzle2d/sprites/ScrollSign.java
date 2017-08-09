@@ -19,17 +19,20 @@ package com.ellzone.slotpuzzle2d.sprites;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+import com.badlogic.gdx.utils.Array;
 
 public class ScrollSign extends Sprite {
-    Texture texture;
+    Texture signTexture;
+    Array<Texture> signTextures;
 	private TextureRegion region;
 	float x, y, signWidth, signHeight, sx, sy; 
 	public static enum SignDirection {LEFT, RIGHT};
 	private SignDirection signDirection;
+    private int currentSign, newSign;
+    private boolean switchSign = false;
 	
-	public ScrollSign(Texture texture, float x, float y, float signWidth, float signHeight, SignDirection signDirection) {
-        this.texture = texture;
+	public ScrollSign(Texture signTexture, float x, float y, float signWidth, float signHeight, SignDirection signDirection) {
+        this.signTexture = signTexture;
         this.x = x;
         this.y = y;
         this.signWidth = signWidth;
@@ -37,21 +40,59 @@ public class ScrollSign extends Sprite {
 		this.signDirection = signDirection;
         defineScrollSign(); 		
 	}
-	
-	void defineScrollSign() {
+
+    public ScrollSign(Array<Texture> signTextures, float x, float y, float signWidth, float signHeight, SignDirection signDirection) {
+        this.signTextures = signTextures;
+        this.x = x;
+        this.y = y;
+        this.signWidth = signWidth;
+        this.signHeight = signHeight;
+        this.signDirection = signDirection;
+        defineScrollSign();
+    }
+
+    void defineScrollSign() {
 		sx = 0;
 		sy = 0;
 		setPosition((int)x, (int)y);
         setOrigin((int)x, (int)y);
-        texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-        region = new TextureRegion(texture);
-        region.setRegion(0, 0, (int)signWidth, (int)signHeight);
-        setBounds((int)x, (int)y, (int)signWidth, (int)signHeight);
-        setRegion(region);
+        if (signTexture != null) {
+            signTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+            region = new TextureRegion(signTexture);
+            region.setRegion(0, 0, (int) signWidth, (int) signHeight);
+            setBounds((int) x, (int) y, (int) signWidth, (int) signHeight);
+            setRegion(region);
+        } else {
+            if (signTextures != null) {
+                for (Texture signTexture : signTextures) {
+                    signTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+                }
+                currentSign = 0;
+                region = new TextureRegion(signTextures.get(currentSign));
+                region.setRegion(0, 0, (int) signWidth, (int) signHeight);
+                setBounds((int) x, (int) y, (int) signWidth, (int) signHeight);
+                setRegion(region);
+            }
+        }
 	}
 	
 	public void update(float dt) {
-		float sxModulus = sx % texture.getWidth();
+        float sxModulus;
+        if (signTexture != null) {
+            sxModulus = sx % signTexture.getWidth();
+        } else {
+            sxModulus = sx % signTextures.get(currentSign).getWidth();
+            if (switchSign) {
+                 if (sxModulus == 0) {
+                    sx = 0;
+                    switchSign = false;
+                    currentSign = newSign;
+                    region = new TextureRegion(signTextures.get(currentSign));
+                    sxModulus = sx % signTextures.get(currentSign).getWidth();
+                }
+            }
+        }
+
         region.setRegion((int) sxModulus, (int) sy, (int) signWidth, (int) signHeight);
         setRegion(region);		
 	}
@@ -85,9 +126,30 @@ public class ScrollSign extends Sprite {
     }
 
     public int getTextureWidth() {
-        return texture.getWidth();
+        if (signTexture != null) {
+            return signTexture.getWidth();
+        }
+        return signTextures.get(currentSign).getWidth();
     }
-	
+
+    public void switchSign(int newSign) {
+        if (signTextures == null) {
+            throw new IllegalArgumentException("The sign textures haven't been initialised");
+        }
+        if (newSign < 0) {
+            throw new IllegalArgumentException("Switching to a new sign value can't be a negative value");
+        }
+        if (newSign > this.signTextures.size) {
+            throw new IllegalArgumentException("Switching to a new sign value can't be greater than the number of sign textures which is: " + this.signTextures.size);
+        }
+        this.newSign = newSign;
+        switchSign = true;
+    }
+
+    public int getCurrentSign() {
+        return currentSign;
+    }
+
 	public void dispose() {
 		if (region != null) {
 			region.getTexture().dispose();

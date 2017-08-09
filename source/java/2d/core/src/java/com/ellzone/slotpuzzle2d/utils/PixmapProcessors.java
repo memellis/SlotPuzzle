@@ -37,6 +37,8 @@ import java.io.File;
 import java.nio.ByteBuffer;
 import com.badlogic.gdx.utils.*;
 
+import static com.badlogic.gdx.Application.ApplicationType.Android;
+
 public class PixmapProcessors {
 	private static int counter = 0;
 
@@ -364,7 +366,11 @@ public class PixmapProcessors {
 	    try {
                 FileHandle fh;
                 do {
-                    fh = new FileHandle("/sdcard/AppProjects/" + "pixmap" + counter++ + ".png");
+                    if (Gdx.app.getType() == Android) {
+                        fh = new FileHandle("/sdcard/AppProjects/" + "pixmap" + counter++ + ".png");
+                    } else {
+                        fh = new FileHandle(Gdx.files.getLocalStoragePath() + "pixmap" + counter++ + ".png");
+                    }
                 } while (fh.exists());
                 PixmapIO.writePNG(fh, pixmap);
             } catch (Exception e){

@@ -42,6 +42,7 @@ import com.ellzone.slotpuzzle2d.prototypes.particle.Particle3ExtendingParticleTe
 import com.ellzone.slotpuzzle2d.prototypes.particle.Particle4ExtendingParticleTemplate;
 import com.ellzone.slotpuzzle2d.prototypes.particle.Particle5ExtendingParticleTemplate;
 import com.ellzone.slotpuzzle2d.prototypes.particle.Particle6ExtendingParticleTemplate;
+import com.ellzone.slotpuzzle2d.prototypes.scrollingsign.ScrollSignWithMultipleMessages;
 import com.ellzone.slotpuzzle2d.prototypes.scrollingsign.ScrollingSign;
 import com.ellzone.slotpuzzle2d.prototypes.tween.Dynamic;
 import com.ellzone.slotpuzzle2d.prototypes.tween.Flash;
@@ -100,6 +101,7 @@ public class SPPrototypes {
 		Particle5ExtendingParticleTemplate.class,
 		Particle6ExtendingParticleTemplate.class,
 		ScrollingSign.class,
+        ScrollSignWithMultipleMessages.class,
 		Dynamic.class,																			   
 		Flash.class,
         GameOverPopUp.class,
