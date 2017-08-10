@@ -299,44 +299,6 @@ public class WorldMapDynamicDoors extends SPPrototype {
         });
     }
 
-    /*private void drawLevelEntrance(int levelNumber, TiledMapTileLayer layer) {
-        int levelDoorX = (int) levelDoors.get(levelNumber).doorPosition.getX() / 40;
-        int levelDoorY = (int) levelDoors.get(levelNumber).doorPosition.getY() / 40;
-        int levelDoorWidth = (int) levelDoors.get(levelNumber).doorPosition.getWidth() / 40;
-        int levelDoorHeight = (int) levelDoors.get(levelNumber).doorPosition.getHeight() / 40;
-        TiledMapTileLayer.Cell cell = layer.getCell(levelDoorX - 1, levelDoorY + levelDoorHeight);
-        TiledMapTile tile = cell.getTile();
-        Pixmap tilePixmap = PixmapProcessors.getPixmapFromTextureRegion(tile.getTextureRegion());
-        int tileWidth = tilePixmap.getWidth();
-        int tileHeight = tilePixmap.getHeight();
-        tilePixmap.setColor(Color.RED);
-        tilePixmap.fillRectangle(tileWidth - 4, 0, 4, tileHeight);
-        Texture tileTexture = new Texture(tilePixmap);
-        TextureRegion tileTextureRegion = new TextureRegion(tileTexture);
-        cell.setTile(new StaticTiledMapTile(tileTextureRegion));
-        layer.setCell(levelDoorX - 1, levelDoorY + levelDoorHeight, cell);
-        for (int ceilingX = levelDoorX; ceilingX < levelDoorX + levelDoorWidth; ceilingX++) {
-            cell = layer.getCell(ceilingX, levelDoorY + levelDoorHeight + 1);
-            tile = cell.getTile();
-            tilePixmap = PixmapProcessors.getPixmapFromTextureRegion(tile.getTextureRegion());
-            tilePixmap.setColor(Color.RED);
-            tilePixmap.fillRectangle(0, tileHeight - 4, tileWidth, tileHeight);
-            tileTexture = new Texture(tilePixmap);
-            tileTextureRegion = new TextureRegion(tileTexture);
-            cell.setTile(new StaticTiledMapTile(tileTextureRegion));
-            layer.setCell(ceilingX, levelDoorY + levelDoorHeight + 1, cell);
-        }
-        cell = layer.getCell(levelDoorX + levelDoorWidth, levelDoorY + levelDoorHeight);
-        tile = cell.getTile();
-        tilePixmap = PixmapProcessors.getPixmapFromTextureRegion(tile.getTextureRegion());
-        tilePixmap.setColor(Color.RED);
-        tilePixmap.fillRectangle(0, 0, 4, tileHeight);
-        tileTexture = new Texture(tilePixmap);
-        tileTextureRegion = new TextureRegion(tileTexture);
-        cell.setTile(new StaticTiledMapTile(tileTextureRegion));
-        layer.setCell(levelDoorX + levelDoorWidth, levelDoorY + levelDoorHeight, cell);
-    }*/
-
     private void loadWorld() {
         getMapProperties();
         levelDoors = new Array<LevelDoor>();
