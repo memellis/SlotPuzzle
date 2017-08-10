@@ -46,6 +46,7 @@ import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.level.Level;
+import com.ellzone.slotpuzzle2d.pixmap.PixmapDrawAction;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototypesGame;
 import com.ellzone.slotpuzzle2d.scene.MapTile;
@@ -249,7 +250,56 @@ public class WorldMapDynamicDoors extends SPPrototype {
         return new ScrollSign(scrollSignTexture, 0, 0, scrollSignWidth, SIGN_HEIGHT, ScrollSign.SignDirection.RIGHT);
     }
 
+    private void drawOnCell(TiledMapTileLayer layer, int cellX, int cellY, PixmapDrawAction drawAction) {
+        TiledMapTileLayer.Cell cell = layer.getCell(cellX, cellY);
+        TiledMapTile tile = cell.getTile();
+        Pixmap tilePixmap = PixmapProcessors.getPixmapFromTextureRegion(tile.getTextureRegion());
+        drawAction.drawAction(tilePixmap);
+        Texture tileTexture = new Texture(tilePixmap);
+        TextureRegion tileTextureRegion = new TextureRegion(tileTexture);
+        cell.setTile(new StaticTiledMapTile(tileTextureRegion));
+        layer.setCell(cellX, cellY, cell);
+    }
+
     private void drawLevelEntrance(int levelNumber, TiledMapTileLayer layer) {
+        int levelDoorX = (int) levelDoors.get(levelNumber).doorPosition.getX() / 40;
+        int levelDoorY = (int) levelDoors.get(levelNumber).doorPosition.getY() / 40;
+        int levelDoorWidth = (int) levelDoors.get(levelNumber).doorPosition.getWidth() / 40;
+        int levelDoorHeight = (int) levelDoors.get(levelNumber).doorPosition.getHeight() / 40;
+
+        drawOnCell(layer, levelDoorX - 1, levelDoorY + levelDoorHeight, new PixmapDrawAction() {
+            @Override
+            public void drawAction(Pixmap pixmap) {
+                pixmap.setColor(Color.RED);
+                int tileWidth = pixmap.getWidth();
+                int tileHeight = pixmap.getHeight();
+                pixmap.fillRectangle(tileWidth - 4, 0, 4, tileHeight);
+            }
+        });
+
+        for (int ceilingX = levelDoorX; ceilingX < levelDoorX + levelDoorWidth; ceilingX++) {
+            drawOnCell(layer, ceilingX, levelDoorY + levelDoorHeight + 1, new PixmapDrawAction() {
+                @Override
+                public void drawAction(Pixmap pixmap) {
+                    pixmap.setColor(Color.RED);
+                    int tileWidth = pixmap.getWidth();
+                    int tileHeight = pixmap.getHeight();
+                    pixmap.fillRectangle(0, tileHeight - 4, tileWidth, tileHeight);
+                }
+            });
+        }
+
+        drawOnCell(layer, levelDoorX + levelDoorWidth, levelDoorY + levelDoorHeight, new PixmapDrawAction() {
+            @Override
+            public void drawAction(Pixmap pixmap) {
+                pixmap.setColor(Color.RED);
+                int tileHeight = pixmap.getHeight();
+                pixmap.fillRectangle(0, 0, 4, tileHeight);
+            }
+        });
+    }
+
+    /*private void drawLevelEntrance(int levelNumber, TiledMapTileLayer layer) {
         int levelDoorX = (int) levelDoors.get(levelNumber).doorPosition.getX() / 40;
         int levelDoorY = (int) levelDoors.get(levelNumber).doorPosition.getY() / 40;
         int levelDoorWidth = (int) levelDoors.get(levelNumber).doorPosition.getWidth() / 40;
@@ -285,7 +335,7 @@ public class WorldMapDynamicDoors extends SPPrototype {
         tileTextureRegion = new TextureRegion(tileTexture);
         cell.setTile(new StaticTiledMapTile(tileTextureRegion));
         layer.setCell(levelDoorX + levelDoorWidth, levelDoorY + levelDoorHeight, cell);
-    }
+    }*/
 
     private void loadWorld() {
         getMapProperties();
