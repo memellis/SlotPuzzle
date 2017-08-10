@@ -150,6 +150,13 @@ public class ScrollSign extends Sprite {
         return currentSign;
     }
 
+    public Array<Texture> getSignTextures() {
+        if (signTexture != null) {
+            return null;
+        }
+        return signTextures;
+    }
+
 	public void dispose() {
 		if (region != null) {
 			region.getTexture().dispose();
