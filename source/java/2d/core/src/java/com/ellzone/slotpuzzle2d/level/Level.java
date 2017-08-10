@@ -21,6 +21,8 @@ import com.badlogic.gdx.InputProcessor;
 public abstract class Level {
 
 	private boolean levelCompleted = false;
+    private boolean levelScrollSignChanged = false;
+	private int score = 0;
 
 	public Level () {
 	}
@@ -31,6 +33,22 @@ public abstract class Level {
 
 	public void setLevelCompleted() {
 		this.levelCompleted = true;
+	}
+
+	public boolean hasLevelScrollSignChanged() {
+        return this.levelScrollSignChanged;
+    }
+
+    public void setLevelScrollSignChanged(boolean levelScrollSignChanged) {
+        this.levelScrollSignChanged = levelScrollSignChanged;
+    }
+
+	public int getScore() {
+		return this.score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
 	}
 
 	public abstract void initialise();

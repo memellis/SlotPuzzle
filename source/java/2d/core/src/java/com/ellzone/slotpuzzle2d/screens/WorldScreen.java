@@ -181,15 +181,26 @@ public class WorldScreen implements Screen {
 		fontSmall = fontGen.createFont(generatedFontFile, FONT_SMALL, FONT_SMALL_SIZE);
 	}
 
-	private Texture initialiseFontTexture(String text) {
-		Pixmap textPixmap = new Pixmap(text.length() * 16, SIGN_HEIGHT, Pixmap.Format.RGBA8888);
-		textPixmap.setColor(Color.CLEAR);
-		textPixmap.fillRectangle(0, 0, textPixmap.getWidth(), textPixmap.getHeight());
-		textPixmap = PixmapProcessors.createDynamicHorizontalFontTextViaFrameBuffer(fontSmall, Color.BLUE, text, textPixmap, 0, 20);
-		return new Texture(textPixmap);
-	}
+    private Array<String> initialiseScrollSignMessages(String message) {
+        Array<String> scrollSignMessages = new Array<String>();
+        scrollSignMessages.add(message);
+        scrollSignMessages.add(message + "level completed ");
+        return scrollSignMessages;
+    }
 
-	private void createLevelEntrances() {
+    private Array<Texture> initialiseFontTextures(Array<String> textureTexts) {
+        Texture textTexture;
+        Array <Texture> textTextures = new Array<Texture>();
+        for (String textureText : textureTexts) {
+            Pixmap textPixmap = new Pixmap(textureText.length() * SIGN_WIDTH / 6, SIGN_HEIGHT, Pixmap.Format.RGBA8888);
+            textPixmap = PixmapProcessors.createDynamicHorizontalFontTextViaFrameBuffer(fontSmall, Color.BLUE, textureText, textPixmap, 3, 20);
+            textTexture = new Texture(textPixmap);
+            textTextures.add(textTexture);
+        }
+        return  textTextures;
+    }
+
+    private void createLevelEntrances() {
 		for (int i = 0; i < levelDoors.size; i++) {
 			levelEntrances.add(new LevelEntrance((int) levelDoors.get(i).doorPosition.getWidth(), (int) levelDoors.get(i).doorPosition.getHeight()));
 		}
@@ -216,9 +227,10 @@ public class WorldScreen implements Screen {
 	}
 
 	private ScrollSign addScrollSign(int levelNumber, int scrollSignWidth) {
-		Texture scrollSignTexture = initialiseFontTexture(LEVEL_TEXT + SPACE + (levelNumber + 1) + SPACE + ENTRANCE_TEXT + SPACE);
-		return new ScrollSign(scrollSignTexture, 0, 0, scrollSignWidth, SIGN_HEIGHT, ScrollSign.SignDirection.RIGHT);
-	}
+        Array<String> textMessages = initialiseScrollSignMessages(LEVEL_TEXT + SPACE + (levelNumber + 1) + SPACE + ENTRANCE_TEXT + SPACE);
+        Array<Texture> textTextures = initialiseFontTextures(textMessages);
+        return new ScrollSign(textTextures, 0, 0, scrollSignWidth, SIGN_HEIGHT, ScrollSign.SignDirection.RIGHT);
+    }
 
 	private void drawOnCell(TiledMapTileLayer layer, int cellX, int cellY, PixmapDrawAction drawAction) {
         TiledMapTileLayer.Cell cell = layer.getCell(cellX, cellY);
@@ -333,7 +345,9 @@ public class WorldScreen implements Screen {
 				mapTextureLayer.setCell(levelDoorX + col, levelDoorY + levelDoorHeight, cell);
 
 				if (mapTiles.get(levelNumber).getLevel().isLevelCompleted()) {
-					updateScrollSignToLevelCompleted(mapTiles.get(levelNumber));
+                    if (!mapTiles.get(levelNumber).getLevel().hasLevelScrollSignChanged()) {
+                        updateScrollSignToLevelCompleted(mapTiles.get(levelNumber), scrollSigns.get(levelNumber));
+                    }
 				}
 			}
 			levelNumber++;
@@ -344,8 +358,9 @@ public class WorldScreen implements Screen {
 		}
 	}
 
-	private void updateScrollSignToLevelCompleted(MapTile maptile) {
-
+	private void updateScrollSignToLevelCompleted(MapTile maptile, ScrollSign scrollSign) {
+        maptile.getLevel().setLevelScrollSignChanged(true);
+        scrollSign.switchSign(scrollSign.getCurrentSign() == 0 ? 1 : 0);
 	}
 
 	
