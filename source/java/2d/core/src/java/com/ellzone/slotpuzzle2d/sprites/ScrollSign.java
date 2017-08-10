@@ -22,10 +22,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
 public class ScrollSign extends Sprite {
-    Texture signTexture;
-    Array<Texture> signTextures;
+    private Texture signTexture;
+    private Array<Texture> signTextures;
 	private TextureRegion region;
-	float x, y, signWidth, signHeight, sx, sy; 
+	private float x, y, signWidth, signHeight, sx, sy;
 	public static enum SignDirection {LEFT, RIGHT};
 	private SignDirection signDirection;
     private int currentSign, newSign;
@@ -84,11 +84,12 @@ public class ScrollSign extends Sprite {
             sxModulus = sx % signTextures.get(currentSign).getWidth();
             if (switchSign) {
                  if (sxModulus == 0) {
-                    sx = 0;
-                    switchSign = false;
-                    currentSign = newSign;
-                    region = new TextureRegion(signTextures.get(currentSign));
-                    sxModulus = sx % signTextures.get(currentSign).getWidth();
+                     sx = 0;
+                     switchSign = false;
+                     currentSign = newSign;
+                     signTextures.get(getCurrentSign()).setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+                     region = new TextureRegion(signTextures.get(currentSign));
+                     sxModulus = sx % signTextures.get(currentSign).getWidth();
                 }
             }
         }

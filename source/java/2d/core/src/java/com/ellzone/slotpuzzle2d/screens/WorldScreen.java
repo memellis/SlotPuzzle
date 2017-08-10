@@ -360,6 +360,12 @@ public class WorldScreen implements Screen {
 
 	private void updateScrollSignToLevelCompleted(MapTile maptile, ScrollSign scrollSign) {
         maptile.getLevel().setLevelScrollSignChanged(true);
+        Array<Texture> signTextures = scrollSign.getSignTextures();
+        String textureText = maptile.getLevel().getTitle() + "level completed with Score: " + maptile.getLevel().getScore();
+        Pixmap textPixmap = new Pixmap(textureText.length() * SIGN_WIDTH / 4, SIGN_HEIGHT, Pixmap.Format.RGBA8888);
+        textPixmap = PixmapProcessors.createDynamicHorizontalFontTextViaFrameBuffer(fontSmall, Color.RED, textureText, textPixmap, 0, 20);
+        Texture textTexture = new Texture(textPixmap);
+        signTextures.set(1, textTexture);
         scrollSign.switchSign(scrollSign.getCurrentSign() == 0 ? 1 : 0);
 	}
 

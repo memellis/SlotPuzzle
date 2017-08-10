@@ -146,7 +146,6 @@ public class ScrollingSignDynamicSignChange extends SPPrototypeTemplate {
         Array<Texture> signTextures = scrollSign.getSignTextures();
         int score = random.nextInt();
         String textureText = SLOT_PUZZLE + "level completed with Score: " + score;
-
         Pixmap textPixmap = new Pixmap(textureText.length() * SIGN_WIDTH / 2, SIGN_HEIGHT, Pixmap.Format.RGBA8888);
         textPixmap = PixmapProcessors.createDynamicHorizontalFontTextViaFrameBuffer(fontSmall, Color.WHITE, textureText, textPixmap, 3, 20);
         textTexture = new Texture(textPixmap);
