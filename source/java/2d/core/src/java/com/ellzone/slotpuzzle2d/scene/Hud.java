@@ -146,4 +146,6 @@ public class Hud implements Disposable {
     public static int getLives() {
     	return lives;
     }
+
+    public static int getScore() { return score; }
 }

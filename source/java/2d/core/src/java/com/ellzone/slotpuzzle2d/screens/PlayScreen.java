@@ -809,6 +809,7 @@ public class PlayScreen implements Screen {
 	    win = true;
 	    playState = PlayStates.WON_LEVEL;
 		mapTile.getLevel().setLevelCompleted();
+		mapTile.getLevel().setScore(Hud.getScore());
 	    setLevelWonSpritePositions();
 	    levelWonPopUp.showLevelPopUp(null);
 	}
