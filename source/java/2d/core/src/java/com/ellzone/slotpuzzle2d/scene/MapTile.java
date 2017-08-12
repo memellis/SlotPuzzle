@@ -17,16 +17,19 @@ import aurelienribon.tweenengine.equations.Quad;
 import aurelienribon.tweenengine.primitives.MutableFloat;
 
 public class MapTile {
-	private float x, y;
+	private float x, y, w, h;
 	private Level level;
 	private BitmapFont font;
 	private TweenManager tweenManager;
 	private Sprite sprite, interactiveIcon, veil;
 	private MutableFloat textOpacity = new MutableFloat(1);
+	private boolean drawEnabled = false;
 
 	public MapTile(float x, float y, float w, float h, Level level, TextureAtlas atlas, OrthographicCamera camera, BitmapFont font, TweenManager tweenManager, Sprite mapTileSprite) {
 		this.x = x;
 		this.y = y;
+        this.w = w;
+        this.h = h;
 		this.level = level;
 		this.font = font;
 		this.tweenManager = tweenManager;
@@ -46,18 +49,26 @@ public class MapTile {
 		veil.setPosition(x, y);
 		veil.setColor(1, 1, 1, 0);
 	}
+
+	public void reinitialise() {
+        veil.setSize(w, h);
+        veil.setOrigin(0, 0);
+        veil.setPosition(x, y);
+        veil.setColor(1, 1, 1, 0);
+    }
 	
 	public void draw(SpriteBatch batch) {
-		sprite.draw(batch);
-
-		font.setColor(1, 1, 1, textOpacity.floatValue());
-		
-		font.draw(batch, level.getTitle(),
-				sprite.getX() + sprite.getWidth()/20,
-				sprite.getY() + sprite.getHeight()*19/20);
-		veil.setPosition(0, 0);
-
-		if (veil.getColor().a > 0.1f) veil.draw(batch);
+        if (this.drawEnabled) {
+            sprite.draw(batch);
+            font.setColor(1, 1, 1, textOpacity.floatValue());
+            font.draw(batch, level.getTitle(),
+                    sprite.getX() + sprite.getWidth() / 20,
+                    sprite.getY() + sprite.getHeight() * 19 / 20);
+            veil.setPosition(0, 0);
+            if (veil.getColor().a > 0.1f) {
+                veil.draw(batch);
+            }
+        }
 	}
 	
 	public void enter(float delay) {
@@ -69,7 +80,6 @@ public class MapTile {
 	}
 
 	public void maximize(TweenCallback callback) {
-		System.out.println("maximise called");
 		tweenManager.killTarget(textOpacity);
 		tweenManager.killTarget(sprite);
 
@@ -77,7 +87,9 @@ public class MapTile {
 		float ty = 0;
 		float sx = Gdx.graphics.getWidth() / sprite.getWidth();
 		float sy = Gdx.graphics.getHeight() / sprite.getHeight();
-						
+
+        enableDraw();
+
 		Timeline.createSequence()
 			.push(SlotPuzzleTween.set(veil, SpriteAccessor.POS_XY).target(tx, ty))
 			.push(SlotPuzzleTween.set(veil, SpriteAccessor.SCALE_XY).target(sx, sy))
@@ -95,6 +107,7 @@ public class MapTile {
 			.setUserData(this)
 			.setCallback(callback)
 			.start(tweenManager);
+
 	}
 
 	public void minimize(TweenCallback minimizeCallback) {
@@ -127,5 +140,13 @@ public class MapTile {
 
 	public void setSprite(Sprite sprite) {
         this.sprite = sprite;
+    }
+
+    public void enableDraw() {
+        this.drawEnabled = true;
+    }
+
+    public void disableDraw() {
+        this.drawEnabled = false;
     }
 }

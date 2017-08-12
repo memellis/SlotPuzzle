@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.ellzone.slotpuzzle2d.prototypes.menu;
 
 import com.badlogic.gdx.Screen;
@@ -12,10 +28,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototypesGame;
+import com.ellzone.slotpuzzle2d.prototypes.map.WorldScreenPrototype;
 import com.ellzone.slotpuzzle2d.utils.UiUtils;
 
 public class MenuScreen implements Screen {
-    SPPrototypesGame game;
+    SlotPuzzleGame game;
     Skin skin;
     Stage stage;
     FitViewport viewport;
@@ -23,8 +40,9 @@ public class MenuScreen implements Screen {
     String gdxVersion = "";
     Integer fps;
     boolean enteredSubScreen = false;
+    boolean worldScreenPrototype = false;
 
-    public MenuScreen(SPPrototypesGame game) {
+    public MenuScreen(SlotPuzzleGame game) {
         this.game = game;
 	    defineMenuScreen();
     }
@@ -32,7 +50,7 @@ public class MenuScreen implements Screen {
     private void defineMenuScreen() {
         initialiseScreen();
         font = new BitmapFont(); 
-	    Gdx.input.setInputProcessor(stage);// Make the stage consume events
+	    Gdx.input.setInputProcessor(stage);
 
 	    skin = new Skin();
         UiUtils.createBasicSkin(skin);
@@ -45,15 +63,26 @@ public class MenuScreen implements Screen {
     }
 
     private void createButtons() {
-        TextButton button = new TextButton("Get libGDX version", skin); // Use the initialized skin
-        button.setPosition(SPPrototypesGame.V_WIDTH/2 - SPPrototypesGame.V_WIDTH/8 , SPPrototypesGame.V_HEIGHT/2 - button.getHeight());
-        stage.addActor(button);
-	    button.addListener(new ChangeListener() {
+        TextButton gdxButton = new TextButton("Get libGDX version", skin);
+        gdxButton.setPosition(SPPrototypesGame.V_WIDTH / 2 - SPPrototypesGame.V_WIDTH / 8 , SPPrototypesGame.V_HEIGHT/2 - gdxButton.getHeight());
+        stage.addActor(gdxButton);
+        gdxButton.addListener(new ChangeListener() {
             @Override
 	        public void changed(ChangeEvent event, Actor actor) {
-		        gdxVersion = SPPrototypesGame.gdxVersion.VERSION;
+                gdxVersion = SPPrototypesGame.gdxVersion.VERSION;
 	        }
 	    });
+
+        TextButton worldMapButton = new TextButton("WorldMap Prototype", skin);
+        worldMapButton.setPosition(SPPrototypesGame.V_WIDTH / 2 - SPPrototypesGame.V_WIDTH / 8, SPPrototypesGame.V_HEIGHT / 2 - 2 * worldMapButton.getHeight());
+        stage.addActor(worldMapButton);
+        worldMapButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                worldScreenPrototype = true;
+            }
+        });
+
     }
 
     @Override
@@ -62,8 +91,12 @@ public class MenuScreen implements Screen {
 
     private void update(float delta) {
         if (enteredSubScreen) {
-	    Gdx.input.setInputProcessor(stage);
-	}
+	        Gdx.input.setInputProcessor(stage);
+	    }
+	    if (worldScreenPrototype) {
+            worldScreenPrototype = false;
+            game.setScreen(new WorldScreenPrototype(game));
+        }
     }
 
     @Override

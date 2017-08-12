@@ -105,6 +105,7 @@ public class WorldScreen implements Screen {
 	private TweenManager tweenManager;
 	private int mapWidth, mapHeight, tilePixelWidth, tilePixelHeight;
 	private String message = "";
+    private InputMultiplexer inputMultiplexer;
 
 	   
     public WorldScreen(SlotPuzzle game) {
@@ -150,9 +151,9 @@ public class WorldScreen implements Screen {
 		font = new BitmapFont();
 		mapGestureListener = new MapGestureListener(cam);
 		gestureDetector = new GestureDetector(2, 0.5f, 2, 0.15f, mapGestureListener);
-		InputMultiplexer multiplexer = new InputMultiplexer();
-		multiplexer.addProcessor(gestureDetector);
-		Gdx.input.setInputProcessor(multiplexer);
+		inputMultiplexer = new InputMultiplexer();
+		inputMultiplexer.addProcessor(gestureDetector);
+		Gdx.input.setInputProcessor(inputMultiplexer);
 		renderer = new OrthogonalTiledMapRenderer(worldMap, 1f / 40f);
 		Matrix4 gameProjectionMatrix = new Matrix4();
 		gameProjectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -325,8 +326,8 @@ public class WorldScreen implements Screen {
 
 	@Override
 	public void show() {
-		System.out.println("WorldScreen: show");
-	}
+        Gdx.app.log(LOG_TAG, "show() called.");
+    }
 
 	private void updateDynamicDoors(float dt) {
 		int levelNumber = 0,
@@ -361,7 +362,7 @@ public class WorldScreen implements Screen {
 	private void updateScrollSignToLevelCompleted(MapTile maptile, ScrollSign scrollSign) {
         maptile.getLevel().setLevelScrollSignChanged(true);
         Array<Texture> signTextures = scrollSign.getSignTextures();
-        String textureText = maptile.getLevel().getTitle() + "level completed with Score: " + maptile.getLevel().getScore();
+        String textureText = maptile.getLevel().getTitle() + " level completed with Score: " + maptile.getLevel().getScore();
         Pixmap textPixmap = new Pixmap(textureText.length() * SIGN_WIDTH / 4, SIGN_HEIGHT, Pixmap.Format.RGBA8888);
         textPixmap = PixmapProcessors.createDynamicHorizontalFontTextViaFrameBuffer(fontSmall, Color.RED, textureText, textPixmap, 0, 20);
         Texture textTexture = new Texture(textPixmap);
@@ -369,7 +370,6 @@ public class WorldScreen implements Screen {
         scrollSign.switchSign(scrollSign.getCurrentSign() == 0 ? 1 : 0);
 	}
 
-	
 	public void update(float delta) {
 		tweenManager.update(delta);
 		updateDynamicDoors(delta);
@@ -386,9 +386,7 @@ public class WorldScreen implements Screen {
 		cam.update();
 		game.batch.begin();
 		for (MapTile mapTile : mapTiles) {
-			if (!mapTile.getLevel().isLevelCompleted()) {
-				//mapTile.draw(game.batch);
-			}
+            mapTile.draw(game.batch);
 		}
 		font.draw(game.batch, message, 80, 100);
 		game.batch.end();
@@ -396,34 +394,33 @@ public class WorldScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		System.out.println("WorldScreen: resize");
-	}
+        Gdx.app.log(LOG_TAG, "resize(int width, int height) called: width=" + width + ", height="+height);
+    }
 
 	@Override
 	public void pause() {
-		System.out.println("WorldScreen: pause");
-	}
+        Gdx.app.log(LOG_TAG, "pause() called.");
+    }
 
 	@Override
 	public void resume() {
-		System.out.println("WorldScreen: resume");
-	}
+        Gdx.app.log(LOG_TAG, "resume() called.");
+    }
 
 	@Override
 	public void hide() {
-		System.out.println("WorldScreen: hide");
-	}
+        Gdx.app.log(LOG_TAG, "hide() called.");
+    }
 
 	@Override
 	public void dispose() {
-		System.out.println("WorldScreen: dispose");
-	}
+        Gdx.app.log(LOG_TAG, "dispose() called.");
+    }
 
 	public class MapGestureListener implements GestureListener {
 
 		@Override
-		public void pinchStop()
-		{
+		public void pinchStop() {
 			// TODO: Implement this method
 		}
 
@@ -523,7 +520,8 @@ public class WorldScreen implements Screen {
 			levelDoorSprite.setOrigin(0, 0);
 			levelDoorSprite.setBounds(sx, sy, sw, sh);
 			mapTiles.get(levelDoorIndex).setSprite(levelDoorSprite);
-			mapTiles.get(levelDoorIndex).maximize(maximizeCallback);
+            mapTiles.get(levelDoorIndex).reinitialise();
+            mapTiles.get(levelDoorIndex).maximize(maximizeCallback);
 		}
 
 		private void clampCamera() {
@@ -559,6 +557,7 @@ public class WorldScreen implements Screen {
 	}
 
 	public void worldScreenCallBack() {
-		tweenManager.killAll();
+        tweenManager.killAll();
+        System.out.println("setInputProcessor");
 	}
 }

@@ -122,7 +122,6 @@ public class SPPrototypes {
 		SpinningSlotsUsingSlotHandleSprite.class,
 		SpinningSlotsWithThreeTilesDisplayed.class,
         SpinningSlotsWithHoldButtons.class,
-		SPPrototypesGame.class,
 		SlotPuzzleGame.class
     ));
 

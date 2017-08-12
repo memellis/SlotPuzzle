@@ -18,7 +18,7 @@ package com.ellzone.slotpuzzle2d.prototypes.map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -45,10 +45,16 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
-import com.ellzone.slotpuzzle2d.level.Level;
+import com.ellzone.slotpuzzle2d.level.LevelDoor;
+import com.ellzone.slotpuzzle2d.level.MapLevel1;
+import com.ellzone.slotpuzzle2d.level.MapLevel2;
+import com.ellzone.slotpuzzle2d.level.MapLevel3;
+import com.ellzone.slotpuzzle2d.level.MapLevel4;
+import com.ellzone.slotpuzzle2d.level.MapLevel5;
+import com.ellzone.slotpuzzle2d.level.MapLevel6;
 import com.ellzone.slotpuzzle2d.pixmap.PixmapDrawAction;
-import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
-import com.ellzone.slotpuzzle2d.prototypes.SPPrototypesGame;
+import com.ellzone.slotpuzzle2d.prototypes.menu.SlotPuzzleGame;
+import com.ellzone.slotpuzzle2d.prototypes.screens.PlayScreenPrototype;
 import com.ellzone.slotpuzzle2d.scene.MapTile;
 import com.ellzone.slotpuzzle2d.sprites.LevelEntrance;
 import com.ellzone.slotpuzzle2d.sprites.ScrollSign;
@@ -59,45 +65,12 @@ import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.FileUtils;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
-import com.ellzone.slotpuzzle2d.level.LevelDoor;
-import com.ellzone.slotpuzzle2d.prototypes.menu.MenuScreen;
 import org.jrenner.smartfont.SmartFontGenerator;
 import java.io.IOException;
 
-public class WorldMapDynamicDoors extends SPPrototype {
+public class WorldScreenPrototype implements Screen {
 
-    public class MapLevel1 extends Level {
-        @Override
-        public void initialise() {
-        }
-
-        @Override
-        public String getImageName() {
-            return "MapTile";
-        }
-
-        @Override
-        public InputProcessor getInput() {
-            return null;
-        }
-
-        @Override
-        public String getTitle() {
-            String title = "World 1 Level 1";
-            return title;
-        }
-
-        @Override
-        public void dispose() {
-        }
-
-        @Override
-        public int getLevelNumber() {
-            return 1;
-        }
-    }
-
-    public static final String LOG_TAG = "SlotPuzzle_WorldScreen";
+    public static final String LOG_TAG = "SlotPuzzle_WorldScreenPrototype";
     public static final String LIBERATION_MONO_REGULAR_FONT_NAME = "LiberationMono-Regular.ttf";
     public static final String GENERATED_FONTS_DIR = "generated-fonts/";
     public static final String FONT_SMALL = "exo-small";
@@ -107,6 +80,8 @@ public class WorldMapDynamicDoors extends SPPrototype {
     public static final String LEVEL_TEXT = "Level";
     public static final String ENTRANCE_TEXT = "Entrance";
     public static final char SPACE = ' ';
+    public static final int ORTHO_VIEWPORT_WIDTH = 10;
+    public static final int ORTHO_VIEWPORT_HEIGHT = 10;
     private static final String WORLD_MAP_LEVEL_DOORS = "Level Doors";
 
     private OrthographicCamera cam;
@@ -118,9 +93,8 @@ public class WorldMapDynamicDoors extends SPPrototype {
     private GestureDetector gestureDetector;
     private MapGestureListener mapGestureListener;
     private Array<LevelDoor> levelDoors;
-    private float w, h, cww, cwh, aspectRatio;
+    private float w, h, resizeWidth, resideHeight, cww, cwh, aspectRatio;
     private float screenOverCWWRatio, screenOverCWHRatio;
-    private Pixmap levelDoorPixmap;
     private Texture levelDoorTexture;
     private Sprite levelDoorSprite;
     private TextureAtlas tilesAtlas;
@@ -130,10 +104,17 @@ public class WorldMapDynamicDoors extends SPPrototype {
     private BitmapFont fontSmall;
     private Array<ScrollSign> scrollSigns;
     private Array<LevelEntrance> levelEntrances;
-    private SPPrototypesGame prototypesGame;
+    private Array<MapTile> mapTiles;
+    private SlotPuzzleGame game;
+    private InputMultiplexer inputMultiplexer;
 
-    @Override
-    public void create() {
+    public WorldScreenPrototype(SlotPuzzleGame game) {
+        this.game = game;
+        game.setWorldScreen(this);
+        createWorldScreen();
+    }
+
+    private void createWorldScreen() {
         scrollSigns = new Array<ScrollSign>();
         levelEntrances = new Array<LevelEntrance>();
         loadAssets();
@@ -145,8 +126,7 @@ public class WorldMapDynamicDoors extends SPPrototype {
         initialiseFonts();
         createLevelEntrances();
         initialiseMap();
-        prototypesGame = new SPPrototypesGame();
-        prototypesGame.create();
+        createPopUps();
     }
 
     private void loadAssets() {
@@ -167,7 +147,7 @@ public class WorldMapDynamicDoors extends SPPrototype {
         h = Gdx.graphics.getHeight();
         aspectRatio = w / h;
         cam = new OrthographicCamera();
-        cam.setToOrtho(false, aspectRatio * 10, 10);
+        cam.setToOrtho(false, aspectRatio * ORTHO_VIEWPORT_WIDTH, ORTHO_VIEWPORT_HEIGHT);
         cam.zoom = 2;
         cam.update();
         cww = cam.viewportWidth * cam.zoom * tilePixelWidth;
@@ -183,9 +163,9 @@ public class WorldMapDynamicDoors extends SPPrototype {
 
         mapGestureListener = new MapGestureListener(cam);
         gestureDetector = new GestureDetector(2, 0.5f, 2, 0.15f, mapGestureListener);
-        InputMultiplexer multiplexer = new InputMultiplexer();
-        multiplexer.addProcessor(gestureDetector);
-        Gdx.input.setInputProcessor(multiplexer);
+        inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(gestureDetector);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     private void initialiseUniversalTweenEngine() {
@@ -218,6 +198,25 @@ public class WorldMapDynamicDoors extends SPPrototype {
         return new Texture(textPixmap);
     }
 
+    private Array<String> initialiseScrollSignMessages(String message) {
+        Array<String> scrollSignMessages = new Array<String>();
+        scrollSignMessages.add(message);
+        scrollSignMessages.add(message + "level completed ");
+        return scrollSignMessages;
+    }
+
+    private Array<Texture> initialiseFontTextures(Array<String> textureTexts) {
+        Texture textTexture;
+        Array <Texture> textTextures = new Array<Texture>();
+        for (String textureText : textureTexts) {
+            Pixmap textPixmap = new Pixmap(textureText.length() * SIGN_WIDTH / 6, SIGN_HEIGHT, Pixmap.Format.RGBA8888);
+            textPixmap = PixmapProcessors.createDynamicHorizontalFontTextViaFrameBuffer(fontSmall, Color.BLUE, textureText, textPixmap, 3, 20);
+            textTexture = new Texture(textPixmap);
+            textTextures.add(textTexture);
+        }
+        return  textTextures;
+    }
+
     private void createLevelEntrances() {
         for (int i = 0; i < levelDoors.size; i++) {
             levelEntrances.add(new LevelEntrance((int) levelDoors.get(i).doorPosition.getWidth(), (int) levelDoors.get(i).doorPosition.getHeight()));
@@ -246,8 +245,9 @@ public class WorldMapDynamicDoors extends SPPrototype {
     }
 
     private ScrollSign addScrollSign(int levelNumber, int scrollSignWidth) {
-        Texture scrollSignTexture = initialiseFontTexture(LEVEL_TEXT + SPACE + (levelNumber + 1) + SPACE + ENTRANCE_TEXT + SPACE);
-        return new ScrollSign(scrollSignTexture, 0, 0, scrollSignWidth, SIGN_HEIGHT, ScrollSign.SignDirection.RIGHT);
+        Array<String> textMessages = initialiseScrollSignMessages(LEVEL_TEXT + SPACE + (levelNumber + 1) + SPACE + ENTRANCE_TEXT + SPACE);
+        Array<Texture> textTextures = initialiseFontTextures(textMessages);
+        return new ScrollSign(textTextures, 0, 0, scrollSignWidth, SIGN_HEIGHT, ScrollSign.SignDirection.RIGHT);
     }
 
     private void drawOnCell(TiledMapTileLayer layer, int cellX, int cellY, PixmapDrawAction drawAction) {
@@ -317,22 +317,38 @@ public class WorldMapDynamicDoors extends SPPrototype {
         tilePixelHeight = worldProps.get("tileheight", Integer.class);
     }
 
-    private void createPopUps(Sprite mapTileSprite) {
-        Level level1 = new WorldMapDynamicDoors.MapLevel1();
-        mapTile = new MapTile(20, 20, 200, 200, level1, tilesAtlas, cam, font, tweenManager, mapTileSprite);
+    private void createPopUps() {
+        mapTiles = new Array<MapTile>();
+        mapTiles.add(new MapTile(20, 20, 200, 200, new MapLevel1(), tilesAtlas, cam, font, tweenManager, new Sprite(levelEntrances.get(0).getLevelEntrance())));
+        mapTiles.add(new MapTile(20, 20, 200, 200, new MapLevel2(), tilesAtlas, cam, font, tweenManager, new Sprite(levelEntrances.get(1).getLevelEntrance())));
+        mapTiles.add(new MapTile(20, 20, 200, 200, new MapLevel3(), tilesAtlas, cam, font, tweenManager, new Sprite(levelEntrances.get(2).getLevelEntrance())));
+        mapTiles.add(new MapTile(20, 20, 200, 200, new MapLevel4(), tilesAtlas, cam, font, tweenManager, new Sprite(levelEntrances.get(3).getLevelEntrance())));
+        mapTiles.add(new MapTile(20, 20, 200, 200, new MapLevel5(), tilesAtlas, cam, font, tweenManager, new Sprite(levelEntrances.get(4).getLevelEntrance())));
+        mapTiles.add(new MapTile(20, 20, 200, 200, new MapLevel6(), tilesAtlas, cam, font, tweenManager, new Sprite(levelEntrances.get(5).getLevelEntrance())));
     }
 
     private final TweenCallback maximizeCallback = new TweenCallback() {
         @Override
         public void onEvent(int type, BaseTween<?> source) {
             selectedTile = (MapTile) source.getUserData();
+            selectedTile.disableDraw();
             selectedTile.getLevel().initialise();
-            //prototypesGame.setScreen(new MenuScreen(prototypesGame));
+            int levelNumber = selectedTile.getLevel().getLevelNumber();
+            levelDoors.get(levelNumber).id = levelNumber;
+            game.setScreen(new PlayScreenPrototype(game, levelDoors.get(levelNumber), selectedTile));
         }
     };
 
     @Override
+    public void show() {
+        Gdx.app.log(LOG_TAG, "show() called.");
+    }
+
+    @Override
     public void resize(int width, int height) {
+        this.resizeWidth = width;
+        this.resideHeight = height;
+        Gdx.app.log(LOG_TAG, "resize(int width, int height) called: width=" + width + ", height="+height);
     }
 
     private void updateDynamicDoors(float dt) {
@@ -350,6 +366,12 @@ public class WorldMapDynamicDoors extends SPPrototype {
                 cell = new TiledMapTileLayer.Cell();
                 cell.setTile(new StaticTiledMapTile(new TextureRegion(scrollSigns.get(levelNumber), col * 40, 0, 40, 40)));
                 layer.setCell(levelDoorX + col, levelDoorY + levelDoorHeight, cell);
+
+                if (mapTiles.get(levelNumber).getLevel().isLevelCompleted()) {
+                    if (!mapTiles.get(levelNumber).getLevel().hasLevelScrollSignChanged()) {
+                        updateScrollSignToLevelCompleted(mapTiles.get(levelNumber), scrollSigns.get(levelNumber));
+                    }
+                }
             }
             levelNumber++;
         }
@@ -359,38 +381,56 @@ public class WorldMapDynamicDoors extends SPPrototype {
         }
     }
 
-    public void update(float dt) {
-        tweenManager.update(dt);
-        updateDynamicDoors(dt);
+    private void updateScrollSignToLevelCompleted(MapTile maptile, ScrollSign scrollSign) {
+        maptile.getLevel().setLevelScrollSignChanged(true);
+        Array<Texture> signTextures = scrollSign.getSignTextures();
+        String textureText = maptile.getLevel().getTitle() + " level completed with Score: " + maptile.getLevel().getScore();
+        Pixmap textPixmap = new Pixmap(textureText.length() * SIGN_WIDTH / 6, SIGN_HEIGHT, Pixmap.Format.RGBA8888);
+        textPixmap = PixmapProcessors.createDynamicHorizontalFontTextViaFrameBuffer(fontSmall, Color.CYAN, textureText, textPixmap, 0, 22);
+        Texture textTexture = new Texture(textPixmap);
+        signTextures.set(1, textTexture);
+        scrollSign.switchSign(scrollSign.getCurrentSign() == 0 ? 1 : 0);
+    }
+
+    public void update(float delta) {
+        tweenManager.update(delta);
+        updateDynamicDoors(delta);
     }
 
     @Override
-    public void render() {
-        final float delta = Math.min(1 / 30f, Gdx.graphics.getDeltaTime());
+    public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         update(delta);
         cam.update();
         mapGestureListener.update();
         renderer.setView(cam);
         renderer.render();
-        batch.begin();
-        if (mapTile != null) {
-            mapTile.draw(batch);
+        game.batch.begin();
+        for (MapTile mapTile : mapTiles) {
+            mapTile.draw(game.batch);
         }
-        font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
-        batch.end();
+        font.draw(game.batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+        game.batch.end();
     }
 
     @Override
     public void pause() {
+        Gdx.app.log(LOG_TAG, "pause() called.");
     }
 
     @Override
     public void resume() {
+        Gdx.app.log(LOG_TAG, "resume() called.");
+    }
+
+    @Override
+    public void hide() {
+        Gdx.app.log(LOG_TAG, "hide() called.");
     }
 
     @Override
     public void dispose() {
+        Gdx.app.log(LOG_TAG, "dispose() called.");
         font.dispose();
         batch.dispose();
         Assets.inst().dispose();
@@ -475,7 +515,7 @@ public class WorldMapDynamicDoors extends SPPrototype {
 
         private void processTouch(float x, float y) {
             float wx = screenXToWorldX(x);
-            float wy = screenYToWorldY(y);
+            float wy = screenYToWorldY(y) - tilePixelHeight;
             int levelDoorIndex = 0;
             for (LevelDoor levelDoor : levelDoors) {
                 if (levelDoor.doorPosition.contains(wx, wy)) {
@@ -486,17 +526,18 @@ public class WorldMapDynamicDoors extends SPPrototype {
         }
 
         private void enterLevel(LevelDoor levelDoor, int levelDoorIndex) {
-            int sx = (int) worldXToScreenX(levelDoor.doorPosition.x);
-            int sy = (int) worldYToScreenY(levelDoor.doorPosition.y + 40);
-            int sw = (int) (levelDoor.doorPosition.width * screenOverCWWRatio);
-            int sh = (int) (levelDoor.doorPosition.height * screenOverCWHRatio);
+            int sx = (int) (worldXToScreenX(levelDoor.doorPosition.x) * resizeWidth / w);
+            int sy = (int) (worldYToScreenY(levelDoor.doorPosition.y + tilePixelHeight) * resideHeight / h);
+            int sw = (int) ((levelDoor.doorPosition.width * screenOverCWWRatio) * resizeWidth / w);
+            int sh = (int) ((levelDoor.doorPosition.height * screenOverCWHRatio) * resideHeight / h);
 
             levelDoorTexture = levelEntrances.get(levelDoorIndex).getLevelEntrance();
             levelDoorSprite = new Sprite(levelDoorTexture);
             levelDoorSprite.setOrigin(0, 0);
             levelDoorSprite.setBounds(sx, sy, sw, sh);
-            createPopUps(levelDoorSprite);
-            mapTile.maximize(maximizeCallback);
+            mapTiles.get(levelDoorIndex).setSprite(levelDoorSprite);
+            mapTiles.get(levelDoorIndex).reinitialise();
+            mapTiles.get(levelDoorIndex).maximize(maximizeCallback);
         }
 
         private void clampCamera() {
@@ -515,23 +556,24 @@ public class WorldMapDynamicDoors extends SPPrototype {
         }
 
         private float screenXToWorldX(float x) {
-            return ((camera.position.x - aspectRatio * 10) * tilePixelWidth) + (x / screenOverCWWRatio);
+            return ((camera.position.x - aspectRatio * ORTHO_VIEWPORT_WIDTH) * tilePixelWidth) + (x / screenOverCWWRatio);
         }
 
         private float screenYToWorldY(float y) {
-            return ((camera.position.y - 10) * tilePixelHeight) + ((h - y) / screenOverCWHRatio);
+            return ((camera.position.y - ORTHO_VIEWPORT_HEIGHT) * tilePixelHeight) + ((h - y) / screenOverCWHRatio);
         }
 
         private float worldXToScreenX(float wx) {
-            return (wx - ((camera.position.x - aspectRatio * 10) * tilePixelWidth)) * screenOverCWWRatio;
+            return (wx - ((camera.position.x - aspectRatio * ORTHO_VIEWPORT_WIDTH) * tilePixelWidth)) * screenOverCWWRatio;
         }
 
         private float worldYToScreenY(float wy) {
-            return (wy - ((camera.position.y - 10) * tilePixelHeight)) * screenOverCWHRatio;
+            return (wy - ((camera.position.y - ORTHO_VIEWPORT_HEIGHT) * tilePixelHeight)) * screenOverCWHRatio;
         }
     }
 
     public void worldScreenCallBack() {
         tweenManager.killAll();
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 }

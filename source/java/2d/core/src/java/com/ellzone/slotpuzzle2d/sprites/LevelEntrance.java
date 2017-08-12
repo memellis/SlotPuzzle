@@ -44,7 +44,7 @@ public class LevelEntrance {
         levelEntrance.drawLine(width / 2 - 1, 40, width / 2 - 1, height);
         levelEntrance.drawLine(width / 2 + 1, 40, width / 2 + 1, height);
         levelEntrance.setColor(Color.CORAL);
-        levelEntrance.fillRectangle(40 ,40 , 80, 40);
+        levelEntrance.fillRectangle(40, 40, width - 80, 40);
         return new Texture(levelEntrance);
     }
 

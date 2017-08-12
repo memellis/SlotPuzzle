@@ -1,15 +1,28 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.ellzone.slotpuzzle2d.prototypes.menu;
 
-import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.graphics.*;
-import com.ellzone.slotpuzzle2d.screens.IntroScreen;
-import com.ellzone.slotpuzzle2d.screens.SplashScreen;
-import com.ellzone.slotpuzzle2d.screens.WorldScreen;
-import com.ellzone.slotpuzzle2d.prototypes.menu.MenuScreen;
-import com.ellzone.slotpuzzle2d.prototypes.*;
-import com.ellzone.slotpuzzle2d.*;
-import com.ellzone.slotpuzzle2d.screens.*;
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
+import com.ellzone.slotpuzzle2d.prototypes.map.WorldScreenPrototype;
 
 public class SlotPuzzleGame extends SPPrototype {
     public SpriteBatch batch;
@@ -20,16 +33,14 @@ public class SlotPuzzleGame extends SPPrototype {
 
     private Screen previousScreen;
 	private Screen screen;
-	private SlotPuzzle slotPuzzle;
+	private WorldScreenPrototype worldScreen;
 
     @Override
     public void create() {
         setLogLevel();
 	    batch = new SpriteBatch();
 	    camera = new OrthographicCamera();
-		slotPuzzle = new SlotPuzzle();
-		slotPuzzle.create();
-	    previousScreen = new WorldScreen(slotPuzzle);
+	    previousScreen = new MenuScreen(this);
 	    setScreen(previousScreen);
     }
 
@@ -67,17 +78,20 @@ public class SlotPuzzleGame extends SPPrototype {
 
     @Override
     public void render() {
+		super.render();
 		if (screen != null) screen.render(Gdx.graphics.getDeltaTime());
     }
 
     @Override
     public void dispose() {
-		if (screen != null) screen.hide();
-    }
+		super.dispose();
+	}
 
     @Override
     public void resize(int width, int height) {
-		if (screen != null) screen.render(Gdx.graphics.getDeltaTime());
+        if (screen != null) {
+            screen.resize(width, height);
+        }
 	}
 
     @Override
@@ -98,4 +112,12 @@ public class SlotPuzzleGame extends SPPrototype {
 			this.screen.resize((int) V_WIDTH, (int) V_HEIGHT);
 		}
 	}
+
+    public void setWorldScreen(WorldScreenPrototype worldScreen) {
+        this.worldScreen = worldScreen;
+    }
+
+    public WorldScreenPrototype getWorldScreen() {
+        return this.worldScreen;
+    }
 }
