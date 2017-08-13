@@ -92,7 +92,9 @@ public class PlayScreen implements Screen {
 	private static final float PUZZLE_GRID_START_Y = 40.0f;
 	private static final int NUMBER_OF_SUITS = 4;
 	private static final int NUMBER_OF_CARDS_IN_A_SUIT = 13;
-	public static final String LOG_TAG = "SlotPuzzle_PlayScreen";
+    public static final String PLAYING_CARD_LEVEL_TYPE = "PlayingCard";
+    public static final String HIDDEN_PATTERN_LEVEL_TYPE = "HiddenPattern";
+    public static final String LOG_TAG = "SlotPuzzle_PlayScreen";
 	public static final String SLOTPUZZLE_SCREEN = "PlayScreen";
 	public static final String LEVEL_TIP_DESC =  "Reveal the hidden pattern to complete the level.";
 	public static final String LEVEL_LOST_DESC =  "Sorry you lost that level. Touch/Press to restart the level.";
@@ -195,13 +197,13 @@ public class PlayScreen implements Screen {
 
 	private void getAssets() {
 	    reelAtlas = game.assetManager.get("reel/reels.pack.atlas", TextureAtlas.class);
-            tilesAtlas = game.assetManager.get("tiles/tiles.pack.atlas", TextureAtlas.class);
-            carddeckAtlas = game.assetManager.get("playingcards/carddeck.atlas", TextureAtlas.class);
-            chaChingSound = game.assetManager.get("sounds/cha-ching.mp3", Sound.class);
-            pullLeverSound = game.assetManager.get("sounds/pull-lever1.mp3", Sound.class);
-            reelSpinningSound = game.assetManager.get("sounds/reel-spinning.mp3", Sound.class);
-            reelStoppedSound = game.assetManager.get("sounds/reel-stopped.mp3", Sound.class);
-            jackpotSound = game.assetManager.get("sounds/jackpot.mp3", Sound.class);
+        tilesAtlas = game.assetManager.get("tiles/tiles.pack.atlas", TextureAtlas.class);
+        carddeckAtlas = game.assetManager.get("playingcards/carddeck.atlas", TextureAtlas.class);
+        chaChingSound = game.assetManager.get("sounds/cha-ching.mp3", Sound.class);
+        pullLeverSound = game.assetManager.get("sounds/pull-lever1.mp3", Sound.class);
+        reelSpinningSound = game.assetManager.get("sounds/reel-spinning.mp3", Sound.class);
+        reelStoppedSound = game.assetManager.get("sounds/reel-stopped.mp3", Sound.class);
+        jackpotSound = game.assetManager.get("sounds/jackpot.mp3", Sound.class);
 	    level = game.assetManager.get("levels/level " + (this.levelDoor.id + 1) + " - 40x40.tmx");
  	}
 
@@ -271,7 +273,7 @@ public class PlayScreen implements Screen {
 	    font = new BitmapFont();
 	    sW = SlotPuzzleConstants.V_WIDTH;
 	    sH = SlotPuzzleConstants.V_HEIGHT;
-            createPopUps();
+        createPopUps();
 	}
 
 	private void createPopUps() {
@@ -286,15 +288,15 @@ public class PlayScreen implements Screen {
 	    slotReelPixmap = new Pixmap(PlayScreen.TILE_WIDTH, PlayScreen.TILE_HEIGHT, Pixmap.Format.RGBA8888);		
 	    slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedPixmap(sprites, sprites.length);
 	    slotReelTexture = new Texture(slotReelPixmap);
-            slotReelScrollPixmap = new Pixmap((int) spriteWidth, (int)spriteHeight, Pixmap.Format.RGBA8888);
-            slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
-            slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-            slotReelScrollheight = slotReelScrollTexture.getHeight();
+        slotReelScrollPixmap = new Pixmap((int) spriteWidth, (int)spriteHeight, Pixmap.Format.RGBA8888);
+        slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
+        slotReelScrollTexture = new Texture(slotReelScrollPixmap);
+        slotReelScrollheight = slotReelScrollTexture.getHeight();
 	}
 
 	private void createLevels() {
-		if (levelDoor.levelType.equals("HiddenPlayingCards")) {
-			initialiseHiddenPlayingCards();
+ 		if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+ 			initialiseHiddenPlayingCards();
 		}
 		for (MapObject mapObject : level.getLayers().get(SLOT_REEL_OBJECT_LAYER).getObjects().getByType(RectangleMapObject.class)) {
 			Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
@@ -349,7 +351,6 @@ public class PlayScreen implements Screen {
 
 	private void addReel(Rectangle mapRectangle) {
         int endReel = random.nextInt(sprites.length);
-		Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE, "slotReelTexture.getWidth()="+slotReelTexture.getWidth() + "slotReelTexture.getHeight()="+slotReelTexture.getHeight());
 		ReelTile reel = new ReelTile(slotReelTexture, sprites.length, 0, 0, spriteWidth, spriteHeight, spriteWidth, spriteHeight, endReel, game.assetManager.get("sounds/reel-spinning.mp3", Sound.class));
 		reel.setX(mapRectangle.getX());
 		reel.setY(mapRectangle.getY());
@@ -365,12 +366,12 @@ public class PlayScreen implements Screen {
 						reelsSpinning--;
 						if (playState == PlayStates.PLAYING) {
 							if (reelsSpinning <= -1) {
-								if (levelDoor.levelType.equals("HiddenPattern")) {
+								if (levelDoor.levelType.equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
 							        if (testForHiddenPatternRevealed(reels)) {
 							        	iWonTheLevel();
 							        }
 								} else {
-									if (levelDoor.levelType.equals("HiddenPlayingCards")) {
+									if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
 										if (testForHiddenPlayingCardsRevealed(reels)) {
 											iWonTheLevel();
 										}
@@ -640,10 +641,10 @@ public class PlayScreen implements Screen {
 					reelStoppedSound.play();
 					chaChingSound.play();
 					reel.deleteReelTile();
-					if (levelDoor.levelType.equals("HiddenPlayingCards")) {
+					if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
 						testPlayingCardLevelWon();
 					} else {
-						if (levelDoor.levelType.equals("HiddenPattern")) {
+						if (levelDoor.levelType.equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
 							testForHiddenPlatternLevelWon();
 						}
 					}
@@ -1006,7 +1007,7 @@ public class PlayScreen implements Screen {
 			handleInput(delta);
 	 		renderer.render();
 			game.batch.begin();
-			if (levelDoor.levelType.equals("HiddenPlayingCards")) {
+			if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
 				drawPlayingCards(game.batch);
 			}
 			for (ReelTile reel : reels) {

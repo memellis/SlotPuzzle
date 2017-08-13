@@ -74,7 +74,6 @@ import java.util.Collections;
 
 public class SPPrototypes {
     public static final List<Class<? extends SPPrototype>> tests = new ArrayList<Class<? extends SPPrototype>>((Collection<? extends Class<? extends SPPrototype>>) Arrays.asList(
-        //CreateLevelReels.class,
         Basic2D.class,
         Bezier1.class,
         Bezier2.class,

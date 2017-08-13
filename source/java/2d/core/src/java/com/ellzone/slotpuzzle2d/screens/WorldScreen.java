@@ -51,7 +51,6 @@ import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
-import com.ellzone.slotpuzzle2d.utils.ScreenshotFactory;
 import org.jrenner.smartfont.SmartFontGenerator;
 import com.badlogic.gdx.files.FileHandle;
 import com.ellzone.slotpuzzle2d.utils.FileUtils;
@@ -82,8 +81,10 @@ public class WorldScreen implements Screen {
 	public static final String LEVEL_TEXT = "Level";
     public static final String ENTRANCE_TEXT = "Entrance";
     public static final char SPACE = ' ';
-	
-	private SlotPuzzle game;
+    public static final int ORTHO_VIEWPORT_WIDTH = 10;
+    public static final int ORTHO_VIEWPORT_HEIGHT = 10;
+
+    private SlotPuzzle game;
 	private OrthographicCamera cam;
 	private TiledMap worldMap;
 	private GestureDetector gestureDetector;
@@ -96,7 +97,7 @@ public class WorldScreen implements Screen {
 	private OrthogonalTiledMapRenderer renderer;
 	private BitmapFont font;
 	private BitmapFont fontSmall;
-	private float w, h, cww, cwh, aspectRatio;
+	private float w, h, resizeWidth, resizeHeight, cww, cwh, aspectRatio;
 	private float screenOverCWWRatio, screenOverCWHRatio;
 	private Texture levelDoorTexture;
 	private Sprite levelDoorSprite;
@@ -106,6 +107,7 @@ public class WorldScreen implements Screen {
 	private int mapWidth, mapHeight, tilePixelWidth, tilePixelHeight;
 	private String message = "";
     private InputMultiplexer inputMultiplexer;
+	private boolean inPlayScreen = false;
 
 	   
     public WorldScreen(SlotPuzzle game) {
@@ -138,7 +140,7 @@ public class WorldScreen implements Screen {
 		h = Gdx.graphics.getHeight();
 		aspectRatio = w / h;
 		cam = new OrthographicCamera();
-		cam.setToOrtho(false, aspectRatio * 10, 10);
+		cam.setToOrtho(false, aspectRatio * ORTHO_VIEWPORT_WIDTH, ORTHO_VIEWPORT_HEIGHT);
 		cam.zoom = 2;
 		cam.update();
 		cww = cam.viewportWidth * cam.zoom * tilePixelWidth;
@@ -315,12 +317,15 @@ public class WorldScreen implements Screen {
 	private final TweenCallback maximizeCallback = new TweenCallback() {
 		@Override
 		public void onEvent(int type, BaseTween<?> source) {
-			selectedTile = (MapTile) source.getUserData();
-			selectedTile.getLevel().initialise();
-			int levelNumber = selectedTile.getLevel().getLevelNumber();
-			levelDoors.get(levelNumber).id = levelNumber;
-			game.setScreen(new PlayScreen(game, levelDoors.get(levelNumber), selectedTile));
-			tweenManager.killAll();
+        selectedTile = (MapTile) source.getUserData();
+        selectedTile.disableDraw();
+        selectedTile.getLevel().initialise();
+        int levelNumber = selectedTile.getLevel().getLevelNumber();
+		levelDoors.get(levelNumber).id = levelNumber;
+		inPlayScreen = true;
+		Gdx.input.setInputProcessor(null);
+		game.setScreen(new PlayScreen(game, levelDoors.get(levelNumber), selectedTile));
+		tweenManager.killAll();
 		}
 	};
 
@@ -363,8 +368,8 @@ public class WorldScreen implements Screen {
         maptile.getLevel().setLevelScrollSignChanged(true);
         Array<Texture> signTextures = scrollSign.getSignTextures();
         String textureText = maptile.getLevel().getTitle() + " level completed with Score: " + maptile.getLevel().getScore();
-        Pixmap textPixmap = new Pixmap(textureText.length() * SIGN_WIDTH / 4, SIGN_HEIGHT, Pixmap.Format.RGBA8888);
-        textPixmap = PixmapProcessors.createDynamicHorizontalFontTextViaFrameBuffer(fontSmall, Color.RED, textureText, textPixmap, 0, 20);
+        Pixmap textPixmap = new Pixmap(textureText.length() * SIGN_WIDTH / 6, SIGN_HEIGHT, Pixmap.Format.RGBA8888);
+        textPixmap = PixmapProcessors.createDynamicHorizontalFontTextViaFrameBuffer(fontSmall, Color.CYAN, textureText, textPixmap, 0, 20);
         Texture textTexture = new Texture(textPixmap);
         signTextures.set(1, textTexture);
         scrollSign.switchSign(scrollSign.getCurrentSign() == 0 ? 1 : 0);
@@ -377,23 +382,27 @@ public class WorldScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		update(delta);
-		mapGestureListener.update();
-		renderer.render();
-		renderer.setView(cam);
-		cam.update();
-		game.batch.begin();
-		for (MapTile mapTile : mapTiles) {
-            mapTile.draw(game.batch);
+		if (!inPlayScreen) {
+			Gdx.gl.glClearColor(0, 0, 0, 1);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			update(delta);
+			mapGestureListener.update();
+			renderer.render();
+			renderer.setView(cam);
+			cam.update();
+			game.batch.begin();
+			for (MapTile mapTile : mapTiles) {
+				mapTile.draw(game.batch);
+			}
+			font.draw(game.batch, message, 80, 100);
+			game.batch.end();
 		}
-		font.draw(game.batch, message, 80, 100);
-		game.batch.end();
 	}
 
 	@Override
 	public void resize(int width, int height) {
+        this.resizeWidth = width;
+        this.resizeHeight = height;
         Gdx.app.log(LOG_TAG, "resize(int width, int height) called: width=" + width + ", height="+height);
     }
 
@@ -421,7 +430,7 @@ public class WorldScreen implements Screen {
 
 		@Override
 		public void pinchStop() {
-			// TODO: Implement this method
+			Gdx.app.debug(LOG_TAG, "pinchStop()");
 		}
 
 		private final OrthographicCamera camera;
@@ -443,13 +452,13 @@ public class WorldScreen implements Screen {
 
 		@Override
 		public boolean tap(float x, float y, int count, int button) {
-			processTouch(x, y);
+			Gdx.app.debug(LOG_TAG, "tap() x=" + x + " y=" + y + " count="+count+ " button="+button);
 			return false;
 		}
 
 		@Override
 		public boolean longPress(float x, float y) {
-			System.out.println("longPress");
+			Gdx.app.debug(LOG_TAG, "longPress() x="+x+" y="+y);
 			return false;
 		}
 
@@ -509,20 +518,19 @@ public class WorldScreen implements Screen {
 		}
 
 		private void enterLevel(LevelDoor levelDoor, int levelDoorIndex) {
-			int sx = (int)worldXToScreenX(levelDoor.doorPosition.x);
-			int sy = (int)worldYToScreenY(levelDoor.doorPosition.y);
-			int sw = (int)(levelDoor.doorPosition.width * screenOverCWWRatio);
-			int sh = (int)(levelDoor.doorPosition.height * screenOverCWHRatio);
-
+			int sx = (int) (worldXToScreenX(levelDoor.doorPosition.x) * resizeWidth / w);
+			int sy = (int) (worldYToScreenY(levelDoor.doorPosition.y + tilePixelHeight) * resizeHeight / h);
+			int sw = (int) ((levelDoor.doorPosition.width * screenOverCWWRatio) * resizeWidth / w);
+			int sh = (int) ((levelDoor.doorPosition.height * screenOverCWHRatio) * resizeHeight / h);
 
 			levelDoorTexture = levelEntrances.get(levelDoorIndex).getLevelEntrance();
 			levelDoorSprite = new Sprite(levelDoorTexture);
 			levelDoorSprite.setOrigin(0, 0);
 			levelDoorSprite.setBounds(sx, sy, sw, sh);
 			mapTiles.get(levelDoorIndex).setSprite(levelDoorSprite);
-            mapTiles.get(levelDoorIndex).reinitialise();
-            mapTiles.get(levelDoorIndex).maximize(maximizeCallback);
-		}
+			mapTiles.get(levelDoorIndex).reinitialise();
+			mapTiles.get(levelDoorIndex).maximize(maximizeCallback);
+	}
 
 		private void clampCamera() {
 			if (camera.position.x < 0) {
@@ -540,24 +548,25 @@ public class WorldScreen implements Screen {
 		}
 
 		private float screenXToWorldX(float x) {
-			return ((camera.position.x - aspectRatio * 10) * tilePixelWidth) + (x / screenOverCWWRatio);
+			return ((camera.position.x - aspectRatio * ORTHO_VIEWPORT_WIDTH) * tilePixelWidth) + (x / screenOverCWWRatio);
 		}
 
 		private float screenYToWorldY(float y) {
-			return ((camera.position.y - 10) * tilePixelHeight) + ((h - y) / screenOverCWHRatio);
+			return ((camera.position.y - ORTHO_VIEWPORT_HEIGHT) * tilePixelHeight) + ((h - y) / screenOverCWHRatio);
 		}
 
 		private float worldXToScreenX(float wx) {
-			return (wx  - ((camera.position.x - aspectRatio * 10) * tilePixelWidth)) * screenOverCWWRatio;
+			return (wx  - ((camera.position.x - aspectRatio * ORTHO_VIEWPORT_WIDTH) * tilePixelWidth)) * screenOverCWWRatio;
 		}
 
 		private float worldYToScreenY(float wy) {
-			return (wy - ((camera.position.y - 10) * tilePixelHeight)) * screenOverCWHRatio;
+			return (wy - ((camera.position.y - ORTHO_VIEWPORT_HEIGHT) * tilePixelHeight)) * screenOverCWHRatio;
 		}
 	}
 
 	public void worldScreenCallBack() {
-        tweenManager.killAll();
-        System.out.println("setInputProcessor");
+		inPlayScreen = false;
+		tweenManager.killAll();
+		Gdx.input.setInputProcessor(inputMultiplexer);
 	}
 }
