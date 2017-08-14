@@ -92,6 +92,7 @@ public class PlayScreen implements Screen {
 	private static final float PUZZLE_GRID_START_Y = 40.0f;
 	private static final int NUMBER_OF_SUITS = 4;
 	private static final int NUMBER_OF_CARDS_IN_A_SUIT = 13;
+    private static final int FLASH_MATCHED_SLOTS_BATCH_SIZE = 8;
     public static final String PLAYING_CARD_LEVEL_TYPE = "PlayingCard";
     public static final String HIDDEN_PATTERN_LEVEL_TYPE = "HiddenPattern";
     public static final String LOG_TAG = "SlotPuzzle_PlayScreen";
@@ -677,10 +678,11 @@ public class PlayScreen implements Screen {
 		}
 	};
 
-	private void initialiseReelFlash(ReelTile reel) {
+	private void initialiseReelFlash(ReelTile reel, float pushPause) {
 		Array<Object> userData = new Array<Object>();
 		reel.setFlashTween(true);
 		reelFlashSeq = Timeline.createSequence();
+        reelFlashSeq = reelFlashSeq.pushPause(pushPause);
 
 		Color fromColor = new Color(Color.WHITE);
 		fromColor.a = 1;
@@ -929,7 +931,7 @@ public class PlayScreen implements Screen {
 		return hiddenPlayingCardsRevealed;
 	}
 
-    private void flashMatchedSlots(Array<TupleValueIndex> matchedSlots) {
+    private void flashMatchedSlotsBatch(Array<TupleValueIndex> matchedSlots, float pushPause) {
     	int index;
         for (int i = 0; i < matchedSlots.size; i++) {
             index = matchedSlots.get(i).getIndex();
@@ -939,13 +941,33 @@ public class PlayScreen implements Screen {
             		reel.setFlashMode(true);
             		Color flashColor = new Color(Color.RED);
             		reel.setFlashColor(flashColor);
-            		initialiseReelFlash(reel);
+            		initialiseReelFlash(reel, pushPause);
             	}
             }
         }
     }
 
-	private TweenCallback levelOverCallback = new TweenCallback() {
+	private void flashMatchedSlots(Array<TupleValueIndex> matchedSlots) {
+		int index, batchIndex; Array<TupleValueIndex> matchSlotsBatch;
+		float pushPause = 0.0f;
+        index = 0;
+        matchSlotsBatch = new Array<TupleValueIndex>();
+		while (index < matchedSlots.size) {
+            batchIndex = index;
+            while ((batchIndex < index + FLASH_MATCHED_SLOTS_BATCH_SIZE) && (batchIndex < matchedSlots.size)) {
+                for (int count = batchIndex; count < batchIndex + matchedSlots.get(batchIndex).getValue(); count++) {
+                    matchSlotsBatch.add(matchedSlots.get(count));
+                }
+                batchIndex = batchIndex + matchedSlots.get(batchIndex).getValue();
+            }
+            flashMatchedSlotsBatch(matchSlotsBatch, pushPause);
+            pushPause = pushPause + 0.5f;
+            index = index + matchSlotsBatch.size;
+            matchSlotsBatch.clear();
+ 		}
+	}
+
+		private TweenCallback levelOverCallback = new TweenCallback() {
 		@Override
 		public void onEvent(int type, BaseTween<?> source) {
 			switch (type) {
