@@ -85,7 +85,7 @@ public class SlotPuzzle extends Game {
 	public void resume() {
 		Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE, "resume");
 	}
-	
+
 	public void setWorldScreen(WorldScreen worldScreen) {
 		this.worldScreen = worldScreen;
 	}

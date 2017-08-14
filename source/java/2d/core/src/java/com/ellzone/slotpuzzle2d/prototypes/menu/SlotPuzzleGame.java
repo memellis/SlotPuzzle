@@ -109,7 +109,7 @@ public class SlotPuzzleGame extends SPPrototype {
 		this.screen = screen;
 		if (this.screen != null) {
 			this.screen.show();
-			this.screen.resize((int) V_WIDTH, (int) V_HEIGHT);
+			this.screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		}
 	}
 

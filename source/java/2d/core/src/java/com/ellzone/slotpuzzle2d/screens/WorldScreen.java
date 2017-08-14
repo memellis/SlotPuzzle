@@ -518,10 +518,10 @@ public class WorldScreen implements Screen {
 		}
 
 		private void enterLevel(LevelDoor levelDoor, int levelDoorIndex) {
-			int sx = (int) (worldXToScreenX(levelDoor.doorPosition.x) * resizeWidth / w);
-			int sy = (int) (worldYToScreenY(levelDoor.doorPosition.y + tilePixelHeight) * resizeHeight / h);
-			int sw = (int) ((levelDoor.doorPosition.width * screenOverCWWRatio) * resizeWidth / w);
-			int sh = (int) ((levelDoor.doorPosition.height * screenOverCWHRatio) * resizeHeight / h);
+			int sx = (int) (worldXToScreenX(levelDoor.doorPosition.x) * SlotPuzzleConstants.V_WIDTH / w);
+			int sy = (int) (worldYToScreenY(levelDoor.doorPosition.y + tilePixelHeight) * SlotPuzzleConstants.V_HEIGHT / h);
+			int sw = (int) ((levelDoor.doorPosition.width * screenOverCWWRatio) * SlotPuzzleConstants.V_WIDTH / w);
+			int sh = (int) ((levelDoor.doorPosition.height * screenOverCWHRatio) * SlotPuzzleConstants.V_HEIGHT / h);
 
 			levelDoorTexture = levelEntrances.get(levelDoorIndex).getLevelEntrance();
 			levelDoorSprite = new Sprite(levelDoorTexture);

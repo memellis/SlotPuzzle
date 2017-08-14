@@ -93,7 +93,7 @@ public class WorldScreenPrototype implements Screen {
     private GestureDetector gestureDetector;
     private MapGestureListener mapGestureListener;
     private Array<LevelDoor> levelDoors;
-    private float w, h, resizeWidth, resideHeight, cww, cwh, aspectRatio;
+    private float w, h, resizeWidth, resizeHeight, cww, cwh, aspectRatio;
     private float screenOverCWWRatio, screenOverCWHRatio;
     private Texture levelDoorTexture;
     private Sprite levelDoorSprite;
@@ -347,7 +347,7 @@ public class WorldScreenPrototype implements Screen {
     @Override
     public void resize(int width, int height) {
         this.resizeWidth = width;
-        this.resideHeight = height;
+        this.resizeHeight = height;
         Gdx.app.log(LOG_TAG, "resize(int width, int height) called: width=" + width + ", height="+height);
     }
 
@@ -526,10 +526,10 @@ public class WorldScreenPrototype implements Screen {
         }
 
         private void enterLevel(LevelDoor levelDoor, int levelDoorIndex) {
-            int sx = (int) (worldXToScreenX(levelDoor.doorPosition.x) * resizeWidth / w);
-            int sy = (int) (worldYToScreenY(levelDoor.doorPosition.y + tilePixelHeight) * resideHeight / h);
-            int sw = (int) ((levelDoor.doorPosition.width * screenOverCWWRatio) * resizeWidth / w);
-            int sh = (int) ((levelDoor.doorPosition.height * screenOverCWHRatio) * resideHeight / h);
+            int sx = (int) (worldXToScreenX(levelDoor.doorPosition.x) * SlotPuzzleConstants.V_WIDTH / w);
+            int sy = (int) (worldYToScreenY(levelDoor.doorPosition.y + tilePixelHeight) * SlotPuzzleConstants.V_HEIGHT / h);
+            int sw = (int) ((levelDoor.doorPosition.width * screenOverCWWRatio) * SlotPuzzleConstants.V_WIDTH / w);
+            int sh = (int) ((levelDoor.doorPosition.height * screenOverCWHRatio) * SlotPuzzleConstants.V_HEIGHT / h);
 
             levelDoorTexture = levelEntrances.get(levelDoorIndex).getLevelEntrance();
             levelDoorSprite = new Sprite(levelDoorTexture);
