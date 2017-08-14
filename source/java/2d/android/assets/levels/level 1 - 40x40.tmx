@@ -17,7 +17,7 @@
   <object id="116" name="Reel" x="200" y="160" width="40" height="40"/>
   <object id="117" name="Reel" x="240" y="120" width="40" height="40"/>
   <object id="118" name="Reel" x="280" y="120" width="40" height="40"/>
-  <object id="119" name="Reel" x="319" y="159" width="40" height="40"/>
+  <object id="119" name="Reel" x="320" y="160" width="40" height="40"/>
   <object id="147" name="Reel" x="200" y="320" width="40" height="40"/>
  </objectgroup>
  <layer name="Hidden Pattern" width="20" height="12">
