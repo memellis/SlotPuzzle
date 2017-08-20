@@ -126,8 +126,9 @@ public class PuzzleGridType {
 		Array<TupleValueIndex> matchedSlots = new Array<TupleValueIndex>();
 		
 		matchedSlots = getMatchedRowSlots(matchedGridRows, matchedSlots);
-		matchedSlots = getMatchedColSlots(matchedGridCols, matchedSlots);
-		
+        matchedSlots = getMatchedColSlots(matchedGridCols, matchedSlots);
+        findDuplicateMatches(matchedSlots);
+
 		return matchedSlots;
 	}
 	
@@ -387,4 +388,19 @@ public class PuzzleGridType {
 			System.out.println(i + "=[" + tuples.get(i).getR() + "," + tuples.get(i).getC() + "]=" + tuples.get(i).getValue());
 		}
 	}
+
+	public static Array<TupleValueIndex> findDuplicateMatches(Array<TupleValueIndex> matchSlots) {
+        Array<TupleValueIndex> duplicateMatches = new Array<TupleValueIndex>();
+        for (int i = 0; i < matchSlots.size; i++) {
+            for (int j = i + i; j < matchSlots.size; j++) {
+                if ((matchSlots.get(i).getR() == matchSlots.get(j).getR()) &&
+                        (matchSlots.get(i).getC() == matchSlots.get(j).getC())) {
+                    duplicateMatches.add(matchSlots.get(i));
+                    duplicateMatches.add(matchSlots.get(j));
+                }
+            }
+        }
+        printMatchedSlots(duplicateMatches);
+        return duplicateMatches;
+    }
 }

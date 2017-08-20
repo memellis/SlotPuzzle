@@ -21,7 +21,9 @@ public class TupleValueIndex {
 	public int c;
 	public int value;
 	public int index;
-	
+
+	public TupleValueIndex() {}
+
 	public TupleValueIndex(int r, int c, int index, int value) {
 		this.r = r;
 		this.c = c;
