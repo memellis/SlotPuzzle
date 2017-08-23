@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototypesGame;
 import com.ellzone.slotpuzzle2d.prototypes.map.WorldScreenPrototype;
 import com.ellzone.slotpuzzle2d.utils.UiUtils;
+import com.ellzone.slotpuzzle2d.prototypes.screens.*;
 
 public class MenuScreen implements Screen {
     SlotPuzzleGame game;
@@ -40,6 +41,7 @@ public class MenuScreen implements Screen {
     String gdxVersion = "";
     Integer fps;
     boolean enteredSubScreen = false;
+	boolean introScreenPrototype = false;
     boolean worldScreenPrototype = false;
 
     public MenuScreen(SlotPuzzleGame game) {
@@ -49,17 +51,17 @@ public class MenuScreen implements Screen {
 
     private void defineMenuScreen() {
         initialiseScreen();
-        font = new BitmapFont(); 
+        this.font = new BitmapFont(); 
 	    Gdx.input.setInputProcessor(stage);
 
-	    skin = new Skin();
+	    this.skin = new Skin();
         UiUtils.createBasicSkin(skin);
         createButtons();
     }
 
     private void initialiseScreen(){
-	    viewport = new FitViewport(SPPrototypesGame.V_WIDTH, SPPrototypesGame.V_HEIGHT, game.camera);
-	    stage = new Stage(viewport, game.batch);
+	    this.viewport = new FitViewport(SPPrototypesGame.V_WIDTH, SPPrototypesGame.V_HEIGHT, game.camera);
+	    this.stage = new Stage(viewport, game.batch);
     }
 
     private void createButtons() {
@@ -72,17 +74,26 @@ public class MenuScreen implements Screen {
                 gdxVersion = SPPrototypesGame.gdxVersion.VERSION;
 	        }
 	    });
+		
+		TextButton introScreenButton = new TextButton("IntroScreen Prototype", skin);
+        introScreenButton.setPosition(SPPrototypesGame.V_WIDTH / 2 - SPPrototypesGame.V_WIDTH / 8, SPPrototypesGame.V_HEIGHT / 2 - 2 * introScreenButton.getHeight());
+        this.stage.addActor(introScreenButton);
+        introScreenButton.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					introScreenPrototype = true;
+				}
+			});
 
-        TextButton worldMapButton = new TextButton("WorldMap Prototype", skin);
-        worldMapButton.setPosition(SPPrototypesGame.V_WIDTH / 2 - SPPrototypesGame.V_WIDTH / 8, SPPrototypesGame.V_HEIGHT / 2 - 2 * worldMapButton.getHeight());
-        stage.addActor(worldMapButton);
-        worldMapButton.addListener(new ChangeListener() {
+        TextButton worldScreenButton = new TextButton("WorldMap Prototype", skin);
+        worldScreenButton.setPosition(SPPrototypesGame.V_WIDTH / 2 - SPPrototypesGame.V_WIDTH / 8, SPPrototypesGame.V_HEIGHT / 2 - 3 * worldScreenButton.getHeight());
+        this.stage.addActor(worldScreenButton);
+        worldScreenButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 worldScreenPrototype = true;
             }
         });
-
     }
 
     @Override
@@ -90,12 +101,16 @@ public class MenuScreen implements Screen {
     }
 
     private void update(float delta) {
-        if (enteredSubScreen) {
+        if (this.enteredSubScreen) {
 	        Gdx.input.setInputProcessor(stage);
 	    }
-	    if (worldScreenPrototype) {
-            worldScreenPrototype = false;
-            game.setScreen(new WorldScreenPrototype(game));
+		if (this.introScreenPrototype) {
+			this.introScreenPrototype = false;
+			this.game.setScreen(new IntroScreenPrototype(this.game));
+		}
+	    if (this.worldScreenPrototype) {
+            this.worldScreenPrototype = false;
+            this.game.setScreen(new WorldScreenPrototype(this.game));
         }
     }
 
@@ -105,14 +120,14 @@ public class MenuScreen implements Screen {
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	    update(delta);
 	    game.batch.begin();
-	    fps = Gdx.graphics.getFramesPerSecond();
-        font.setColor(Color.YELLOW);
-	    font.draw(game.batch,"fps:" + fps, 10, 15);
-	    font.draw(game.batch, gdxVersion, SPPrototypesGame.V_WIDTH - 40, SPPrototypesGame.V_HEIGHT - 10);
-	    game.batch.end();
+	    this.fps = Gdx.graphics.getFramesPerSecond();
+        this.font.setColor(Color.YELLOW);
+	    this.font.draw(game.batch,"fps:" + fps, 10, 15);
+	    this.font.draw(game.batch, gdxVersion, SPPrototypesGame.V_WIDTH - 40, SPPrototypesGame.V_HEIGHT - 10);
+	    this.game.batch.end();
 
-        stage.act();
-        stage.draw();
+        this.stage.act();
+        this.stage.draw();
     }
 
     @Override
@@ -133,6 +148,6 @@ public class MenuScreen implements Screen {
 	
     @Override
     public void dispose() {
-	    stage.dispose();
+	    this.stage.dispose();
     }
 }
