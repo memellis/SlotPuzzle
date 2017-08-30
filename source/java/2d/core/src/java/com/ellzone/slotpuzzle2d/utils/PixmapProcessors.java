@@ -31,11 +31,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
-import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
-
 import java.io.File;
-import java.nio.ByteBuffer;
-import com.badlogic.gdx.utils.*;
 
 import static com.badlogic.gdx.Application.ApplicationType.Android;
 

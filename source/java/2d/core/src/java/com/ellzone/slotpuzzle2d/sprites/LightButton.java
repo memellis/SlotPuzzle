@@ -33,9 +33,12 @@ public class LightButton {
 	private PointLight light;
 	private float positionX, positionY;
 	private int buttonWidth, buttonHeight;
+	private int buttonTextX = 1, buttonTextY = 20;
 	private BitmapFont buttonFont;
 	private String buttonText;
     private String buttonTextUsingFrameBuffer;
+	private Color buttonColorBorder, buttonColorTop, buttonLightColor;
+
 	
 	public LightButton(World world, RayHandler rayHandler, float positionX, float positionY, int buttonWidth, int buttonHeight) {
 		this.world = world;
@@ -72,7 +75,22 @@ public class LightButton {
         initialiseLightButton();
     }
 
-    private void initialiseLightButton() {
+	public LightButton(World world, RayHandler rayHandler, float positionX, float positionY, int buttonWidth, int buttonHeight, BitmapFont buttonFont, String buttonText, String buttonTextUsingFrameBuffer, int buttonTextX, int buttonTextY) {
+		this.world = world;
+		this.rayHandler = rayHandler;
+		this.positionX = positionX;
+		this.positionY = positionY;
+		this.buttonWidth = buttonWidth;
+		this.buttonHeight = buttonHeight;
+		this.buttonFont = buttonFont;
+		this.buttonText = buttonText;
+		this.buttonTextUsingFrameBuffer = buttonTextUsingFrameBuffer;
+		this.buttonTextX = buttonTextX;
+		this.buttonTextY = buttonTextY;
+		initialiseLightButton();
+	}
+
+	private void initialiseLightButton() {
 		light = new PointLight(rayHandler, 32);
 		light.setActive(false);
 		light.setColor(Color.RED);
@@ -100,7 +118,6 @@ public class LightButton {
 		button.setColor(Color.YELLOW);
         if (buttonTextUsingFrameBuffer != null) {
             button = createTextUsingFrameBuffer(buttonFont, buttonTextUsingFrameBuffer, button);
-			PixmapProcessors.savePixmap(button);
         } else {
             if (buttonText != null) {
                 button = createText(buttonFont, buttonText, button);
@@ -116,7 +133,7 @@ public class LightButton {
 	}
 
     private Pixmap createTextUsingFrameBuffer(BitmapFont font, String text, Pixmap pixmap) {
-        return PixmapProcessors.createDynamicHorizontalFontTextViaFrameBuffer(font, Color.YELLOW, text, pixmap, 1, 20);
+        return PixmapProcessors.createDynamicHorizontalFontTextViaFrameBuffer(font, Color.YELLOW, text, pixmap, buttonTextX, buttonTextY);
     }
 
 	public PointLight getLight() {

@@ -20,7 +20,17 @@ import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 
 public class ReelTileGridValue extends TupleValueIndex {
     public ReelTile reelTile, n, e, s, w, ne, se, nw, sw;
-    public enum Compass {NORTH, EAST, SOUTH, WEST, NORTHEAST, SOUTHEAST, NORTHWEST, SOUTHWEST};
+    private boolean discovered = false;
+    public ReelTileGridValue nReelTileGridValue,
+                             eReelTileGridValue,
+                             sReelTileGridValue,
+                             wReelTileGridValue,
+                             neReelTileGridValue,
+                             seReelTileGridValue,
+                             swReelTileGridValue,
+                             nwReelTileGridValue;
+
+    public enum Compass {NORTH, EAST, SOUTH, WEST, NORTHEAST, SOUTHEAST, SOUTHWEST, NORTHWEST};
 
     public ReelTileGridValue() {
         super();
@@ -47,6 +57,30 @@ public class ReelTileGridValue extends TupleValueIndex {
         this.se = se;
         this.sw = sw;
         this.nw = nw;
+    }
+
+    public ReelTileGridValue(ReelTile reelTile, int r, int c, int index, int value,
+                             ReelTile n, ReelTile e, ReelTile s, ReelTile w, ReelTile ne, ReelTile se, ReelTile sw, ReelTile nw,
+                             ReelTileGridValue nReelTileGridValue, ReelTileGridValue eReelTileGridValue, ReelTileGridValue sReelTileGridValue, ReelTileGridValue wReelTileGridValue,
+                             ReelTileGridValue neReelTileGridValue, ReelTileGridValue seReelTileGridValue, ReelTileGridValue swReelTileGridValue, ReelTileGridValue nwReelTileGridValue) {
+        super(r, c, index, value);
+        this.reelTile = reelTile;
+        this.n = n;
+        this.e = e;
+        this.s = s;
+        this.w = w;
+        this.ne = ne;
+        this.se = se;
+        this.sw = sw;
+        this.nw = nw;
+        this.nReelTileGridValue = nReelTileGridValue;
+        this.eReelTileGridValue = eReelTileGridValue;
+        this.sReelTileGridValue = sReelTileGridValue;
+        this.wReelTileGridValue = wReelTileGridValue;
+        this.neReelTileGridValue = neReelTileGridValue;
+        this.seReelTileGridValue = seReelTileGridValue;
+        this.swReelTileGridValue = swReelTileGridValue;
+        this.nwReelTileGridValue = nwReelTileGridValue;
     }
 
     public void setReelTile(ReelTile reelTile) {
@@ -85,6 +119,10 @@ public class ReelTileGridValue extends TupleValueIndex {
         this.sw = sw;
     }
 
+    public void setDiscovered(boolean discovered) {
+        this.discovered = discovered;
+    }
+
     public ReelTile getReelTile() {
         return this.reelTile;
     }
@@ -121,7 +159,59 @@ public class ReelTileGridValue extends TupleValueIndex {
         return this.sw;
     }
 
+    public void setNReelTileGridValue(ReelTileGridValue nReelTileGridValue) {
+        this.nReelTileGridValue = nReelTileGridValue;
+    }
+
+    public void setEReelTileGridValue(ReelTileGridValue eReelTileGridValue) {
+        this.eReelTileGridValue = eReelTileGridValue;
+    }
+
+    public void setSReelTileGridValue(ReelTileGridValue sReelTileGridValue) {
+        this.sReelTileGridValue = sReelTileGridValue;
+    }
+
+    public void setWReelTileGridValue(ReelTileGridValue wReelTileGridValue) {
+        this.wReelTileGridValue = wReelTileGridValue;
+    }
+
     public static ReelTileGridValue newInstance(ReelTileGridValue reelTileGridValue) {
         return new ReelTileGridValue(reelTileGridValue.getReelTile(), reelTileGridValue.getR(), reelTileGridValue.getC(), reelTileGridValue.getIndex(), reelTileGridValue.getValue(), reelTileGridValue.getN(), reelTileGridValue.getE(), reelTileGridValue.getS(), reelTileGridValue.getW(), reelTileGridValue.getNe(), reelTileGridValue.getSe(), reelTileGridValue.getSw(), reelTileGridValue.getNw());
+    }
+
+    public ReelTileGridValue getNReelTileGridValue() {
+        return  this.nReelTileGridValue;
+    }
+
+    public ReelTileGridValue getEReelTileGridValue() {
+        return this.eReelTileGridValue;
+    }
+
+    public ReelTileGridValue getSReelTileGridValue() {
+        return this.sReelTileGridValue;
+    }
+
+    public ReelTileGridValue getWReelTileGridValue() {
+        return this.wReelTileGridValue;
+    }
+
+    public ReelTileGridValue getNeReelTileGridValue() {
+        return this.neReelTileGridValue;
+    }
+
+    public ReelTileGridValue getSeReelTileGridValue() {
+        return this.seReelTileGridValue;
+    }
+
+    public ReelTileGridValue getSwReelTileGridValue() {
+        return this.swReelTileGridValue;
+    }
+
+    public ReelTileGridValue getNwReelTileGridValue() {
+        return this.nwReelTileGridValue;
+    }
+
+    public boolean getDiscovered() {
+        return discovered;
     }
 }

@@ -22,6 +22,8 @@ import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.screens.PlayScreen;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 
+import java.util.Stack;
+
 public class PuzzleGridTypeReelTile {
 
     public ReelTileGridValue[][] matchRowSlots(ReelTileGridValue[][] puzzleGrid) {
@@ -47,6 +49,8 @@ public class PuzzleGridTypeReelTile {
                                         if (puzzleGrid[r][co-1].value == puzzleGrid[r][co].value) {
                                             workingGrid[r][co-1].setE(puzzleGrid[r][co].getReelTile());
                                             workingGrid[r][co].setW(puzzleGrid[r][co-1].getReelTile());
+                                            workingGrid[r][co-1].setEReelTileGridValue(workingGrid[r][co]);
+                                            workingGrid[r][co].setWReelTileGridValue(workingGrid[r][co-1]);
                                             co++;
                                         } else {
                                             match = false;
@@ -96,7 +100,9 @@ public class PuzzleGridTypeReelTile {
                                     if (puzzleGrid[ro][c] != null) {
                                         if (puzzleGrid[ro-1][c].value == puzzleGrid[ro][c].value) {
                                             workingGrid[ro-1][c].setS(puzzleGrid[ro][c].getReelTile());
-                                            workingGrid[ro][c].setN(puzzleGrid[ro-1][c].getReelTile());
+                                            workingGrid[ro][c].setN(workingGrid[ro-1][c].getReelTile());
+                                            workingGrid[ro-1][c].setSReelTileGridValue(workingGrid[ro][c]);
+                                            workingGrid[ro][c].setNReelTileGridValue(workingGrid[ro-1][c]);
                                             ro++;
                                         } else {
                                             match = false;
@@ -430,33 +436,41 @@ public class PuzzleGridTypeReelTile {
             case NORTH:
                 if ((value1.getN() == null) && (value2.getN() != null)) {
                     value1.setN(value2.getN());
+                    value1.setNReelTileGridValue(value2.getNReelTileGridValue());
                     ReelTile value2n = value2.getN();
                     ReelTileGridValue nRTGV = findReelTileGridValue(matchSlots, value2n);
                     nRTGV.setS(value1.getReelTile());
+                    nRTGV.setSReelTileGridValue(value1);
                 }
                 break;
             case EAST:
                 if ((value1.getE() == null) && (value2.getE() != null)) {
                     value1.setE(value2.getE());
+                    value1.setEReelTileGridValue(value2.getEReelTileGridValue());
                     ReelTile value2e = value2.getE();
                     ReelTileGridValue eRTGV = findReelTileGridValue(matchSlots, value2e);
                     eRTGV.setW(value1.getReelTile());
+                    eRTGV.setWReelTileGridValue(value1);
                 }
                 break;
             case SOUTH:
                 if ((value1.getS() == null) && (value2.getS() != null)) {
                     value1.setS(value2.getS());
+                    value1.setSReelTileGridValue(value2.getSReelTileGridValue());
                     ReelTile value2s = value2.getS();
                     ReelTileGridValue sRTGV = findReelTileGridValue(matchSlots, value2s);
                     sRTGV.setN(value1.getReelTile());
+                    sRTGV.setNReelTileGridValue(value1);
                 }
                 break;
             case WEST:
                 if ((value1.getW() == null) && (value2.getW() != null)) {
                     value1.setW(value2.getW());
+                    value1.setWReelTileGridValue(value2.getWReelTileGridValue());
                     ReelTile value2w = value2.getW();
                     ReelTileGridValue wRTGV = findReelTileGridValue(matchSlots, value2w);
                     wRTGV.setE(value1.getReelTile());
+                    wRTGV.setEReelTileGridValue(value1.getEReelTileGridValue());
                 }
                 break;
         }
@@ -489,5 +503,32 @@ public class PuzzleGridTypeReelTile {
             }
         }
         return matchGrid;
+    }
+
+    public Array<ReelTileGridValue> depthFirstSearch(ReelTileGridValue startReelTile) {
+        Array<ReelTileGridValue> localMatchedSlotBatch = new Array<ReelTileGridValue>();
+        ReelTileGridValue currentReelTile;
+        Stack<ReelTileGridValue> reelTileGridValuesStack = new Stack<ReelTileGridValue>();
+        reelTileGridValuesStack.push(startReelTile);
+        while (!reelTileGridValuesStack.empty()) {
+            currentReelTile = reelTileGridValuesStack.pop();
+            if (!currentReelTile.getDiscovered()) {
+                currentReelTile.setDiscovered(true);
+                localMatchedSlotBatch.add(currentReelTile);
+                if (currentReelTile.getNReelTileGridValue() != null) {
+                    reelTileGridValuesStack.push(currentReelTile.getNReelTileGridValue());
+                }
+                if (currentReelTile.getEReelTileGridValue() != null) {
+                    reelTileGridValuesStack.push(currentReelTile.getEReelTileGridValue());
+                }
+                if (currentReelTile.getSReelTileGridValue() != null) {
+                    reelTileGridValuesStack.push(currentReelTile.getSReelTileGridValue());
+                }
+                if (currentReelTile.getWReelTileGridValue() != null) {
+                    reelTileGridValuesStack.push(currentReelTile.getWReelTileGridValue());
+                }
+            }
+        }
+        return localMatchedSlotBatch;
     }
 }
