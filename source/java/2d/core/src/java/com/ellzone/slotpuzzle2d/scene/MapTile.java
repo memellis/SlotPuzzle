@@ -119,7 +119,7 @@ public class MapTile {
 				.push(SlotPuzzleTween.to(sprite, SpriteAccessor.POS_XY, 0.5f).target(tx, ty).ease(Quad.IN))
 			.end()
 			.pushPause(-0.3f)
-			.push(SlotPuzzleTween.to(veil, SpriteAccessor.OPACITY, 0.7f).target(1))
+			.push(SlotPuzzleTween.to(veil, SpriteAccessor.OPACITY, 0.5f).target(1.0f))
 			.setUserData(this)
 			.setCallback(callback)
 			.start(tweenManager);

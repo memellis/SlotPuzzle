@@ -58,6 +58,7 @@ import com.ellzone.slotpuzzle2d.physics.DampenedSineParticle;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsEvent;
 import com.ellzone.slotpuzzle2d.physics.Vector;
+import com.ellzone.slotpuzzle2d.sprites.LightButtonBuilder;
 import com.ellzone.slotpuzzle2d.sprites.ReelLetter;
 import com.ellzone.slotpuzzle2d.sprites.ReelLetterTile;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
@@ -94,6 +95,7 @@ public class IntroScreenPrototype extends InputAdapter implements Screen {
     private static final String BY_TEXT = "by";
     private static final String AUTHOR_TEXT = "Mark Ellis";
     private static final String COPYRIGHT_YEAR_AUTHOR_TEXT = COPYRIGHT + "2017 Mark Ellis";
+    private static final String LAUNCH_BUTTON_LABEL = "LAUNCH!";
 	private static final float PIXELS_PER_METER = 100;
 	private static final float SCENE_WIDTH = 12.80f; // 12.8 metres wide
     private static final float SCENE_HEIGHT = 7.20f; // 7.2 metres high
@@ -129,9 +131,9 @@ public class IntroScreenPrototype extends InputAdapter implements Screen {
 	private World world;
     private Box2DDebugRenderer debugRenderer;
     private RayHandler rayHandler;
-	private LightButton launchButton;
+	private LightButtonBuilder launchButton;
     private Vector3 point = new Vector3();
-    private PointLight signLight;
+    private Array<PointLight> signLights;
     private float timerCount = 0;
     private int nextScreenTimer = 3;
 
@@ -228,16 +230,57 @@ public class IntroScreenPrototype extends InputAdapter implements Screen {
         rayHandler.useDiffuseLight(true);
         rayHandler.setAmbientLight(0.5f, 0.5f, 0.5f, 0.1f);
 
-        signLight = new PointLight(rayHandler, 32);
-        signLight.setActive(true);
-        signLight.setColor(Color.WHITE);
-        signLight.setDistance(2.0f);
-        signLight.setPosition(SCENE_WIDTH / 2, SCENE_HEIGHT / 2);
+        signLights = new Array<PointLight>();
+        PointLight signLight1 = new PointLight(rayHandler, 32);
+        signLight1.setActive(true);
+        signLight1.setColor(Color.WHITE);
+        signLight1.setDistance(2.0f);
+        signLight1.setPosition(SCENE_WIDTH / 2, SCENE_HEIGHT / 2);
+        signLights.add(signLight1);
 
+        PointLight signLight2 = new PointLight(rayHandler, 32);
+        signLight2.setActive(true);
+        signLight2.setColor(Color.WHITE);
+        signLight2.setDistance(2.0f);
+        signLight2.setPosition(SCENE_WIDTH / 4, SCENE_HEIGHT / 2);
+        signLights.add(signLight1);
+
+        PointLight signLight3 = new PointLight(rayHandler, 32);
+        signLight1.setActive(true);
+        signLight1.setColor(Color.WHITE);
+        signLight1.setDistance(2.0f);
+        signLight1.setPosition(SCENE_WIDTH / 2 + SCENE_WIDTH / 4, SCENE_HEIGHT / 2);
+        signLights.add(signLight1);
     }
 	
 	private void initialiseLaunchButton() {
-		launchButton = new LightButton(world, rayHandler, 200 / PIXELS_PER_METER  + SCENE_WIDTH / 2 - (3 * 200 / PIXELS_PER_METER) / 2, (int) SCENE_HEIGHT / 10, 200, 80, fontMedium, "","LAUNCH!", 1, 40);
+        Color buttonBackgroundColor = new Color(Color.ORANGE);
+        Color buttonForeGroundColor = new Color(Color.ORANGE.r, Color.ORANGE.g, Color.ORANGE.b, 120);
+        Color buttonEdgeColor = new Color(Color.BROWN);
+        Color buttonTransparentColor = new Color(0, 200, 200, 0);
+        Color buttonFontColor = new Color(Color.YELLOW);
+        float buttonPositionX = 200 / PIXELS_PER_METER  + SCENE_WIDTH / 2 - (3 * 200 / PIXELS_PER_METER) / 2;
+        float buttonPositionY = SCENE_HEIGHT / 11;
+
+        launchButton = new LightButtonBuilder.Builder()
+                            .world(world)
+                            .rayHandler(rayHandler)
+                            .buttonBackground(buttonBackgroundColor)
+                            .buttonForeground(buttonForeGroundColor)
+                            .buttonEdgeColor(buttonEdgeColor)
+                            .buttontTransparentColor(buttonTransparentColor)
+                            .buttonLightColor(Color.RED)
+                            .buttonFontColor(buttonFontColor)
+                            .buttonPositionX(buttonPositionX)
+                            .buttonPositionY(buttonPositionY)
+                            .buttonWidth(200)
+                            .buttonHeight(80)
+                            .buttonFont(fontMedium)
+                            .buttonText(LAUNCH_BUTTON_LABEL)
+                            .startButtonTextX(4)
+                            .startButtonTextY(60)
+                            .build();
+
 		launchButton.getSprite().setSize(200 / PIXELS_PER_METER, 80 / PIXELS_PER_METER);
 		
 	}
