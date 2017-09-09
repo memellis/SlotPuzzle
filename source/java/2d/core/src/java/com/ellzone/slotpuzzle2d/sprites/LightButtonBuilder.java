@@ -45,6 +45,7 @@ public class LightButtonBuilder {
     private int startButtonTextY;
     private Color buttonLightColor;
     private PointLight light;
+    private float buttonLightDistance;
     private Sprite lightButtonSprite;
 
     public static class Builder {
@@ -64,6 +65,7 @@ public class LightButtonBuilder {
         private int startButtonTextX;
         private int startButtonTextY;
         private Color buttonLightColor;
+        private float buttonLightDistance;
 
         public Builder world(World world) {
             this.world = world;
@@ -145,6 +147,11 @@ public class LightButtonBuilder {
             return this;
         }
 
+        public Builder buttonLightDistance(float buttonLightDistance) {
+            this.buttonLightDistance = buttonLightDistance;
+            return this;
+        }
+
         public LightButtonBuilder build() {
             return new LightButtonBuilder(this);
         }
@@ -167,6 +174,7 @@ public class LightButtonBuilder {
         this.startButtonTextX = builder.startButtonTextX;
         this.startButtonTextY = builder.startButtonTextY;
         this.buttonLightColor = builder.buttonLightColor;
+        this.buttonLightDistance = builder.buttonLightDistance;
         this.initialiseLightButton();
     }
 
@@ -174,7 +182,7 @@ public class LightButtonBuilder {
         this.light = new PointLight(rayHandler, 32);
         this.light.setActive(false);
         this.light.setColor(this.buttonLightColor);
-        this.light.setDistance(0.4f);
+        this.light.setDistance(buttonLightDistance);
         float lightButtonCentreX = this.buttonPositionX + (float)buttonWidth / 200.0f;
         float lightButtonCentreY = this.buttonPositionY + (float)buttonHeight / 200.0f;
         light.setPosition(lightButtonCentreX, lightButtonCentreY);

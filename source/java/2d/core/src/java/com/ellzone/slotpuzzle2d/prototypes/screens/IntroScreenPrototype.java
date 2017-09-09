@@ -270,6 +270,7 @@ public class IntroScreenPrototype extends InputAdapter implements Screen {
                             .buttonEdgeColor(buttonEdgeColor)
                             .buttontTransparentColor(buttonTransparentColor)
                             .buttonLightColor(Color.RED)
+                            .buttonLightDistance(1.5f)
                             .buttonFontColor(buttonFontColor)
                             .buttonPositionX(buttonPositionX)
                             .buttonPositionY(buttonPositionY)
@@ -282,7 +283,6 @@ public class IntroScreenPrototype extends InputAdapter implements Screen {
                             .build();
 
 		launchButton.getSprite().setSize(200 / PIXELS_PER_METER, 80 / PIXELS_PER_METER);
-		
 	}
 
     private void initialiseIntroSequence() {
