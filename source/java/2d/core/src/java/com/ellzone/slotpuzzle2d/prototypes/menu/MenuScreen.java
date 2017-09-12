@@ -30,7 +30,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototypesGame;
 import com.ellzone.slotpuzzle2d.prototypes.map.WorldScreenPrototype;
 import com.ellzone.slotpuzzle2d.utils.UiUtils;
-import com.ellzone.slotpuzzle2d.prototypes.screens.*;
+import com.ellzone.slotpuzzle2d.prototypes.screens.IntroScreenPrototype;
+import com.ellzone.slotpuzzle2d.prototypes.typewriter.TypewriterScreen;
 
 public class MenuScreen implements Screen {
     SlotPuzzleGame game;
@@ -43,6 +44,7 @@ public class MenuScreen implements Screen {
     boolean enteredSubScreen = false;
 	boolean introScreenPrototype = false;
     boolean worldScreenPrototype = false;
+	boolean typeWriterPrototype = false;
 
     public MenuScreen(SlotPuzzleGame game) {
         this.game = game;
@@ -94,6 +96,16 @@ public class MenuScreen implements Screen {
                 worldScreenPrototype = true;
             }
         });
+		
+		TextButton typeWriterButton = new TextButton("TypeWriter Prototype", skin);
+        typeWriterButton.setPosition(SPPrototypesGame.V_WIDTH / 2 - SPPrototypesGame.V_WIDTH / 8, SPPrototypesGame.V_HEIGHT / 2 - 4 * typeWriterButton.getHeight());
+        this.stage.addActor(typeWriterButton);
+        typeWriterButton.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					typeWriterPrototype = true;
+				}
+			});
     }
 
     @Override
@@ -112,6 +124,10 @@ public class MenuScreen implements Screen {
             this.worldScreenPrototype = false;
             this.game.setScreen(new WorldScreenPrototype(this.game));
         }
+		if (this.typeWriterPrototype) {
+			this.worldScreenPrototype = false;
+			this.game.setScreen(new TypewriterScreen(this.game));
+		}
     }
 
     @Override
