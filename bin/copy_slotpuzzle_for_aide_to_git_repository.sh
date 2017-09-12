@@ -5,7 +5,9 @@
 
 COM_SRC_DIR=/sdcard/AppProjects/SlotPuzzle/slotpuzzle/src/com
 ORG_SRC_DIR=/sdcard/AppProjects/SlotPuzzle/slotpuzzle/src/org
+NET_SRC_DIR=/sdcard/AppProjects/SlotPuzzle/slotpuzzle/src/net
 DEST_DIR=/usr/local/src/SlotPuzzle/source/java/2d/core/src/java
 
 cp -r ${COM_SRC_DIR} ${DEST_DIR}
 cp -r ${ORG_SRC_DIR} ${DEST_DIR}
+cp -r ${NET_SRC_DIR} ${DEST_DIR}
