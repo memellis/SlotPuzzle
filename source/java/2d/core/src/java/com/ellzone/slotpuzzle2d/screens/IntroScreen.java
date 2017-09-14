@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.util.Random;
 import org.jrenner.smartfont.SmartFontGenerator;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -29,6 +31,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -49,6 +55,7 @@ import com.ellzone.slotpuzzle2d.physics.DampenedSineParticle;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsEvent;
 import com.ellzone.slotpuzzle2d.physics.Vector;
+import com.ellzone.slotpuzzle2d.sprites.LightButtonBuilder;
 import com.ellzone.slotpuzzle2d.sprites.ReelLetter;
 import com.ellzone.slotpuzzle2d.sprites.ReelLetterTile;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
@@ -63,8 +70,10 @@ import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import aurelienribon.tweenengine.equations.Bounce;
 import aurelienribon.tweenengine.equations.Elastic;
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
 
-public class IntroScreen implements Screen {
+public class IntroScreen extends InputAdapter implements Screen {
 	private static final int VIEWPORT_WIDTH = 800;
 	private static final int VIEWPORT_HEIGHT = 480;
 	public static final String LIBERATION_MONO_REGULAR_FONT_NAME = "LiberationMono-Regular.ttf";
@@ -80,12 +89,17 @@ public class IntroScreen implements Screen {
     private static final String BY_TEXT = "by";
     private static final String AUTHOR_TEXT = "Mark Ellis";
     private static final String COPYRIGHT_YEAR_AUTHOR_TEXT = COPYRIGHT + "2017 Mark Ellis";
+    private static final String LAUNCH_BUTTON_LABEL = "LAUNCH!";
+    private static final float PIXELS_PER_METER = 100;
+    private static final float SCENE_WIDTH = 12.80f;
+    private static final float SCENE_HEIGHT = 7.20f;
+    public static final float ONE_SECOND = 1.0f;
     private SlotPuzzle game;
     private Texture textTexture;
     private Pixmap slotReelPixmap;
     private Texture slotReelTexture;
     private final OrthographicCamera camera = new OrthographicCamera();
-    private Viewport viewport;
+    private Viewport viewport, box2dViewport;
     private Stage stage;
     private BitmapFont fontSmall;
     private BitmapFont fontMedium;
@@ -105,8 +119,16 @@ public class IntroScreen implements Screen {
     private Timeline endReelSeq;
     private boolean isLoaded = false;
     private Random random;
+    private World world;
+    private Box2DDebugRenderer debugRenderer;
+    private RayHandler rayHandler;
+    private LightButtonBuilder launchButton;
+    private Vector3 point = new Vector3();
 	private Vector accelerator, accelerate, velocity, velocityMin;
 	private float acceleratorY, accelerateY, acceleratorFriction, velocityFriction, velocityY, velocityYMin;
+    private Array<PointLight> signLights;
+    private float timerCount = 0;
+    private int nextScreenTimer = 3;
 
     public IntroScreen(SlotPuzzle game) {
         this.game = game;
@@ -119,16 +141,23 @@ public class IntroScreen implements Screen {
         initialiseFonts();
         initialiseIntroScreenText();
 	    initialiseDampenedSine();
-        initialiseUiStage();
+        initialiseBox2D();
+        initialiseLaunchButton();
         initialiseIntroSequence();
     }
 
     private void initialiseIntroScreen() {
         viewport = new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, camera);
         stage = new Stage(viewport, game.batch);
+        box2dViewport = new FitViewport(SCENE_WIDTH, SCENE_HEIGHT);
+        box2dViewport.getCamera().position.set(box2dViewport.getCamera().position.x + SCENE_WIDTH*0.5f,
+                box2dViewport.getCamera().position.y + SCENE_HEIGHT*0.5f,
+                0);
+        box2dViewport.getCamera().update();
+
         ReelLetter.instanceCount = 0;
         endOfIntroScreen = false;
-        Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(this);
         random = new Random();
     }
 
@@ -187,35 +216,67 @@ public class IntroScreen implements Screen {
         numReelLetterSpinLoops = 10;
     }
 
-    private void initialiseUiStage() {
-        skin = new Skin();
-        buttonAtlas = new TextureAtlas(Gdx.files.internal("ui/ui-blue.atlas"));
-        skin.addRegions(buttonAtlas);
-        textButtonStyle = new TextButtonStyle();
-        textButtonStyle.font = fontSmall;
-        textButtonStyle.up = skin.getDrawable("icon_arrow_up");
-        textButtonStyle.down = skin.getDrawable("icon_arrow_down");
-        textButtonStyle.checked = skin.getDrawable("checkbox_on");
-        button = new TextButton("                  ", textButtonStyle);
-        button.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                endOfIntroScreen = true;
-            }
-        });
+    private void initialiseBox2D() {
+        world = new World(new Vector2(0, -9.8f), true);
+        debugRenderer = new Box2DDebugRenderer();
 
-        Label.LabelStyle font = new Label.LabelStyle(fontSmall, Color.WHITE);
-        Label buttonPressLabel = new Label("LAUNCH", font);
+        rayHandler = new RayHandler(world);
+        rayHandler.useDiffuseLight(true);
+        rayHandler.setAmbientLight(0.5f, 0.5f, 0.5f, 0.1f);
 
-        Table table = new Table();
-        table.bottom();
-        table.setFillParent(true);
-        table.add(button).expandX().padTop(50f);
-        table.row();
-        table.add(buttonPressLabel).expandX();
+        signLights = new Array<PointLight>();
+        PointLight signLight1 = new PointLight(rayHandler, 32);
+        signLight1.setActive(true);
+        signLight1.setColor(Color.WHITE);
+        signLight1.setDistance(2.0f);
+        signLight1.setPosition(SCENE_WIDTH / 2, SCENE_HEIGHT / 2);
+        signLights.add(signLight1);
 
-        stage.addActor(table);
-        viewport.update(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);    	
+        PointLight signLight2 = new PointLight(rayHandler, 32);
+        signLight2.setActive(true);
+        signLight2.setColor(Color.WHITE);
+        signLight2.setDistance(2.0f);
+        signLight2.setPosition(SCENE_WIDTH / 4, SCENE_HEIGHT / 2);
+        signLights.add(signLight2);
+
+        PointLight signLight3 = new PointLight(rayHandler, 32);
+        signLight1.setActive(true);
+        signLight1.setColor(Color.WHITE);
+        signLight1.setDistance(2.0f);
+        signLight1.setPosition(SCENE_WIDTH / 2 + SCENE_WIDTH / 4, SCENE_HEIGHT / 2);
+        signLights.add(signLight3);
+    }
+
+    private void initialiseLaunchButton() {
+        Color buttonBackgroundColor = new Color(Color.ORANGE);
+        Color buttonForeGroundColor = new Color(Color.ORANGE.r, Color.ORANGE.g, Color.ORANGE.b, 120);
+        Color buttonEdgeColor = new Color(Color.BROWN);
+        Color buttonTransparentColor = new Color(0, 200, 200, 0);
+        Color buttonFontColor = new Color(Color.YELLOW);
+        float buttonPositionX = 200 / PIXELS_PER_METER  + SCENE_WIDTH / 2 - (3 * 200 / PIXELS_PER_METER) / 2;
+        float buttonPositionY = SCENE_HEIGHT / 15;
+
+        launchButton = new LightButtonBuilder.Builder()
+                .world(world)
+                .rayHandler(rayHandler)
+                .buttonBackground(buttonBackgroundColor)
+                .buttonForeground(buttonForeGroundColor)
+                .buttonEdgeColor(buttonEdgeColor)
+                .buttontTransparentColor(buttonTransparentColor)
+                .buttonLightColor(Color.RED)
+                .buttonLightDistance(1.5f)
+                .buttonFontColor(buttonFontColor)
+                .buttonPositionX(buttonPositionX)
+                .buttonPositionY(buttonPositionY)
+                .buttonWidth(200)
+                .buttonHeight(80)
+                .buttonFont(fontMedium)
+                .buttonText(LAUNCH_BUTTON_LABEL)
+                .startButtonTextX(4)
+                .startButtonTextY(60)
+                .build();
+
+        launchButton.getSprite().setSize(200 / PIXELS_PER_METER, 80 / PIXELS_PER_METER);
     }
 
     private void initialiseIntroSequence() {
@@ -392,9 +453,34 @@ public class IntroScreen implements Screen {
 		}
 	}
 
+    @Override
+    public boolean touchDown (int screenX, int screenY, int pointer, int button) {
+        if (button == Input.Buttons.LEFT) {
+            point.set(screenX, screenY, 0);
+            box2dViewport.getCamera().unproject(point);
+            if (launchButton.getSprite().getBoundingRectangle().contains(point.x, point.y)) {
+                launchButton.getLight().setActive(true);
+                endOfIntroScreen = true;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void updateTimer(float delta) {
+        if (endOfIntroScreen) {
+            timerCount += delta;
+            if (timerCount > ONE_SECOND) {
+                timerCount = 0;
+                nextScreenTimer--;
+            }
+        }
+    }
+
     public void update(float delta) {
         tweenManager.update(delta);
-		int dsIndex = 0;
+        updateTimer(delta);
+        int dsIndex = 0;
 		for (ReelLetterTile reel : reelLetterTiles) { 		  
 			dampenedSines.get(dsIndex).update();
          	if (dampenedSines.get(dsIndex).getDSState() == DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE) {
@@ -405,8 +491,10 @@ public class IntroScreen implements Screen {
 		}
         reelTile.update(delta);
         if (endOfIntroScreen) {
-            game.setScreen(new WorldScreen(game));
-            dispose();
+            if (nextScreenTimer < 1) {
+                game.setScreen(new WorldScreen(game));
+                dispose();
+            }
         }
     }
 
@@ -423,7 +511,12 @@ public class IntroScreen implements Screen {
                 reel.draw(game.batch);
             }
             reelTile.draw(game.batch);
+            game.batch.setProjectionMatrix(box2dViewport.getCamera().combined);
+            launchButton.getSprite().draw(game.batch);
             game.batch.end();
+            rayHandler.setCombinedMatrix(box2dViewport.getCamera().combined);
+            rayHandler.updateAndRender();
+            debugRenderer.render(world, box2dViewport.getCamera().combined);
             stage.draw();
         }
     }
@@ -431,6 +524,7 @@ public class IntroScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+        box2dViewport.update(width, height);
         fontSmall.newFontCache();
     }
 
