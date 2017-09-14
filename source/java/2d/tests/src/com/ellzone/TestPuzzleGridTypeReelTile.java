@@ -118,8 +118,6 @@ public class TestPuzzleGridTypeReelTile {
         assertEquals(matchSlotBatch.get(3).getNReelTileGridValue(), matchSlotBatch.get(2));
         assertEquals(matchSlotBatch.get(3).getSReelTileGridValue(), matchSlotBatch.get(4));
         assertEquals(matchSlotBatch.get(4).getNReelTileGridValue(), matchSlotBatch.get(3));
-
-
     }
 
     private Texture createSlotReelTexture(Reels reels) {
