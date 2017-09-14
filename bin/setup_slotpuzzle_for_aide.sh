@@ -160,6 +160,8 @@ create_aide_target() {
     mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/src
     cp -r ${SLOTPUZZLE_CORE}/src/java/com ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/src
     cp -r ${SLOTPUZZLE_CORE}/src/java/org ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/src
+    cp -r ${SLOTPUZZLE_CORE}/src/java/net ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/src
+
     mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
     cp ${LIBGDX_SRC_DIR}/gdx.jar ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
     cp ${SLOTPUZZLE_ANDROID}/AndroidManifest.xml ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android
