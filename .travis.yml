@@ -4,7 +4,7 @@ android:
     - tools
     - platform-tools
     - tools
-  licenses
+  licenses:
     - 'android-sdk-license-.+'
 
 before_script: cd source/java/2d
