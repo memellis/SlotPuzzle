@@ -1,0 +1,4 @@
+before_script: cd source/java/2d
+
+script: gradle clean desktop:build android:build core:test
+
