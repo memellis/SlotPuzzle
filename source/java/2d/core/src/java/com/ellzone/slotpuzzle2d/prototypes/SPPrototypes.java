@@ -71,6 +71,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import com.ellzone.slotpuzzle2d.prototypes.icons.DownloadMamuIcons;
 
 public class SPPrototypes {
     public static final List<Class<? extends SPPrototype>> tests = new ArrayList<Class<? extends SPPrototype>>((Collection<? extends Class<? extends SPPrototype>>) Arrays.asList(
@@ -82,6 +83,7 @@ public class SPPrototypes {
 		ButtonLight.class,
 		ButtonLightUsingLightButton.class,
         ButtonLightUsingLightButtonViaFrameBuffer.class,
+		DownloadMamuIcons.class,
 		FrameBufferParticleEffectSample.class,
         SmoothScrollingWorldMap.class,
         SubPixelPerfectSmoothScrolling.class,
