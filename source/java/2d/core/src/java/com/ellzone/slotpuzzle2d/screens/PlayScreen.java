@@ -81,15 +81,15 @@ import aurelienribon.tweenengine.equations.Quart;
 import aurelienribon.tweenengine.equations.Sine;
 
 public class PlayScreen implements Screen {
-	private static final int TILE_WIDTH = 40;
-	private static final int TILE_HEIGHT = 40;
-	private static final int GAME_LEVEL_WIDTH = 11;
-	private static final int GAME_LEVEL_HEIGHT = 8;
+    public static final int TILE_WIDTH = 40;
+	public static final int TILE_HEIGHT = 40;
+	public static final int GAME_LEVEL_WIDTH = 11;
+	public static final int GAME_LEVEL_HEIGHT = 8;
 	private static final int SLOT_REEL_OBJECT_LAYER = 2;
 	private static final String HIDDEN_PATTERN_LAYER_NAME = "Hidden Pattern Object";
 	private static final int HIDDEN_PATTERN_LAYER = 0;
-	private static final float PUZZLE_GRID_START_X = 160.0f;
-	private static final float PUZZLE_GRID_START_Y = 40.0f;
+	public static final float PUZZLE_GRID_START_X = 160.0f;
+	public static final float PUZZLE_GRID_START_Y = 40.0f;
 	private static final int NUMBER_OF_SUITS = 4;
 	private static final int NUMBER_OF_CARDS_IN_A_SUIT = 13;
     private static final int FLASH_MATCHED_SLOTS_BATCH_SIZE = 8;
