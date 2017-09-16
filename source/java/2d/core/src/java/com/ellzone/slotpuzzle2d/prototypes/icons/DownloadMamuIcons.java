@@ -1,4 +1,5 @@
 package com.ellzone.slotpuzzle2d.prototypes.icons;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -7,7 +8,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Value;
-import android.view.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpMethods;
@@ -28,7 +28,7 @@ public class DownloadMamuIcons extends SPPrototype {
 	@Override
 	public void create () {
 		stage = new Stage(new FitViewport(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT));
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 		Gdx.input.setInputProcessor(stage);
 		Table container = new Table();
 		container.setFillParent(true);
@@ -54,7 +54,6 @@ public class DownloadMamuIcons extends SPPrototype {
 								public void cancelled() {
 									// TODO: Implement this method
 								}
-
 
 								@Override
 								public void handleHttpResponse (HttpResponse httpResponse) {
