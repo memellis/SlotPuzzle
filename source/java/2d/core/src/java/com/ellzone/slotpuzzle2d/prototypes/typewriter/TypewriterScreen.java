@@ -40,7 +40,9 @@ public class TypewriterScreen implements Screen {
 		typewriter.getInterpolator().setInterpolation(Interpolation.linear);
 
         // set some custom cursors
-        typewriter.getAppender().set(new CharSequence[] {"", ".", "..", "..."}, 1.5f / 4f);		
+        typewriter.getAppender().set(new CharSequence[] {"", ".", "..", "..."}, 1.5f / 4f);
+		typewriter.getAppender().set(new CharSequence[] {" ", "_"}, 1.5f / 4f);
+
 	}
 	
 	@Override

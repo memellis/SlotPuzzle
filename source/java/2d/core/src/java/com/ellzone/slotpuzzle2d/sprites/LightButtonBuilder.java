@@ -153,6 +153,10 @@ public class LightButtonBuilder {
         }
 
         public LightButtonBuilder build() {
+            if (this.world == null ||
+                this.rayHandler == null) {
+                throw new IllegalStateException("Not all required values given");
+            }
             return new LightButtonBuilder(this);
         }
     }

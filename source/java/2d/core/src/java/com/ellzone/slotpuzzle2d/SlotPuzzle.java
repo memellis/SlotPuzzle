@@ -16,9 +16,12 @@
 
 package com.ellzone.slotpuzzle2d;
 
-import com.badlogic.gdx.*;
+
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.ellzone.slotpuzzle2d.screens.LoadingScreen;
 import com.ellzone.slotpuzzle2d.screens.WorldScreen;
 
@@ -39,7 +42,7 @@ public class SlotPuzzle extends Game {
 		String logLevel = System.getProperty("libgdx.logLevel");
 		if (logLevel != null) {
 			if (logLevel.equals("DEBUG")) {
-				Gdx.app.setLogLevel(Application.LOG_DEBUG);	
+				Gdx.app.setLogLevel(Application.LOG_DEBUG);
 			} else if (logLevel.equals("INFO")) {
 				Gdx.app.setLogLevel(Application.LOG_INFO);				
 			} else if (logLevel.equals("ERROR") ) {
