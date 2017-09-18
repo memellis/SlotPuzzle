@@ -17,3 +17,10 @@ before_script: cd source/java/2d
 
 script: gradle clean desktop:build android:build core:test
 
+deploy: 
+    provider: releases 
+    api_key: "GITHUB OAUTH TOKEN" 
+    file: "source/java/2d/android/build/outputs/apk/android-debug.apk" 
+    skip_cleanup: true 
+    on: 
+        tags: true 
