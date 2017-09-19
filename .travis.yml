@@ -18,7 +18,7 @@ before_script: cd source/java/2d
 script: gradle clean desktop:build android:build core:test
 
 after_success:
-    - bin/set_tags.sh
+    - sh bin/set_tags.sh
 
 deploy: 
     provider: releases 
