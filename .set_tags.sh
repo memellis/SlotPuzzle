@@ -20,7 +20,7 @@ if [ "$TRAVIS_BRANCH" = "$BRANCH" ]; then
            # Add tag and push to master.
 
            git tag -a v${TRAVIS_BUILD_NUMBER} -m "Travis build $TRAVIS_BUILD_NUMBER pushed a tag." 
-           git push https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG} HEAD:master && git push https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG} --tags HEAD:master 
+           git push origin https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG} --tags
            git fetch origin
 
            echo -e "Done magic with tags.\n"
