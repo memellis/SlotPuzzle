@@ -1,29 +1,27 @@
 before_install:
-    - bash .android_license.sh
+- bash .android_license.sh
 language: android
 android:
   components:
-    - tools
-    - platform-tools
-    - tools
-    - build-tools-25.0.0
-    - android-23
+  - tools
+  - platform-tools
+  - tools
+  - build-tools-25.0.0
+  - android-23
   licenses:
-    - 'android-sdk-preview-license-.+'
-    - 'android-sdk-license-.+'
-    - 'google-gdk-license-.+'
-
+  - android-sdk-preview-license-.+
+  - android-sdk-license-.+
+  - google-gdk-license-.+
 before_script: cd source/java/2d
-
 script: gradle clean desktop:build android:build core:test
-
 after_success:
-    - bash ${TRAVIS_BUILD_DIR}/.set_tags.sh
-
-deploy: 
-    provider: releases 
-    api_key: "GITHUB OAUTH TOKEN" 
-    file: "source/java/2d/android/build/outputs/apk/android-debug.apk" 
-    skip_cleanup: true 
-    on: 
-        tags: true 
+- bash ${TRAVIS_BUILD_DIR}/.set_tags.sh
+deploy:
+  provider: releases
+  api_key: GITHUB OAUTH TOKEN
+  file: source/java/2d/android/build/outputs/apk/android-debug.apk
+  skip_cleanup: true
+  on:
+    tags: true
+dd:
+  secure: YhD/deYXE+d6buhagS3B9lTt+Kq8SMU8eJUW+3U06QFUwCm3AjEWz33ZShphPDFuU5k49kU8v3V12UEX7n7+gIDeE2IcClwEp9RvU7GRoa0s3Y8XQ5j39RxD4iDaA1nTif7wo1SeCu3+O/u9fLJlwaqOAj6p4uItk+ppb0NzCmWAmHjO46uiBffMjSqTthrK/eSOQLZVyYDvaG8DufnaDG4hIvcgPGiftHtS9ggiYTfTmaGZCNH7uOBMQaoas5ur0Lq4ybWH3OU7XGI11B1iSRIVEnDchjNiEk4vVUuO2piyL/9AGdlFYHgKWhTJfjlw6xQQdgMMJfMg//rsO3r9TiF9wFWnduAzHURrxZqrrMc0Xjyzc4I5k7ejWZwJWRvfqfZAtJLZxs7DMLW635u2oUeY2Nfbii220jT/ooSDvVeQb+y808SqlPLmHsrOzO5DQPQ62xBeOsaMtF8lBUcsDLqx3HPDTimrMJ0H2CrkZJxvCugdUkWwX7IrEZkHRb578ss8xuFlb0dszvUqmS97wgiLqZfR2ToN66TW32R32zg/2MaWxy0WEZb9yaxmwVk2XhE3W75CMH9EujVG2t/g97M23C/9lXowIcGPNsiO52tuiP3Oa8LyIXBpwdYnfAOlxmvpN5U6XnKzY2YHx7BXVIlmdBtThH20Eu8TSn4W9Og=
