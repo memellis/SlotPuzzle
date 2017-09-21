@@ -1,5 +1,5 @@
 before_install:
-    - openssl aes-256-cbc -K $encrypted_10d1b62feeba_key -iv $encrypted_10d1b62feeba_iv -in deploy.rsa.enc -out deploy.rsa -d
+    - openssl aes-256-cbc -K $encrypted_10d1b62feeba_key -iv $encrypted_10d1b62feeba_iv -in .deploy.rsa.enc -out .deploy.rsa -d
     - bash .android_license.sh
 language: android
 android:
