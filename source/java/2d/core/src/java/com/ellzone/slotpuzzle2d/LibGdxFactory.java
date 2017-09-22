@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class LibGdxFactory {
 
     /** Singleton instance. */
-    private static LibGdxFactory INSTANCE = new LibGdxFactory();
+    private static LibGdxFactory instance = new LibGdxFactory();
     /** Hidden constructor. */
     private LibGdxFactory() {
         // do nothing
@@ -30,12 +30,12 @@ public class LibGdxFactory {
 
     /** private constructor, allows Mockito to replace instance by Mock object. */
     private LibGdxFactory(final LibGdxFactory mock) {
-        INSTANCE = mock;
+        instance = mock;
     }
 
     /** Get instance. */
     public static LibGdxFactory getInstance() {
-        return INSTANCE;
+        return instance;
     }
 
   /* [ UNIT TESTING/MOCKS ] ================================================================================================================================ */
@@ -43,5 +43,4 @@ public class LibGdxFactory {
     public SpriteBatch newSpriteBatch() {
         return new SpriteBatch();
     }
-
 }

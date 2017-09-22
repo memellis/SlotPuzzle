@@ -45,6 +45,7 @@ import com.ellzone.slotpuzzle2d.prototypes.particle.Particle6ExtendingParticleTe
 import com.ellzone.slotpuzzle2d.prototypes.scrollingsign.ScrollSignWithMultipleMessages;
 import com.ellzone.slotpuzzle2d.prototypes.scrollingsign.ScrollingSign;
 import com.ellzone.slotpuzzle2d.prototypes.scrollingsign.ScrollingSignDynamicSignChange;
+import com.ellzone.slotpuzzle2d.prototypes.starfield.Starfield;
 import com.ellzone.slotpuzzle2d.prototypes.tween.Dynamic;
 import com.ellzone.slotpuzzle2d.prototypes.tween.Flash;
 import com.ellzone.slotpuzzle2d.prototypes.tween.GameOverPopUp;
@@ -123,7 +124,8 @@ public class SPPrototypes {
 		SpinningSlotsUsingSlotHandleSprite.class,
 		SpinningSlotsWithThreeTilesDisplayed.class,
         SpinningSlotsWithHoldButtons.class,
-		SlotPuzzleGame.class
+		SlotPuzzleGame.class,
+        Starfield.class
     ));
 
     public static List<String> getNames () {

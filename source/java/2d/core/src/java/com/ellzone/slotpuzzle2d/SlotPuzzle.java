@@ -33,7 +33,7 @@ public class SlotPuzzle extends Game {
 	@Override
 	public void create() {
 		setLogLevel();
-		batch = new SpriteBatch();
+		batch = LibGdxFactory.getInstance().newSpriteBatch();
 		assetManager = new AssetManager();
 		setScreen(new LoadingScreen(this));
 	}
