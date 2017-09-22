@@ -41,4 +41,18 @@ public class Point {
     public void setY(float y) {
         this.y = y;
     }
+
+    public Point getLocation() {
+        return new Point(this.x, this.y);
+    }
+
+    public void setLocation(Point point) {
+        this.setX(point.getX());
+        this.setY(point.getY());
+    }
+
+    public void setLocation(float x, float y) {
+        this.setX(x);
+        this.setY(y);
+    }
 }
