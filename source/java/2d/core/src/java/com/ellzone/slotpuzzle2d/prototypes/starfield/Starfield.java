@@ -18,9 +18,8 @@ package com.ellzone.slotpuzzle2d.prototypes.starfield;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.ellzone.slotpuzzle2d.physics.Point;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototypeTemplate;
-
-import java.awt.Point;
 
 public class Starfield extends SPPrototypeTemplate {
     class Star {
