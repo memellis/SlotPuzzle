@@ -1,5 +1,5 @@
 before_install:
-- eval "$(ssh-agent) -s"
+- eval `ssh-agent -s`
 - openssl aes-256-cbc -K $encrypted_fda7b6caa8fd_key -iv $encrypted_fda7b6caa8fd_iv -in .deploy_key.enc -d | ssh-add -
 - bash .android_license.sh
 language: android
