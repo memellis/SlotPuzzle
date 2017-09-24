@@ -31,18 +31,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -59,6 +56,7 @@ import com.ellzone.slotpuzzle2d.sprites.LightButtonBuilder;
 import com.ellzone.slotpuzzle2d.sprites.ReelLetter;
 import com.ellzone.slotpuzzle2d.sprites.ReelLetterTile;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
+import com.ellzone.slotpuzzle2d.sprites.StarField;
 import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
@@ -81,6 +79,9 @@ public class IntroScreen extends InputAdapter implements Screen {
 	public static final String FONT_SMALL = "exo-small";
 	public static final String FONT_MEDIUM = "exo-medium";
 	public static final String FONT_LARGE = "exo-large";
+    public static float SCALE = 0.5f;
+    public static int NUM_STARS = 255;
+
     private static final int TEXT_SPACING_SIZE = 30;
     private static final int REEL_WIDTH = 40;
     private static final int REEL_HEIGHT = 40;
@@ -129,6 +130,8 @@ public class IntroScreen extends InputAdapter implements Screen {
     private Array<PointLight> signLights;
     private float timerCount = 0;
     private int nextScreenTimer = 3;
+    private ShapeRenderer shapeRenderer;
+    private StarField starField;
 
     public IntroScreen(SlotPuzzle game) {
         this.game = game;
@@ -144,6 +147,7 @@ public class IntroScreen extends InputAdapter implements Screen {
         initialiseBox2D();
         initialiseLaunchButton();
         initialiseIntroSequence();
+        initialiseStarfield();
     }
 
     private void initialiseIntroScreen() {
@@ -429,6 +433,17 @@ public class IntroScreen extends InputAdapter implements Screen {
 		}
 	}
 
+	private void initialiseStarfield() {
+        shapeRenderer = new ShapeRenderer();
+        starField = new StarField(shapeRenderer,
+                NUM_STARS,
+                SCALE,
+                VIEWPORT_WIDTH,
+                VIEWPORT_HEIGHT,
+                random,
+                viewport);
+    }
+
 	private void restartReelLettersSpinning() {
 		int dsIndex = 0;
 		int nextSy = 0;
@@ -506,6 +521,7 @@ public class IntroScreen extends InputAdapter implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (isLoaded) {
+            starField.updateStarfield(delta, this.shapeRenderer);
             game.batch.begin();
             for (ReelLetterTile reel : reelLetterTiles) {
                 reel.draw(game.batch);
