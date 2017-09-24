@@ -16,5 +16,50 @@
 
 package com.ellzone.slotpuzzle2d.prototypes.starfield;
 
-public class StarfieldUsingStarfieldObject {
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.ellzone.slotpuzzle2d.prototypes.SPPrototypeTemplate;
+import com.ellzone.slotpuzzle2d.sprites.StarField;
+
+public class StarfieldUsingStarfieldObject extends SPPrototypeTemplate {
+    public static float SCALE = 0.5f;
+    public static int NUM_STARS = 255;
+    private ShapeRenderer shapeRenderer;
+    private StarField starField;
+
+    @Override
+    protected void initialiseOverride() {
+        shapeRenderer = new ShapeRenderer();
+        starField = new StarField(shapeRenderer,
+                                  NUM_STARS,
+                                  SCALE,
+                                  displayWindowWidth,
+                                  displayWindowHeight,
+                                  random,
+                                  viewport);
+    }
+
+    @Override
+    protected void loadAssetsOverride() {
+
+    }
+
+    @Override
+    protected void disposeOverride() {
+
+    }
+
+    @Override
+    protected void updateOverride(float dt) {
+
+    }
+
+    @Override
+    protected void renderOverride(float dt) {
+         starField.updateStarfield(dt, shapeRenderer);
+    }
+
+    @Override
+    protected void initialiseUniversalTweenEngineOverride() {
+
+    }
 }

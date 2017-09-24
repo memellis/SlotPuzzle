@@ -17,15 +17,10 @@
 package com.ellzone.slotpuzzle2d.prototypes.particle;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import java.util.Random;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.prototypes.Reels;
-import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import com.ellzone.slotpuzzle2d.physics.Vector;
 import com.ellzone.slotpuzzle2d.physics.Particle;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
