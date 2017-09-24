@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 BRANCH="master"
 
 # Are we on the right branch?
