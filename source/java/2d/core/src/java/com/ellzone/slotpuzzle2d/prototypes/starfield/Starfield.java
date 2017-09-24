@@ -29,7 +29,7 @@ public class Starfield extends SPPrototypeTemplate {
         public Color color;
     }
     public static float SCALE = 0.5f;
-    public static int NUM_STARS = 255;
+    public static int NUM_STARS = 1024;
     private Star[] stars;
     private ShapeRenderer shapeRenderer;
 
@@ -40,7 +40,7 @@ public class Starfield extends SPPrototypeTemplate {
             stars[i] = new Star();
             stars[i].position = new Point((int)(Math.random()*displayWindowWidth), (int)(Math.random()*displayWindowHeight));
             stars[i].flashState = random.nextBoolean();
-            stars[i].flashTimer = random.nextFloat()*0.3f;
+            stars[i].flashTimer = random.nextFloat()*0.5f;
             stars[i].color = new Color(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0);
         }
         shapeRenderer = new ShapeRenderer();
@@ -89,7 +89,6 @@ public class Starfield extends SPPrototypeTemplate {
                 y = displayWindowHeight;
             }
             stars[i].position.setLocation(x, y);
-			shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(stars[i].color);
             if(stars[i].flashState) {
@@ -97,7 +96,7 @@ public class Starfield extends SPPrototypeTemplate {
             }
             shapeRenderer.end();
             stars[i].flashTimer += delta;
-            if (stars[i].flashTimer > 0.3f) {
+            if (stars[i].flashTimer > 0.25f) {
                 stars[i].flashState = ! stars[i].flashState;
                 stars[i].flashTimer = 0;
             }

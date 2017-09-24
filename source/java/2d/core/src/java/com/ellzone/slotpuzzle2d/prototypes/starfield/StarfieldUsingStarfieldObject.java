@@ -14,22 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.ellzone.slotpuzzle2d.sprites;
+package com.ellzone.slotpuzzle2d.prototypes.starfield;
 
-import com.ellzone.slotpuzzle2d.GameTest;
-
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-public class BuilderTest extends GameTest {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    @Test
-    public void lightButtonBuild() {
-        thrown.expect(IllegalStateException.class);
-        LightButtonBuilder lightButton = new LightButtonBuilder.Builder().build();
-    }
+public class StarfieldUsingStarfieldObject {
 }
