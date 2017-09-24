@@ -16,13 +16,11 @@
 
 package com.ellzone.slotpuzzle2d;
 
-
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.ellzone.slotpuzzle2d.screens.LoadingScreen;
 import com.ellzone.slotpuzzle2d.screens.WorldScreen;
 
 public class SlotPuzzle extends Game {
@@ -34,8 +32,9 @@ public class SlotPuzzle extends Game {
 	public void create() {
 		setLogLevel();
 		batch = LibGdxFactory.getInstance().newSpriteBatch();
+		System.out.println(batch);
 		assetManager = new AssetManager();
-		setScreen(new LoadingScreen(this));
+		setScreen(LibGdxFactory.getInstance().newLoadScreen(this));
 	}
 	
 	private void setLogLevel() {
@@ -70,8 +69,12 @@ public class SlotPuzzle extends Game {
 	@Override
 	public void dispose() {
 		super.dispose();
-		batch.dispose();
-		assetManager.dispose();
+		if (batch != null) {
+			batch.dispose();
+		}
+		if (assetManager != null) {
+			assetManager.dispose();
+		}
 	}
 
 	@Override
