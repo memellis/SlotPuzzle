@@ -80,7 +80,7 @@ public class IntroScreen extends InputAdapter implements Screen {
 	public static final String FONT_MEDIUM = "exo-medium";
 	public static final String FONT_LARGE = "exo-large";
     public static float SCALE = 0.5f;
-    public static int NUM_STARS = 255;
+    public static int NUM_STARS = 64;
 
     private static final int TEXT_SPACING_SIZE = 30;
     private static final int REEL_WIDTH = 40;
