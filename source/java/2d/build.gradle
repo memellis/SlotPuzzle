@@ -112,7 +112,6 @@ project(":androidSPPrototypes") {
 project(":core") {
     apply plugin: "java"
 
-
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
@@ -121,7 +120,10 @@ project(":core") {
         compile fileTree(dir: '../libs', include: '*.jar')
 
         testCompile "junit:junit:4.12"
-        testCompile "org.mockito:mockito-core:2.2.7"
+        testCompile "org.mockito:mockito-core:1.10.0"
+        testCompile 'org.powermock:powermock:1.6.6'
+        testCompile 'org.powermock:powermock-module-junit4:1.6.6'
+        testCompile 'org.powermock:powermock-api-mockito:1.6.6'
 
         testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
         testCompile "com.badlogicgames.gdx:gdx:$gdxVersion"

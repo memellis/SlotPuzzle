@@ -20,9 +20,9 @@ script: gradle clean desktop:build android:build core:test
 
 after_success:
     - eval "$(ssh-agent)"
-    - chmod 600 .deploy.rsa
-    - ssh-add .deploy.rsa
-    - bash .set_tags.sh
+    - chmod 600 ${TRAVIS_BUILD_DIR}/.deploy.rsa
+    - ssh-add ${TRAVIS_BUILD_DIR}/.deploy.rsa
+    - bash ${TRAVIS_BUILD_DIR}/.set_tags.sh
 
 deploy: 
     provider: releases 
