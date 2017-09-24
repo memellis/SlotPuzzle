@@ -1,4 +1,5 @@
 before_install:
+- eval "$(ssh-agent)"
 - openssl aes-256-cbc -K $encrypted_fda7b6caa8fd_key -iv $encrypted_fda7b6caa8fd_iv
   -in .deploy_key.enc -out .deploy_key -d
 - bash .android_license.sh
@@ -21,6 +22,7 @@ after_success:
 - chmod 600 ${TRAVIS_BUILD_DIR}/.deploy_key
 - ssh-add ${TRAVIS_BUILD_DIR}/.deploy_key
 - bash ${TRAVIS_BUILD_DIR}/.set_tags.sh
+- ls ${TRAVIS_BUILD_DIR}/source/java/2d/android/build/outputs/apk/android-debug.apk
 deploy:
   provider: releases
   api_key:
