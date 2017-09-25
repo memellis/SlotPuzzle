@@ -37,23 +37,23 @@ public class SlotPuzzle extends Game {
 	}
 	
 	private void setLogLevel() {
-		String logLevel = System.getProperty("libgdx.logLevel");
+		String logLevel = System.getProperty(SlotPuzzleConstants.LIBGDX_LOGLEVEL_PROPERTY);
 		if (logLevel != null) {
-			if (logLevel.equals("DEBUG")) {
+			if (logLevel.equals(SlotPuzzleConstants.DEBUG)) {
 				Gdx.app.setLogLevel(Application.LOG_DEBUG);
-			} else if (logLevel.equals("INFO")) {
+			} else if (logLevel.equals(SlotPuzzleConstants.INFO)) {
 				Gdx.app.setLogLevel(Application.LOG_INFO);				
-			} else if (logLevel.equals("ERROR") ) {
+			} else if (logLevel.equals(SlotPuzzleConstants.ERROR) ) {
 				Gdx.app.setLogLevel(Application.LOG_ERROR);								
 			}
 		} else {
-			logLevel= System.getenv("LIBGDX_LOGLEVEL");
+			logLevel= System.getenv(SlotPuzzleConstants.LIBGDX_LOGLEVEL);
 			if ((logLevel != null) && (logLevel != "")) {
-				if (logLevel.equals("DEBUG")) {
+				if (logLevel.equals(SlotPuzzleConstants.DEBUG)) {
 					Gdx.app.setLogLevel(Application.LOG_DEBUG);	
-				} else if (logLevel.equals("INFO")) {
+				} else if (logLevel.equals(SlotPuzzleConstants.INFO)) {
 					Gdx.app.setLogLevel(Application.LOG_INFO);				
-				} else if (logLevel.equals("ERROR") ) {
+				} else if (logLevel.equals(SlotPuzzleConstants.ERROR) ) {
 					Gdx.app.setLogLevel(Application.LOG_ERROR);								
 				}
 			}

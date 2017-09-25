@@ -36,6 +36,7 @@
     <orderEntry type="library" exported="" scope="TEST" name="junit-4.12" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="powermock-module-junit4-1.6.6" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="powermock-api-mockito-1.6.6" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="system-rules-1.16.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="gdx-backend-headless-1.9.6" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="gdx-platform-1.9.6-natives-desktop" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="gdx-box2d-platform-1.9.6-natives-desktop" level="project" />

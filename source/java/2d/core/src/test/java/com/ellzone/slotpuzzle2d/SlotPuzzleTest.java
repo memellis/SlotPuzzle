@@ -22,6 +22,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -29,22 +30,26 @@ import com.ellzone.slotpuzzle2d.screens.LoadingScreen;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
 public class SlotPuzzleTest {
-    public final static String DEBUG = "DEBUG";
-    public final static String INFO = "INFO";
-    public final static String ERROR = "INFO";
-    String[] logLevelsAsStrings = {DEBUG, INFO, ERROR};
+    String[] logLevelsAsStrings = {SlotPuzzleConstants.DEBUG, SlotPuzzleConstants.INFO, SlotPuzzleConstants.ERROR};
     int[] logLevels = {Application.LOG_DEBUG, Application.LOG_INFO, Application.LOG_ERROR};
 
     @Mock
@@ -87,11 +92,25 @@ public class SlotPuzzleTest {
     }
 
     @Test
-    public void testSlotPuzzleSetLogLevel() {
+    public void testSlotPuzzleSetLogLevelViaSystemProperty() {
         for (int i=0; i<logLevels.length; i++) {
-            System.setProperty("libgdx.logLevel", logLevelsAsStrings[i]);
+            System.setProperty(SlotPuzzleConstants.LIBGDX_LOGLEVEL_PROPERTY, logLevelsAsStrings[i]);
             when(Gdx.app.getLogLevel()).thenReturn(logLevels[i]);
             slotPuzzle.create();
+            assertThat(Gdx.app.getLogLevel(), is(equalTo(logLevels[i])));
+        }
+    }
+
+    @Rule
+    public final EnvironmentVariables environmentVariables = new EnvironmentVariables();
+
+    @Test
+    public void testSlotPuzzleSetLogLevelViaEnviromentVariable() {
+        for (int i=0; i<logLevels.length; i++) {
+            environmentVariables.set(SlotPuzzleConstants.LIBGDX_LOGLEVEL, logLevelsAsStrings[i]);
+            assertEquals(logLevelsAsStrings[i], System.getenv(SlotPuzzleConstants.LIBGDX_LOGLEVEL));
+            slotPuzzle.create();
+            when(Gdx.app.getLogLevel()).thenReturn(logLevels[i]);
             assertThat(Gdx.app.getLogLevel(), is(equalTo(logLevels[i])));
         }
     }
