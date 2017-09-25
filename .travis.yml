@@ -17,8 +17,6 @@ android:
 before_script: cd source/java/2d
 script: gradle clean desktop:build android:build core:test
 after_success:
-- chmod 600 ${TRAVIS_BUILD_DIR}/.deploy_key
-- ssh-add ${TRAVIS_BUILD_DIR}/.deploy_key
 - bash ${TRAVIS_BUILD_DIR}/.set_tags.sh
 deploy:
   skip_cleanup: true
