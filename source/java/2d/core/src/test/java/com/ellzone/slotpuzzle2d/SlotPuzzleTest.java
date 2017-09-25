@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.screens.LoadingScreen;
 
@@ -40,6 +41,11 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SlotPuzzleTest {
+    public final static String DEBUG = "DEBUG";
+    public final static String INFO = "INFO";
+    public final static String ERROR = "INFO";
+    String[] logLevelsAsStrings = {DEBUG, INFO, ERROR};
+    int[] logLevels = {Application.LOG_DEBUG, Application.LOG_INFO, Application.LOG_ERROR};
 
     @Mock
     protected LibGdxFactory mLibGdxFactory;
@@ -58,7 +64,6 @@ public class SlotPuzzleTest {
 
     @Before
     public void setUp() {
-        //MockitoAnnotations.initMocks(this);
         final BitmapFont bitmapFont = mock(BitmapFont.class);
         LoadingScreen loadingScreen = mock(LoadingScreen.class);
 
@@ -67,7 +72,6 @@ public class SlotPuzzleTest {
 
         when(mLibGdxFactory.newSpriteBatch()).thenReturn(mock(SpriteBatch.class));
         when(mLibGdxFactory.newLoadScreen(any(SlotPuzzle.class))).thenReturn(mock(LoadingScreen.class));
-        slotPuzzle.create();
     }
 
     @After
@@ -77,8 +81,18 @@ public class SlotPuzzleTest {
     }
 
     @Test
-    public void testSlotPuzzle() {
+    public void testSlotPuzzleMocked() {
+        slotPuzzle.create();
         assertThat(mLibGdxFactory.getClass().getName(), is(equalTo(LibGdxFactory.getInstance().getClass().getName())));
+    }
 
+    @Test
+    public void testSlotPuzzleSetLogLevel() {
+        for (int i=0; i<logLevels.length; i++) {
+            System.setProperty("libgdx.logLevel", logLevelsAsStrings[i]);
+            when(Gdx.app.getLogLevel()).thenReturn(logLevels[i]);
+            slotPuzzle.create();
+            assertThat(Gdx.app.getLogLevel(), is(equalTo(logLevels[i])));
+        }
     }
 }

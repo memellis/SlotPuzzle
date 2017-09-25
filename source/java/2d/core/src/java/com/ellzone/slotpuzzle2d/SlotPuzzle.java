@@ -32,7 +32,6 @@ public class SlotPuzzle extends Game {
 	public void create() {
 		setLogLevel();
 		batch = LibGdxFactory.getInstance().newSpriteBatch();
-		System.out.println(batch);
 		assetManager = new AssetManager();
 		setScreen(LibGdxFactory.getInstance().newLoadScreen(this));
 	}
