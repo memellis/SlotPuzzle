@@ -60,7 +60,12 @@ public class SpinningSlotsWithThreeTilesDisplayed extends SPPrototypeTemplate {
 		touch = new Vector2();
 	}
 
-	@Override
+    @Override
+    protected void initialiseScreenOverride() {
+
+    }
+
+    @Override
 	protected void loadAssetsOverride() {
 		Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
 		Assets.inst().load("slot_handle/slot_handle.pack.atlas", TextureAtlas.class);

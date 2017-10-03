@@ -58,7 +58,12 @@ public class Flash extends SPPrototypeTemplate {
         Gdx.input.setInputProcessor(inputProcessor);
 	}
 
-	@Override
+    @Override
+    protected void initialiseScreenOverride() {
+
+    }
+
+    @Override
 	protected void loadAssetsOverride() {
 	}
 

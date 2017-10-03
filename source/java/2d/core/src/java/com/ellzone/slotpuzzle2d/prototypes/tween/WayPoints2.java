@@ -49,7 +49,12 @@ public class WayPoints2 extends SPPrototypeTemplate {
         initialiseTweens();
 	}
 
-	@Override
+    @Override
+    protected void initialiseScreenOverride() {
+
+    }
+
+    @Override
 	protected void loadAssetsOverride() {
 	}
 

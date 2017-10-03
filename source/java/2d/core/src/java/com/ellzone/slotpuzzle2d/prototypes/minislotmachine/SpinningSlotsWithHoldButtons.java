@@ -81,6 +81,11 @@ public class SpinningSlotsWithHoldButtons extends SPPrototypeTemplate {
         createHoldButtons();
     }
 
+    @Override
+    protected void initialiseScreenOverride() {
+
+    }
+
     private void createHoldButtons() {
         lightViewport = new FitViewport(SlotPuzzleConstants.V_WIDTH / PIXELS_PER_METER, SlotPuzzleConstants.V_HEIGHT / PIXELS_PER_METER);
         lightViewport.getCamera().position.set(lightViewport.getCamera().position.x + SlotPuzzleConstants.V_WIDTH / PIXELS_PER_METER * 0.5f,
@@ -113,7 +118,7 @@ public class SpinningSlotsWithHoldButtons extends SPPrototypeTemplate {
 
         reelHelperLight = new PointLight(rayHandler, 32);
         reelHelperLight.setActive(true);
-        reelHelperLight.setColor(Color.WHITE);
+        reelHelperLight.setColor(Color.RED);
         reelHelperLight.setDistance(1.0f);
         reelHelperLight.setPosition(48 / PIXELS_PER_METER,  (sprites[0].getY() + 16) / PIXELS_PER_METER);
 

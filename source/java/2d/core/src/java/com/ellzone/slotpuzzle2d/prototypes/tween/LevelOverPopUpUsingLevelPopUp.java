@@ -56,6 +56,11 @@ public class LevelOverPopUpUsingLevelPopUp extends SPPrototypeTemplate {
     }
 
     @Override
+    protected void initialiseScreenOverride() {
+
+    }
+
+    @Override
     protected void loadAssetsOverride() {
         Assets.inst().load("tiles/tiles.pack.atlas", TextureAtlas.class);
         Assets.inst().update();

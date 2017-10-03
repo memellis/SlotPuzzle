@@ -51,7 +51,12 @@ public class Bezier1 extends SPPrototypeTemplate {
         shapeRenderer = new ShapeRenderer();
 	}
 
-	@Override
+    @Override
+    protected void initialiseScreenOverride() {
+
+    }
+
+    @Override
 	protected void loadAssetsOverride() {
 	}
 

@@ -51,6 +51,7 @@ public abstract class SPPrototypeTemplate extends SPPrototype {
 	protected int displayWindowWidth;
 
     protected abstract void initialiseOverride();
+    protected abstract void initialiseScreenOverride();
     protected abstract void loadAssetsOverride();
     protected abstract void disposeOverride();
     protected abstract void updateOverride(float dt);
@@ -123,7 +124,9 @@ public abstract class SPPrototypeTemplate extends SPPrototype {
 
 	protected void initialiseScreen() {
 		viewport = new FitViewport(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT);
-		stage = new Stage(viewport, batch); 
+		stage = new Stage(viewport, batch);
+
+        initialiseScreenOverride();
 	}
 	
     protected void initialiseUniversalTweenEngine() {

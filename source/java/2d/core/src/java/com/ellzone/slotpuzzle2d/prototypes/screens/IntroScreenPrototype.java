@@ -31,6 +31,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -97,16 +98,14 @@ public class IntroScreenPrototype extends InputAdapter implements Screen {
     private static final String COPYRIGHT_YEAR_AUTHOR_TEXT = COPYRIGHT + "2017 Mark Ellis";
     private static final String LAUNCH_BUTTON_LABEL = "LAUNCH!";
 	private static final float PIXELS_PER_METER = 100;
-	private static final float SCENE_WIDTH = 12.80f; // 12.8 metres wide
-    private static final float SCENE_HEIGHT = 7.20f; // 7.2 metres high
 	public static final float ONE_SECOND = 1.0f;
 
-    private SlotPuzzleGame game;
+    private SlotPuzzle game;
     private Texture textTexture;
     private Pixmap slotReelPixmap;
     private Texture slotReelTexture;
     private final OrthographicCamera camera = new OrthographicCamera();
-    private Viewport viewport, box2dViewport;
+    private Viewport viewport, lightViewport;
     private Stage stage;
     private BitmapFont fontSmall;
     private BitmapFont fontMedium;
@@ -136,14 +135,17 @@ public class IntroScreenPrototype extends InputAdapter implements Screen {
     private Array<PointLight> signLights;
     private float timerCount = 0;
     private int nextScreenTimer = 3;
+    private float sceneWidth = SlotPuzzleConstants.V_WIDTH / SlotPuzzleConstants.PIXELS_PER_METER;
+    private float sceneHeight = SlotPuzzleConstants.V_HEIGHT / SlotPuzzleConstants.PIXELS_PER_METER;
 
-    public IntroScreenPrototype(SlotPuzzleGame game) {
+    public IntroScreenPrototype(SlotPuzzle game) {
         this.game = game;
         defineIntroScreen();
     }
 
     void defineIntroScreen() {
-    	initialiseIntroScreen();
+        initialiseAssets();
+        initialiseIntroScreen();
         initialiseTweenEngine();
         initialiseFonts();
         initialiseIntroScreenText();
@@ -153,14 +155,32 @@ public class IntroScreenPrototype extends InputAdapter implements Screen {
         initialiseIntroSequence();
     }
 
+    private void initialiseAssets() {
+        Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
+        Assets.inst().update();
+        Assets.inst().finishLoading();
+        isLoaded = true;
+
+        TextureAtlas atlas = Assets.inst().get("reel/reels.pack.atlas", TextureAtlas.class);
+        cherry = atlas.createSprite("cherry");
+        cheesecake = atlas.createSprite("cheesecake");
+        grapes = atlas.createSprite("grapes");
+        jelly = atlas.createSprite("jelly");
+        lemon = atlas.createSprite("lemon");
+        peach = atlas.createSprite("peach");
+        pear = atlas.createSprite("pear");
+        tomato = atlas.createSprite("tomato");
+
+        sprites = new Sprite[]{cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
+        for (Sprite sprite : sprites) {
+            sprite.setOrigin(0, 0);
+        }
+    }
+
     private void initialiseIntroScreen() {
         viewport = new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, camera);
         stage = new Stage(viewport, game.batch);
-		box2dViewport = new FitViewport(SCENE_WIDTH, SCENE_HEIGHT);
-        box2dViewport.getCamera().position.set(box2dViewport.getCamera().position.x + SCENE_WIDTH*0.5f,
-										       box2dViewport.getCamera().position.y + SCENE_HEIGHT*0.5f,
-										       0);
-        box2dViewport.getCamera().update();
+
         ReelLetter.instanceCount = 0;
         endOfIntroScreen = false;
         Gdx.input.setInputProcessor(this);
@@ -223,7 +243,12 @@ public class IntroScreenPrototype extends InputAdapter implements Screen {
     }
 
 	private void initialiseBox2D() {
-		world = new World(new Vector2(0, -9.8f), true);
+        lightViewport = new FitViewport(sceneWidth, sceneHeight);
+        lightViewport.getCamera().position.set(lightViewport.getCamera().position.x + sceneWidth * 0.5f,
+                lightViewport.getCamera().position.y + sceneHeight * 0.5f,
+                0);
+        lightViewport.getCamera().update();
+        world = new World(new Vector2(0, -9.8f), true);
         debugRenderer = new Box2DDebugRenderer();
 
         rayHandler = new RayHandler(world);
@@ -231,26 +256,36 @@ public class IntroScreenPrototype extends InputAdapter implements Screen {
         rayHandler.setAmbientLight(0.5f, 0.5f, 0.5f, 0.1f);
 
         signLights = new Array<PointLight>();
+        addSignLights(rayHandler, signLights);
+    }
+
+    private void addSignLights(RayHandler rayHandler, Array<PointLight> signLights) {
         PointLight signLight1 = new PointLight(rayHandler, 32);
         signLight1.setActive(true);
-        signLight1.setColor(Color.WHITE);
-        signLight1.setDistance(2.0f);
-        signLight1.setPosition(SCENE_WIDTH / 2, SCENE_HEIGHT / 2);
+        signLight1.setColor(Color.RED);
+        signLight1.setDistance(1.0f);
+        signLight1.setPosition(SlotPuzzleConstants.V_WIDTH * (PIXELS_PER_METER / 2), SlotPuzzleConstants.V_HEIGHT / (PIXELS_PER_METER / 2));
         signLights.add(signLight1);
 
         PointLight signLight2 = new PointLight(rayHandler, 32);
         signLight2.setActive(true);
-        signLight2.setColor(Color.WHITE);
-        signLight2.setDistance(2.0f);
-        signLight2.setPosition(SCENE_WIDTH / 4, SCENE_HEIGHT / 2);
+        signLight2.setColor(Color.RED);
+        signLight2.setDistance(1.0f);
+        signLight2.setPosition(SlotPuzzleConstants.V_WIDTH / (PIXELS_PER_METER / 4), SlotPuzzleConstants.V_HEIGHT / (PIXELS_PER_METER / 2));
         signLights.add(signLight1);
 
         PointLight signLight3 = new PointLight(rayHandler, 32);
-        signLight1.setActive(true);
-        signLight1.setColor(Color.WHITE);
-        signLight1.setDistance(2.0f);
-        signLight1.setPosition(SCENE_WIDTH / 2 + SCENE_WIDTH / 4, SCENE_HEIGHT / 2);
-        signLights.add(signLight1);
+        signLight3.setActive(true);
+        signLight3.setColor(Color.RED);
+        signLight3.setDistance(1.0f);
+        signLight3.setPosition(SlotPuzzleConstants.V_WIDTH / (PIXELS_PER_METER / 2) + SlotPuzzleConstants.V_HEIGHT / (PIXELS_PER_METER / 4), SlotPuzzleConstants.V_HEIGHT / (PIXELS_PER_METER / 2));
+        signLights.add(signLight3);
+
+        PointLight reelHelperLight = new PointLight(rayHandler, 32);
+        reelHelperLight.setActive(true);
+        reelHelperLight.setColor(Color.RED);
+        reelHelperLight.setDistance(1.0f);
+        reelHelperLight.setPosition(48 / PIXELS_PER_METER,  (sprites[0].getY() + 16) / PIXELS_PER_METER);
     }
 	
 	private void initialiseLaunchButton() {
@@ -259,8 +294,10 @@ public class IntroScreenPrototype extends InputAdapter implements Screen {
         Color buttonEdgeColor = new Color(Color.BROWN);
         Color buttonTransparentColor = new Color(0, 200, 200, 0);
         Color buttonFontColor = new Color(Color.YELLOW);
-        float buttonPositionX = 200 / PIXELS_PER_METER  + SCENE_WIDTH / 2 - (3 * 200 / PIXELS_PER_METER) / 2;
-        float buttonPositionY = SCENE_HEIGHT / 11;
+        float buttonPositionX = 275 / PIXELS_PER_METER;
+        float buttonPositionY = this.sceneHeight / 12;
+        int buttonWidth = 200;
+        int buttonHeight= 40;
 
         launchButton = new LightButtonBuilder.Builder()
                             .world(world)
@@ -274,15 +311,15 @@ public class IntroScreenPrototype extends InputAdapter implements Screen {
                             .buttonFontColor(buttonFontColor)
                             .buttonPositionX(buttonPositionX)
                             .buttonPositionY(buttonPositionY)
-                            .buttonWidth(200)
-                            .buttonHeight(80)
+                            .buttonWidth(buttonWidth)
+                            .buttonHeight(buttonHeight)
                             .buttonFont(fontMedium)
                             .buttonText(LAUNCH_BUTTON_LABEL)
                             .startButtonTextX(4)
-                            .startButtonTextY(60)
+                            .startButtonTextY(36)
                             .build();
 
-		launchButton.getSprite().setSize(200 / PIXELS_PER_METER, 80 / PIXELS_PER_METER);
+		launchButton.getSprite().setSize(buttonWidth / PIXELS_PER_METER, buttonHeight / PIXELS_PER_METER);
 	}
 
     private void initialiseIntroSequence() {
@@ -323,7 +360,6 @@ public class IntroScreenPrototype extends InputAdapter implements Screen {
         introSeq = introSeq
 			.start(tweenManager);
 
-        initialiseAssets();
 
         slotReelPixmap = new Pixmap(REEL_WIDTH, REEL_HEIGHT, Pixmap.Format.RGBA8888);
         slotReelPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
@@ -339,28 +375,6 @@ public class IntroScreenPrototype extends InputAdapter implements Screen {
 			repeat(100, 0.0f).
 			push(SlotPuzzleTween.to(reelTile, ReelAccessor.SCROLL_XY, 5.0f).target(0f, 32.0f * 8 * 3 + random.nextInt(slotReelTexture.getHeight() / 32) * 32).ease(Elastic.OUT)).
 			start(tweenManager);
-    }
-
-    private void initialiseAssets() {
-        Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
-        Assets.inst().update();
-        Assets.inst().finishLoading();
-        isLoaded = true;
-
-        TextureAtlas atlas = Assets.inst().get("reel/reels.pack.atlas", TextureAtlas.class);
-        cherry = atlas.createSprite("cherry");
-        cheesecake = atlas.createSprite("cheesecake");
-        grapes = atlas.createSprite("grapes");
-        jelly = atlas.createSprite("jelly");
-        lemon = atlas.createSprite("lemon");
-        peach = atlas.createSprite("peach");
-        pear = atlas.createSprite("pear");
-        tomato = atlas.createSprite("tomato");
-
-        sprites = new Sprite[]{cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
-        for (Sprite sprite : sprites) {
-            sprite.setOrigin(0, 0);
-        }
     }
 
 	private void initialiseDampenedSine() {
@@ -463,7 +477,7 @@ public class IntroScreenPrototype extends InputAdapter implements Screen {
     public boolean touchDown (int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.LEFT) {
             point.set(screenX, screenY, 0);
-            box2dViewport.getCamera().unproject(point);
+            lightViewport.getCamera().unproject(point);
             if (launchButton.getSprite().getBoundingRectangle().contains(point.x, point.y)) {
                 launchButton.getLight().setActive(true);
                 endOfIntroScreen = true;
@@ -511,26 +525,25 @@ public class IntroScreenPrototype extends InputAdapter implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		
         if (isLoaded) {
             game.batch.begin();
             for (ReelLetterTile reel : reelLetterTiles) {
                 reel.draw(game.batch);
             }
             reelTile.draw(game.batch);
-			game.batch.setProjectionMatrix(box2dViewport.getCamera().combined);
+    		game.batch.setProjectionMatrix(lightViewport.getCamera().combined);
             launchButton.getSprite().draw(game.batch);
             game.batch.end();
-			rayHandler.setCombinedMatrix(box2dViewport.getCamera().combined);
+			rayHandler.setCombinedMatrix(lightViewport.getCamera().combined);
 			rayHandler.updateAndRender();
-			debugRenderer.render(world, box2dViewport.getCamera().combined);
+			debugRenderer.render(world, lightViewport.getCamera().combined);
 			stage.draw();
         }
     }
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-		box2dViewport.update(width, height);		
+		lightViewport.update(width, height);
         fontSmall.newFontCache();
     }
 
@@ -555,15 +568,6 @@ public class IntroScreenPrototype extends InputAdapter implements Screen {
         if (tweenManager != null) {
         	tweenManager.killAll();
         }
-        if (slotReelPixmap != null) {
-        	//slotReelPixmap.dispose();
-        }
-        if (slotReelTexture != null) {
-        	//slotReelTexture.dispose();
-        }
-        if (textTexture != null) {
-        	//textTexture.dispose();
-        }
         if (fontSmall != null) {
         	fontSmall.dispose();
         }
@@ -575,7 +579,7 @@ public class IntroScreenPrototype extends InputAdapter implements Screen {
         }
     }
 
-    public SlotPuzzleGame getGame() {
+    public SlotPuzzle getGame() {
         return this.game;
     }
 }

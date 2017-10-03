@@ -66,7 +66,12 @@ public class SpinningSlots extends SPPrototypeTemplate {
 		touch = new Vector2();
 	}
 
-	@Override
+    @Override
+    protected void initialiseScreenOverride() {
+
+    }
+
+    @Override
 	protected void loadAssetsOverride() {
 		Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
 		Assets.inst().load("handle/handle.pack.atlas", TextureAtlas.class);

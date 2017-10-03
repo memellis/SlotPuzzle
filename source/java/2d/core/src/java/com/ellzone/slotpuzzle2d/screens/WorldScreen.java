@@ -108,7 +108,6 @@ public class WorldScreen implements Screen {
 	private String message = "";
     private InputMultiplexer inputMultiplexer;
 	private boolean inPlayScreen = false;
-
 	   
     public WorldScreen(SlotPuzzle game) {
 		this.game = game;

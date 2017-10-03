@@ -29,9 +29,6 @@ import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototypeTemplate;
 
 public class Bezier2 extends SPPrototypeTemplate {
-
-
-	
     private Pixmap slotReelScrollPixmap;
     private Texture slotReelScrollTexture;
     private ReelTile reelTile;
@@ -51,7 +48,12 @@ public class Bezier2 extends SPPrototypeTemplate {
         shapeRenderer = new ShapeRenderer();
 	}
 
-	@Override
+    @Override
+    protected void initialiseScreenOverride() {
+
+    }
+
+    @Override
 	protected void loadAssetsOverride() {
 	}
 

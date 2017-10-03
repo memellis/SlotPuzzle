@@ -137,7 +137,12 @@ public class Basic2D extends SPPrototypeTemplate {
         sprites.add(sprite);
 	}
 
-	@Override
+    @Override
+    protected void initialiseScreenOverride() {
+
+    }
+
+    @Override
 	protected void loadAssetsOverride() {
 	}
 

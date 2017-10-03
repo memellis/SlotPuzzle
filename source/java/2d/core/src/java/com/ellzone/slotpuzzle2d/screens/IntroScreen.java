@@ -72,8 +72,6 @@ import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
 public class IntroScreen extends InputAdapter implements Screen {
-	private static final int VIEWPORT_WIDTH = 800;
-	private static final int VIEWPORT_HEIGHT = 480;
 	public static final String LIBERATION_MONO_REGULAR_FONT_NAME = "LiberationMono-Regular.ttf";
 	public static final String GENERATED_FONTS_DIR = "generated-fonts/";
 	public static final String FONT_SMALL = "exo-small";
@@ -91,16 +89,13 @@ public class IntroScreen extends InputAdapter implements Screen {
     private static final String AUTHOR_TEXT = "Mark Ellis";
     private static final String COPYRIGHT_YEAR_AUTHOR_TEXT = COPYRIGHT + "2017 Mark Ellis";
     private static final String LAUNCH_BUTTON_LABEL = "LAUNCH!";
-    private static final float PIXELS_PER_METER = 100;
-    private static final float SCENE_WIDTH = 12.80f;
-    private static final float SCENE_HEIGHT = 7.20f;
     public static final float ONE_SECOND = 1.0f;
     private SlotPuzzle game;
     private Texture textTexture;
     private Pixmap slotReelPixmap;
     private Texture slotReelTexture;
     private final OrthographicCamera camera = new OrthographicCamera();
-    private Viewport viewport, box2dViewport;
+    private Viewport viewport, lightViewport;
     private Stage stage;
     private BitmapFont fontSmall;
     private BitmapFont fontMedium;
@@ -132,6 +127,8 @@ public class IntroScreen extends InputAdapter implements Screen {
     private int nextScreenTimer = 3;
     private ShapeRenderer shapeRenderer;
     private StarField starField;
+    private float sceneWidth = SlotPuzzleConstants.V_WIDTH / SlotPuzzleConstants.PIXELS_PER_METER;
+    private float sceneHeight = SlotPuzzleConstants.V_HEIGHT / SlotPuzzleConstants.PIXELS_PER_METER;
 
     public IntroScreen(SlotPuzzle game) {
         this.game = game;
@@ -151,13 +148,15 @@ public class IntroScreen extends InputAdapter implements Screen {
     }
 
     private void initialiseIntroScreen() {
-        viewport = new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, camera);
+        viewport = new FitViewport(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT, camera);
         stage = new Stage(viewport, game.batch);
-        box2dViewport = new FitViewport(SCENE_WIDTH, SCENE_HEIGHT);
-        box2dViewport.getCamera().position.set(box2dViewport.getCamera().position.x + SCENE_WIDTH*0.5f,
-                box2dViewport.getCamera().position.y + SCENE_HEIGHT*0.5f,
-                0);
-        box2dViewport.getCamera().update();
+        lightViewport = new FitViewport(sceneWidth, sceneHeight);
+        lightViewport.getCamera().position.set(lightViewport.getCamera().position.x + sceneWidth * 0.5f,
+                                               lightViewport.getCamera().position.y + sceneHeight * 0.5f,
+                                               0);
+        lightViewport.getCamera().update();
+        lightViewport.update(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT);
+
 
         ReelLetter.instanceCount = 0;
         endOfIntroScreen = false;
@@ -233,21 +232,21 @@ public class IntroScreen extends InputAdapter implements Screen {
         signLight1.setActive(true);
         signLight1.setColor(Color.WHITE);
         signLight1.setDistance(2.0f);
-        signLight1.setPosition(SCENE_WIDTH / 2, SCENE_HEIGHT / 2);
+        signLight1.setPosition(sceneWidth / 2, sceneHeight / 2);
         signLights.add(signLight1);
 
         PointLight signLight2 = new PointLight(rayHandler, 32);
         signLight2.setActive(true);
         signLight2.setColor(Color.WHITE);
         signLight2.setDistance(2.0f);
-        signLight2.setPosition(SCENE_WIDTH / 4, SCENE_HEIGHT / 2);
+        signLight2.setPosition(sceneWidth / 4, sceneHeight / 2);
         signLights.add(signLight2);
 
         PointLight signLight3 = new PointLight(rayHandler, 32);
         signLight1.setActive(true);
         signLight1.setColor(Color.WHITE);
         signLight1.setDistance(2.0f);
-        signLight1.setPosition(SCENE_WIDTH / 2 + SCENE_WIDTH / 4, SCENE_HEIGHT / 2);
+        signLight1.setPosition(sceneWidth / 2 + sceneWidth / 4, sceneHeight / 2);
         signLights.add(signLight3);
     }
 
@@ -257,8 +256,10 @@ public class IntroScreen extends InputAdapter implements Screen {
         Color buttonEdgeColor = new Color(Color.BROWN);
         Color buttonTransparentColor = new Color(0, 200, 200, 0);
         Color buttonFontColor = new Color(Color.YELLOW);
-        float buttonPositionX = 200 / PIXELS_PER_METER  + SCENE_WIDTH / 2 - (3 * 200 / PIXELS_PER_METER) / 2;
-        float buttonPositionY = SCENE_HEIGHT / 15;
+        float buttonPositionX = 275 / (float) SlotPuzzleConstants.PIXELS_PER_METER;
+        float buttonPositionY = sceneHeight / 12.0f;
+        int buttonWidth = 200;
+        int buttonHeight = 40;
 
         launchButton = new LightButtonBuilder.Builder()
                 .world(world)
@@ -272,15 +273,15 @@ public class IntroScreen extends InputAdapter implements Screen {
                 .buttonFontColor(buttonFontColor)
                 .buttonPositionX(buttonPositionX)
                 .buttonPositionY(buttonPositionY)
-                .buttonWidth(200)
-                .buttonHeight(80)
+                .buttonWidth(buttonWidth)
+                .buttonHeight(buttonHeight)
                 .buttonFont(fontMedium)
                 .buttonText(LAUNCH_BUTTON_LABEL)
                 .startButtonTextX(4)
-                .startButtonTextY(60)
+                .startButtonTextY(36)
                 .build();
 
-        launchButton.getSprite().setSize(200 / PIXELS_PER_METER, 80 / PIXELS_PER_METER);
+       launchButton.getSprite().setSize((float) (buttonWidth / (float)SlotPuzzleConstants.PIXELS_PER_METER), buttonHeight / (float)SlotPuzzleConstants.PIXELS_PER_METER);
     }
 
     private void initialiseIntroSequence() {
@@ -438,8 +439,8 @@ public class IntroScreen extends InputAdapter implements Screen {
         starField = new StarField(shapeRenderer,
                 NUM_STARS,
                 SCALE,
-                VIEWPORT_WIDTH,
-                VIEWPORT_HEIGHT,
+                SlotPuzzleConstants.V_WIDTH,
+                SlotPuzzleConstants.V_HEIGHT,
                 random,
                 viewport);
     }
@@ -472,7 +473,7 @@ public class IntroScreen extends InputAdapter implements Screen {
     public boolean touchDown (int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.LEFT) {
             point.set(screenX, screenY, 0);
-            box2dViewport.getCamera().unproject(point);
+            lightViewport.getCamera().unproject(point);
             if (launchButton.getSprite().getBoundingRectangle().contains(point.x, point.y)) {
                 launchButton.getLight().setActive(true);
                 endOfIntroScreen = true;
@@ -527,12 +528,12 @@ public class IntroScreen extends InputAdapter implements Screen {
                 reel.draw(game.batch);
             }
             reelTile.draw(game.batch);
-            game.batch.setProjectionMatrix(box2dViewport.getCamera().combined);
+            game.batch.setProjectionMatrix(lightViewport.getCamera().combined);
             launchButton.getSprite().draw(game.batch);
             game.batch.end();
-            rayHandler.setCombinedMatrix(box2dViewport.getCamera().combined);
+            rayHandler.setCombinedMatrix(lightViewport.getCamera().combined);
             rayHandler.updateAndRender();
-            debugRenderer.render(world, box2dViewport.getCamera().combined);
+            debugRenderer.render(world, lightViewport.getCamera().combined);
             stage.draw();
         }
     }
@@ -540,7 +541,7 @@ public class IntroScreen extends InputAdapter implements Screen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        box2dViewport.update(width, height);
+        lightViewport.update(width, height);
         fontSmall.newFontCache();
     }
 

@@ -57,7 +57,12 @@ public class IntroSequence extends SPPrototypeTemplate {
 		createIntroSequence();
 	}
 
-	@Override
+    @Override
+    protected void initialiseScreenOverride() {
+
+    }
+
+    @Override
 	protected void loadAssetsOverride() {
 	}
 

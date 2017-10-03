@@ -47,7 +47,12 @@ public class GameOverPopUp extends SPPrototypeTemplate {
 		font = new BitmapFont();
 	}
 
-	@Override
+    @Override
+    protected void initialiseScreenOverride() {
+
+    }
+
+    @Override
 	protected void loadAssetsOverride() {
 		Assets.inst().load("tiles/tiles.pack.atlas", TextureAtlas.class);
 		Assets.inst().update();

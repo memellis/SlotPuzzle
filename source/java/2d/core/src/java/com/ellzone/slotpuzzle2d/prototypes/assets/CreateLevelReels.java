@@ -76,6 +76,11 @@ public class CreateLevelReels extends SPPrototypeTemplate {
         touch = new Vector2(0, 0);
     }
 
+    @Override
+    protected void initialiseScreenOverride() {
+
+    }
+
     private void initialiseFonts() {
         SmartFontGenerator fontGen = new SmartFontGenerator();
         FileHandle internalFontFile = Gdx.files.internal(LIBERATION_MONO_REGULAR_FONT_NAME);

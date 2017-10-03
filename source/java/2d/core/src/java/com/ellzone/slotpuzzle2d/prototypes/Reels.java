@@ -31,7 +31,7 @@ public class Reels {
 	public final static String PEAR = "pear";
 	public final static String TOMATO = "tomato";
 	private Sprite cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato;
-    private Sprite[] sprites;
+    private Sprite[] reels;
 	private int spriteWidth;
     private int spriteHeight;
 	
@@ -53,12 +53,12 @@ public class Reels {
 	    pear = atlas.createSprite(PEAR);
 	    tomato = atlas.createSprite(TOMATO);
 
-	    sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
-	    for (Sprite sprite : sprites) {
+	    reels = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
+	    for (Sprite sprite : reels) {
 		    sprite.setOrigin(0, 0);
 	    }
-	    spriteWidth = (int) sprites[0].getWidth();
-	    spriteHeight = (int) sprites[0].getHeight();
+	    spriteWidth = (int) reels[0].getWidth();
+	    spriteHeight = (int) reels[0].getHeight();
     }
 
 	public int getReelWidth() {
@@ -70,13 +70,13 @@ public class Reels {
 	}
 	
 	public Sprite[] getReels() {
-		return sprites;
+		return reels;
 	}
 	
 	public void dispose() {
 		Assets.inst().dispose();
-		for (Sprite sprite : sprites) {
-		    sprite.getTexture().dispose();
+		for (Sprite reel : reels) {
+		    reel.getTexture().dispose();
 		}
 	}
 }

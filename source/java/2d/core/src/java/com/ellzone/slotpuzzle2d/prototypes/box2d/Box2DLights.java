@@ -120,6 +120,7 @@ public class Box2DLights extends SPPrototype {
 	
 	@Override
 	public void resize(int width, int height) {
+		System.out.println("resize:" + width + "x" + height);
 		viewport.update(width, height);
 	}
 

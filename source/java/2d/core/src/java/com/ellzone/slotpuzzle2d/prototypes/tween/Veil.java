@@ -44,7 +44,12 @@ public class Veil extends SPPrototypeTemplate {
         createSequence();
 	}
 
-	@Override
+    @Override
+    protected void initialiseScreenOverride() {
+
+    }
+
+    @Override
 	protected void loadAssetsOverride() {
 		Assets.inst().load("splash/pack.atlas", TextureAtlas.class);
         Assets.inst().update();

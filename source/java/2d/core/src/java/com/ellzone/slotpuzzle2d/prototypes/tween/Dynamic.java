@@ -51,7 +51,12 @@ public class Dynamic extends SPPrototypeTemplate {
 	@Override
 	protected void initialiseOverride() {
 	}
-	
+
+	@Override
+	protected void initialiseScreenOverride() {
+
+	}
+
 	private void initialiseReelSlots() {
         random = new Random();
         reelTiles = new Array<ReelTile>();

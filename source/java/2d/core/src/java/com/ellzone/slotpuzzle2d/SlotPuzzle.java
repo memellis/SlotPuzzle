@@ -19,6 +19,7 @@ package com.ellzone.slotpuzzle2d;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.ellzone.slotpuzzle2d.screens.WorldScreen;
@@ -26,7 +27,7 @@ import com.ellzone.slotpuzzle2d.screens.WorldScreen;
 public class SlotPuzzle extends Game {
 	public SpriteBatch batch;
 	public AssetManager assetManager;
-	private WorldScreen worldScreen;
+	private Screen worldScreen;
 
 	@Override
 	public void create() {
@@ -91,11 +92,19 @@ public class SlotPuzzle extends Game {
 		Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE, "resume");
 	}
 
-	public void setWorldScreen(WorldScreen worldScreen) {
+	public void setWorldScreen(Screen worldScreen) {
 		this.worldScreen = worldScreen;
 	}
 	
-	public WorldScreen getWorldScreen() {
+	public Screen getWorldScreen() {
 		return this.worldScreen;
 	}
+
+	public void setScreen(Screen screen) {
+        this.screen = screen;
+        super.setScreen(screen);
+    }
+
+	public Screen getScreen() { return this.screen; }
+
 }

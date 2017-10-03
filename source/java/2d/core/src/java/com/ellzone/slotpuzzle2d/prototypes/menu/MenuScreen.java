@@ -18,6 +18,10 @@ package com.ellzone.slotpuzzle2d.prototypes.menu;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -27,14 +31,22 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.ellzone.slotpuzzle2d.SlotPuzzle;
+import com.ellzone.slotpuzzle2d.level.LevelDoor;
+import com.ellzone.slotpuzzle2d.level.MapLevel1;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototypesGame;
 import com.ellzone.slotpuzzle2d.prototypes.map.WorldScreenPrototype;
+import com.ellzone.slotpuzzle2d.prototypes.screens.PlayScreenPrototype;
+import com.ellzone.slotpuzzle2d.scene.MapTile;
+import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
+import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.UiUtils;
 import com.ellzone.slotpuzzle2d.prototypes.screens.IntroScreenPrototype;
 import com.ellzone.slotpuzzle2d.prototypes.typewriter.TypewriterScreen;
 
 public class MenuScreen implements Screen {
-    SlotPuzzleGame game;
+    private static final String TILE_PACK_ATLAS = "tiles/tiles.pack.atlas";
+    SlotPuzzle game;
     Skin skin;
     Stage stage;
     FitViewport viewport;
@@ -44,9 +56,14 @@ public class MenuScreen implements Screen {
     boolean enteredSubScreen = false;
 	boolean introScreenPrototype = false;
     boolean worldScreenPrototype = false;
+    boolean playScreenPrototype = false;
 	boolean typeWriterPrototype = false;
+    LevelDoor levelDoor;
+    MapTile mapTile;
+    TweenManager tweenManager = new TweenManager();
+    private TextureAtlas tilesAtlas;
 
-    public MenuScreen(SlotPuzzleGame game) {
+    public MenuScreen(SlotPuzzle game) {
         this.game = game;
 	    defineMenuScreen();
     }
@@ -59,10 +76,15 @@ public class MenuScreen implements Screen {
 	    this.skin = new Skin();
         UiUtils.createBasicSkin(skin);
         createButtons();
+        setLevel();
+        Assets.inst().load(TILE_PACK_ATLAS, TextureAtlas.class);
+        Assets.inst().finishLoading();
+        tilesAtlas = Assets.inst().get(TILE_PACK_ATLAS, TextureAtlas.class);
+        createTile();
     }
 
     private void initialiseScreen(){
-	    this.viewport = new FitViewport(SPPrototypesGame.V_WIDTH, SPPrototypesGame.V_HEIGHT, game.camera);
+	    this.viewport = new FitViewport(SPPrototypesGame.V_WIDTH, SPPrototypesGame.V_HEIGHT, new OrthographicCamera());
 	    this.stage = new Stage(viewport, game.batch);
     }
 
@@ -96,16 +118,41 @@ public class MenuScreen implements Screen {
                 worldScreenPrototype = true;
             }
         });
-		
+
+        TextButton playScreenButton = new TextButton("PlayScreen Prototype", skin);
+        playScreenButton.setPosition(SPPrototypesGame.V_WIDTH / 2 - SPPrototypesGame.V_WIDTH / 8, SPPrototypesGame.V_HEIGHT / 2 - 4 * playScreenButton.getHeight());
+        this.stage.addActor(playScreenButton);
+        playScreenButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                playScreenPrototype = true;
+                setUpPlayScreenPrototye();
+            }
+        });
+
 		TextButton typeWriterButton = new TextButton("TypeWriter Prototype", skin);
-        typeWriterButton.setPosition(SPPrototypesGame.V_WIDTH / 2 - SPPrototypesGame.V_WIDTH / 8, SPPrototypesGame.V_HEIGHT / 2 - 4 * typeWriterButton.getHeight());
+        typeWriterButton.setPosition(SPPrototypesGame.V_WIDTH / 2 - SPPrototypesGame.V_WIDTH / 8, SPPrototypesGame.V_HEIGHT / 2 - 5 * typeWriterButton.getHeight());
         this.stage.addActor(typeWriterButton);
         typeWriterButton.addListener(new ChangeListener() {
 				@Override
 				public void changed(ChangeEvent event, Actor actor) {
 					typeWriterPrototype = true;
 				}
-			});
+        });
+    }
+
+    private void setUpPlayScreenPrototye() {
+
+    }
+
+    private void setLevel() {
+        this.levelDoor = new LevelDoor();
+        this.levelDoor.levelName = "Level 1";
+        this.levelDoor.levelType = "HiddenPattern";
+    }
+
+    private void createTile() {
+        mapTile = new MapTile(20, 20, 200, 200, new MapLevel1(), tilesAtlas, null, font, tweenManager, new Sprite());
     }
 
     @Override
@@ -124,8 +171,12 @@ public class MenuScreen implements Screen {
             this.worldScreenPrototype = false;
             this.game.setScreen(new WorldScreenPrototype(this.game));
         }
+        if (this.playScreenPrototype) {
+            this.playScreenPrototype = false;
+            this.game.setScreen(new PlayScreenPrototype(this.game, levelDoor, null));
+        }
 		if (this.typeWriterPrototype) {
-			this.worldScreenPrototype = false;
+			this.typeWriterPrototype = false;
 			this.game.setScreen(new TypewriterScreen(this.game));
 		}
     }

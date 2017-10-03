@@ -834,7 +834,7 @@ public class PlayScreen implements Screen {
 		@Override
 		public void onEvent(int type, BaseTween<?> source) {
 			dispose();
-			game.getWorldScreen().worldScreenCallBack();
+			((WorldScreen)game.getWorldScreen()).worldScreenCallBack();
 			game.setScreen(game.getWorldScreen());
 		}
 	};
@@ -967,7 +967,7 @@ public class PlayScreen implements Screen {
  		}
 	}
 
-		private TweenCallback levelOverCallback = new TweenCallback() {
+	private TweenCallback levelOverCallback = new TweenCallback() {
 		@Override
 		public void onEvent(int type, BaseTween<?> source) {
 			switch (type) {

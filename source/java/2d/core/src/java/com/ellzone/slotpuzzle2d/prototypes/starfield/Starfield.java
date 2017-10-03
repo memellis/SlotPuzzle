@@ -47,6 +47,11 @@ public class Starfield extends SPPrototypeTemplate {
     }
 
     @Override
+    protected void initialiseScreenOverride() {
+
+    }
+
+    @Override
     protected void loadAssetsOverride() {
 
     }

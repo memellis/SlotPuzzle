@@ -43,6 +43,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.level.LevelDoor;
@@ -54,8 +55,9 @@ import com.ellzone.slotpuzzle2d.level.MapLevel5;
 import com.ellzone.slotpuzzle2d.level.MapLevel6;
 import com.ellzone.slotpuzzle2d.pixmap.PixmapDrawAction;
 import com.ellzone.slotpuzzle2d.prototypes.menu.SlotPuzzleGame;
-import com.ellzone.slotpuzzle2d.prototypes.screens.PlayScreenPrototype;
+import com.ellzone.slotpuzzle2d.prototypes.screens.MenuScreenPrototype;
 import com.ellzone.slotpuzzle2d.scene.MapTile;
+import com.ellzone.slotpuzzle2d.screens.WorldScreen;
 import com.ellzone.slotpuzzle2d.sprites.LevelEntrance;
 import com.ellzone.slotpuzzle2d.sprites.ScrollSign;
 import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
@@ -105,10 +107,10 @@ public class WorldScreenPrototype implements Screen {
     private Array<ScrollSign> scrollSigns;
     private Array<LevelEntrance> levelEntrances;
     private Array<MapTile> mapTiles;
-    private SlotPuzzleGame game;
+    private SlotPuzzle game;
     private InputMultiplexer inputMultiplexer;
 
-    public WorldScreenPrototype(SlotPuzzleGame game) {
+    public WorldScreenPrototype(SlotPuzzle game) {
         this.game = game;
         game.setWorldScreen(this);
         createWorldScreen();
@@ -335,7 +337,7 @@ public class WorldScreenPrototype implements Screen {
             selectedTile.getLevel().initialise();
             int levelNumber = selectedTile.getLevel().getLevelNumber();
             levelDoors.get(levelNumber).id = levelNumber;
-            game.setScreen(new PlayScreenPrototype(game, levelDoors.get(levelNumber), selectedTile));
+            game.setScreen(new MenuScreenPrototype(game, levelDoors.get(levelNumber), selectedTile));
         }
     };
 

@@ -36,10 +36,9 @@ public class MenuScreen implements Screen {
 	private SlotPuzzle game;
 	private Viewport viewport;
 	private Stage stage;
- 	private final TweenManager tweenManager = new TweenManager();
+ 	private TweenManager tweenManager = new TweenManager();
 	private boolean isLoaded = false;
 
-	
 	public MenuScreen(SlotPuzzle game) {
 		this.game = game;
 		defineMenuScreen();

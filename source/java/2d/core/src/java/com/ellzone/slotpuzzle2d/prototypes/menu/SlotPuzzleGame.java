@@ -21,26 +21,29 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
-import com.ellzone.slotpuzzle2d.prototypes.map.WorldScreenPrototype;
 
-public class SlotPuzzleGame extends SPPrototype {
+public class SlotPuzzleGame extends SPPrototype implements Screen {
     public SpriteBatch batch;
     public OrthographicCamera camera;
     public final static String SLOT_PUZZLE = "Slot Puzzle Prototypes";
     public final static float V_WIDTH = 800;
     public final static float V_HEIGHT = 480;
 
+    private SlotPuzzle game;
     private Screen previousScreen;
 	private Screen screen;
-	private WorldScreenPrototype worldScreen;
+	private Screen worldScreen;
 
     @Override
     public void create() {
+        this.game = new SlotPuzzle();
+        game.create();
         setLogLevel();
-	    batch = new SpriteBatch();
-	    camera = new OrthographicCamera();
-	    previousScreen = new MenuScreen(this);
+	    batch = game.batch;
+	    previousScreen = new MenuScreen(game);
+        this.game.setScreen(previousScreen);
 	    setScreen(previousScreen);
     }
 
@@ -79,7 +82,7 @@ public class SlotPuzzleGame extends SPPrototype {
     @Override
     public void render() {
 		super.render();
-		if (screen != null) screen.render(Gdx.graphics.getDeltaTime());
+		if (game.getScreen() != null) game.getScreen().render(Gdx.graphics.getDeltaTime());
     }
 
     @Override
@@ -88,7 +91,20 @@ public class SlotPuzzleGame extends SPPrototype {
 	}
 
     @Override
+    public void show() {
+
+    }
+
+    @Override
+    public void render(float delta) {
+        super.render();
+        if (game.getScreen() != null) game.getScreen().render(delta);
+    }
+
+    @Override
     public void resize(int width, int height) {
+        super.resize(width, height);
+        System.out.println("resize");
         if (screen != null) {
             screen.resize(width, height);
         }
@@ -104,20 +120,25 @@ public class SlotPuzzleGame extends SPPrototype {
         if (screen != null) screen.resume();		
     }
 
-	public void setScreen (Screen screen) {
-		if (this.screen != null) this.screen.hide();
-		this.screen = screen;
-		if (this.screen != null) {
-			this.screen.show();
-			this.screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    @Override
+    public void hide() {
+
+    }
+
+    public void setScreen (Screen screen) {
+ 		if (game.getScreen() != null) game.getScreen().hide();
+		game.setScreen(screen);
+		if (game.getScreen() != null) {
+			game.getScreen().show();
+			game.getScreen().resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		}
 	}
 
-    public void setWorldScreen(WorldScreenPrototype worldScreen) {
+    public void setWorldScreen(Screen worldScreen) {
         this.worldScreen = worldScreen;
     }
 
-    public WorldScreenPrototype getWorldScreen() {
+    public Screen getWorldScreen() {
         return this.worldScreen;
     }
 }

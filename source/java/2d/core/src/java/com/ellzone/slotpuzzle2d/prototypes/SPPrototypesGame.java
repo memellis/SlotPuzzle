@@ -88,7 +88,7 @@ public class SPPrototypesGame extends SPPrototype {
 
     @Override
     public void resize(int width, int height) {
-		if (screen != null) screen.render(Gdx.graphics.getDeltaTime());
+		if (screen != null) screen.resize(width, height);
 	}
 
     @Override
