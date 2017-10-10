@@ -486,7 +486,7 @@ public class PuzzleGridTypeReelTile {
     }
 
     public ReelTileGridValue[][] populateMatchGrid(Array<ReelTile> reelLevel, int gridWidth, int gridHeight) {
-        ReelTileGridValue[][] matchGrid = new ReelTileGridValue[gridHeight][gridHeight];
+        ReelTileGridValue[][] matchGrid = new ReelTileGridValue[gridWidth][gridHeight];
         int r, c;
         for (int i = 0; i < reelLevel.size; i++) {
             c = (int) (reelLevel.get(i).getX() - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
@@ -531,4 +531,31 @@ public class PuzzleGridTypeReelTile {
         }
         return localMatchedSlotBatch;
     }
+
+    public Array<ReelTileGridValue> depthFirstSearchAddToMatchSlotBatch(ReelTileGridValue startReelTile, Array<ReelTileGridValue> matchedSlotBatch) {
+        ReelTileGridValue currentReelTile;
+        Stack<ReelTileGridValue> reelTileGridValuesStack = new Stack<ReelTileGridValue>();
+        reelTileGridValuesStack.push(startReelTile);
+        while (!reelTileGridValuesStack.empty()) {
+            currentReelTile = reelTileGridValuesStack.pop();
+            if (!currentReelTile.getDiscovered()) {
+                currentReelTile.setDiscovered(true);
+                matchedSlotBatch.add(currentReelTile);
+                if (currentReelTile.getNReelTileGridValue() != null) {
+                    reelTileGridValuesStack.push(currentReelTile.getNReelTileGridValue());
+                }
+                if (currentReelTile.getEReelTileGridValue() != null) {
+                    reelTileGridValuesStack.push(currentReelTile.getEReelTileGridValue());
+                }
+                if (currentReelTile.getSReelTileGridValue() != null) {
+                    reelTileGridValuesStack.push(currentReelTile.getSReelTileGridValue());
+                }
+                if (currentReelTile.getWReelTileGridValue() != null) {
+                    reelTileGridValuesStack.push(currentReelTile.getWReelTileGridValue());
+                }
+            }
+        }
+        return matchedSlotBatch;
+    }
+
 }
