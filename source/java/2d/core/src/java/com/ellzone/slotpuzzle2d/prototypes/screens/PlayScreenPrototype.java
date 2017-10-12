@@ -521,6 +521,7 @@ public class PlayScreenPrototype implements Screen {
                 }
                 batchIndex = batchIndex + matchedSlots.get(batchIndex).getValue();
             }
+
             flashMatchedSlotsBatch(matchSlotsBatch, pushPause);
             pushPause = pushPause + 0.5f;
             index = index + matchSlotsBatch.size;
@@ -529,18 +530,34 @@ public class PlayScreenPrototype implements Screen {
     }
 
     private void flashMatchedSlots1(Array<ReelTileGridValue> matchedSlots, PuzzleGridTypeReelTile puzzleGridTypeReelTile) {
-        int matchSlotIndex, batchIndex;
+        int matchSlotIndex, batchIndex, batchPosition;
         Array<ReelTileGridValue> matchSlotsBatch = new Array<ReelTileGridValue>();
-        float pushPause = 0.0f;
+        float pushPause = 1.0f;
         matchSlotIndex = 0;
-        while (matchSlotIndex < matchedSlots.size) {
+        PuzzleGridTypeReelTile.printMatchedSlots(matchedSlots);
+        while (matchedSlots.size > 0) {
             batchIndex = matchSlotIndex;
-            for (int batchCount = batchIndex; (batchCount < batchIndex+5) | (batchCount < matchedSlots.size); batchCount++) {
-                matchSlotsBatch = puzzleGridTypeReelTile.depthFirstSearchAddToMatchSlotBatch(matchedSlots.get(batchCount), matchSlotsBatch);
+            for (int batchCount = batchIndex; batchCount < batchIndex+5; batchCount++) {
+                if (batchCount < matchedSlots.size) {
+                    batchPosition = matchSlotsBatch.size;
+                    matchSlotsBatch = puzzleGridTypeReelTile.depthFirstSearchAddToMatchSlotBatch(matchedSlots.get(0), matchSlotsBatch);
+                    PuzzleGridTypeReelTile.printMatchedSlots(matchSlotsBatch);
+                    System.out.println("matchSlotsBatch.size="+matchSlotsBatch.size);
+
+                    for (int deleteIndex=batchPosition; deleteIndex<matchSlotsBatch.size; deleteIndex++) {
+                        matchedSlots.removeValue(matchSlotsBatch.get(deleteIndex), true);
+                    }
+                    System.out.println("matchSlots.size="+matchedSlots.size);
+                }
             }
+            PuzzleGridTypeReelTile.printMatchedSlots(matchSlotsBatch);
+            if (matchSlotsBatch.size == 0) {
+                break;
+            }
+            System.out.println("pushPause="+pushPause);
+            System.out.println("matchSlotsBatch.size="+matchSlotsBatch.size);
             flashMatchedSlotsBatch1(matchSlotsBatch, pushPause);
-            pushPause += 5.0f;
-            matchSlotIndex += matchSlotsBatch.size;
+            pushPause += 1.0f;
             matchSlotsBatch.clear();
         }
     }
