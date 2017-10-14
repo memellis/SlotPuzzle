@@ -58,6 +58,8 @@ import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsEvent;
 import com.ellzone.slotpuzzle2d.physics.Vector;
 import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGridType;
+import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGridTypeReelTile;
+import com.ellzone.slotpuzzle2d.puzzlegrid.ReelTileGridValue;
 import com.ellzone.slotpuzzle2d.puzzlegrid.TupleValueIndex;
 import com.ellzone.slotpuzzle2d.scene.Hud;
 import com.ellzone.slotpuzzle2d.scene.MapTile;
@@ -145,9 +147,10 @@ public class PlayScreen implements Screen {
 	private LevelDoor levelDoor;
 	private Array<Integer> hiddenPlayingCards;
 	private Array<Card> cards;
-	private final MapTile mapTile;
+	private MapTile mapTile;
+	private int mapWidth, mapHeight, tilePixelWidth, tilePixelHeight;
 
-    public PlayScreen(SlotPuzzle game, LevelDoor levelDoor, MapTile mapTile) {
+	public PlayScreen(SlotPuzzle game, LevelDoor levelDoor, MapTile mapTile) {
 		this.game = game;
 		this.levelDoor = levelDoor;
 		this.mapTile = mapTile;
@@ -164,7 +167,8 @@ public class PlayScreen implements Screen {
 		initialisePlayScreen();
 		createSlotReelTexture();
 		createLevels();
-		hud = new Hud(game.batch);
+        getMapProperties(this.level);
+        hud = new Hud(game.batch);
 		hud.setLevelName(levelDoor.levelName);
 		createReelIntroSequence();
    	}
@@ -295,7 +299,15 @@ public class PlayScreen implements Screen {
         slotReelScrollheight = slotReelScrollTexture.getHeight();
 	}
 
-	private void createLevels() {
+    private void getMapProperties(TiledMap level) {
+        MapProperties mapProperties = level.getProperties();
+        mapWidth = mapProperties.get("width", Integer.class);
+        mapHeight = mapProperties.get("height", Integer.class);
+        tilePixelWidth = mapProperties.get("tilewidth", Integer.class);
+        tilePixelHeight = mapProperties.get("tileheight", Integer.class);
+    }
+
+    private void createLevels() {
  		if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
  			initialiseHiddenPlayingCards();
 		}
@@ -560,18 +572,6 @@ public class PlayScreen implements Screen {
 	boolean testForHiddenPlayingCardsRevealed(Array<ReelTile> levelReel) {
 		TupleValueIndex[][] matchGrid = flashSlots(levelReel);
 		return hiddenPlayingCardsRevealed(matchGrid);
-	}
-
-	TupleValueIndex[][] flashSlots(Array<ReelTile> levelReel) {
-		PuzzleGridType puzzleGrid = new PuzzleGridType();
-		TupleValueIndex[][] matchGrid = populateMatchGrid(levelReel);
-		Array<TupleValueIndex> matchedSlots;
-		matchedSlots = puzzleGrid.matchGridSlots(matchGrid);
-		for (TupleValueIndex matchedSlot : matchedSlots) {
-			levelReel.get(matchedSlot.index).setScore(matchedSlot.value);
-		}
- 		flashMatchedSlots(matchedSlots);
- 		return matchGrid;
 	}
 
 	boolean testForAnyLonelyReels(Array<ReelTile> levelReel) {
@@ -931,40 +931,64 @@ public class PlayScreen implements Screen {
 		return hiddenPlayingCardsRevealed;
 	}
 
-    private void flashMatchedSlotsBatch(Array<TupleValueIndex> matchedSlots, float pushPause) {
-    	int index;
-        for (int i = 0; i < matchedSlots.size; i++) {
-            index = matchedSlots.get(i).getIndex();
-            if (index  >= 0) {
-            	ReelTile reel = reels.get(index);
-            	if (!reel.getFlashTween()) {
-            		reel.setFlashMode(true);
-            		Color flashColor = new Color(Color.RED);
-            		reel.setFlashColor(flashColor);
-            		initialiseReelFlash(reel, pushPause);
-            	}
-            }
-        }
-    }
+	private ReelTileGridValue[][] flashSlots(Array<ReelTile> reelTiles) {
+		PuzzleGridTypeReelTile puzzleGridTypeReelTile = new PuzzleGridTypeReelTile();
+		ReelTileGridValue[][] puzzleGrid = puzzleGridTypeReelTile.populateMatchGrid(reelTiles,  mapWidth, mapHeight);
 
-	private void flashMatchedSlots(Array<TupleValueIndex> matchedSlots) {
-		int index, batchIndex; Array<TupleValueIndex> matchSlotsBatch;
+		Array<ReelTileGridValue> matchedSlots = puzzleGridTypeReelTile.matchGridSlots(puzzleGrid);
+		Array<ReelTileGridValue> duplicateMatchedSlots = PuzzleGridTypeReelTile.findDuplicateMatches(matchedSlots);
+
+		matchedSlots = PuzzleGridTypeReelTile.adjustMatchSlotDuplicates(matchedSlots, duplicateMatchedSlots);
+		for (TupleValueIndex matchedSlot : matchedSlots) {
+			reelTiles.get(matchedSlot.index).setScore(matchedSlot.value);
+		}
+		flashMatchedSlots(matchedSlots, puzzleGridTypeReelTile);
+		return puzzleGrid;
+	}
+
+	private void flashMatchedSlotsBatch(Array<ReelTileGridValue> matchedSlots, float pushPause) {
+		int index;
+		for (int i = 0; i < matchedSlots.size; i++) {
+			index = matchedSlots.get(i).getIndex();
+			if (index  >= 0) {
+				ReelTile reel = reels.get(index);
+				if (!reel.getFlashTween()) {
+					reel.setFlashMode(true);
+					Color flashColor = new Color(Color.WHITE);
+					reel.setFlashColor(flashColor);
+					initialiseReelFlash(reel, pushPause);
+				}
+			}
+		}
+	}
+
+	private void flashMatchedSlots(Array<ReelTileGridValue> matchedSlots, PuzzleGridTypeReelTile puzzleGridTypeReelTile) {
+		int matchSlotIndex, batchIndex, batchPosition;
+		Array<ReelTileGridValue> matchSlotsBatch = new Array<ReelTileGridValue>();
 		float pushPause = 0.0f;
-        index = 0;
-        matchSlotsBatch = new Array<TupleValueIndex>();
-		while (index < matchedSlots.size) {
-            batchIndex = index;
-            while ((batchIndex < index + FLASH_MATCHED_SLOTS_BATCH_SIZE) && (batchIndex < matchedSlots.size)) {
-                for (int count = batchIndex; count < batchIndex + matchedSlots.get(batchIndex).getValue(); count++) {
-                    matchSlotsBatch.add(matchedSlots.get(count));
-                }
-                batchIndex = batchIndex + matchedSlots.get(batchIndex).getValue();
-            }
-            flashMatchedSlotsBatch(matchSlotsBatch, pushPause);
-            pushPause = pushPause + 0.5f;
-            index = index + matchSlotsBatch.size;
-            matchSlotsBatch.clear();
- 		}
+		matchSlotIndex = 0;
+		PuzzleGridTypeReelTile.printMatchedSlots(matchedSlots);
+		while (matchedSlots.size > 0) {
+			batchIndex = matchSlotIndex;
+			for (int batchCount = batchIndex; batchCount < batchIndex+3; batchCount++) {
+				if (batchCount < matchedSlots.size) {
+					batchPosition = matchSlotsBatch.size;
+					matchSlotsBatch = puzzleGridTypeReelTile.depthFirstSearchAddToMatchSlotBatch(matchedSlots.get(0), matchSlotsBatch);
+					PuzzleGridTypeReelTile.printMatchedSlots(matchSlotsBatch);
+
+					for (int deleteIndex=batchPosition; deleteIndex<matchSlotsBatch.size; deleteIndex++) {
+						matchedSlots.removeValue(matchSlotsBatch.get(deleteIndex), true);
+					}
+				}
+			}
+			PuzzleGridTypeReelTile.printMatchedSlots(matchSlotsBatch);
+			if (matchSlotsBatch.size == 0) {
+				break;
+			}
+			flashMatchedSlotsBatch(matchSlotsBatch, pushPause);
+			pushPause += 2.0f;
+			matchSlotsBatch.clear();
+		}
 	}
 
 	private TweenCallback levelOverCallback = new TweenCallback() {
