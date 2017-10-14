@@ -48,6 +48,7 @@ import com.ellzone.slotpuzzle2d.prototypes.scrollingsign.ScrollingSign;
 import com.ellzone.slotpuzzle2d.prototypes.scrollingsign.ScrollingSignDynamicSignChange;
 import com.ellzone.slotpuzzle2d.prototypes.starfield.Starfield;
 import com.ellzone.slotpuzzle2d.prototypes.starfield.StarfieldUsingStarfieldObject;
+import com.ellzone.slotpuzzle2d.prototypes.tween.DelayFlash;
 import com.ellzone.slotpuzzle2d.prototypes.tween.Dynamic;
 import com.ellzone.slotpuzzle2d.prototypes.tween.Flash;
 import com.ellzone.slotpuzzle2d.prototypes.tween.GameOverPopUp;
@@ -111,6 +112,7 @@ public class SPPrototypes {
         ScrollingSignDynamicSignChange.class,
 		Dynamic.class,																			   
 		Flash.class,
+        DelayFlash.class,
         GameOverPopUp.class,
         IntroSequence.class,
         LevelOverPopUpUsingLevelPopUp.class,

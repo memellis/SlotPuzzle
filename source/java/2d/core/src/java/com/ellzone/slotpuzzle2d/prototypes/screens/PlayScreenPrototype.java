@@ -414,12 +414,12 @@ public class PlayScreenPrototype implements Screen {
     }
 
     boolean testForHiddenPatternRevealed(Array<ReelTile> levelReel) {
-        TupleValueIndex[][] matchGrid = flashSlots1(levelReel);
+        TupleValueIndex[][] matchGrid = flashSlots(levelReel);
         return hiddenPatternRevealed(matchGrid);
     }
 
     boolean testForHiddenPlayingCardsRevealed(Array<ReelTile> levelReel) {
-        TupleValueIndex[][] matchGrid = flashSlots1(levelReel);
+        TupleValueIndex[][] matchGrid = flashSlots(levelReel);
         return hiddenPlayingCardsRevealed(matchGrid);
     }
 
@@ -448,19 +448,7 @@ public class PlayScreenPrototype implements Screen {
         return hiddenPlayingCardsRevealed;
     }
 
-    TupleValueIndex[][] flashSlots(Array<ReelTile> levelReel) {
-        PuzzleGridType puzzleGrid = new PuzzleGridType();
-        TupleValueIndex[][] matchGrid = populateMatchGrid(levelReel);
-        Array<TupleValueIndex> matchedSlots;
-        matchedSlots = puzzleGrid.matchGridSlots(matchGrid);
-        for (TupleValueIndex matchedSlot : matchedSlots) {
-            levelReel.get(matchedSlot.index).setScore(matchedSlot.value);
-        }
-        flashMatchedSlots(matchedSlots);
-        return matchGrid;
-    }
-
-    private ReelTileGridValue[][] flashSlots1(Array<ReelTile> reelTiles) {
+    private ReelTileGridValue[][] flashSlots(Array<ReelTile> reelTiles) {
         PuzzleGridTypeReelTile puzzleGridTypeReelTile = new PuzzleGridTypeReelTile();
         ReelTileGridValue[][] puzzleGrid = puzzleGridTypeReelTile.populateMatchGrid(reelTiles,  mapWidth, mapHeight);
 
@@ -471,11 +459,11 @@ public class PlayScreenPrototype implements Screen {
         for (TupleValueIndex matchedSlot : matchedSlots) {
             reelTiles.get(matchedSlot.index).setScore(matchedSlot.value);
         }
-        flashMatchedSlots1(matchedSlots, puzzleGridTypeReelTile);
+        flashMatchedSlots(matchedSlots, puzzleGridTypeReelTile);
         return puzzleGrid;
     }
 
-    private void flashMatchedSlotsBatch(Array<TupleValueIndex> matchedSlots, float pushPause) {
+    private void flashMatchedSlotsBatch(Array<ReelTileGridValue> matchedSlots, float pushPause) {
         int index;
         for (int i = 0; i < matchedSlots.size; i++) {
             index = matchedSlots.get(i).getIndex();
@@ -483,7 +471,7 @@ public class PlayScreenPrototype implements Screen {
                 ReelTile reel = reelTiles.get(index);
                 if (!reel.getFlashTween()) {
                     reel.setFlashMode(true);
-                    Color flashColor = new Color(Color.RED);
+                    Color flashColor = new Color(Color.WHITE);
                     reel.setFlashColor(flashColor);
                     initialiseReelFlash(reel, pushPause);
                 }
@@ -491,73 +479,31 @@ public class PlayScreenPrototype implements Screen {
         }
     }
 
-    private void flashMatchedSlotsBatch1(Array<ReelTileGridValue> matchedSlots, float pushPause) {
-        int index;
-        for (int i = 0; i < matchedSlots.size; i++) {
-            index = matchedSlots.get(i).getIndex();
-            if (index  >= 0) {
-                ReelTile reel = reelTiles.get(index);
-                if (!reel.getFlashTween()) {
-                    reel.setFlashMode(true);
-                    Color flashColor = new Color(Color.RED);
-                    reel.setFlashColor(flashColor);
-                    initialiseReelFlash(reel, pushPause);
-                }
-            }
-        }
-    }
-
-    private void flashMatchedSlots(Array<TupleValueIndex> matchedSlots) {
-        int index, batchIndex;
-        Array<TupleValueIndex> matchSlotsBatch;
-        float pushPause = 0.0f;
-        index = 0;
-        matchSlotsBatch = new Array<TupleValueIndex>();
-        while (index < matchedSlots.size) {
-            batchIndex = index;
-            while ((batchIndex < index + FLASH_MATCHED_SLOTS_BATCH_SIZE) && (batchIndex < matchedSlots.size)) {
-                for (int count = batchIndex; count < batchIndex + matchedSlots.get(batchIndex).getValue(); count++) {
-                    matchSlotsBatch.add(matchedSlots.get(count));
-                }
-                batchIndex = batchIndex + matchedSlots.get(batchIndex).getValue();
-            }
-
-            flashMatchedSlotsBatch(matchSlotsBatch, pushPause);
-            pushPause = pushPause + 0.5f;
-            index = index + matchSlotsBatch.size;
-            matchSlotsBatch.clear();
-        }
-    }
-
-    private void flashMatchedSlots1(Array<ReelTileGridValue> matchedSlots, PuzzleGridTypeReelTile puzzleGridTypeReelTile) {
+    private void flashMatchedSlots(Array<ReelTileGridValue> matchedSlots, PuzzleGridTypeReelTile puzzleGridTypeReelTile) {
         int matchSlotIndex, batchIndex, batchPosition;
         Array<ReelTileGridValue> matchSlotsBatch = new Array<ReelTileGridValue>();
-        float pushPause = 1.0f;
+        float pushPause = 0.0f;
         matchSlotIndex = 0;
         PuzzleGridTypeReelTile.printMatchedSlots(matchedSlots);
         while (matchedSlots.size > 0) {
             batchIndex = matchSlotIndex;
-            for (int batchCount = batchIndex; batchCount < batchIndex+5; batchCount++) {
+            for (int batchCount = batchIndex; batchCount < batchIndex+3; batchCount++) {
                 if (batchCount < matchedSlots.size) {
                     batchPosition = matchSlotsBatch.size;
                     matchSlotsBatch = puzzleGridTypeReelTile.depthFirstSearchAddToMatchSlotBatch(matchedSlots.get(0), matchSlotsBatch);
                     PuzzleGridTypeReelTile.printMatchedSlots(matchSlotsBatch);
-                    System.out.println("matchSlotsBatch.size="+matchSlotsBatch.size);
 
                     for (int deleteIndex=batchPosition; deleteIndex<matchSlotsBatch.size; deleteIndex++) {
                         matchedSlots.removeValue(matchSlotsBatch.get(deleteIndex), true);
                     }
-                    System.out.println("matchSlots.size="+matchedSlots.size);
                 }
             }
             PuzzleGridTypeReelTile.printMatchedSlots(matchSlotsBatch);
             if (matchSlotsBatch.size == 0) {
                 break;
             }
-            System.out.println("pushPause="+pushPause);
-            System.out.println("matchSlotsBatch.size="+matchSlotsBatch.size);
-            flashMatchedSlotsBatch1(matchSlotsBatch, pushPause);
-            pushPause += 1.0f;
+            flashMatchedSlotsBatch(matchSlotsBatch, pushPause);
+            pushPause += 2.0f;
             matchSlotsBatch.clear();
         }
     }

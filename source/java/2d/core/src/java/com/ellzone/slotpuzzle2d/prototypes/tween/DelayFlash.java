@@ -1,3 +1,5 @@
+package com.ellzone.slotpuzzle2d.prototypes.tween;
+
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
  *
@@ -14,38 +16,28 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.ellzone.slotpuzzle2d.prototypes.tween;
-
-import java.util.Random;
-
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
-import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
+import com.ellzone.slotpuzzle2d.prototypes.SPPrototypeTemplate;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
-import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
-import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
-import aurelienribon.tweenengine.equations.Sine;
-import com.ellzone.slotpuzzle2d.prototypes.*;
 
-public class Flash extends SPPrototypeTemplate {
+import java.util.Random;
+
+import aurelienribon.tweenengine.equations.Sine;
+
+public class DelayFlash extends SPPrototypeTemplate {
 
     private Pixmap slotReelScrollPixmap;
     private Texture slotReelScrollTexture;
@@ -53,10 +45,10 @@ public class Flash extends SPPrototypeTemplate {
     private Array<ReelTile> reelTiles;
     private Timeline flashSeq;
 
-	@Override
-	protected void initialiseOverride() {
+    @Override
+    protected void initialiseOverride() {
         Gdx.input.setInputProcessor(inputProcessor);
-	}
+    }
 
     @Override
     protected void initialiseScreenOverride() {
@@ -64,39 +56,41 @@ public class Flash extends SPPrototypeTemplate {
     }
 
     @Override
-	protected void loadAssetsOverride() {
-	}
+    protected void loadAssetsOverride() {
 
-	@Override
-	protected void disposeOverride() {
-	}
+    }
 
-	@Override
-	protected void updateOverride(float dt) {
-		tweenManager.update(dt);
+    @Override
+    protected void disposeOverride() {
+
+    }
+
+    @Override
+    protected void updateOverride(float dt) {
+        tweenManager.update(dt);
         for (ReelTile reel : reelTiles) {
             reel.update(dt);
         }
-	}
+    }
 
-	@Override
-	protected void renderOverride(float dt) {
+    @Override
+    protected void renderOverride(float dt) {
         batch.begin();
-		for (Sprite sprite : sprites) {
+        for (Sprite sprite : sprites) {
             sprite.draw(batch);
         }
         for (ReelTile reel : reelTiles) {
             reel.draw(batch);
         }
-		batch.end();
-	}
+        batch.end();
+    }
 
-	@Override
-	protected void initialiseUniversalTweenEngineOverride() {
-		SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelAccessor());        
-		initialiseReelSlots();
-	}
-	
+    @Override
+    protected void initialiseUniversalTweenEngineOverride() {
+        SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelAccessor());
+        initialiseReelSlots();
+    }
+
     private void initialiseReelSlots() {
         random = new Random();
         reelTiles = new Array<ReelTile>();
@@ -121,11 +115,16 @@ public class Flash extends SPPrototypeTemplate {
         myRed.g = 0.0f;
         myRed.b = 0.0f;
         myRed.a = 1.0f;
+        Color flashColor = new Color(Color.WHITE);
+        reel.setFlashColor(flashColor);
+        flashSeq = flashSeq.pushPause(5.0f);
+
         flashSeq = flashSeq.push(SlotPuzzleTween.set(reel, ReelAccessor.FLASH_TINT)
-                .target(Color.WHITE.r, Color.WHITE.g, Color.WHITE.b)
-                .ease(Sine.IN));
-        flashSeq = flashSeq.push(SlotPuzzleTween.to(reel, ReelAccessor.FLASH_TINT, 0.5f)
                 .target(myRed.r, myRed.g, myRed.b)
+                .ease(Sine.IN));
+
+        flashSeq = flashSeq.push(SlotPuzzleTween.to(reel, ReelAccessor.FLASH_TINT, 0.5f)
+                .target(Color.WHITE.r, Color.WHITE.g, Color.WHITE.b)
                 .ease(Sine.OUT)
                 .repeatYoyo(17, 0));
 
@@ -153,8 +152,8 @@ public class Flash extends SPPrototypeTemplate {
     private TweenCallback reelFlashCallback = new TweenCallback() {
         @Override
         public void onEvent(int type, BaseTween<?> source) {
-            delegateReelFlashCallback(type, source);
-        }
+        delegateReelFlashCallback(type, source);
+    }
     };
 
     private void delegateReelFlashCallback(int type, BaseTween<?> source) {
@@ -166,15 +165,15 @@ public class Flash extends SPPrototypeTemplate {
     private final InputProcessor inputProcessor = new InputAdapter() {
         @Override
         public boolean touchUp(int x, int y, int pointer, int button) {
-            tweenManager.killAll();
-            for (ReelTile reel : reelTiles) {
-                if (!reel.getFlashTween()) {
-                    Color flashColor = new Color(Color.RED);
-                    reel.setFlashColor(flashColor);
-                    initialiseReelFlash(reel);
-                }
+        tweenManager.killAll();
+        for (ReelTile reel : reelTiles) {
+            if (!reel.getFlashTween()) {
+                Color flashColor = new Color(Color.RED);
+                reel.setFlashColor(flashColor);
+                initialiseReelFlash(reel);
             }
-            return true;
         }
+        return true;
+    }
     };
 }

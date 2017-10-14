@@ -405,6 +405,12 @@ public class PuzzleGridTypeReelTile {
         }
     }
 
+    public static void printMatchedSlotsTuples(Array<TupleValueIndex> tuples) {
+        for (int i = 0; i < tuples.size; i++) {
+            System.out.println(i + "=[" + tuples.get(i).getR() + "," + tuples.get(i).getC() + "]=" + tuples.get(i).getValue());
+        }
+    }
+
     public static Array<ReelTileGridValue> findDuplicateMatches(Array<ReelTileGridValue> matchSlots) {
         Array<ReelTileGridValue> duplicateMatches = new Array<ReelTileGridValue>();
         for (int i = 0; i < matchSlots.size; i++) {

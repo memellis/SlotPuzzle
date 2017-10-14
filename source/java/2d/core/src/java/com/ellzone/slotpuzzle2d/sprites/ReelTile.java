@@ -27,7 +27,7 @@ import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 public class ReelTile extends ReelSprite {
     private Texture texture;
     private int numberOfReelsInTexture = 0;
-    private TextureRegion region;
+    private TextureRegion region, flashReel;
     private float tileWidth;
     private float tileHeight;
     private float reelDisplayWidth = 0, reelDisplayHeight = 0;
@@ -39,7 +39,7 @@ public class ReelTile extends ReelSprite {
 	private boolean reelFlash;
 	private boolean reelFlashTween;
 	public enum FlashState {FLASH_OFF, FLASH_ON};
-	private FlashState reelFlashState;
+	private FlashState reelFlashState, flashingState;
 	private Color flashColor;
 	private int score;
 	private Sound spinningSound;
@@ -94,6 +94,7 @@ public class ReelTile extends ReelSprite {
         reelFlash = false;
 		reelFlashTween = false;
 		reelFlashState = FlashState.FLASH_OFF;
+        flashingState = FlashState.FLASH_OFF;
 		flashColor = Color.RED;
         tileDeleted = false;
     }
@@ -119,7 +120,11 @@ public class ReelTile extends ReelSprite {
  	}
 		
 	private void processFlashTweenState(float delta) {
-        setFlashOn();
+        if (flashingState == FlashState.FLASH_OFF) {
+            flashingState = FlashState.FLASH_ON;
+            return;
+        }
+        this.setFlashOn();
 	}
 
     public float getSx() {
@@ -209,12 +214,12 @@ public class ReelTile extends ReelSprite {
 	}
 	
 	public void setFlashOn() {
-		TextureRegion flashReel = drawFlashOn(region);
-		setRegion(flashReel);
+        flashReel = drawFlashOn(this.region);
+		this.setRegion(flashReel);
 	}
 	
 	public void setFlashOff() {
-        setRegion(region);
+        this.setRegion(region);
 	}
 	
 	private TextureRegion drawFlashOn(TextureRegion reel) {
