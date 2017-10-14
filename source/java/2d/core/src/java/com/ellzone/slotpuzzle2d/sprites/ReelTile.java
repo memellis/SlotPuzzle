@@ -46,6 +46,7 @@ public class ReelTile extends ReelSprite {
 	private long spinningSoundId;
 	private float spinngPitch;
 	private Random random;
+    private Pixmap flashOnReelPixmap;
 	
     public ReelTile(Texture texture, float x, float y, float tileWidth, float tileHeight, int endReel, Sound spinningSound) {
         this.texture = texture;
@@ -120,10 +121,10 @@ public class ReelTile extends ReelSprite {
  	}
 		
 	private void processFlashTweenState(float delta) {
-        if (flashingState == FlashState.FLASH_OFF) {
+        /*if (flashingState == FlashState.FLASH_OFF) {
             flashingState = FlashState.FLASH_ON;
             return;
-        }
+        }*/
         this.setFlashOn();
 	}
 
@@ -223,12 +224,14 @@ public class ReelTile extends ReelSprite {
 	}
 	
 	private TextureRegion drawFlashOn(TextureRegion reel) {
-		Pixmap reelPixmap = PixmapProcessors.getPixmapFromTextureRegion(reel);
-		reelPixmap.setColor(flashColor);
-		reelPixmap.drawRectangle(0, 0, (int)tileWidth    , (int)tileHeight);
-		reelPixmap.drawRectangle(1, 1, (int)tileWidth - 2, (int)tileHeight - 2);
-		reelPixmap.drawRectangle(2, 2, (int)tileWidth - 4, (int)tileHeight - 4);
-		return new TextureRegion(new Texture(reelPixmap));
+		if (flashOnReelPixmap == null) {
+            flashOnReelPixmap = PixmapProcessors.getPixmapFromTextureRegion(reel);
+        }
+        flashOnReelPixmap.setColor(flashColor);
+		flashOnReelPixmap.drawRectangle(0, 0, (int)tileWidth    , (int)tileHeight);
+		flashOnReelPixmap.drawRectangle(1, 1, (int)tileWidth - 2, (int)tileHeight - 2);
+		flashOnReelPixmap.drawRectangle(2, 2, (int)tileWidth - 4, (int)tileHeight - 4);
+		return new TextureRegion(new Texture(flashOnReelPixmap));
 	}
 	
 	public void setScore(int score) {
