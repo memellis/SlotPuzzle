@@ -56,10 +56,8 @@ import com.ellzone.slotpuzzle2d.level.MapLevel4;
 import com.ellzone.slotpuzzle2d.level.MapLevel5;
 import com.ellzone.slotpuzzle2d.level.MapLevel6;
 import com.ellzone.slotpuzzle2d.pixmap.PixmapDrawAction;
-import com.ellzone.slotpuzzle2d.prototypes.menu.SlotPuzzleGame;
 import com.ellzone.slotpuzzle2d.prototypes.screens.MenuScreenPrototype;
 import com.ellzone.slotpuzzle2d.scene.MapTile;
-import com.ellzone.slotpuzzle2d.screens.WorldScreen;
 import com.ellzone.slotpuzzle2d.sprites.LevelEntrance;
 import com.ellzone.slotpuzzle2d.sprites.ScrollSign;
 import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
@@ -98,7 +96,7 @@ public class WorldScreenPrototype implements Screen {
     private GestureDetector gestureDetector;
     private MapGestureListener mapGestureListener;
     private Array<LevelDoor> levelDoors;
-    private float w, h, resizeWidth, resizeHeight, cww, cwh, aspectRatio;
+    private float resizeWidth, resizeHeight, cww, cwh, aspectRatio;
     private float screenOverCWWRatio, screenOverCWHRatio;
     private Texture levelDoorTexture;
     private Sprite levelDoorSprite;
@@ -531,10 +529,10 @@ public class WorldScreenPrototype implements Screen {
         }
 
         private void enterLevel(LevelDoor levelDoor, int levelDoorIndex) {
-            int sx = (int) (worldXToScreenX(levelDoor.doorPosition.x) * SlotPuzzleConstants.V_WIDTH / w);
-            int sy = (int) (worldYToScreenY(levelDoor.doorPosition.y + tilePixelHeight) * SlotPuzzleConstants.V_HEIGHT / h);
-            int sw = (int) ((levelDoor.doorPosition.width * screenOverCWWRatio) * SlotPuzzleConstants.V_WIDTH / w);
-            int sh = (int) ((levelDoor.doorPosition.height * screenOverCWHRatio) * SlotPuzzleConstants.V_HEIGHT / h);
+            int sx = (int) (worldXToScreenX(levelDoor.doorPosition.x));
+            int sy = (int) (worldYToScreenY(levelDoor.doorPosition.y + tilePixelHeight));
+            int sw = (int) ((levelDoor.doorPosition.width * screenOverCWWRatio));
+            int sh = (int) ((levelDoor.doorPosition.height * screenOverCWHRatio));
 
             levelDoorTexture = levelEntrances.get(levelDoorIndex).getLevelEntrance();
             levelDoorSprite = new Sprite(levelDoorTexture);
