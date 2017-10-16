@@ -178,7 +178,7 @@ public class WorldMapLevelSelect extends SPPrototype {
 
     private void createPopUps(Sprite mapTileSprite) {
         Level level1 = new MapLevel1();
-        mapTile = new MapTile(20, 20, 200, 200, level1, tilesAtlas, cam, font, tweenManager, mapTileSprite);
+        mapTile = new MapTile(20, 20, 200, 200, w, h, level1, tilesAtlas, cam, font, tweenManager, mapTileSprite);
     }
 
     private final TweenCallback maximizeCallback = new TweenCallback() {

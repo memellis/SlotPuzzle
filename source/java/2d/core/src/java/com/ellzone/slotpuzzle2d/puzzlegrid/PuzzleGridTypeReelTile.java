@@ -109,12 +109,10 @@ public class PuzzleGridTypeReelTile {
                                         }
                                     } else {
                                         Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "r=" + r + " c=" + c + " is Null - ignoring this tile.");
-                                        System.out.println("r=" + r + " c=" + c + " is Null - ignoring this tile.");
                                         match = false;
                                     }
                                 } else {
                                     Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "r=" + r + " co=" + ro + " is Null - ignoring this tile.");
-                                    System.out.println("r=" + r + " co=" + ro + " is Null - ignoring this tile.");
                                     match = false;
                                 }
                             }
@@ -333,12 +331,10 @@ public class PuzzleGridTypeReelTile {
                                         }
                                     } else {
                                         Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "r=" + r + " c=" + c + " is Null - ignoring this tile.");
-                                        System.out.println("r=" + r + " c=" + c + " is Null - ignoring this tile.");
                                         match = false;
                                     }
                                 } else {
                                     Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "r=" + r + " co=" + co + " is Null - ignoring this tile.");
-                                    System.out.println("r=" + r + " co=" + co + " is Null - ignoring this tile.");
                                     match = false;
                                 }
                             }
@@ -400,12 +396,14 @@ public class PuzzleGridTypeReelTile {
     }
 
     public static void printMatchedSlots(Array<ReelTileGridValue> tuples) {
+        System.out.println("printMatchedSlots");
         for (int i = 0; i < tuples.size; i++) {
             System.out.println(i + "=[" + tuples.get(i).getR() + "," + tuples.get(i).getC() + "]=" + tuples.get(i).getValue());
         }
     }
 
     public static void printMatchedSlotsTuples(Array<TupleValueIndex> tuples) {
+        System.out.println("printMatchedSlots");
         for (int i = 0; i < tuples.size; i++) {
             System.out.println(i + "=[" + tuples.get(i).getR() + "," + tuples.get(i).getC() + "]=" + tuples.get(i).getValue());
         }
@@ -563,5 +561,4 @@ public class PuzzleGridTypeReelTile {
         }
         return matchedSlotBatch;
     }
-
 }

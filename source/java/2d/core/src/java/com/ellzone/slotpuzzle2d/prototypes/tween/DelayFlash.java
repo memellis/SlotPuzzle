@@ -62,7 +62,7 @@ public class DelayFlash extends SPPrototypeTemplate {
 
     @Override
     protected void disposeOverride() {
-
+        Gdx.app.log(SLOTPUZZLE_PLAY, "dispose override called!");
     }
 
     @Override

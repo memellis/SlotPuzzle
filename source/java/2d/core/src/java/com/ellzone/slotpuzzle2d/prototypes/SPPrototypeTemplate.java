@@ -180,6 +180,7 @@ public abstract class SPPrototypeTemplate extends SPPrototype {
     }
 
     public void dispose() {
+        Gdx.app.log(SLOTPUZZLE_PLAY, "dispose called");
         if (tweenManager != null) {
             tweenManager.killAll();
         }

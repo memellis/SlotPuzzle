@@ -400,7 +400,6 @@ public class PuzzleGridType {
                 }
             }
         }
-        printMatchedSlots(duplicateMatches);
-        return duplicateMatches;
+       return duplicateMatches;
     }
 }

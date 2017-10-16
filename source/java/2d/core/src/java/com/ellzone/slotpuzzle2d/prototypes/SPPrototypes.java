@@ -148,7 +148,7 @@ public class SPPrototypes {
         return null;
     }
 
-    public static SPPrototype newSPPrototype(String testName) {
+    public static SPPrototype newSPPrototype(String testName) throws InstantiationException, IllegalAccessException {
         try {
             return ClassReflection.newInstance(forName(testName));
         } catch (ReflectionException e) {

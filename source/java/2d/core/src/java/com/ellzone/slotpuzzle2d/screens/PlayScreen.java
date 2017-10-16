@@ -614,7 +614,7 @@ public class PlayScreen implements Screen {
 					matchGrid[r][c] = new TupleValueIndex(r, c, i, reelLevel.get(i).getEndReel());
 				}
 			} else {
-				Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "I don't respond to r="+r+" c="+c);
+				Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "I don't know how to deal with r="+r+" c="+c);
 			}
 		}
 		return matchGrid;
@@ -967,23 +967,17 @@ public class PlayScreen implements Screen {
 		Array<ReelTileGridValue> matchSlotsBatch = new Array<ReelTileGridValue>();
 		float pushPause = 0.0f;
 		matchSlotIndex = 0;
-		PuzzleGridTypeReelTile.printMatchedSlots(matchedSlots);
 		while (matchedSlots.size > 0) {
 			batchIndex = matchSlotIndex;
 			for (int batchCount = batchIndex; batchCount < batchIndex+3; batchCount++) {
 				if (batchCount < matchedSlots.size) {
 					batchPosition = matchSlotsBatch.size;
 					matchSlotsBatch = puzzleGridTypeReelTile.depthFirstSearchAddToMatchSlotBatch(matchedSlots.get(0), matchSlotsBatch);
-					PuzzleGridTypeReelTile.printMatchedSlots(matchSlotsBatch);
 
 					for (int deleteIndex=batchPosition; deleteIndex<matchSlotsBatch.size; deleteIndex++) {
 						matchedSlots.removeValue(matchSlotsBatch.get(deleteIndex), true);
 					}
 				}
-			}
-			PuzzleGridTypeReelTile.printMatchedSlots(matchSlotsBatch);
-			if (matchSlotsBatch.size == 0) {
-				break;
 			}
 			flashMatchedSlotsBatch(matchSlotsBatch, pushPause);
 			pushPause += 2.0f;

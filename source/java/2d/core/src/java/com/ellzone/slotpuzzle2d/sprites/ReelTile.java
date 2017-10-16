@@ -251,5 +251,8 @@ public class ReelTile extends ReelSprite {
 		if (region != null) {
 			region.getTexture().dispose();
 		}
+		if (flashOnReelPixmap != null) {
+            flashOnReelPixmap.dispose();
+        }
 	}
 }

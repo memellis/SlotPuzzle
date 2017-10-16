@@ -168,6 +168,7 @@ public class PuzzleGrid {
 	}
 	
 	public static void printMatchedSlots(Array<Tuple> tuples) {
+		System.out.println("PuzzleGrid printMatchedSlots");
 		for (int i = 0; i < tuples.size; i++) {
 			System.out.println(i + "=[" + tuples.get(i).getR() + "," + tuples.get(i).getC() + "]=" + tuples.get(i).getValue());
 		}

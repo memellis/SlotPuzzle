@@ -62,6 +62,7 @@ public class MenuScreen implements Screen {
     MapTile mapTile;
     TweenManager tweenManager = new TweenManager();
     private TextureAtlas tilesAtlas;
+    float w, h;
 
     public MenuScreen(SlotPuzzle game) {
         this.game = game;
@@ -152,7 +153,7 @@ public class MenuScreen implements Screen {
     }
 
     private void createTile() {
-        mapTile = new MapTile(20, 20, 200, 200, new MapLevel1(), tilesAtlas, null, font, tweenManager, new Sprite());
+        mapTile = new MapTile(20, 20, 200, 200, w, h, new MapLevel1(), tilesAtlas, null, font, tweenManager, new Sprite());
     }
 
     @Override
@@ -199,6 +200,8 @@ public class MenuScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        this.w = width;
+        this.h = height;
     }
 
     @Override
