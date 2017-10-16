@@ -9,12 +9,12 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototypes;
 
 public class SwingCanvasSPPrototype extends JFrame implements SPPrototypeList.SPPrototypeLauncher  {
   	private static final long serialVersionUID = -5512379626313409632L;
-	LwjglCanvas canvas;
     SPPrototypeList list;
 
     public SwingCanvasSPPrototype() {
@@ -36,6 +36,8 @@ public class SwingCanvasSPPrototype extends JFrame implements SPPrototypeList.SP
         });
     }
 
+    LwjglCanvas canvas = null;
+
     @Override
     public boolean launchSPPrototype(String sampleName) {
         Container container = getContentPane();
@@ -44,8 +46,15 @@ public class SwingCanvasSPPrototype extends JFrame implements SPPrototypeList.SP
             canvas.stop();
             container.remove(canvas.getCanvas());
         }
+        ApplicationListener sample;
 
-        ApplicationListener sample = SPPrototypes.newSPPrototype(sampleName);
+        try {
+            sample = SPPrototypes.newSPPrototype(sampleName);
+        } catch (InstantiationException e) {
+            return false;
+        } catch (IllegalAccessException e) {
+            return false;
+        }
 
         canvas = new LwjglCanvas(sample);
         canvas.getCanvas().setSize(960, 540);
