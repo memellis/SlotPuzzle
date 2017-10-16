@@ -46,7 +46,15 @@ public class SPPrototypeLauncher extends JFrame implements SPPrototypeList.SPPro
 
     @Override
     public boolean launchSPPrototype(String testName) {
-        SPPrototype spPrototype = SPPrototypes.newSPPrototype(testName);
+        SPPrototype spPrototype;
+
+        try {
+            spPrototype = SPPrototypes.newSPPrototype(testName);
+        } catch (InstantiationException e) {
+            return false;
+        } catch (IllegalAccessException e) {
+            return false;
+        }
 
         if (spPrototype != null) {
             LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
