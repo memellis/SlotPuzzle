@@ -149,6 +149,7 @@ public class PlayScreen implements Screen {
 	private Array<Card> cards;
 	private MapTile mapTile;
 	private int mapWidth, mapHeight, tilePixelWidth, tilePixelHeight;
+    private boolean show = false;
 
 	public PlayScreen(SlotPuzzle game, LevelDoor levelDoor, MapTile mapTile) {
 		this.game = game;
@@ -1040,67 +1041,70 @@ public class PlayScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		if(isLoaded) {
-			update(delta);
-			handleInput(delta);
-	 		renderer.render();
-			game.batch.begin();
-			if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
-				drawPlayingCards(game.batch);
-			}
-			for (ReelTile reel : reels) {
-				if (!reel.isReelTileDeleted()) {
-					reel.draw(game.batch);
-				}
-			}
-			for (Score score : scores) {
-				score.render(game.batch);
-			}
-            if (displaySpinHelp) {
-				sprites[displaySpinHelpSprite].draw(game.batch);
-			}
-			game.batch.end();
-			switch (playState) {
-			    case INTRO_POPUP:
-				    levelPopUp.draw(game.batch);
-				    break;
-			    case LEVEL_LOST:
-			    	levelLostPopUp.draw(game.batch);
-			    	break;
-			    case WON_LEVEL:
-			    	levelWonPopUp.draw(game.batch);
-			    	break;
-			    case INITIALISING:
-				    break;
-			    case INTRO_FLASHING:
-				    break;
-			    case INTRO_SEQUENCE:
-				    break;
-			    case INTRO_SPINNING:
-				    break;
-			    case PLAYING:
-				    break;
-			    case RESTARTING_LEVEL:
-				    break;
-			    default:
-				    break;
-			}
-		    game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
-		    hud.stage.draw();
-		} else {
-			if (game.assetManager.getProgress() < 1) {
-				game.assetManager.update();
-			} else {
-				isLoaded = true;
-			}
-		}
-        stage.draw();
-	}
+        if (show) {
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            if (isLoaded) {
+                update(delta);
+                handleInput(delta);
+                renderer.render();
+                game.batch.begin();
+                if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+                    drawPlayingCards(game.batch);
+                }
+                for (ReelTile reel : reels) {
+                    if (!reel.isReelTileDeleted()) {
+                        reel.draw(game.batch);
+                    }
+                }
+                for (Score score : scores) {
+                    score.render(game.batch);
+                }
+                if (displaySpinHelp) {
+                    sprites[displaySpinHelpSprite].draw(game.batch);
+                }
+                game.batch.end();
+                switch (playState) {
+                    case INTRO_POPUP:
+                        levelPopUp.draw(game.batch);
+                        break;
+                    case LEVEL_LOST:
+                        levelLostPopUp.draw(game.batch);
+                        break;
+                    case WON_LEVEL:
+                        levelWonPopUp.draw(game.batch);
+                        break;
+                    case INITIALISING:
+                        break;
+                    case INTRO_FLASHING:
+                        break;
+                    case INTRO_SEQUENCE:
+                        break;
+                    case INTRO_SPINNING:
+                        break;
+                    case PLAYING:
+                        break;
+                    case RESTARTING_LEVEL:
+                        break;
+                    default:
+                        break;
+                }
+                game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+                hud.stage.draw();
+            } else {
+                if (game.assetManager.getProgress() < 1) {
+                    game.assetManager.update();
+                } else {
+                    isLoaded = true;
+                }
+            }
+            stage.draw();
+        }
+    }
 
     @Override
     public void show() {
+        this.show = true;
 		Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + "PlayScreen", "show");
     }
 
@@ -1111,6 +1115,7 @@ public class PlayScreen implements Screen {
 
 	@Override
 	public void pause() {
+        this.show = false;
 		Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + "PlayScreen", "pause");
 	}
 
@@ -1121,7 +1126,8 @@ public class PlayScreen implements Screen {
 
 	@Override
 	public void hide() {
-		Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + "PlayScreen", "hide");
+		this.show = false;
+        Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + "PlayScreen", "hide");
 	}
 
 	@Override
