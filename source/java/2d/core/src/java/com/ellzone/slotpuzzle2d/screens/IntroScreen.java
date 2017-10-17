@@ -129,6 +129,7 @@ public class IntroScreen extends InputAdapter implements Screen {
     private StarField starField;
     private float sceneWidth = SlotPuzzleConstants.V_WIDTH / SlotPuzzleConstants.PIXELS_PER_METER;
     private float sceneHeight = SlotPuzzleConstants.V_HEIGHT / SlotPuzzleConstants.PIXELS_PER_METER;
+    private boolean show = false;
 
     public IntroScreen(SlotPuzzle game) {
         this.game = game;
@@ -516,25 +517,27 @@ public class IntroScreen extends InputAdapter implements Screen {
 
     @Override
     public void render(float delta) {
-        update(delta);
+        if (show) {
+            update(delta);
 
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if (isLoaded) {
-            starField.updateStarfield(delta, this.shapeRenderer);
-            game.batch.begin();
-            for (ReelLetterTile reel : reelLetterTiles) {
-                reel.draw(game.batch);
+            if (isLoaded) {
+                starField.updateStarfield(delta, this.shapeRenderer);
+                game.batch.begin();
+                for (ReelLetterTile reel : reelLetterTiles) {
+                    reel.draw(game.batch);
+                }
+                reelTile.draw(game.batch);
+                game.batch.setProjectionMatrix(lightViewport.getCamera().combined);
+                launchButton.getSprite().draw(game.batch);
+                game.batch.end();
+                rayHandler.setCombinedMatrix(lightViewport.getCamera().combined);
+                rayHandler.updateAndRender();
+                debugRenderer.render(world, lightViewport.getCamera().combined);
+                stage.draw();
             }
-            reelTile.draw(game.batch);
-            game.batch.setProjectionMatrix(lightViewport.getCamera().combined);
-            launchButton.getSprite().draw(game.batch);
-            game.batch.end();
-            rayHandler.setCombinedMatrix(lightViewport.getCamera().combined);
-            rayHandler.updateAndRender();
-            debugRenderer.render(world, lightViewport.getCamera().combined);
-            stage.draw();
         }
     }
 
@@ -547,18 +550,25 @@ public class IntroScreen extends InputAdapter implements Screen {
 
     @Override
     public void show() {
+        this.show = true;
+        Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName(), "show() called.");
     }
 
     @Override
     public void pause() {
+        this.show = false;
+        Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName(), "pause() called.");
     }
 
     @Override
     public void resume() {
+        Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName(), "rename() called.");
     }
 
     @Override
     public void hide() {
+        this.show = false;
+        Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName(), "hide() called.");
     }
 
     @Override

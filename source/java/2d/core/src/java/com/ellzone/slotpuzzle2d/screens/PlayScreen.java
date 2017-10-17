@@ -1105,7 +1105,7 @@ public class PlayScreen implements Screen {
     @Override
     public void show() {
         this.show = true;
-		Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + "PlayScreen", "show");
+		Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName(), "show() called.");
     }
 
     @Override
@@ -1116,18 +1116,18 @@ public class PlayScreen implements Screen {
 	@Override
 	public void pause() {
         this.show = false;
-		Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + "PlayScreen", "pause");
+		Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName(), "pause() called.");
 	}
 
 	@Override
 	public void resume() {
-		Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + "PlayScreen", "resume");
+		Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName(), "resume() called.");
 	}
 
 	@Override
 	public void hide() {
 		this.show = false;
-        Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + "PlayScreen", "hide");
+        Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName(), "hide() called.");
 	}
 
 	@Override

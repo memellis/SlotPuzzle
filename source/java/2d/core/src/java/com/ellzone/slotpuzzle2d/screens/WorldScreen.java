@@ -111,6 +111,7 @@ public class WorldScreen implements Screen {
 	private String message = "";
     private InputMultiplexer inputMultiplexer;
 	private boolean inPlayScreen = false;
+    private boolean show = false;
 	   
     public WorldScreen(SlotPuzzle game) {
 		this.game = game;
@@ -332,7 +333,8 @@ public class WorldScreen implements Screen {
 
 	@Override
 	public void show() {
-        Gdx.app.log(LOG_TAG, "show() called.");
+        this.show = true;
+        Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName(), "show() called.");
     }
 
 	private void updateDynamicDoors(float dt) {
@@ -383,21 +385,23 @@ public class WorldScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		if (!inPlayScreen) {
-			Gdx.gl.glClearColor(0, 0, 0, 1);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			update(delta);
-			mapGestureListener.update();
-			renderer.render();
-			renderer.setView(this.camera);
-			this.camera.update();
-			game.batch.begin();
-			for (MapTile mapTile : mapTiles) {
-				mapTile.draw(game.batch);
-			}
-			font.draw(game.batch, message, 80, 100);
-			game.batch.end();
-		}
+        if (show) {
+            if (!inPlayScreen) {
+                Gdx.gl.glClearColor(0, 0, 0, 1);
+                Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+                update(delta);
+                mapGestureListener.update();
+                renderer.render();
+                renderer.setView(this.camera);
+                this.camera.update();
+                game.batch.begin();
+                for (MapTile mapTile : mapTiles) {
+                    mapTile.draw(game.batch);
+                }
+                font.draw(game.batch, message, 80, 100);
+                game.batch.end();
+            }
+        }
 	}
 
 	@Override
@@ -409,17 +413,20 @@ public class WorldScreen implements Screen {
 
 	@Override
 	public void pause() {
-        Gdx.app.log(LOG_TAG, "pause() called.");
+        this.show = false;
+        Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName(), "pause() called.");
     }
 
 	@Override
 	public void resume() {
-        Gdx.app.log(LOG_TAG, "resume() called.");
+        this.show = false;
+        Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName(), "resume() called.");
     }
 
 	@Override
 	public void hide() {
-        Gdx.app.log(LOG_TAG, "hide() called.");
+        this.show = false;
+        Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName(), "hide() called.");
     }
 
 	@Override

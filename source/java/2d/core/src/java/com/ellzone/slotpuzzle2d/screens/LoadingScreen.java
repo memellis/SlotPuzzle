@@ -35,14 +35,13 @@ import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 
 public class LoadingScreen implements Screen{
-	private static final String TAG = "SlotPuzzleLoadingScreen";
-
     private SlotPuzzle game;
 	private Viewport viewport;
 	private Stage stage;
 	private OrthographicCamera camera;
 	private Texture progressBarImg, progressBarBaseImg;
 	private Vector2 pbPos;
+	private boolean show = false;
 
     public LoadingScreen(SlotPuzzle game) {
     	this.game = game;
@@ -79,7 +78,7 @@ public class LoadingScreen implements Screen{
 		game.assetManager.load("playingcards/carddeck.atlas", TextureAtlas.class);
 		game.assetManager.load("sounds/cha-ching.mp3", Sound.class);
  		game.assetManager.finishLoading();
-		Gdx.app.log(TAG, "Assets loaded");
+		Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName(), "Assets loaded");
     }
     
     private void getAssets() {
@@ -98,7 +97,9 @@ public class LoadingScreen implements Screen{
     }
 	
 	@Override
-	public void show() {		
+	public void show() {
+		this.show = false;
+		Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName(), "show() called.");
 	}
 
 	@Override
@@ -122,15 +123,21 @@ public class LoadingScreen implements Screen{
 	}
 
 	@Override
-	public void pause() {		
-	}
+	public void pause() {
+		this.show = false;
+        Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName(), "pause() called.");
+    }
 
 	@Override
-	public void resume() {		
+	public void resume() {
+        Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName(), "resume() called.");
 	}
 
+
 	@Override
-	public void hide() {		
+	public void hide() {
+        this.show = false;
+        Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName(), "hide() called.");
 	}
 
 	@Override
