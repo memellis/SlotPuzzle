@@ -55,8 +55,13 @@ public class ReelTiles {
 	public Array<ReelTile> getReelTiles() {
 		return reelTiles;
 	}
-	
+
+	public Texture getSlotReelScrollTexture() {
+		return this.slotReelScrollTexture;
+	}
+
 	public int getReelTileTextureHeight() {
 		return slotReelScrollTexture.getHeight();
 	}
+
 }

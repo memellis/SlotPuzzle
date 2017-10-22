@@ -89,7 +89,7 @@ public class PuzzleGridType {
 								match = false;
 							} else {
                                 if (puzzleGrid[r][c] != null) {
-                                    if (puzzleGrid[r][co] != null) {
+                                    if (puzzleGrid[co][c] != null) {
                                         if (puzzleGrid[r][c].value == puzzleGrid[co][c].value) {
                                             co++;
                                         } else {
@@ -97,12 +97,12 @@ public class PuzzleGridType {
                                         }
                                     } else {
                                         Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "r=" + r + " c=" + c + " is Null - ignoring this tile.");
-                                        System.out.println("r=" + r + " c=" + c + " is Null - ignoring this tile.");
+                                        System.out.println("r=" + r + " co=" + co + " is Null - ignoring this tile.");
                                         match = false;
                                     }
                                 } else {
                                     Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "r=" + r + " co=" + co + " is Null - ignoring this tile.");
-                                    System.out.println("r=" + r + " co=" + co + " is Null - ignoring this tile.");
+                                    System.out.println("r=" + r + " c=" + c + " is Null - ignoring this tile.");
                                     match = false;
                                 }
 							}
@@ -240,10 +240,14 @@ public class PuzzleGridType {
 		matchedSlots = new Array<TupleValueIndex>();
 		for (int r = 0; r < workingGrid.length; r++) {
 			for (int c = 0; c < workingGrid[0].length; c++) {
-				if (workingGrid[r][c].value >= 0) {
-					matchedSlots.add(new TupleValueIndex(r, c, workingGrid[r][c].index, workingGrid[r][c].value));
-				}
-			}
+                if (workingGrid[r][c] != null) {
+                    if (workingGrid[r][c].value >= 0) {
+                        matchedSlots.add(new TupleValueIndex(r, c, workingGrid[r][c].index, workingGrid[r][c].value));
+                    }
+                } else {
+                    System.out.println("getLonelyTiles null r="+r+" c="+c);
+                }
+            }
 		}
 		return matchedSlots;
 	}
@@ -315,7 +319,7 @@ public class PuzzleGridType {
 								match = false;
 							} else {
                                 if (puzzleGrid[r][c] != null) {
-                                    if (puzzleGrid[r][co] != null) {
+                                    if (puzzleGrid[co][c] != null) {
                                         if (puzzleGrid[co][c].value >=0) {
                                             co++;
                                         } else {
@@ -323,12 +327,12 @@ public class PuzzleGridType {
                                         }
                                     } else {
                                         Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "r=" + r + " c=" + c + " is Null - ignoring this tile.");
-                                        System.out.println("r=" + r + " c=" + c + " is Null - ignoring this tile.");
+                                        System.out.println("r=" + r + " co=" + co + " is Null - ignoring this tile.");
                                         match = false;
                                     }
                                 } else {
                                     Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "r=" + r + " co=" + co + " is Null - ignoring this tile.");
-                                    System.out.println("r=" + r + " co=" + co + " is Null - ignoring this tile.");
+                                    System.out.println("r=" + r + " c=" + c + " is Null - ignoring this tile.");
                                     match = false;
                                 }
 							}
@@ -347,9 +351,14 @@ public class PuzzleGridType {
 	}
 
 	private TupleValueIndex[][] crossOffMatchSlots(Array<TupleValueIndex> matchedSlots, TupleValueIndex[][] puzzleGrid) {
-		TupleValueIndex[][] workingGrid = copyGrid(puzzleGrid);
+         TupleValueIndex[][] workingGrid = copyGrid(puzzleGrid);
 		for (TupleValueIndex matchSlot : matchedSlots) {
-			workingGrid[matchSlot.r][matchSlot.c].value = -1;
+			if (workingGrid[matchSlot.r][matchSlot.c] != null) {
+                workingGrid[matchSlot.r][matchSlot.c].value = -1;
+            } else {
+                System.out.println("r="+matchSlot.r+" c="+matchSlot.c);
+            }
+
 		}
 		return workingGrid;
 	}
@@ -357,11 +366,15 @@ public class PuzzleGridType {
 	public static void printGrid(TupleValueIndex[][] puzzleGrid){
 		for(int r = 0; r < puzzleGrid.length; r++){
 			for (int c = 0; c < puzzleGrid[r].length; c++) {
-				if (puzzleGrid[r][c].value == -1) {
-					System.out.print(puzzleGrid[r][c].value + " ");
-				} else {
-					System.out.print(" " + puzzleGrid[r][c].value + " ");
-				}
+				if (puzzleGrid[r][c] == null) {
+                    System.out.print(" ! ");
+                } else {
+                    if (puzzleGrid[r][c].value == -1) {
+                        System.out.print(puzzleGrid[r][c].value + " ");
+                    } else {
+                        System.out.print(" " + puzzleGrid[r][c].value + " ");
+                    }
+                }
 			}
 			System.out.println();
 		}
@@ -374,10 +387,12 @@ public class PuzzleGridType {
 
 		for(int r = 0; r < puzzleGrid.length; r++){
 			for (int c = 0; c < puzzleGrid[r].length; c++) {
-				targetGrid[r][c] = new TupleValueIndex(puzzleGrid[r][c].r,
-						                               puzzleGrid[r][c].c,
-						                               puzzleGrid[r][c].index,
-						                               puzzleGrid[r][c].value); 
+                if (puzzleGrid[r][c] != null) {
+                    targetGrid[r][c] = new TupleValueIndex(puzzleGrid[r][c].r,
+                            puzzleGrid[r][c].c,
+                            puzzleGrid[r][c].index,
+                            puzzleGrid[r][c].value);
+                }
 			}
 		}
 		return targetGrid;

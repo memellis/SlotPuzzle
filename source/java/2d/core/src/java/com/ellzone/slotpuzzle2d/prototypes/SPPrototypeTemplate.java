@@ -19,6 +19,7 @@ package com.ellzone.slotpuzzle2d.prototypes;
 import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -42,6 +43,7 @@ public abstract class SPPrototypeTemplate extends SPPrototype {
     protected Sprite[] sprites;
 	protected int spriteWidth, spriteHeight;
     protected PerspectiveCamera cam;
+    protected OrthographicCamera orthographicCamera;
     protected SpriteBatch batch;
     protected final Random random = new Random();
     protected BitmapFont font;
@@ -83,21 +85,21 @@ public abstract class SPPrototypeTemplate extends SPPrototype {
         Assets.inst().finishLoading();
 
         TextureAtlas reelAtlas = Assets.inst().get("reel/reels.pack.atlas", TextureAtlas.class);
-        cherry = reelAtlas.createSprite("cherry");
-        cheesecake = reelAtlas.createSprite("cheesecake");
-        grapes = reelAtlas.createSprite("grapes");
-        jelly = reelAtlas.createSprite("jelly");
-        lemon = reelAtlas.createSprite("lemon");
-        peach = reelAtlas.createSprite("peach");
-        pear = reelAtlas.createSprite("pear");
-        tomato = reelAtlas.createSprite("tomato");
+        this.cherry = reelAtlas.createSprite("cherry");
+        this.cheesecake = reelAtlas.createSprite("cheesecake");
+        this.grapes = reelAtlas.createSprite("grapes");
+        this.jelly = reelAtlas.createSprite("jelly");
+        this.lemon = reelAtlas.createSprite("lemon");
+        this.peach = reelAtlas.createSprite("peach");
+        this.pear = reelAtlas.createSprite("pear");
+        this.tomato = reelAtlas.createSprite("tomato");
 
         int i = 0;
-        sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
-		spriteWidth = (int) cherry.getWidth();
-		spriteHeight = (int) cherry.getWidth();
+        this.sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
+		this.spriteWidth = (int) cherry.getWidth();
+		this.spriteHeight = (int) cherry.getWidth();
         float startPosition = (displayWindowWidth - sprites.length * cherry.getWidth()) / 2;
-        for (Sprite sprite : sprites) {
+        for (Sprite sprite : this.sprites) {
             sprite.setOrigin(0, 0);
             sprite.setX(startPosition + i * sprite.getWidth());
 			sprite.setY((float) displayWindowHeight / 2 - sprite.getHeight() / 2);
@@ -109,21 +111,22 @@ public abstract class SPPrototypeTemplate extends SPPrototype {
 
 	
     protected void initialiseCamera() {
-        cam = new PerspectiveCamera();
-        cam.position.set(0, 0, 10);
-        cam.lookAt(0, 0, 0);
-        cam.update();
-		displayWindowWidth = SlotPuzzleConstants.V_WIDTH;
-        displayWindowHeight = SlotPuzzleConstants.V_HEIGHT;
+        this.cam = new PerspectiveCamera();
+        this.cam.position.set(0, 0, 10);
+        this.cam.lookAt(0, 0, 0);
+        this.cam.update();
+		this.displayWindowWidth = SlotPuzzleConstants.V_WIDTH;
+        this.displayWindowHeight = SlotPuzzleConstants.V_HEIGHT;
     }
 
     protected void initialiseLibGdx() {
-        batch = new SpriteBatch();
-        font = new BitmapFont();
+        this.batch = new SpriteBatch();
+        this.font = new BitmapFont();
     }
 
 	protected void initialiseScreen() {
-		viewport = new FitViewport(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT);
+        this.orthographicCamera = new OrthographicCamera();
+        viewport = new FitViewport(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT, orthographicCamera);
 		stage = new Stage(viewport, batch);
 
         initialiseScreenOverride();
@@ -181,16 +184,16 @@ public abstract class SPPrototypeTemplate extends SPPrototype {
 
     public void dispose() {
         Gdx.app.log(SLOTPUZZLE_PLAY, "dispose called");
-        if (tweenManager != null) {
-            tweenManager.killAll();
+        if (this.tweenManager != null) {
+            this.tweenManager.killAll();
         }
-        if (batch != null) {
-            batch.dispose();
+        if (this.batch != null) {
+            this.batch.dispose();
         }
-		if (stage != null) {
-			stage.dispose();
+		if (this.stage != null) {
+			this.stage.dispose();
 		}
-        for (Sprite sprite : sprites) {
+        for (Sprite sprite : this.sprites) {
             sprite.getTexture().dispose();
         }
         Assets.inst().dispose();

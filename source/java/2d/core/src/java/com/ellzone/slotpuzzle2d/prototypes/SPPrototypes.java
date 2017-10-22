@@ -24,6 +24,7 @@ import com.ellzone.slotpuzzle2d.prototypes.box2d.ButtonLightUsingLightButton;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.ButtonLightUsingLightButtonViaFrameBuffer;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.Light;
 import com.ellzone.slotpuzzle2d.prototypes.framebuffer.FrameBufferParticleEffectSample;
+import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.MiniSlotMachineLevel;
 import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlots;
 import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlotsRotateHandleSprite;
 import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.SpinningSlotsRotateHandleSpriteUsingTweenEngine;
@@ -95,6 +96,7 @@ public class SPPrototypes {
         WorldMapLevelSelect.class,
         WorldMapLevelSelectAndReturn.class,
         WorldMapDynamicDoors.class,
+        MiniSlotMachineLevel.class,
 		Particle1.class,
         Particle2.class,
         Particle3.class,

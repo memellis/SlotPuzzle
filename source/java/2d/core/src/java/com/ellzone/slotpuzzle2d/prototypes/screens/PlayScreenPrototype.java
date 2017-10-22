@@ -97,7 +97,6 @@ public class PlayScreenPrototype implements Screen {
 
     private SlotPuzzle game;
     private LevelDoor levelDoor;
-    private MapTile mapTile;
     private PlayScreen.PlayStates playState;
     private Viewport viewport;
     private Stage stage;
@@ -105,6 +104,7 @@ public class PlayScreenPrototype implements Screen {
     private TextureAtlas reelAtlas, tilesAtlas, carddeckAtlas;
     private Sound chaChingSound, pullLeverSound, reelSpinningSound, reelStoppedSound, jackpotSound;
     private TiledMap level;
+    private MapTile mapTile;
     private Reels reels;
     private Array<DampenedSineParticle> dampenedSines;
     private Random random;
@@ -882,6 +882,7 @@ public class PlayScreenPrototype implements Screen {
             }
             game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
             hud.stage.draw();
+            stage.draw();
         } else {
             if (game.assetManager.getProgress() < 1) {
                 game.assetManager.update();
@@ -889,7 +890,6 @@ public class PlayScreenPrototype implements Screen {
                 isLoaded = true;
             }
         }
-        stage.draw();
     }
 
     @Override
