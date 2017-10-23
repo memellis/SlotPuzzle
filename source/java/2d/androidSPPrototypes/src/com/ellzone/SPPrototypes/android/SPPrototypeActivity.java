@@ -30,9 +30,15 @@ public class SPPrototypeActivity extends AndroidApplication {
 
 		Bundle extras = getIntent().getExtras();
 		String testName = (String)extras.get("spprototype");
-
-		SPPrototype test = SPPrototypes.newSPPrototype(testName);
-		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		initialize(test, config);
+        SPPrototype test = null;
+		try {
+            test = SPPrototypes.newSPPrototype(testName);
+        } catch (InstantiationException e) {
+        } catch (IllegalAccessException e) {
+        }
+        if (test != null) {
+            AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+            initialize(test, config);
+        }
 	}
 }
