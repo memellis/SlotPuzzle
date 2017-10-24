@@ -36,7 +36,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.effects.ScoreAccessor;
@@ -75,7 +74,7 @@ import aurelienribon.tweenengine.equations.Elastic;
 import aurelienribon.tweenengine.equations.Quad;
 import aurelienribon.tweenengine.equations.Sine;
 
-public class MiniSlotMachineLevel extends SPPrototypeTemplate {
+public class MiniSlotMachineLevelFallingReels extends SPPrototypeTemplate {
 
     public class MiniSlotMachineLeve1 extends Level {
         @Override
@@ -172,6 +171,8 @@ public class MiniSlotMachineLevel extends SPPrototypeTemplate {
         reelsSpinning = reelTiles.size - 1;
         hud = new Hud(batch);
         hud.setLevelName(levelDoor.levelName);
+        hud.resetWorldTime(300);
+        hud.startWorldTimer();
         playState = PlayScreen.PlayStates.PLAYING;
     }
 
@@ -393,16 +394,16 @@ public class MiniSlotMachineLevel extends SPPrototypeTemplate {
 
     private ReelTile addReelListener(ReelTile reel) {
         reel.addListener(new ReelTileListener() {
-                 @Override
-                 public void actionPerformed(ReelTileEvent event, ReelTile source) {
-                     if (event instanceof ReelStoppedSpinningEvent) {
-                         actionReelStoppedSpinning(event, source);
-                     }
-                     if (event instanceof ReelStoppedFlashingEvent) {
-                         actionReelStoppedFlasshing(event, source);
-                     }
-                 }
-            });
+            @Override
+            public void actionPerformed(ReelTileEvent event, ReelTile source) {
+                if (event instanceof ReelStoppedSpinningEvent) {
+                    actionReelStoppedSpinning(event, source);
+                }
+                if (event instanceof ReelStoppedFlashingEvent) {
+                    actionReelStoppedFlasshing(event, source);
+                }
+            }
+        });
         return reel;
     }
 
@@ -418,16 +419,16 @@ public class MiniSlotMachineLevel extends SPPrototypeTemplate {
                     }
                 }
                 if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
-                        if (testForHiddenPlayingCardsRevealed(reelTiles)) {
-                            iWonTheLevel();
-                        }
+                    if (testForHiddenPlayingCardsRevealed(reelTiles)) {
+                        iWonTheLevel();
                     }
                 }
-                if (levelDoor.levelType.equals(BONUS_LEVEL_TYPE)) {
-                    if (testForJackpot(reelTiles)) {
-                        iWonABonus();
-                    }
+            }
+            if (levelDoor.levelType.equals(BONUS_LEVEL_TYPE)) {
+                if (testForJackpot(reelTiles)) {
+                    iWonABonus();
                 }
+            }
         }
     }
 
@@ -751,6 +752,9 @@ public class MiniSlotMachineLevel extends SPPrototypeTemplate {
                     Gdx.app.debug(logTag, "Playing");
                     processIsTileClicked();
                     break;
+                case LEVEL_TIMED_OUT:
+                    Gdx.app.debug(logTag, "Level Timed Out");
+                    break;
                 case LEVEL_LOST:
                     Gdx.app.debug(logTag, "Lost Level");
                     break;
@@ -877,14 +881,8 @@ public class MiniSlotMachineLevel extends SPPrototypeTemplate {
         tileMapRenderer.setView(orthographicCamera);
         hud.update(dt);
         if (hud.getWorldTime() == 0) {
-            if ((Hud.getLives() > 0) & (!inRestartLevel)) {
-                inRestartLevel = true;
-                playState = PlayScreen.PlayStates.LEVEL_LOST;
-            } else {
-                gameOver = true;
-            }
+            System.out.println("Level timed out");
         }
-
     }
 
     @Override

@@ -211,9 +211,13 @@ public class PuzzleGridType {
 				
 		for (int r = 0; r < workingGrid.length; r++) {
 			for (int c = 0; c < workingGrid[0].length; c++) {
-				if (workingGrid[r][c].value >= 0) {
-					return true;
-				}
+                if (workingGrid[r][c] != null) {
+                    if (workingGrid[r][c].value >= 0) {
+                        return true;
+                    }
+                } else {
+                    System.out.println("anyLonelyTiles Null r="+r+" c="+c);
+                }
 			}
 		}
 		return false;
