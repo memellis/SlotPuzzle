@@ -30,6 +30,7 @@ define_environment_variables() {
     SPPROTOTYPES_TEMPLATE="${SLOTPUZZLE_2D_SOURCE}/SPPrototypesTemplate"
     SLOTPUZZLE_AIDE_TEMPLATE="${SLOTPUZZLE_2D_SOURCE}/SlotPuzzleAideTemplate"
     SLOTPUZZLE_ANDROID="${SLOTPUZZLE_2D_SOURCE}/android"
+	SLOTPUZZLE_SPPROTOTYPES_ANDROID="${SLOTPUZZLE_2D_SOURCE}/androidSPPrototypes"
     SLOTPUZZLE_CORE="${SLOTPUZZLE_2D_SOURCE}/core"
 }
 
@@ -296,6 +297,9 @@ create_aide_target() {
 
     cp -r ${SLOTPUZZLE_AIDE_TEMPLATE}/slotpuzzle-prototypes-android ${AIDE_INSTALL_DIR}
     cp -r ${AIDE_INSTALL_DIR}/slotpuzzle-android/assets ${AIDE_INSTALL_DIR}/slotpuzzle-prototypes-android
+	
+	cp ${SLOTPUZZLE_SPPROTOTYPES_ANDROID}/src/com/ellzone/spprototypes/android/SPPrototypeActivity.java ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/com/ellzone/spprotypes/android
+    cp ${SLOTPUZZLE_SPPROTOTYPES_ANDROID}/src/com/ellzone/spprototypes/android/AndroidSPPrototypeStarter.java ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/com/ellzone/spprotypes/android
 }
 
 # Main program starts here
