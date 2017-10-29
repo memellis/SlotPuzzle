@@ -297,9 +297,9 @@ create_aide_target() {
 
     cp -r ${SLOTPUZZLE_AIDE_TEMPLATE}/slotpuzzle-prototypes-android ${AIDE_INSTALL_DIR}
     cp -r ${AIDE_INSTALL_DIR}/slotpuzzle-android/assets ${AIDE_INSTALL_DIR}/slotpuzzle-prototypes-android
-	
-	cp ${SLOTPUZZLE_SPPROTOTYPES_ANDROID}/src/com/ellzone/spprototypes/android/SPPrototypeActivity.java ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/com/ellzone/spprotypes/android
-    cp ${SLOTPUZZLE_SPPROTOTYPES_ANDROID}/src/com/ellzone/spprototypes/android/AndroidSPPrototypeStarter.java ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/com/ellzone/spprotypes/android
+
+    cp ${SLOTPUZZLE_SPPROTOTYPES_ANDROID}/src/com/ellzone/spprototypes/android/SPPrototypeActivity.java ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-prototypes-android/src/com/ellzone/spprototypes/android
+    cp ${SLOTPUZZLE_SPPROTOTYPES_ANDROID}/src/com/ellzone/spprototypes/android/AndroidSPPrototypeStarter.java ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-prototypes-android/src/com/ellzone/spprototypes/android
 }
 
 # Main program starts here
