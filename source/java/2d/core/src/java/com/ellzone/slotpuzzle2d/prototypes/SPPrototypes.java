@@ -18,6 +18,7 @@ package com.ellzone.slotpuzzle2d.prototypes;
 
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import com.ellzone.slotpuzzle2d.prototypes.box2d.Box2DFallingReels;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.Box2DLights;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.ButtonLight;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.ButtonLightUsingLightButton;
@@ -93,6 +94,7 @@ public class SPPrototypes {
         ButtonLightUsingLightButtonViaFrameBuffer.class,
         CollidingFallingReels.class,
         Box2DFallingTest.class,
+        Box2DFallingReels.class,
 		DownloadMamuIcons.class,
 		FrameBufferParticleEffectSample.class,
         Light.class,
