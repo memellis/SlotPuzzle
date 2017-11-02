@@ -205,9 +205,10 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
             Body box = boxes.get(i);
             Vector2 position = box.getPosition();
             float angle = MathUtils.radiansToDegrees * box.getAngle();
-            animatedReels.get(i).setX(position.x - 1);
-            animatedReels.get(i).setY(position.y - 1);
+            animatedReels.get(i).getReel().setPosition(position.x - 1, position.y - 1);
             animatedReels.get(i).getReel().setSize(2,2);
+            animatedReels.get(i).getReel().setOrigin(1, 1);
+            animatedReels.get(i).getReel().setRotation(angle);
             animatedReels.get(i).draw(batch);
         }
         batch.end();
