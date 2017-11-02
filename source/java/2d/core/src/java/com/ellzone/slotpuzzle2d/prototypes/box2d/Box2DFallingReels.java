@@ -139,6 +139,7 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
             AnimatedReel animatedReel = new AnimatedReel(slotReelScrollTexture, 0, 0, spriteWidth, spriteHeight, spriteWidth, spriteHeight, 0, reelSpinningSound, reelStoppingSound, tweenManager);
             animatedReel.setSx(0);
             animatedReel.setEndReel(random.nextInt(reels.getReels().length - 1));
+            animatedReel.getReel().startSpinning();
             animatedReels.add(animatedReel);
         }
     }
@@ -287,6 +288,10 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
                 world.destroyBody(box);
             boxes.clear();
             createBoxes();
+            for (AnimatedReel animatedReel : animatedReels) {
+                animatedReel.reinitialise();
+                animatedReel.getReel().startSpinning();
+            }
         }
 
         return false;
