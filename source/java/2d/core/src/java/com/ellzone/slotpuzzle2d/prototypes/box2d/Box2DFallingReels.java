@@ -69,7 +69,6 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
     private SpriteBatch batch;
     private BitmapFont font;
     private Random random;
-    private TextureRegion textureRegion;
     private World world;
     private ArrayList<Body> boxes = new ArrayList<Body>();
     private Body groundBody;
@@ -92,7 +91,7 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
         renderer = new ShapeRenderer();
         debugRenderer = new Box2DDebugRenderer();
         batch = new SpriteBatch();
-        font = new BitmapFont(Gdx.files.internal("arial-15.fnt"), false);
+        font = new BitmapFont();
         font.setColor(Color.RED);
         loadAssets();
         reels = new Reels();
@@ -101,7 +100,6 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
         this.displayWindowWidth = SlotPuzzleConstants.V_WIDTH;
         this.displayWindowHeight = SlotPuzzleConstants.V_HEIGHT;
         initialiseUniversalTweenEngine();
-        textureRegion = new TextureRegion(new Texture(Gdx.files.internal("badlogicsmall.jpg")));
         createPhysicsWorld();
         Gdx.input.setInputProcessor(this);
     }
@@ -323,6 +321,5 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
         renderer.dispose();
         debugRenderer.dispose();
         font.dispose();
-        textureRegion.getTexture().dispose();
     }
 }
