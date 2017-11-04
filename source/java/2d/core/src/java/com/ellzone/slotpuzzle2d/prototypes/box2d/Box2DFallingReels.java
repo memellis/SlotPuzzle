@@ -71,7 +71,7 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
     private Random random;
     private World world;
     private ArrayList<Body> boxes = new ArrayList<Body>();
-    private Body groundBody;
+    private Body groundBody, miniSlotMachineBody;
     private MouseJoint mouseJoint = null;
     private Body hitBody = null;
     private TweenManager tweenManager = new TweenManager();
@@ -158,6 +158,21 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
         groundBody.createFixture(fixtureDef);
         groundPoly.dispose();
 
+        PolygonShape miniSlotMachinePoly = new PolygonShape();
+        miniSlotMachinePoly.setAsBox(7, 4);
+
+        BodyDef miniSlotMachineBodyDef = new BodyDef();
+        miniSlotMachineBodyDef.type = BodyDef.BodyType.StaticBody;
+        miniSlotMachineBodyDef.position.x = 0;
+        miniSlotMachineBodyDef.position.y = 15;
+        miniSlotMachineBody = world.createBody(miniSlotMachineBodyDef);
+
+        FixtureDef miniSlotMachineFixtureDef = new FixtureDef();
+        miniSlotMachineFixtureDef.shape = groundPoly;
+        miniSlotMachineFixtureDef.filter.groupIndex = 0;
+        miniSlotMachineBody.createFixture(miniSlotMachineFixtureDef);
+        miniSlotMachinePoly.dispose();
+
         createBoxes();
     }
 
@@ -198,6 +213,7 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
         camera.update();
 
         renderBox(groundBody, 50, 1);
+        renderBox(miniSlotMachineBody, 7, 4);
         batch.getProjectionMatrix().set(camera.combined);
         batch.begin();
         for (int i = 0; i < boxes.size(); i++) {
