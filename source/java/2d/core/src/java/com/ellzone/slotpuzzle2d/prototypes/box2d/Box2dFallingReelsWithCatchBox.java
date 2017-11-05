@@ -28,7 +28,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
@@ -59,10 +58,11 @@ import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Box2DFallingReels extends SPPrototype implements InputProcessor {
+public class Box2dFallingReelsWithCatchBox extends SPPrototype implements InputProcessor {
     private OrthographicCamera camera;
     private ShapeRenderer renderer;
     private Box2DDebugRenderer debugRenderer;
@@ -158,7 +158,6 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
         groundBody.createFixture(fixtureDef);
         groundPoly.dispose();
 
-
         createBoxes();
     }
 
@@ -190,7 +189,7 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
     public void render() {
         long start = TimeUtils.nanoTime();
         float dt = Gdx.graphics.getDeltaTime();
-        world.step(dt , 8, 3);
+        world.step(dt, 8, 3);
         float updateTime = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
         update(dt);
@@ -206,7 +205,7 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
             Vector2 position = box.getPosition();
             float angle = MathUtils.radiansToDegrees * box.getAngle();
             animatedReels.get(i).getReel().setPosition(position.x - 1, position.y - 1);
-            animatedReels.get(i).getReel().setSize(2,2);
+            animatedReels.get(i).getReel().setSize(2, 2);
             animatedReels.get(i).getReel().setOrigin(1, 1);
             animatedReels.get(i).getReel().setRotation(angle);
             animatedReels.get(i).draw(batch);
@@ -317,7 +316,7 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
     }
 
     @Override
-    public void dispose () {
+    public void dispose() {
         world.dispose();
         renderer.dispose();
         debugRenderer.dispose();
