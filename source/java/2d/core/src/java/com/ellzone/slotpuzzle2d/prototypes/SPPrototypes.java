@@ -16,6 +16,7 @@
 
 package com.ellzone.slotpuzzle2d.prototypes;
 
+import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.Box2DFallingReels;
@@ -25,6 +26,7 @@ import com.ellzone.slotpuzzle2d.prototypes.box2d.ButtonLightUsingLightButton;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.ButtonLightUsingLightButtonViaFrameBuffer;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.CollidingFallingReels;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.Box2DFallingTest;
+import com.ellzone.slotpuzzle2d.prototypes.box2d.EdgeShapes;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.Light;
 import com.ellzone.slotpuzzle2d.prototypes.framebuffer.FrameBufferParticleEffectSample;
 import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.MiniSlotMachineLevel;
@@ -96,6 +98,7 @@ public class SPPrototypes {
         Box2DFallingTest.class,
         Box2DFallingReels.class,
 		DownloadMamuIcons.class,
+        EdgeShapes.class,
 		FrameBufferParticleEffectSample.class,
         Light.class,
         SmoothScrollingWorldMap.class,

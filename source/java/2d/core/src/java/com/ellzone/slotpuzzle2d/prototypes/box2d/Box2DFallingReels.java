@@ -158,8 +158,20 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
         groundBody.createFixture(fixtureDef);
         groundPoly.dispose();
 
+        PolygonShape miniSlotMachineSinkPoly = new PolygonShape();
+        Vector2[] vertices = new Vector2[3];
+        vertices[0] = new Vector2(3f, 4f);
+        vertices[1] = new Vector2(3f, 0);
+        vertices[2] = new Vector2(10f, 0f);
+        /*vertices[3] = new Vector2(10f, 4f);*/
+        miniSlotMachineSinkPoly.set(vertices);
+        BodyDef miniSlotMachineSinkBodyDef = new BodyDef();
+        miniSlotMachineSinkBodyDef.type = BodyDef.BodyType.StaticBody;
+        Body miniSlotMachineSinkBody = world.createBody(miniSlotMachineSinkBodyDef);
+        miniSlotMachineSinkBody.createFixture(miniSlotMachineSinkPoly, 0);
         PolygonShape miniSlotMachinePoly = new PolygonShape();
         miniSlotMachinePoly.setAsBox(7, 4);
+
 
         BodyDef miniSlotMachineBodyDef = new BodyDef();
         miniSlotMachineBodyDef.type = BodyDef.BodyType.StaticBody;
