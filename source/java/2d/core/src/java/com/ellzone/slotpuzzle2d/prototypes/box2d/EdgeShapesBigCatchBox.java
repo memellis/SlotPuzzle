@@ -23,39 +23,39 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.ellzone.slotpuzzle2d.camera.CameraHelper;
 import com.ellzone.slotpuzzle2d.camera.CameraSettings;
+import com.ellzone.slotpuzzle2d.physics.BoxBodyBuilder;
 import com.ellzone.slotpuzzle2d.physics.PhysicsManagerCustomBodies;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
 
-public class EdgeShapes extends SPPrototype {
+public class EdgeShapesBigCatchBox extends SPPrototype {
     private OrthographicCamera camera;
     private SpriteBatch batch;
     PhysicsManagerCustomBodies physics;
+    BoxBodyBuilder bodyFactory;
 
     @Override
     public void create() {
-        this.camera = CameraHelper.GetCamera(CameraSettings.VIRTUAL_WIDTH, CameraSettings.VIRTUAL_HEIGHT);
-        this.batch = new SpriteBatch();
+        camera = CameraHelper.GetCamera(CameraSettings.VIRTUAL_WIDTH, CameraSettings.VIRTUAL_HEIGHT);
+        batch = new SpriteBatch();
 
-        this.physics = new PhysicsManagerCustomBodies(camera);
-        this.physics.createCircleBody(BodyDef.BodyType.DynamicBody, 120, 300,4);
-        this.physics.createEdgeBody(BodyDef.BodyType.StaticBody,100,290,260,280);
-        this.physics.createEdgeBody(BodyDef.BodyType.StaticBody,330,280,180,250);
-        this.physics.createEdgeBody(BodyDef.BodyType.StaticBody,65,255,260,215);
-        this.physics.createEdgeBody(BodyDef.BodyType.StaticBody,400,240,170,170);
-        this.physics.createEdgeBody(BodyDef.BodyType.StaticBody,5,190,290,95);
-        this.physics.createEdgeBody(BodyDef.BodyType.StaticBody,290,95,290,70);
-        this.physics.createEdgeBody(BodyDef.BodyType.StaticBody,315,95,315,70);
-        this.physics.createEdgeBody(BodyDef.BodyType.StaticBody,290,70,315,70);
+        physics = new PhysicsManagerCustomBodies(camera);
+        bodyFactory = physics.getBodyFactory();
+
+        physics.createCircleBody(BodyDef.BodyType.DynamicBody, 120, 300,4);
+        physics.createEdgeBody(BodyDef.BodyType.StaticBody,100,290,260,280);
+        physics.createEdgeBody(BodyDef.BodyType.StaticBody,330,280,180,250);
+        physics.createEdgeBody(BodyDef.BodyType.StaticBody,65,255,260,215);
+        physics.createEdgeBody(BodyDef.BodyType.StaticBody,400,240,170,170);
+        physics.createEdgeBody(BodyDef.BodyType.StaticBody,5,190,290,95);
+        physics.createEdgeBody(BodyDef.BodyType.StaticBody,290,95,290,70);
+        physics.createEdgeBody(BodyDef.BodyType.StaticBody,330,95,330,70);
+        physics.createEdgeBody(BodyDef.BodyType.StaticBody,290,70,330,70);
     }
 
     @Override
     public void dispose() {
-        if (this.physics != null) {
-            this.physics.dispose();
-        }
-        if (this.batch != null) {
-            this.batch.dispose();
-        }
+        physics.dispose();
+        batch.dispose();
     }
 
     @Override
@@ -63,12 +63,13 @@ public class EdgeShapes extends SPPrototype {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        this.update(Gdx.graphics.getDeltaTime());
-        this.physics.draw(batch);
+        update(Gdx.graphics.getDeltaTime());
+
+        physics.draw(batch);
     }
 
     private void update(float dt) {
-        this.physics.update(dt);
+        physics.update(dt);
     }
 
     @Override

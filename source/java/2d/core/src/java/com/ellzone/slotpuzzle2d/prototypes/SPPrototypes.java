@@ -27,6 +27,7 @@ import com.ellzone.slotpuzzle2d.prototypes.box2d.ButtonLightUsingLightButtonViaF
 import com.ellzone.slotpuzzle2d.prototypes.box2d.CollidingFallingReels;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.Box2DFallingTest;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.EdgeShapes;
+import com.ellzone.slotpuzzle2d.prototypes.box2d.EdgeShapesBigCatchBox;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.Light;
 import com.ellzone.slotpuzzle2d.prototypes.framebuffer.FrameBufferParticleEffectSample;
 import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.MiniSlotMachineLevel;
@@ -99,6 +100,7 @@ public class SPPrototypes {
         Box2DFallingReels.class,
 		DownloadMamuIcons.class,
         EdgeShapes.class,
+        EdgeShapesBigCatchBox.class,
 		FrameBufferParticleEffectSample.class,
         Light.class,
         SmoothScrollingWorldMap.class,
