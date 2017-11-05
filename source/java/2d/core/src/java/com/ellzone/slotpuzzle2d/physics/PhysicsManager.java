@@ -38,25 +38,25 @@ public class PhysicsManager {
 
         debugMatrix=cam.combined.cpy();
         debugMatrix.scale(BoxBodyBuilder.BOX_TO_WORLD, BoxBodyBuilder.BOX_TO_WORLD, 1f);
-        debugRenderer=new Box2DDebugRenderer();
+        debugRenderer = new Box2DDebugRenderer();
 
-        bodyFactory=new BoxBodyBuilder();
-        ball=bodyFactory.CreateCircleBody(world, BodyDef.BodyType.DynamicBody, 120, 300,4);
-        edge=bodyFactory.CreateEdgeBody(world, BodyDef.BodyType.StaticBody,100,290,260,280);
-        edge=bodyFactory.CreateEdgeBody(world, BodyDef.BodyType.StaticBody,330,280,180,250);
-        edge=bodyFactory.CreateEdgeBody(world, BodyDef.BodyType.StaticBody,65,255,260,215);
-        edge=bodyFactory.CreateEdgeBody(world, BodyDef.BodyType.StaticBody,400,240,170,170);
-        edge=bodyFactory.CreateEdgeBody(world, BodyDef.BodyType.StaticBody,5,190,290,95);
-        edge=bodyFactory.CreateEdgeBody(world, BodyDef.BodyType.StaticBody,290,95,290,70);
-        edge=bodyFactory.CreateEdgeBody(world, BodyDef.BodyType.StaticBody,315,95,315,70);
-        edge=bodyFactory.CreateEdgeBody(world, BodyDef.BodyType.StaticBody,290,70,315,70);
+        bodyFactory = new BoxBodyBuilder();
+        ball = bodyFactory.createCircleBody(world, BodyDef.BodyType.DynamicBody, 120, 300,4);
+        edge = bodyFactory.createEdgeBody(world, BodyDef.BodyType.StaticBody,100,290,260,280);
+        edge = bodyFactory.createEdgeBody(world, BodyDef.BodyType.StaticBody,330,280,180,250);
+        edge = bodyFactory.createEdgeBody(world, BodyDef.BodyType.StaticBody,65,255,260,215);
+        edge = bodyFactory.createEdgeBody(world, BodyDef.BodyType.StaticBody,400,240,170,170);
+        edge = bodyFactory.createEdgeBody(world, BodyDef.BodyType.StaticBody,5,190,290,95);
+        edge = bodyFactory.createEdgeBody(world, BodyDef.BodyType.StaticBody,290,95,290,70);
+        edge = bodyFactory.createEdgeBody(world, BodyDef.BodyType.StaticBody,315,95,315,70);
+        edge = bodyFactory.createEdgeBody(world, BodyDef.BodyType.StaticBody,290,70,315,70);
         shapeRenderer=new ShapeRenderer();
     }
 
 
 
 
-    public void Update(float dt){
+    public void update(float dt){
         if(!isPaused){
             accumulator+=dt;
             while(accumulator>dt){
@@ -67,7 +67,7 @@ public class PhysicsManager {
 
     }
 
-    public void Draw(SpriteBatch sp){
+    public void draw(SpriteBatch sp){
         sp.begin();
         debugRenderer.render(world, debugMatrix);
         sp.end();
@@ -75,23 +75,20 @@ public class PhysicsManager {
 
 
 
-    public void Dispose(){
-        //DISPOSE JOINTS FIRST
+    public void dispose(){
         debugRenderer.dispose();
-        DisposeJoints();
-        DisposeBodies();
+        disposeJoints();
+        disposeBodies();
         world.dispose();
     }
 
-    private void DisposeBodies() {
-        // TODO Auto-generated method stub
+    private void disposeBodies() {
         //while(world.getBodies().hasNext()){
         //    world.destroyBody(world.getBodies().next());
         //}
     }
 
-    private void DisposeJoints() {
-        // TODO Auto-generated method stub
+    private void disposeJoints() {
         //while(world.getJoints().hasNext()){
         //    world.destroyJoint(world.getJoints().next());
         //}

@@ -19,13 +19,13 @@ public class EdgeShapes extends SPPrototype {
         camera = CameraHelper.GetCamera(CameraSettings.VIRTUAL_WIDTH, CameraSettings.VIRTUAL_HEIGHT);
         batch = new SpriteBatch();
 
-        physics=new PhysicsManager(camera);
+        physics = new PhysicsManager(camera);
     }
 
     @Override
     public void dispose() {
 
-        physics.Dispose();
+        physics.dispose();
         batch.dispose();
     }
 
@@ -35,14 +35,14 @@ public class EdgeShapes extends SPPrototype {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
-        Update(Gdx.graphics.getDeltaTime());
+        update(Gdx.graphics.getDeltaTime());
 
 
-        physics.Draw(batch);
+        physics.draw(batch);
     }
 
-    private void Update(float dt) {
-        physics.Update(dt);
+    private void update(float dt) {
+        physics.update(dt);
     }
 
     @Override
