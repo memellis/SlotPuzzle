@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class BoxBodyBuilder {
@@ -17,30 +18,29 @@ public class BoxBodyBuilder {
         return x*WORLD_TO_BOX;
     }
 
-    static float ConvertToWorld(float x){
+    static float convertToWorld(float x){
         return x*BOX_TO_WORLD;
     }
 
-    public Body createCircleBody(World world, BodyDef.BodyType bodyType, float posx, float posy,
-                                 float radius){
+    public Body createCircleBody(World world, BodyDef.BodyType bodyType, float posx, float posy,  float radius){
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = bodyType;
         bodyDef.position.set(convertToBox(posx), convertToBox(posy));
-        bodyDef.angle=0;
+        bodyDef.angle = 0;
 
         Body body = world.createBody(bodyDef);
-        makeCircleBody(body,radius,bodyType,1,0,0,1);
+        makeCircleBody(body, radius, bodyType,1,0,0,1);
         return body;
     }
 
-    void makeCircleBody(Body body,float radius,BodyDef.BodyType bodyType,
+    void makeCircleBody(Body body, float radius, BodyDef.BodyType bodyType,
                         float density,float restitution,float angle,float friction){
 
-        FixtureDef fixtureDef=new FixtureDef();
-        fixtureDef.density=density;
-        fixtureDef.restitution=restitution;
-        fixtureDef.friction=friction;
-        fixtureDef.shape=new CircleShape();
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.density = density;
+        fixtureDef.restitution = restitution;
+        fixtureDef.friction = friction;
+        fixtureDef.shape = new CircleShape();
         fixtureDef.shape.setRadius(convertToBox(radius));
 
         body.createFixture(fixtureDef);
@@ -66,13 +66,13 @@ public class BoxBodyBuilder {
         //CONVERT CENTER TO BOX COORDINATES
         float bx = convertToBox(posx);
         float by = convertToBox(posy);
-        bodyDef.position.set(bx,by);
-        bodyDef.angle=0;
+        bodyDef.position.set(bx, by);
+        bodyDef.angle = 0;
 
         Body body = world.createBody(bodyDef);
 
         //ADD EDGE FIXTURE TO BODY
-        makeEdgeShape(body,len,bodyType,1,0,1);
+        makeEdgeShape(body, len, bodyType,1,0,1);
 
         //CALCULATE ANGLE OF THE LINE SEGMENT
         body.setTransform(bx, by, MathUtils.atan2(v2y-v1y, v2x-v1x));
@@ -80,20 +80,45 @@ public class BoxBodyBuilder {
         return body;
     }
 
-    void makeEdgeShape(Body body,float len,BodyDef.BodyType bodyType,
-                       float density,float restitution,float friction){
-        FixtureDef fixtureDef=new FixtureDef();
-        fixtureDef.density=density;
-        fixtureDef.restitution=restitution;
-        fixtureDef.friction=friction;
+    void makeEdgeShape(Body body, float len, BodyDef.BodyType bodyType,
+                       float density, float restitution, float friction){
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.density = density;
+        fixtureDef.restitution = restitution;
+        fixtureDef.friction = friction;
 
-        EdgeShape es=new EdgeShape();
+        EdgeShape es = new EdgeShape();
         //SET LENGTH IN BOX COORDINATES
         float boxLen = convertToBox(len);
         //SETTING THE POINTS AS OFFSET DISTANCE FROM CENTER
         es.set(-boxLen/2f,0,boxLen/2f,0);
-        fixtureDef.shape=es;
+        fixtureDef.shape = es;
 
+        body.createFixture(fixtureDef);
+        fixtureDef.shape.dispose();
+    }
+
+    Body createBoxBody(World world, BodyDef.BodyType bodyType, float posx, float posy, float width, float height) {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = bodyType;
+        bodyDef.position.set(convertToBox(posx), convertToBox(posy));
+
+        Body body = world.createBody(bodyDef);
+
+        makeBoxBody(body, bodyType, convertToBox(width), convertToBox(height), 1, 0, 0, 1);
+        return body;
+    }
+
+    void makeBoxBody(Body body, BodyDef.BodyType bodyType, float width, float height,
+                     float density, float restitution, float angle, float friction) {
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.density = density;
+        fixtureDef.restitution = restitution;
+        fixtureDef.friction = friction;
+
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.setAsBox(width, height);
+        fixtureDef.shape = polygonShape;
         body.createFixture(fixtureDef);
         fixtureDef.shape.dispose();
     }

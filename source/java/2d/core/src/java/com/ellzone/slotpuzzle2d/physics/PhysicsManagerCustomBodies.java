@@ -4,15 +4,18 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 
 public class PhysicsManagerCustomBodies {
     BoxBodyBuilder bodyFactory;
 
     float accumulator;
-    boolean isPaused;
+    boolean isPaused, disposeWorld;
 
     static final float BOX_STEP = 1 / 120f;
     static final float RENDER_STEP = 1 / 40f;
@@ -26,28 +29,41 @@ public class PhysicsManagerCustomBodies {
 
     public PhysicsManagerCustomBodies(OrthographicCamera cam) {
         this.isPaused = false;
-        this.world = new World(new Vector2(0, -5), true);
+        this.disposeWorld = false;
+        if (this.world == null) {
+            this.world = new World(new Vector2(0, -5), true);
+            this.disposeWorld = true;
+        }
         this.bodyFactory = new BoxBodyBuilder();
 
-        this.debugMatrix=cam.combined.cpy();
+        this.debugMatrix = cam.combined.cpy();
         this.debugMatrix.scale(BoxBodyBuilder.BOX_TO_WORLD, BoxBodyBuilder.BOX_TO_WORLD, 1f);
         this.debugRenderer = new Box2DDebugRenderer();
+    }
+
+    public PhysicsManagerCustomBodies(OrthographicCamera cam, World world) {
+        this.world = world;
+        new PhysicsManagerCustomBodies(cam);
     }
 
     public BoxBodyBuilder getBodyFactory() {
         return this.bodyFactory;
     }
 
-    public void createCircleBody(BodyDef.BodyType bodyType, float posx, float posy, float radius) {
-        this.bodyFactory.createCircleBody(this.world, bodyType, posx, posy, radius);
+    public Body createCircleBody(BodyDef.BodyType bodyType, float posx, float posy, float radius) {
+        return this.bodyFactory.createCircleBody(this.world, bodyType, posx, posy, radius);
     }
 
-    public void createEdgeBody(BodyDef.BodyType bodyType,
+    public Body createEdgeBody(BodyDef.BodyType bodyType,
                                float v1x,
                                float v1y,
                                float v2x,
                                float v2y) {
-        this.bodyFactory.createEdgeBody(this.world, bodyType, v1x, v1y, v2x, v2y);
+        return this.bodyFactory.createEdgeBody(this.world, bodyType, v1x, v1y, v2x, v2y);
+    }
+
+    public Body createBoxBody(BodyDef.BodyType bodyType, float posx, float posy, float width, float height) {
+        return  this.bodyFactory.createBoxBody(this.world, bodyType, posx, posy, width, height);
     }
 
     public void update(float dt){
@@ -67,21 +83,30 @@ public class PhysicsManagerCustomBodies {
     }
 
     public void dispose(){
-        debugRenderer.dispose();
+        if (debugRenderer != null) {
+            debugRenderer.dispose();
+        }
         disposeJoints();
         disposeBodies();
-        world.dispose();
+
+        if ((disposeWorld) & (world != null)) {
+            world.dispose();
+        }
     }
 
     private void disposeBodies() {
-        //while(world.getBodies().hasNext()){
-        //    world.destroyBody(world.getBodies().next());
-        //}
+        Array<Body> bodies = new Array<Body>();
+        world.getBodies(bodies);
+        for (Body body : bodies) {
+            world.destroyBody(body);
+        }
     }
 
     private void disposeJoints() {
-        //while(world.getJoints().hasNext()){
-        //    world.destroyJoint(world.getJoints().next());
-        //}
+        Array<Joint> joints = new Array<Joint>();
+        world.getJoints(joints);
+        for (Joint joint : joints) {
+            world.destroyJoint(joint);
+        }
     }
 }
