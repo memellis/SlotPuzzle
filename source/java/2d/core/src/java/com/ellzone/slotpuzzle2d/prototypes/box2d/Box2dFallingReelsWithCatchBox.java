@@ -45,9 +45,9 @@ public class Box2dFallingReelsWithCatchBox extends SPPrototype {
         physics = new PhysicsManagerCustomBodies(camera);
         bodyFactory = physics.getBodyFactory();
 
-        physics.createEdgeBody(BodyDef.BodyType.StaticBody,120,160,120,70);
-        physics.createEdgeBody(BodyDef.BodyType.StaticBody,330,160,330,70);
-        physics.createEdgeBody(BodyDef.BodyType.StaticBody,120,70,330,70);
+        physics.createEdgeBody(BodyDef.BodyType.StaticBody,110,70 + (4 * 40),110,70);
+        physics.createEdgeBody(BodyDef.BodyType.StaticBody,130 + (7 * 40),70 + (4 * 40),130 + (7 * 40),70);
+        physics.createEdgeBody(BodyDef.BodyType.StaticBody,110,70, 130 + (7 * 40),70);
         reelBoxes = new Array<Body>();
         reelBoxes = createReelBoxes();
 
@@ -57,7 +57,7 @@ public class Box2dFallingReelsWithCatchBox extends SPPrototype {
         Array<Body> reelBoxes = new Array<Body>();
         for (int row = 0; row < 4; row++) {
             for (int column = 0; column < 7; column++) {
-                reelBoxes.add(physics.createBoxBody(BodyDef.BodyType.DynamicBody, 131.5f + (row * 10) + (column * 10), 320, 10, 10));
+                reelBoxes.add(physics.createBoxBody(BodyDef.BodyType.DynamicBody, 136f + (column * 40), 320 +  (row * 40), 20, 20));
             }
         }
         return reelBoxes;
