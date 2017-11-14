@@ -36,6 +36,8 @@ public class Box2dFallingReelsWithCatchBox extends SPPrototype {
     PhysicsManagerCustomBodies physics;
     BoxBodyBuilder bodyFactory;
     Array<Body> reelBoxes;
+    float centreX = SlotPuzzleConstants.V_WIDTH / 2;
+    float centreY = SlotPuzzleConstants.V_HEIGHT / 2;
 
     @Override
     public void create() {
@@ -45,19 +47,35 @@ public class Box2dFallingReelsWithCatchBox extends SPPrototype {
         physics = new PhysicsManagerCustomBodies(camera);
         bodyFactory = physics.getBodyFactory();
 
-        physics.createEdgeBody(BodyDef.BodyType.StaticBody,110,70 + (4 * 40),110,70);
-        physics.createEdgeBody(BodyDef.BodyType.StaticBody,130 + (7 * 40),70 + (4 * 40),130 + (7 * 40),70);
-        physics.createEdgeBody(BodyDef.BodyType.StaticBody,110,70, 130 + (7 * 40),70);
+        physics.createEdgeBody(BodyDef.BodyType.StaticBody,
+                              centreX - 7 * 42 / 2,
+                              centreY - 4 * 42 / 2,
+                              centreX + 7 * 42 / 2,
+                              centreY - 4 * 42 / 2);
+        physics.createEdgeBody(BodyDef.BodyType.StaticBody,
+                              centreX - 7 * 42 / 2,
+                              centreY - 4 * 42 / 2,
+                              centreX - 7 * 42 / 2,
+                              centreY + 4 * 42 / 2);
+        physics.createEdgeBody(BodyDef.BodyType.StaticBody,
+                              centreX + 7 * 42 / 2,
+                              centreY - 4 * 42 / 2,
+                              centreX + 7 * 42 / 2,
+                              centreY + 4 * 42 / 2);
+
         reelBoxes = new Array<Body>();
         reelBoxes = createReelBoxes();
-
     }
 
     private Array<Body> createReelBoxes() {
         Array<Body> reelBoxes = new Array<Body>();
         for (int row = 0; row < 4; row++) {
             for (int column = 0; column < 7; column++) {
-                reelBoxes.add(physics.createBoxBody(BodyDef.BodyType.DynamicBody, 136f + (column * 40), 320 +  (row * 40), 20, 20));
+                reelBoxes.add(physics.createBoxBody(BodyDef.BodyType.DynamicBody,
+                                                   centreX - 7 * 40 / 2 + 20 + (column * 40),
+                                                   SlotPuzzleConstants.V_HEIGHT + (row * 40) / 2,
+                                                   20,
+                                                   20));
             }
         }
         return reelBoxes;
