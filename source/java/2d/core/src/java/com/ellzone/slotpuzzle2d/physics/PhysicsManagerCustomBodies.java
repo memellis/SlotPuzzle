@@ -109,4 +109,8 @@ public class PhysicsManagerCustomBodies {
             world.destroyJoint(joint);
         }
     }
+
+    public Matrix4 getDebugMatrix() {
+        return debugMatrix;
+    }
 }

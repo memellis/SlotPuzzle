@@ -21,6 +21,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.Array;
@@ -32,6 +34,7 @@ import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.physics.BoxBodyBuilder;
 import com.ellzone.slotpuzzle2d.physics.PhysicsManagerCustomBodies;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
+import com.ellzone.slotpuzzle2d.sprites.AnimatedReel;
 import com.ellzone.slotpuzzle2d.sprites.AnimatedReelHelper;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
@@ -45,6 +48,7 @@ public class Box2DFallingSpinningReelsWithCatchBox extends SPPrototype {
     private AnimatedReelHelper animatedReelHelper;
     private TweenManager tweenManager;
     private Array<Body> reelBoxes;
+    private Array<AnimatedReel> animatedReels;
     private float centreX = SlotPuzzleConstants.V_WIDTH / 2;
     private float centreY = SlotPuzzleConstants.V_HEIGHT / 2;
 
@@ -54,7 +58,9 @@ public class Box2DFallingSpinningReelsWithCatchBox extends SPPrototype {
         batch = new SpriteBatch();
 
         initialiseUniversalTweenEngine();
-        animatedReelHelper = new AnimatedReelHelper(tweenManager);
+        animatedReelHelper = new AnimatedReelHelper(tweenManager, 7 * 4);
+        animatedReels = animatedReelHelper.getAnimatedReels();
+        System.out.println("animatedReels.size="+animatedReels.size);
 
         physics = new PhysicsManagerCustomBodies(camera);
         bodyFactory = physics.getBodyFactory();
@@ -114,11 +120,27 @@ public class Box2DFallingSpinningReelsWithCatchBox extends SPPrototype {
 
         update(Gdx.graphics.getDeltaTime());
 
+        batch.begin();
+        int i = 0;
+        for (Body reelBox : reelBoxes) {
+            Vector2 position = reelBox.getPosition();
+            float angle = MathUtils.radiansToDegrees * reelBox.getAngle();
+            animatedReels.get(i).getReel().setPosition(position.x * 100, position.y * 100);
+            //animatedReels.get(i).getReel().setSize(2,2);
+            //animatedReels.get(i).getReel().setOrigin(1, 1);
+            animatedReels.get(i).getReel().setRotation(angle);
+            animatedReels.get(i).draw(batch);
+            i++;
+        }
+        batch.end();
         physics.draw(batch);
-    }
+        //batch.setProjectionMatrix();
+     }
 
     private void update(float dt) {
+        tweenManager.update(dt);
         physics.update(dt);
+        animatedReelHelper.update(dt);
     }
 
     @Override

@@ -36,6 +36,7 @@ public class AnimatedReelHelper {
     public static String REEL_STOPPED_SOUND = "sounds/reel-stopped.wav";
 
     private TweenManager tweenManager;
+    private int numberOfAnimatedReels;
     private Sound pullLeverSound, reelSpinningSound, reelStoppingSound;
     private Array<AnimatedReel> animatedReels;
     private Pixmap slotReelScrollPixmap;
@@ -44,8 +45,9 @@ public class AnimatedReelHelper {
     private int spriteWidth, spriteHeight;
     private Random random;
 
-    public AnimatedReelHelper(TweenManager tweenManager) {
-        this.tweenManager=tweenManager;
+    public AnimatedReelHelper(TweenManager tweenManager, int numberOfAnimatedReels) {
+        this.tweenManager = tweenManager;
+        this.numberOfAnimatedReels = numberOfAnimatedReels;
         create();
     }
 
@@ -80,7 +82,7 @@ public class AnimatedReelHelper {
         slotReelScrollPixmap = new Pixmap(spriteWidth, spriteHeight, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(reels.getReels());
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < numberOfAnimatedReels; i++) {
             AnimatedReel animatedReel = new AnimatedReel(slotReelScrollTexture, 0, 0, spriteWidth, spriteHeight, spriteWidth, spriteHeight, 0, reelSpinningSound, reelStoppingSound, tweenManager);
             animatedReel.setSx(0);
             animatedReel.setEndReel(random.nextInt(reels.getReels().length - 1));
@@ -89,11 +91,17 @@ public class AnimatedReelHelper {
         }
     }
 
-    private Array<AnimatedReel> getAnimatedReels() {
+    public Array<AnimatedReel> getAnimatedReels() {
         return this.animatedReels;
     }
 
-    private Reels getReels() {
+    public Reels getReels() {
         return this.reels;
+    }
+
+    public void update(float dt) {
+        for (AnimatedReel animatedReel : animatedReels) {
+            animatedReel.update(dt);
+        }
     }
  }
