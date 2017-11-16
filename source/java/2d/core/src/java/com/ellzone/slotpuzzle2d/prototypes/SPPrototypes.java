@@ -20,6 +20,7 @@ import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.Box2DFallingReels;
+import com.ellzone.slotpuzzle2d.prototypes.box2d.Box2DFallingSpinningReelsWithCatchBox;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.Box2DLights;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.Box2dFallingReelsWithCatchBox;
 import com.ellzone.slotpuzzle2d.prototypes.box2d.ButtonLight;
@@ -100,6 +101,7 @@ public class SPPrototypes {
         Box2DFallingTest.class,
         Box2DFallingReels.class,
         Box2dFallingReelsWithCatchBox.class,
+        Box2DFallingSpinningReelsWithCatchBox.class,
 		DownloadMamuIcons.class,
         EdgeShapes.class,
         EdgeShapesBigCatchBox.class,

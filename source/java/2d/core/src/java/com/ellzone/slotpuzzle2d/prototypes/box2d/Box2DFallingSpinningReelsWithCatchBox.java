@@ -19,48 +19,61 @@ package com.ellzone.slotpuzzle2d.prototypes.box2d;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.camera.CameraHelper;
+import com.ellzone.slotpuzzle2d.camera.CameraSettings;
+import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
+import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.physics.BoxBodyBuilder;
 import com.ellzone.slotpuzzle2d.physics.PhysicsManagerCustomBodies;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
+import com.ellzone.slotpuzzle2d.sprites.AnimatedReelHelper;
+import com.ellzone.slotpuzzle2d.sprites.ReelTile;
+import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
+import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 
-public class Box2dFallingReelsWithCatchBox extends SPPrototype {
+public class Box2DFallingSpinningReelsWithCatchBox extends SPPrototype {
     private OrthographicCamera camera;
     private SpriteBatch batch;
-    PhysicsManagerCustomBodies physics;
-    BoxBodyBuilder bodyFactory;
-    Array<Body> reelBoxes;
-    float centreX = SlotPuzzleConstants.V_WIDTH / 2;
-    float centreY = SlotPuzzleConstants.V_HEIGHT / 2;
+    private PhysicsManagerCustomBodies physics;
+    private BoxBodyBuilder bodyFactory;
+    private AnimatedReelHelper animatedReelHelper;
+    private TweenManager tweenManager;
+    private Array<Body> reelBoxes;
+    private float centreX = SlotPuzzleConstants.V_WIDTH / 2;
+    private float centreY = SlotPuzzleConstants.V_HEIGHT / 2;
 
     @Override
     public void create() {
         camera = CameraHelper.GetCamera(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT);
         batch = new SpriteBatch();
 
+        initialiseUniversalTweenEngine();
+        animatedReelHelper = new AnimatedReelHelper(tweenManager);
+
         physics = new PhysicsManagerCustomBodies(camera);
         bodyFactory = physics.getBodyFactory();
 
         physics.createEdgeBody(BodyDef.BodyType.StaticBody,
-                              centreX - 7 * 42 / 2,
-                              centreY - 4 * 42 / 2,
-                              centreX + 7 * 42 / 2,
-                              centreY - 4 * 42 / 2);
+                centreX - 7 * 42 / 2,
+                centreY - 4 * 42 / 2,
+                centreX + 7 * 42 / 2,
+                centreY - 4 * 42 / 2);
         physics.createEdgeBody(BodyDef.BodyType.StaticBody,
-                              centreX - 7 * 42 / 2,
-                              centreY - 4 * 42 / 2,
-                              centreX - 7 * 42 / 2,
-                              centreY + 4 * 42 / 2);
+                centreX - 7 * 42 / 2,
+                centreY - 4 * 42 / 2,
+                centreX - 7 * 42 / 2,
+                centreY + 4 * 42 / 2);
         physics.createEdgeBody(BodyDef.BodyType.StaticBody,
-                              centreX + 7 * 42 / 2,
-                              centreY - 4 * 42 / 2,
-                              centreX + 7 * 42 / 2,
-                              centreY + 4 * 42 / 2);
+                centreX + 7 * 42 / 2,
+                centreY - 4 * 42 / 2,
+                centreX + 7 * 42 / 2,
+                centreY + 4 * 42 / 2);
 
         reelBoxes = new Array<Body>();
         reelBoxes = createReelBoxes();
@@ -71,13 +84,21 @@ public class Box2dFallingReelsWithCatchBox extends SPPrototype {
         for (int row = 0; row < 4; row++) {
             for (int column = 0; column < 7; column++) {
                 reelBoxes.add(physics.createBoxBody(BodyDef.BodyType.DynamicBody,
-                                                   centreX - 7 * 40 / 2 + 20 + (column * 40),
-                                                   SlotPuzzleConstants.V_HEIGHT + (row * 40) / 2,
-                                                   20,
-                                                   20));
+                        centreX - 7 * 40 / 2 + 20 + (column * 40),
+                        SlotPuzzleConstants.V_HEIGHT + (row * 40) / 2,
+                        20,
+                        20));
             }
         }
         return reelBoxes;
+    }
+
+    private void initialiseUniversalTweenEngine() {
+        SlotPuzzleTween.setWaypointsLimit(10);
+        SlotPuzzleTween.setCombinedAttributesLimit(3);
+        SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelAccessor());
+        SlotPuzzleTween.registerAccessor(Sprite.class, new SpriteAccessor());
+        tweenManager = new TweenManager();
     }
 
     @Override
