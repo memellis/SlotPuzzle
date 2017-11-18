@@ -83,7 +83,7 @@ public class AnimatedReelHelper {
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(reels.getReels());
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         for (int i = 0; i < numberOfAnimatedReels; i++) {
-            AnimatedReel animatedReel = new AnimatedReel(slotReelScrollTexture, 0, 0, spriteWidth, spriteHeight, spriteWidth, spriteHeight, 0, reelSpinningSound, reelStoppingSound, tweenManager);
+            AnimatedReel animatedReel = new AnimatedReel(slotReelScrollTexture, 0, 0, spriteWidth, spriteHeight, spriteWidth, spriteHeight, 0, null, null, tweenManager);
             animatedReel.setSx(0);
             animatedReel.setEndReel(random.nextInt(reels.getReels().length - 1));
             animatedReel.getReel().startSpinning();

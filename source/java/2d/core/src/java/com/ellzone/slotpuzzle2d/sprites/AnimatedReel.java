@@ -105,7 +105,9 @@ public class AnimatedReel {
 	private void delegateDSCallback(int type, SPPhysicsEvent source) {
 		if (type == SPPhysicsCallback.PARTICLE_UPDATE) {
 			reel.stopSpinningSound();
-			this.stoppingSound.play();
+			if (this.stoppingSound != null) {
+				this.stoppingSound.play();
+			}
 			DampenedSineParticle ds = (DampenedSineParticle)source.getSource();
 			ReelTile reel = (ReelTile)ds.getUserData();
 			Timeline endReelSeq = Timeline.createSequence();

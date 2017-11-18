@@ -19,6 +19,7 @@ package com.ellzone.slotpuzzle2d.prototypes.box2d;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -26,6 +27,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.camera.CameraHelper;
 import com.ellzone.slotpuzzle2d.camera.CameraSettings;
@@ -42,6 +45,7 @@ import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 
 public class Box2DFallingSpinningReelsWithCatchBox extends SPPrototype {
     private OrthographicCamera camera;
+    private Viewport viewport;
     private SpriteBatch batch;
     private PhysicsManagerCustomBodies physics;
     private BoxBodyBuilder bodyFactory;
@@ -57,10 +61,11 @@ public class Box2DFallingSpinningReelsWithCatchBox extends SPPrototype {
         camera = CameraHelper.GetCamera(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT);
         batch = new SpriteBatch();
 
+        viewport = new FitViewport(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT, new OrthographicCamera());
+
         initialiseUniversalTweenEngine();
         animatedReelHelper = new AnimatedReelHelper(tweenManager, 7 * 4);
         animatedReels = animatedReelHelper.getAnimatedReels();
-        System.out.println("animatedReels.size="+animatedReels.size);
 
         physics = new PhysicsManagerCustomBodies(camera);
         bodyFactory = physics.getBodyFactory();
@@ -120,21 +125,23 @@ public class Box2DFallingSpinningReelsWithCatchBox extends SPPrototype {
 
         update(Gdx.graphics.getDeltaTime());
 
+        BitmapFont font = new BitmapFont();
         batch.begin();
+        batch.setProjectionMatrix(viewport.getCamera().combined);
         int i = 0;
         for (Body reelBox : reelBoxes) {
             Vector2 position = reelBox.getPosition();
             float angle = MathUtils.radiansToDegrees * reelBox.getAngle();
-            animatedReels.get(i).getReel().setPosition(position.x * 100, position.y * 100);
-            //animatedReels.get(i).getReel().setSize(2,2);
-            //animatedReels.get(i).getReel().setOrigin(1, 1);
-            animatedReels.get(i).getReel().setRotation(angle);
-            animatedReels.get(i).draw(batch);
+            ReelTile reelTile = animatedReels.get(i).getReel();
+            reelTile.setPosition(position.x * 100 - centreX - 20, position.y * 100 - centreY - 20);
+            reelTile.setOrigin(20, 20);
+            reelTile.setSize( 40, 40);
+            reelTile.setRotation(angle);
+            reelTile.draw(batch);
             i++;
         }
         batch.end();
         physics.draw(batch);
-        //batch.setProjectionMatrix();
      }
 
     private void update(float dt) {
@@ -145,6 +152,7 @@ public class Box2DFallingSpinningReelsWithCatchBox extends SPPrototype {
 
     @Override
     public void resize(int width, int height) {
+        viewport.update(width, height);
     }
 
     @Override

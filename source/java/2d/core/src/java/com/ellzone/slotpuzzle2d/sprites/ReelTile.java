@@ -121,11 +121,7 @@ public class ReelTile extends ReelSprite {
  	}
 		
 	private void processFlashTweenState(float delta) {
-        /*if (flashingState == FlashState.FLASH_OFF) {
-            flashingState = FlashState.FLASH_ON;
-            return;
-        }*/
-        this.setFlashOn();
+         this.setFlashOn();
 	}
 
     public float getSx() {
@@ -181,9 +177,11 @@ public class ReelTile extends ReelSprite {
 			stopSpinningSound();
 		}
 	}
-	
+
 	public void stopSpinningSound() {
-        this.spinningSound.stop(this.spinningSoundId);
+        if (this.spinningSound != null) {
+            this.spinningSound.stop(this.spinningSoundId);
+        }
 	}
 	
 	public FlashState getFlashState() {

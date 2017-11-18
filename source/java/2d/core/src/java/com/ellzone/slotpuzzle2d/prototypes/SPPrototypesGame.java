@@ -40,7 +40,6 @@ public class SPPrototypesGame extends SPPrototype {
         setLogLevel();
 	    batch = new SpriteBatch();
 	    camera = new OrthographicCamera();
-	    //previousScreen = new MenuScreen(this);
 	    setScreen(previousScreen);
     }
 
