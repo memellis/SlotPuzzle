@@ -16,7 +16,6 @@
 package com.ellzone.slotpuzzle2d.prototypes.minislotmachine;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -36,16 +35,15 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.effects.ScoreAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.level.Card;
-import com.ellzone.slotpuzzle2d.level.Level;
 import com.ellzone.slotpuzzle2d.level.LevelDoor;
 import com.ellzone.slotpuzzle2d.level.Pip;
 import com.ellzone.slotpuzzle2d.level.Suit;
+import com.ellzone.slotpuzzle2d.level.MiniSlotMachineLevel;
 import com.ellzone.slotpuzzle2d.physics.DampenedSineParticle;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsEvent;
@@ -75,38 +73,7 @@ import aurelienribon.tweenengine.equations.Elastic;
 import aurelienribon.tweenengine.equations.Quad;
 import aurelienribon.tweenengine.equations.Sine;
 
-public class MiniSlotMachineLevel extends SPPrototypeTemplate {
-
-    public class MiniSlotMachineLeve1 extends Level {
-        @Override
-        public void initialise() {
-        }
-
-        @Override
-        public String getImageName() {
-            return "MapTile";
-        }
-
-        @Override
-        public InputProcessor getInput() {
-            return null;
-        }
-
-        @Override
-        public String getTitle() {
-            String title = "Mini Slot Machine Level";
-            return title;
-        }
-
-        @Override
-        public void dispose() {
-        }
-
-        @Override
-        public int getLevelNumber() {
-            return 6;
-        }
-    }
+public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
 
     public static final int GAME_LEVEL_WIDTH = 11;
     public static final int GAME_LEVEL_HEIGHT = 8;
@@ -131,7 +98,7 @@ public class MiniSlotMachineLevel extends SPPrototypeTemplate {
     private MapTile mapTile;
     private MapProperties levelProperties;
     private TextureAtlas reelAtlas, tilesAtlas, carddeckAtlas;
-    private MiniSlotMachineLeve1 miniSlotMachineLeve1;
+    private MiniSlotMachineLevel miniSlotMachineLeve1;
     private Array<DampenedSineParticle> dampenedSines;
     private PlayScreen.PlayStates playState;
     private Reels reels;

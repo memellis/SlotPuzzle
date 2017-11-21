@@ -14,36 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.ellzone.slotpuzzle2d.level;
+package com.ellzone.slotpuzzle2d.prototypes.box2d;
 
-import com.badlogic.gdx.InputProcessor;
-
-public class MapLevel6 extends Level {
-    @Override
-    public void initialise() {
-    }
-
-    @Override
-    public String getImageName() {
-        return "MapTile";
-    }
-
-    @Override
-    public InputProcessor getInput() {
-        return null;
-    }
-
-    @Override
-    public String getTitle() {
-        String title = "1-6";
-        return title;
-    }
-
-    public int getLevelNumber() {
-        return 5;
-    }
-
-    @Override
-    public void dispose() {
-    }
+public class Box2DFallingSpinngReelsMiniGame {
 }

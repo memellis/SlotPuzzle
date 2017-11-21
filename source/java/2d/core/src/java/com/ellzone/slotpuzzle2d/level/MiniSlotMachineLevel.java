@@ -18,7 +18,7 @@ package com.ellzone.slotpuzzle2d.level;
 
 import com.badlogic.gdx.InputProcessor;
 
-public class MapLevel6 extends Level {
+public class MiniSlotMachineLevel extends Level {
     @Override
     public void initialise() {
     }
@@ -35,15 +35,17 @@ public class MapLevel6 extends Level {
 
     @Override
     public String getTitle() {
-        String title = "1-6";
+        String title = "Mini Slot Machine Level";
         return title;
-    }
-
-    public int getLevelNumber() {
-        return 5;
     }
 
     @Override
     public void dispose() {
     }
+
+    @Override
+    public int getLevelNumber() {
+        return 6;
+    }
 }
+

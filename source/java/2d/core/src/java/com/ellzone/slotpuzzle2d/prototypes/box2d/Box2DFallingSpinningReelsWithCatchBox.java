@@ -31,7 +31,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.camera.CameraHelper;
-import com.ellzone.slotpuzzle2d.camera.CameraSettings;
 import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.physics.BoxBodyBuilder;
@@ -118,6 +117,12 @@ public class Box2DFallingSpinningReelsWithCatchBox extends SPPrototype {
         batch.dispose();
     }
 
+    private void update(float dt) {
+        tweenManager.update(dt);
+        physics.update(dt);
+        animatedReelHelper.update(dt);
+    }
+
     @Override
     public void render() {
         Gdx.gl.glClearColor(0, 0, 0, 0);
@@ -125,7 +130,11 @@ public class Box2DFallingSpinningReelsWithCatchBox extends SPPrototype {
 
         update(Gdx.graphics.getDeltaTime());
 
-        BitmapFont font = new BitmapFont();
+        renderReelBoxes(batch, reelBoxes, animatedReels);
+        physics.draw(batch);
+     }
+
+    private void renderReelBoxes(SpriteBatch batch, Array<Body> reelBoxes, Array<AnimatedReel> animatedReels) {
         batch.begin();
         batch.setProjectionMatrix(viewport.getCamera().combined);
         int i = 0;
@@ -141,13 +150,6 @@ public class Box2DFallingSpinningReelsWithCatchBox extends SPPrototype {
             i++;
         }
         batch.end();
-        physics.draw(batch);
-     }
-
-    private void update(float dt) {
-        tweenManager.update(dt);
-        physics.update(dt);
-        animatedReelHelper.update(dt);
     }
 
     @Override
