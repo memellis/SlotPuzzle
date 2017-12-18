@@ -24,4 +24,7 @@ public enum Suit {
 		this.name = name;
 		this.index = index;
 	}
+	public static int getNumberOfSuits() {
+		return Suit.values().length;
+	}
 }

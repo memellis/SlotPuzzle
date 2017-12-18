@@ -17,6 +17,7 @@
 package com.ellzone.slotpuzzle2d.prototypes.box2d;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -46,6 +47,7 @@ public class Box2DFallingSpinningReelsWithCatchBox extends SPPrototype {
     private OrthographicCamera camera;
     private Viewport viewport;
     private SpriteBatch batch;
+    private AssetManager assetManager;
     private PhysicsManagerCustomBodies physics;
     private BoxBodyBuilder bodyFactory;
     private AnimatedReelHelper animatedReelHelper;
@@ -59,11 +61,11 @@ public class Box2DFallingSpinningReelsWithCatchBox extends SPPrototype {
     public void create() {
         camera = CameraHelper.GetCamera(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT);
         batch = new SpriteBatch();
-
         viewport = new FitViewport(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT, new OrthographicCamera());
 
+        this.assetManager = assetManager;
         initialiseUniversalTweenEngine();
-        animatedReelHelper = new AnimatedReelHelper(tweenManager, 7 * 4);
+        animatedReelHelper = new AnimatedReelHelper(this.assetManager, this.tweenManager, 7 * 4);
         animatedReels = animatedReelHelper.getAnimatedReels();
 
         physics = new PhysicsManagerCustomBodies(camera);

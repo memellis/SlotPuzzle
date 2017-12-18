@@ -31,6 +31,8 @@
     <orderEntry type="library" exported="" name="gdx-box2d-1.9.6" level="project" />
     <orderEntry type="library" exported="" name="gdx-freetype-1.9.6" level="project" />
     <orderEntry type="library" exported="" name="box2dlights-1.4" level="project" />
+    <orderEntry type="library" exported="" name="libgdx-utils-0.13.3" level="project" />
+    <orderEntry type="library" exported="" name="libgdx-utils-box2d-0.13.3" level="project" />
     <orderEntry type="library" exported="" name="tween-engine-api-sources" level="project" />
     <orderEntry type="library" exported="" name="tween-engine-api" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="junit-4.12" level="project" />
@@ -49,5 +51,9 @@
     <orderEntry type="library" exported="" scope="TEST" name="javassist-3.21.0-GA" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="objenesis-2.4" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="mockito-core-1.10.19" level="project" />
+    <orderEntry type="library" exported="" name="core.core-1.0" level="project" />
+    <orderEntry type="library" exported="" name="core.core-1.0" level="project" />
+    <orderEntry type="library" exported="" name="core.core-1.0" level="project" />
+    <orderEntry type="library" exported="" name="core.core-1.0" level="project" />
   </component>
 </module>

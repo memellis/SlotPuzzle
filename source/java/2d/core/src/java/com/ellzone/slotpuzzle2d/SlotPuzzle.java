@@ -22,7 +22,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.ellzone.slotpuzzle2d.screens.WorldScreen;
 
 public class SlotPuzzle extends Game {
 	public SpriteBatch batch;

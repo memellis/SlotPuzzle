@@ -41,10 +41,11 @@ import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.effects.ScoreAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.level.Card;
+import com.ellzone.slotpuzzle2d.level.LevelCreator;
 import com.ellzone.slotpuzzle2d.level.LevelDoor;
+import com.ellzone.slotpuzzle2d.level.MiniSlotMachineLevel;
 import com.ellzone.slotpuzzle2d.level.Pip;
 import com.ellzone.slotpuzzle2d.level.Suit;
-import com.ellzone.slotpuzzle2d.level.MiniSlotMachineLevel;
 import com.ellzone.slotpuzzle2d.physics.DampenedSineParticle;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsEvent;
@@ -69,22 +70,16 @@ import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.utils.Assets;
+import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 import aurelienribon.tweenengine.equations.Elastic;
 import aurelienribon.tweenengine.equations.Quad;
 import aurelienribon.tweenengine.equations.Sine;
 
-public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
-
+public class MiniSlotMachineLevelPrototypeWithLevelCreator extends SPPrototypeTemplate {
     public static final int GAME_LEVEL_WIDTH = 11;
     public static final int GAME_LEVEL_HEIGHT = 8;
-    public static final String MINI_SLOT_MACHINE_LEVEL_MAP = "levels/mini slot machine level.tmx";
-    public static final String PLAYING_CARDS_ATLAS = "playingcards/carddeck.atlas";
-    public static final String SOUND_CHA_CHING = "sounds/cha-ching.mp3";
-    public static final String SOUND_PULL_LEVER = "sounds/pull-lever1.mp3";
-    public static final String SOUND_REEL_SPINNING = "sounds/reel-spinning.mp3";
-    public static final String SOUND_REEL_STOPPED = "sounds/reel-stopped.mp3";
-    public static final String SOUND_JACKPOINT = "sounds/jackpot.mp3";
     public static final String REEL_OBJECT_LAYER = "Reels";
     public static final String HIDDEN_PATTERN_LEVEL_TYPE = "HiddenPattern";
     public static final String PLAYING_CARD_LEVEL_TYPE = "PlayingCard";
@@ -95,9 +90,9 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
     public static final int NUMBER_OF_CARDS_IN_A_SUIT = 13;
 
     private String logTag = SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName();
-    private TiledMap miniSlotmachineLevel;
+    private TiledMap miniSlotMachineLevel;
     private MapTile mapTile;
-    private AssetManager assetManager;
+    private AnnotationAssetManager annotationAssetManager;
     private MapProperties levelProperties;
     private TextureAtlas reelAtlas, tilesAtlas, carddeckAtlas;
     private MiniSlotMachineLevel miniSlotMachineLeve1;
@@ -121,6 +116,7 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
     private float reelSlowingTargetTime;
     private Array<Timeline> endReelSeqs;
     private Timeline reelFlashSeq;
+    private LevelCreator levelCreator;
     private boolean gameOver = false;
     private boolean inRestartLevel = false;
     private boolean win = false;
@@ -131,18 +127,29 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
 
     @Override
     protected void initialiseOverride() {
-        this.assetManager = new AssetManager();
-        createPlayScreen();
         initialiseReels();
         createSlotReelTexture();
-        getMapProperties(this.miniSlotmachineLevel);
+        getAssets(this.annotationAssetManager);
+        this.miniSlotMachineLevel = this.annotationAssetManager.get(AssetsAnnotation.MINI_SLOT_MACHINE_LEVEL);
+        getMapProperties(this.miniSlotMachineLevel);
         initialiseLevelDoor();
+        createPlayScreen();
+        this.levelCreator = new LevelCreator(this.levelDoor, this.miniSlotMachineLevel, this.annotationAssetManager, this.carddeckAtlas, this.tweenManager, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT);
         this.reelTiles = new Array<ReelTile>();
-        this.reelTiles = createLevels(this.miniSlotmachineLevel, this.reelTiles);
+        this.reelTiles = createLevels(this.miniSlotMachineLevel, this.reelTiles);
         reelsSpinning = reelTiles.size - 1;
         hud = new Hud(batch);
         hud.setLevelName(levelDoor.levelName);
         playState = PlayScreen.PlayStates.PLAYING;
+    }
+
+    private void getAssets(AssetManager assetManager) {
+        this.carddeckAtlas = this.annotationAssetManager.get(AssetsAnnotation.CARDDECK);
+        this.chaChingSound = this.annotationAssetManager.get(AssetsAnnotation.SOUND_CHA_CHING);
+        this.pullLeverSound = this.annotationAssetManager.get(AssetsAnnotation.SOUND_PULL_LEVER);
+        this.reelSpinningSound = this.annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_SPINNING);
+        this.reelStoppedSound = this.annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_STOPPED);
+        this.jackpotSound = this.annotationAssetManager.get(AssetsAnnotation.SOUND_JACKPOINT);
     }
 
     private void getMapProperties(TiledMap level) {
@@ -183,7 +190,7 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
     }
 
     private void initialisePlayScreen() {
-        this.tileMapRenderer = new OrthogonalTiledMapRenderer(miniSlotmachineLevel);
+        this.tileMapRenderer = new OrthogonalTiledMapRenderer(miniSlotMachineLevel);
         this.dampenedSines = new Array<DampenedSineParticle>();
         this.font = new BitmapFont();
         this.sW = SlotPuzzleConstants.V_WIDTH;
@@ -306,8 +313,8 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
         Suit randomSuit = null;
         Pip randomPip = null;
         cards = new Array<Card>();
-        int maxNumberOfPlayingCardsForLevel = miniSlotmachineLevel.getLayers().get(HIDDEN_PATTERN_LAYER_NAME).getObjects().getByType(RectangleMapObject.class).size;
-        levelProperties = miniSlotmachineLevel.getProperties();
+        int maxNumberOfPlayingCardsForLevel = miniSlotMachineLevel.getLayers().get(HIDDEN_PATTERN_LAYER_NAME).getObjects().getByType(RectangleMapObject.class).size;
+        levelProperties = miniSlotMachineLevel.getProperties();
         int numberOfCardsToDisplayForLevel = Integer.parseInt(levelProperties.get("Number Of Cards", String.class));
         hiddenPlayingCards = new Array<Integer>();
         for (int i=0; i<numberOfCardsToDisplayForLevel; i++) {
@@ -362,21 +369,21 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
 
     private ReelTile addReelListener(ReelTile reel) {
         reel.addListener(new ReelTileListener() {
-                 @Override
-                 public void actionPerformed(ReelTileEvent event, ReelTile source) {
-                     if (event instanceof ReelStoppedSpinningEvent) {
-                         actionReelStoppedSpinning(event, source);
-                     }
-                     if (event instanceof ReelStoppedFlashingEvent) {
-                         actionReelStoppedFlasshing(event, source);
-                     }
-                 }
-            });
+            @Override
+            public void actionPerformed(ReelTileEvent event, ReelTile source) {
+                if (event instanceof ReelStoppedSpinningEvent) {
+                    actionReelStoppedSpinning(event, source);
+                }
+                if (event instanceof ReelStoppedFlashingEvent) {
+                    actionReelStoppedFlasshing(event, source);
+                }
+            }
+        });
         return reel;
     }
 
     private void actionReelStoppedSpinning(ReelTileEvent event, ReelTile source) {
-        this.reelStoppedSound.play();
+        playSound(reelSpinningSound);
 
         this.reelsSpinning--;
         if (playState == PlayScreen.PlayStates.PLAYING) {
@@ -387,16 +394,16 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
                     }
                 }
                 if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
-                        if (testForHiddenPlayingCardsRevealed(reelTiles)) {
-                            iWonTheLevel();
-                        }
+                    if (testForHiddenPlayingCardsRevealed(reelTiles)) {
+                        iWonTheLevel();
                     }
                 }
-                if (levelDoor.levelType.equals(BONUS_LEVEL_TYPE)) {
-                    if (testForJackpot(reelTiles)) {
-                        iWonABonus();
-                    }
+            }
+            if (levelDoor.levelType.equals(BONUS_LEVEL_TYPE)) {
+                if (testForJackpot(reelTiles)) {
+                    iWonABonus();
                 }
+            }
         }
     }
 
@@ -418,7 +425,7 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
     }
 
     private RectangleMapObject getHiddenPlayingCard(int cardIndex) {
-        return miniSlotmachineLevel.getLayers().get(HIDDEN_PATTERN_LAYER_NAME).getObjects().getByType(RectangleMapObject.class).get(cardIndex);
+        return miniSlotMachineLevel.getLayers().get(HIDDEN_PATTERN_LAYER_NAME).getObjects().getByType(RectangleMapObject.class).get(cardIndex);
     }
 
     boolean testForHiddenPatternRevealed(Array<ReelTile> levelReel) {
@@ -434,7 +441,7 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
     private boolean hiddenPlayingCardsRevealed(TupleValueIndex[][] grid) {
         boolean hiddenPlayingCardsRevealed = true;
         for (Integer hiddenPlayingCard : hiddenPlayingCards) {
-            MapObject mapObject = miniSlotmachineLevel.getLayers().get(HIDDEN_PATTERN_LAYER_NAME).getObjects().getByType(RectangleMapObject.class).get(hiddenPlayingCard.intValue());
+            MapObject mapObject = miniSlotMachineLevel.getLayers().get(HIDDEN_PATTERN_LAYER_NAME).getObjects().getByType(RectangleMapObject.class).get(hiddenPlayingCard.intValue());
             Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
             for (int ro = (int) (mapRectangle.getX()); ro < (int) (mapRectangle.getX() + mapRectangle.getWidth()); ro += PlayScreen.TILE_WIDTH) {
                 for (int co = (int) (mapRectangle.getY()) ; co < (int) (mapRectangle.getY() + mapRectangle.getHeight()); co += PlayScreen.TILE_HEIGHT) {
@@ -458,7 +465,7 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
 
     private boolean hiddenPatternRevealed(TupleValueIndex[][] grid) {
         boolean hiddenPattern = true;
-        for (MapObject mapObject : miniSlotmachineLevel.getLayers().get(HIDDEN_PATTERN_LAYER_NAME).getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject mapObject : miniSlotMachineLevel.getLayers().get(HIDDEN_PATTERN_LAYER_NAME).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
             int c = (int) (mapRectangle.getX() - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
             int r = (int) (mapRectangle.getY() - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
@@ -621,8 +628,8 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
                 case TweenCallback.COMPLETE:
                     ReelTile reel = (ReelTile) source.getUserData();
                     Hud.addScore((reel.getEndReel() + 1) * reel.getScore());
-                    reelStoppedSound.play();
-                    chaChingSound.play();
+                    playSound(reelStoppedSound);
+                    playSound(chaChingSound);
                     reel.deleteReelTile();
                     if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
                         testPlayingCardLevelWon();
@@ -777,7 +784,9 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
                         ds.accelerate(new Vector(0, accelerateY));
                         ds.velocityMin.y = velocityMin.y;
                         Hud.addScore(-1);
-                        pullLeverSound.play();
+                        if (pullLeverSound != null) {
+                            pullLeverSound.play();
+                        }
                     }
                 }
             }
@@ -806,25 +815,11 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
 
     @Override
     protected void loadAssetsOverride() {
-        Assets.inst().setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-        Assets.inst().load(MINI_SLOT_MACHINE_LEVEL_MAP, TiledMap.class);
-        Assets.inst().load(PLAYING_CARDS_ATLAS, TextureAtlas.class);
-        Assets.inst().load(SOUND_CHA_CHING, Sound.class);
-        Assets.inst().load(SOUND_PULL_LEVER, Sound.class);
-        Assets.inst().load(SOUND_REEL_SPINNING, Sound.class);
-        Assets.inst().load(SOUND_REEL_STOPPED, Sound.class);
-        Assets.inst().load(SOUND_JACKPOINT, Sound.class);
-
-        Assets.inst().update();
-        Assets.inst().finishLoading();
-        this.carddeckAtlas = Assets.inst().get(PLAYING_CARDS_ATLAS, TextureAtlas.class);
-        this.chaChingSound = Assets.inst().get(SOUND_CHA_CHING, Sound.class);
-        this.pullLeverSound = Assets.inst().get(SOUND_PULL_LEVER, Sound.class);
-        this.reelSpinningSound = Assets.inst().get(SOUND_REEL_SPINNING, Sound.class);
-        this.reelStoppedSound = Assets.inst().get(SOUND_REEL_STOPPED, Sound.class);
-        this.jackpotSound = Assets.inst().get(SOUND_JACKPOINT, Sound.class);
-        this.miniSlotmachineLevel = Assets.inst().get(MINI_SLOT_MACHINE_LEVEL_MAP);
-    }
+        this.annotationAssetManager = new AnnotationAssetManager();
+        this.annotationAssetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+        this.annotationAssetManager.load(new AssetsAnnotation());
+        this.annotationAssetManager.finishLoading();
+     }
 
     @Override
     protected void disposeOverride() {
@@ -915,5 +910,11 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
         SlotPuzzleTween.registerAccessor(Sprite.class, new SpriteAccessor());
         SlotPuzzleTween.registerAccessor(ReelTile.class, new ReelAccessor());
         SlotPuzzleTween.registerAccessor(Score.class, new ScoreAccessor());
+    }
+
+    private void playSound(Sound sound) {
+        if (sound != null) {
+            sound.play();
+        }
     }
 }

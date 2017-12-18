@@ -24,4 +24,7 @@ public enum Pip {
 		this.value = value;
 		this.index = value - 1;
 	}
+	public static int getNumberOfCards() {
+		return Pip.values().length;
+    }
 }
