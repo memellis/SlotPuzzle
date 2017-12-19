@@ -18,6 +18,7 @@ package com.ellzone.slotpuzzle2d.prototypes.box2d;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -29,6 +30,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -57,9 +60,12 @@ import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
+import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+import com.ellzone.slotpuzzle2d.utils.Random;
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 import java.util.ArrayList;
-import java.util.Random;
+
 
 public class Box2DFallingReels extends SPPrototype implements InputProcessor {
     private OrthographicCamera camera;
@@ -67,6 +73,7 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
     private Box2DDebugRenderer debugRenderer;
     private SpriteBatch batch;
     private BitmapFont font;
+    private AnnotationAssetManager annotationAssetManager;
     private Random random;
     private World world;
     private ArrayList<Body> boxes = new ArrayList<Body>();
@@ -92,7 +99,7 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
         batch = new SpriteBatch();
         font = new BitmapFont();
         font.setColor(Color.RED);
-        loadAssets();
+        loadAssets(this.annotationAssetManager);
         reels = new Reels();
         spriteWidth = reels.getReelWidth();
         spriteHeight = reels.getReelHeight();
@@ -103,19 +110,16 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
         Gdx.input.setInputProcessor(this);
     }
 
-    private void loadAssets() {
-        Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
-        Assets.inst().load("slot_handle/slot_handle.pack.atlas", TextureAtlas.class);
-        Assets.inst().load("sounds/pull-lever1.wav", Sound.class);
-        Assets.inst().load("sounds/click2.wav", Sound.class);
-        Assets.inst().load("sounds/reel-stopped.wav", Sound.class);
-        Assets.inst().update();
-        Assets.inst().finishLoading();
+    private void loadAssets(AnnotationAssetManager annotationAssetManager) {
+        annotationAssetManager = new AnnotationAssetManager();
+        annotationAssetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+        annotationAssetManager.load(new AssetsAnnotation());
+        annotationAssetManager.finishLoading();
 
-        slotHandleAtlas = Assets.inst().get("slot_handle/slot_handle.pack.atlas", TextureAtlas.class);
-        pullLeverSound = Assets.inst().get("sounds/pull-lever1.wav");
-        reelSpinningSound = Assets.inst().get("sounds/click2.wav");
-        reelStoppingSound = Assets.inst().get("sounds/reel-stopped.wav");
+        slotHandleAtlas = annotationAssetManager.get(AssetsAnnotation.SLOT_HANDLE);
+        pullLeverSound = annotationAssetManager.get(AssetsAnnotation.SOUND_PULL_LEVER);
+        reelSpinningSound = annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_SPINNING);
+        reelStoppingSound = annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_STOPPED);
     }
 
     private void initialiseUniversalTweenEngine() {
@@ -127,7 +131,6 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
     }
 
     private void initialiseReelSlots() {
-        random = new Random();
         animatedReels = new Array<AnimatedReel>();
         slotReelScrollPixmap = new Pixmap(spriteWidth, spriteHeight, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(reels.getReels());
@@ -135,7 +138,7 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
         for (int i = 0; i < 20; i++) {
             AnimatedReel animatedReel = new AnimatedReel(slotReelScrollTexture, 0, 0, spriteWidth, spriteHeight, spriteWidth, spriteHeight, 0, reelSpinningSound, reelStoppingSound, tweenManager);
             animatedReel.setSx(0);
-            animatedReel.setEndReel(random.nextInt(reels.getReels().length - 1));
+            animatedReel.setEndReel(Random.getInstance().nextInt(reels.getReels().length - 1));
             animatedReel.getReel().startSpinning();
             animatedReels.add(animatedReel);
         }
@@ -317,9 +320,17 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
 
     @Override
     public void dispose () {
-        world.dispose();
-        renderer.dispose();
-        debugRenderer.dispose();
-        font.dispose();
+        if (world != null) {
+            world.dispose();
+        }
+        if (renderer != null) {
+            renderer.dispose();
+        }
+        if (debugRenderer != null) {
+            debugRenderer.dispose();
+        }
+        if (font != null) {
+            font.dispose();
+        }
     }
 }

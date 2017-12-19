@@ -17,7 +17,6 @@ package com.ellzone.slotpuzzle2d.prototypes.minislotmachine;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -30,7 +29,6 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -69,7 +67,6 @@ import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
-import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import net.dermetfan.gdx.assets.AnnotationAssetManager;
@@ -92,7 +89,6 @@ public class MiniSlotMachineLevelPrototypeWithLevelCreator extends SPPrototypeTe
     private String logTag = SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName();
     private TiledMap miniSlotMachineLevel;
     private MapTile mapTile;
-    private AnnotationAssetManager annotationAssetManager;
     private MapProperties levelProperties;
     private TextureAtlas reelAtlas, tilesAtlas, carddeckAtlas;
     private MiniSlotMachineLevel miniSlotMachineLeve1;
@@ -129,8 +125,8 @@ public class MiniSlotMachineLevelPrototypeWithLevelCreator extends SPPrototypeTe
     protected void initialiseOverride() {
         initialiseReels();
         createSlotReelTexture();
-        getAssets(this.annotationAssetManager);
-        this.miniSlotMachineLevel = this.annotationAssetManager.get(AssetsAnnotation.MINI_SLOT_MACHINE_LEVEL);
+        getAssets(annotationAssetManager);
+        this.miniSlotMachineLevel = annotationAssetManager.get(AssetsAnnotation.MINI_SLOT_MACHINE_LEVEL);
         getMapProperties(this.miniSlotMachineLevel);
         initialiseLevelDoor();
         createPlayScreen();
@@ -144,12 +140,12 @@ public class MiniSlotMachineLevelPrototypeWithLevelCreator extends SPPrototypeTe
     }
 
     private void getAssets(AssetManager assetManager) {
-        this.carddeckAtlas = this.annotationAssetManager.get(AssetsAnnotation.CARDDECK);
-        this.chaChingSound = this.annotationAssetManager.get(AssetsAnnotation.SOUND_CHA_CHING);
-        this.pullLeverSound = this.annotationAssetManager.get(AssetsAnnotation.SOUND_PULL_LEVER);
-        this.reelSpinningSound = this.annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_SPINNING);
-        this.reelStoppedSound = this.annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_STOPPED);
-        this.jackpotSound = this.annotationAssetManager.get(AssetsAnnotation.SOUND_JACKPOINT);
+        this.carddeckAtlas = assetManager.get(AssetsAnnotation.CARDDECK);
+        this.chaChingSound = assetManager.get(AssetsAnnotation.SOUND_CHA_CHING);
+        this.pullLeverSound = assetManager.get(AssetsAnnotation.SOUND_PULL_LEVER);
+        this.reelSpinningSound = assetManager.get(AssetsAnnotation.SOUND_REEL_SPINNING);
+        this.reelStoppedSound = assetManager.get(AssetsAnnotation.SOUND_REEL_STOPPED);
+        this.jackpotSound = assetManager.get(AssetsAnnotation.SOUND_JACKPOINT);
     }
 
     private void getMapProperties(TiledMap level) {
@@ -815,10 +811,6 @@ public class MiniSlotMachineLevelPrototypeWithLevelCreator extends SPPrototypeTe
 
     @Override
     protected void loadAssetsOverride() {
-        this.annotationAssetManager = new AnnotationAssetManager();
-        this.annotationAssetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-        this.annotationAssetManager.load(new AssetsAnnotation());
-        this.annotationAssetManager.finishLoading();
      }
 
     @Override

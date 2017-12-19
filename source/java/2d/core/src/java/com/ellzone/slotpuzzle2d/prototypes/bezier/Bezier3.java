@@ -115,7 +115,6 @@ public class Bezier3 extends SPPrototypeTemplate {
 
     @Override
     protected void initialiseScreenOverride() {
-
     }
 
     @Override

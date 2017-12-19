@@ -12,7 +12,10 @@ public class AssetsAnnotation {
     public static String MINI_SLOT_MACHINE_LEVEL = "levels/mini slot machine level.tmx";
 
     @AnnotationAssetManager.Asset(TextureAtlas.class)
-    public static String CARDDECK = "playingcards/carddeck.atlas";
+    public static String CARDDECK = "playingcards/carddeck.atlas",
+                         REELS = "reel/reels.pack.atlas",
+                         SLOT_HANDLE = "slot_handle/slot_handle.pack.atlas";
+    ;
 
     @AnnotationAssetManager.Asset(Sound.class)
     public static String SOUND_CHA_CHING = "sounds/cha-ching.mp3",

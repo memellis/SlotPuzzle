@@ -18,6 +18,7 @@ package com.ellzone.slotpuzzle2d.prototypes;
 
 import java.util.Random;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -25,6 +26,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.MathUtils;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
@@ -32,6 +35,9 @@ import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
+
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
 public abstract class SPPrototypeTemplate extends SPPrototype {
 
@@ -39,6 +45,7 @@ public abstract class SPPrototypeTemplate extends SPPrototype {
     public static final String SLOTPUZZLE_PLAY = "SlotPuzzlePlay";
 
     protected final TweenManager tweenManager = new TweenManager();
+    protected AnnotationAssetManager annotationAssetManager;
     protected Sprite cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato;
     protected Sprite[] sprites;
 	protected int spriteWidth, spriteHeight;
@@ -80,11 +87,14 @@ public abstract class SPPrototypeTemplate extends SPPrototype {
             loadAssetsOverride();
             return;
         }
-        Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
-        Assets.inst().update();
-        Assets.inst().finishLoading();
+        this.annotationAssetManager =  new AnnotationAssetManager();
+        this.annotationAssetManager = new AnnotationAssetManager();
+        this.annotationAssetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+        this.annotationAssetManager.load(new AssetsAnnotation());
+        this.annotationAssetManager.finishLoading();
 
-        TextureAtlas reelAtlas = Assets.inst().get("reel/reels.pack.atlas", TextureAtlas.class);
+
+        TextureAtlas reelAtlas = this.annotationAssetManager.get(AssetsAnnotation.REELS);
         this.cherry = reelAtlas.createSprite("cherry");
         this.cheesecake = reelAtlas.createSprite("cheesecake");
         this.grapes = reelAtlas.createSprite("grapes");
@@ -196,7 +206,7 @@ public abstract class SPPrototypeTemplate extends SPPrototype {
         for (Sprite sprite : this.sprites) {
             sprite.getTexture().dispose();
         }
-        Assets.inst().dispose();
+        this.annotationAssetManager.dispose();
 
         disposeOverride();
     }
