@@ -69,6 +69,7 @@ import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.utils.Assets;
+import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import aurelienribon.tweenengine.equations.Elastic;
 import aurelienribon.tweenengine.equations.Quad;
@@ -841,29 +842,17 @@ public class MiniSlotMachineLevelFallingReels extends SPPrototypeTemplate {
 
     @Override
     protected void loadAssetsOverride() {
-        Assets.inst().setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-        Assets.inst().load(MINI_SLOT_MACHINE_LEVEL_MAP, TiledMap.class);
-        Assets.inst().load(PLAYING_CARDS_ATLAS, TextureAtlas.class);
-        Assets.inst().load(SOUND_CHA_CHING, Sound.class);
-        Assets.inst().load(SOUND_PULL_LEVER, Sound.class);
-        Assets.inst().load(SOUND_REEL_SPINNING, Sound.class);
-        Assets.inst().load(SOUND_REEL_STOPPED, Sound.class);
-        Assets.inst().load(SOUND_JACKPOINT, Sound.class);
-
-        Assets.inst().update();
-        Assets.inst().finishLoading();
-        this.carddeckAtlas = Assets.inst().get(PLAYING_CARDS_ATLAS, TextureAtlas.class);
-        this.chaChingSound = Assets.inst().get(SOUND_CHA_CHING, Sound.class);
-        this.pullLeverSound = Assets.inst().get(SOUND_PULL_LEVER, Sound.class);
-        this.reelSpinningSound = Assets.inst().get(SOUND_REEL_SPINNING, Sound.class);
-        this.reelStoppedSound = Assets.inst().get(SOUND_REEL_STOPPED, Sound.class);
-        this.jackpotSound = Assets.inst().get(SOUND_JACKPOINT, Sound.class);
-        this.miniSlotmachineLevel = Assets.inst().get(MINI_SLOT_MACHINE_LEVEL_MAP);
+        this.carddeckAtlas = this.annotationAssetManager.get(AssetsAnnotation.CARDDECK);
+        this.chaChingSound = this.annotationAssetManager.get(AssetsAnnotation.SOUND_CHA_CHING);
+        this.pullLeverSound = this.annotationAssetManager.get(AssetsAnnotation.SOUND_PULL_LEVER);
+        this.reelSpinningSound = this.annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_SPINNING);
+        this.reelStoppedSound = this.annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_STOPPED);
+        this.jackpotSound = this.annotationAssetManager.get(AssetsAnnotation.SOUND_JACKPOINT);
+        this.miniSlotmachineLevel = this.annotationAssetManager.get(AssetsAnnotation.MINI_SLOT_MACHINE_LEVEL);
     }
 
     @Override
     protected void disposeOverride() {
-
     }
 
     @Override
