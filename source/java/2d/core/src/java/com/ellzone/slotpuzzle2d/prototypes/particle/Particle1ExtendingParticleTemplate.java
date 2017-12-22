@@ -16,22 +16,19 @@
 
 package com.ellzone.slotpuzzle2d.prototypes.particle;
 
-import java.util.Random;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.ellzone.slotpuzzle2d.physics.Particle;
 import com.ellzone.slotpuzzle2d.physics.Vector;
+import com.ellzone.slotpuzzle2d.physics.Particles;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
-import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
-import com.ellzone.slotpuzzle2d.prototypes.Reels;
-import com.ellzone.slotpuzzle2d.prototypes.*;
+import com.ellzone.slotpuzzle2d.sprites.ReelTiles;
+import com.ellzone.slotpuzzle2d.sprites.Reels;
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
 public class Particle1ExtendingParticleTemplate extends ParticleTemplate {
 	private static final float VELOCITY_MIN = 2.0f;
+	protected AnnotationAssetManager annotationAssetManager;
 	private Reels reels;
 	private Sprite[] reelSprites;
 	private Array<Particle> reelParticles;
@@ -43,17 +40,17 @@ public class Particle1ExtendingParticleTemplate extends ParticleTemplate {
 	
 	@Override
 	protected void initialiseOverride() {
-	    initialiseReels();
+	    initialiseReels(annotationAssetManager);
 		initialiseReelSlots();
 		intialiseParticles();
 	}
 
 	@Override
-	protected void loadAssetsOverride() {
+	protected void loadAssetsOverride(AnnotationAssetManager annotationAssetManager) {
 	}
 	
-	private void initialiseReels() {
-        reels = new Reels();
+	private void initialiseReels(AnnotationAssetManager annotationAssetManager) {
+        reels = new Reels(annotationAssetManager);
         reelSprites = reels.getReels();				
 	}
 	

@@ -17,7 +17,6 @@
 package com.ellzone.slotpuzzle2d.prototypes.bezier;
 
 import java.util.Arrays;
-import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -31,6 +30,7 @@ import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototypeTemplate;
+import com.ellzone.slotpuzzle2d.utils.Random;
 
 public class Bezier3 extends SPPrototypeTemplate {
 	
@@ -89,7 +89,6 @@ public class Bezier3 extends SPPrototypeTemplate {
 
     private Pixmap slotReelScrollPixmap;
     private Texture slotReelScrollTexture;
-    private Random random;
     private ReelTile reelTile;
     private Array<ReelTile> reelTiles;
     private ShapeRenderer shapeRenderer;
@@ -156,16 +155,15 @@ public class Bezier3 extends SPPrototypeTemplate {
 	}
 
     private void initialiseReelSlots() {
-        random = new Random();
         reelTiles = new Array<ReelTile>();
         slotReelScrollPixmap = new Pixmap(spriteWidth, spriteHeight, Pixmap.Format.RGBA8888);
-        slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
+        slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(reels.getReels());
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         reelTile = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getHeight() / spriteHeight, 0, 32, spriteWidth, spriteHeight, spriteWidth, spriteHeight, 0, null);
         reelTile.setX(0);
         reelTile.setY(0);
         reelTile.setSx(0);
-        reelTile.setEndReel(random.nextInt(sprites.length - 1));
+        reelTile.setEndReel(Random.getInstance().nextInt(reels.getReels().length - 1));
         reelTile.setSy(0);
         reelTiles.add(reelTile);
     }
@@ -192,7 +190,7 @@ public class Bezier3 extends SPPrototypeTemplate {
     private void drawGraphPoint(ShapeRenderer shapeRenderer, Vector2 newPoint) {
         if (points.size >= 2) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.setColor(random.nextInt(255), random.nextInt(255), random.nextInt(255), 255);
+            shapeRenderer.setColor(Random.getInstance().nextInt(255), Random.getInstance().nextInt(255), Random.getInstance().nextInt(255), 255);
             for (int i = 0; i < points.size - 1; i++) {
                 shapeRenderer.line(points.get(i).x, points.get(i).y, points.get(i + 1).x, points.get(i + 1).y);
             }
@@ -203,7 +201,7 @@ public class Bezier3 extends SPPrototypeTemplate {
 
     private void drawControlPoints(ShapeRenderer shapeRenderer, Vector2[] reelSpinPath) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(random.nextInt(255), random.nextInt(255), random.nextInt(255), 255);
+        shapeRenderer.setColor(Random.getInstance().nextInt(255), Random.getInstance().nextInt(255), Random.getInstance().nextInt(255), 255);
         for (int i=0; i<reelSpinPath.length; i++) {
             shapeRenderer.circle(reelSpinPath[i].x, reelSpinPath[i].y + Gdx.graphics.getHeight() / 4, 4);
         }

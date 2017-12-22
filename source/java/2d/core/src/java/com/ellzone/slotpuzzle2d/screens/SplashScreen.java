@@ -30,6 +30,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.utils.Assets;
+import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
+
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
+
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
@@ -73,8 +77,7 @@ public class SplashScreen implements Screen {
 		initialiseSplashScreen();
 		initialiseTweenEngine();
 		initialiseCamera();
-		loadAssets();	
-		createSprites();
+		createSprites(game.annotationAssetManager);
 		createSplashScreenSequence();
 	}
 	
@@ -82,7 +85,6 @@ public class SplashScreen implements Screen {
 		endOfSplashScreen = false;
 		nextScreen = NextScreen.INTROSCREEN;
 		Gdx.input.setInputProcessor(splashScreenInputProcessor);
-		game.assetManager = new AssetManager();
 	}
 
 	private void initialiseTweenEngine() {
@@ -99,30 +101,24 @@ public class SplashScreen implements Screen {
 		camera.update();
 	}
 	
-	private void loadAssets() {
-		game.assetManager.load("splash/pack.atlas", TextureAtlas.class);
-		game.assetManager.load("splash/splash3.pack.atlas", TextureAtlas.class);
-		game.assetManager.finishLoading();
-	}
 
-	private void createSprites() {
-		TextureAtlas atlas = game.assetManager.get("splash/pack.atlas", TextureAtlas.class);
-		universal = atlas.createSprite("universal");
-		tween = atlas.createSprite("tween");
-		engine = atlas.createSprite("engine");
-		logo = atlas.createSprite("logo");
-		strip = atlas.createSprite("white");
-		powered = atlas.createSprite("powered");
-		gdx = atlas.createSprite("gdxblur");
-		veil = atlas.createSprite("white");
- 		gdxTex = atlas.findRegion("gdx");
+	private void createSprites(AnnotationAssetManager annotationAssetManager) {
+		TextureAtlas atlas = annotationAssetManager.get(AssetsAnnotation.SPLASH);
+		universal = atlas.createSprite(AssetsAnnotation.UNIVERSAL);
+		tween = atlas.createSprite(AssetsAnnotation.TWEEN);
+		engine = atlas.createSprite(AssetsAnnotation.ENGINE);
+		logo = atlas.createSprite(AssetsAnnotation.LOGO);
+		strip = atlas.createSprite(AssetsAnnotation.WHITE);
+		powered = atlas.createSprite(AssetsAnnotation.POWERED);
+		gdx = atlas.createSprite(AssetsAnnotation.GDXBLUR);
+		veil = atlas.createSprite(AssetsAnnotation.WHITE);
+ 		gdxTex = atlas.findRegion(AssetsAnnotation.GDX);
 
-		TextureAtlas atlas1 = game.assetManager.get("splash/splash3.pack.atlas", TextureAtlas.class);
-		slot = atlas1.createSprite("slot");
-		puzzle = atlas1.createSprite("puzzle");
+		TextureAtlas atlas1 = annotationAssetManager.get(AssetsAnnotation.SPLASH3);
+		slot = atlas1.createSprite(AssetsAnnotation.SLOT);
+		puzzle = atlas1.createSprite(AssetsAnnotation.PUZZLE);
  
-		
-		Sprite[] sprites = new Sprite[] {slot, puzzle, universal, tween, engine, logo, powered, gdx};
+				Sprite[] sprites = new Sprite[] {slot, puzzle, universal, tween, engine, logo, powered, gdx};
 		for (Sprite sp : sprites) {
 			sp.setSize(sp.getWidth()/PX_PER_METER, sp.getHeight()/PX_PER_METER);
 			sp.setOrigin(sp.getWidth()/2, sp.getHeight()/2);

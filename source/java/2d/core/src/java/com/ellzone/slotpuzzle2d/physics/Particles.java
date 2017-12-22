@@ -14,12 +14,12 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.ellzone.slotpuzzle2d.prototypes;
+package com.ellzone.slotpuzzle2d.physics;
 
 import com.badlogic.gdx.utils.Array;
-import com.ellzone.slotpuzzle2d.physics.Vector;
-import com.ellzone.slotpuzzle2d.physics.*;
-import com.ellzone.slotpuzzle2d.sprites.*;
+import com.ellzone.slotpuzzle2d.sprites.ReelTile;
+import com.ellzone.slotpuzzle2d.sprites.ReelTiles;
+import com.ellzone.slotpuzzle2d.sprites.Reels;
 
 public class Particles {
 	private Vector accelerator;

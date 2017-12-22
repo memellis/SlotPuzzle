@@ -16,12 +16,11 @@
 
 package com.ellzone.slotpuzzle2d.prototypes.particle;
 
-import java.util.Random;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.ellzone.slotpuzzle2d.prototypes.Reels;
+import com.ellzone.slotpuzzle2d.sprites.Reels;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.ellzone.slotpuzzle2d.prototypes.ReelTiles;
-import com.ellzone.slotpuzzle2d.prototypes.Particles;
+import com.ellzone.slotpuzzle2d.sprites.ReelTiles;
+import com.ellzone.slotpuzzle2d.physics.Particles;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.physics.Particle;
@@ -30,10 +29,11 @@ import com.ellzone.slotpuzzle2d.physics.DampenedSine;
 import com.badlogic.gdx.math.Vector2;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsEvent;
-import com.badlogic.gdx.Gdx;
+import com.ellzone.slotpuzzle2d.utils.Random;
+
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
 public class Particle4ExtendingParticleTemplate extends ParticleTemplate {
-	private Random random;
 	private ShapeRenderer shapeRenderer;
 	private Reels reels;
 	private Sprite[] reelSprites;
@@ -51,20 +51,19 @@ public class Particle4ExtendingParticleTemplate extends ParticleTemplate {
 	
 	@Override
 	protected void initialiseOverride() {
-		initialiseReelTiles();
+		initialiseReelTiles(annotationAssetManager);
 		initialiseParticles();
         initialiseDampenedSine();
 		shapeRenderer = new ShapeRenderer();
-		random = new Random();
 	}
 
 	@Override
-	protected void loadAssetsOverride() {
-		reels = new Reels();
-        reelSprites = reels.getReels();
+	protected void loadAssetsOverride(AnnotationAssetManager annotationAssetManager) {
 	}
 	
-	private void initialiseReelTiles() {
+	private void initialiseReelTiles(AnnotationAssetManager annotationAssetManager) {
+		reels = new Reels(annotationAssetManager);
+		reelSprites = reels.getReels();
 		reelTiles = new ReelTiles(reels);
 		reelTilesArray = reelTiles.getReelTiles();
 		slotReelScrollheight = reelTiles.getReelTileTextureHeight();
@@ -94,7 +93,7 @@ public class Particle4ExtendingParticleTemplate extends ParticleTemplate {
             addGraphPoint(new Vector2(graphStep++ % displayWindowWidth, (displayWindowHeight / 2 + dampenedSines.get(0).dsEndReel)));
         } else {
             if (type == SPPhysicsCallback.END) {
-                reelTilesArray.get(0).setEndReel(random.nextInt(reelSprites.length - 1));
+                reelTilesArray.get(0).setEndReel(Random.getInstance().nextInt(reelSprites.length - 1));
                 dampenedSines.get(0).initialiseDampenedSine();
                 dampenedSines.get(0).position.y = 0;
                 dampenedSines.get(0).setEndReel(reelTilesArray.get(0).getEndReel());

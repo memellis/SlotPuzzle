@@ -20,19 +20,23 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
 public class SlotPuzzle extends Game {
 	public SpriteBatch batch;
-	public AssetManager assetManager;
+	public AnnotationAssetManager annotationAssetManager;
 	private Screen worldScreen;
 
 	@Override
 	public void create() {
 		setLogLevel();
 		batch = LibGdxFactory.getInstance().newSpriteBatch();
-		assetManager = new AssetManager();
+		annotationAssetManager = loadAssets(annotationAssetManager);
 		setScreen(LibGdxFactory.getInstance().newLoadScreen(this));
 	}
 	
@@ -60,6 +64,14 @@ public class SlotPuzzle extends Game {
 		}
 	}
 
+	private AnnotationAssetManager loadAssets(AnnotationAssetManager annotationAssetManager) {
+		annotationAssetManager = new AnnotationAssetManager();
+		annotationAssetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+		annotationAssetManager.load(new AssetsAnnotation());
+		annotationAssetManager.finishLoading();
+		return annotationAssetManager;
+	}
+
 	@Override
 	public void render() {        
 	    super.render();
@@ -71,8 +83,8 @@ public class SlotPuzzle extends Game {
 		if (batch != null) {
 			batch.dispose();
 		}
-		if (assetManager != null) {
-			assetManager.dispose();
+		if (annotationAssetManager != null) {
+			annotationAssetManager.dispose();
 		}
 	}
 
@@ -105,5 +117,4 @@ public class SlotPuzzle extends Game {
     }
 
 	public Screen getScreen() { return this.screen; }
-
 }

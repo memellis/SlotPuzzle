@@ -53,19 +53,17 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
-import com.ellzone.slotpuzzle2d.prototypes.Reels;
+import com.ellzone.slotpuzzle2d.sprites.Reels;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
 import com.ellzone.slotpuzzle2d.sprites.AnimatedReel;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
-import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import com.ellzone.slotpuzzle2d.utils.Random;
 import net.dermetfan.gdx.assets.AnnotationAssetManager;
 import java.util.ArrayList;
-
 
 public class Box2DFallingReels extends SPPrototype implements InputProcessor {
     private OrthographicCamera camera;
@@ -100,7 +98,7 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
         font = new BitmapFont();
         font.setColor(Color.RED);
         loadAssets(this.annotationAssetManager);
-        reels = new Reels();
+        reels = new Reels(this.annotationAssetManager);
         spriteWidth = reels.getReelWidth();
         spriteHeight = reels.getReelHeight();
         this.displayWindowWidth = SlotPuzzleConstants.V_WIDTH;

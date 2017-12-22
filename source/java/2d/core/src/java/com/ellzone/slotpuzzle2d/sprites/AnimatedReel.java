@@ -16,7 +16,6 @@
 
 package com.ellzone.slotpuzzle2d.sprites;
 
-import java.util.Random;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -30,6 +29,7 @@ import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
+import com.ellzone.slotpuzzle2d.utils.Random;
 import aurelienribon.tweenengine.equations.Elastic;
 
 public class AnimatedReel {
@@ -58,8 +58,7 @@ public class AnimatedReel {
 	private TweenManager tweenManager;
 	private float reelSlowingTargetTime;
 	private Vector accelerate;
-	private Random random;
-	
+
 	public AnimatedReel(Texture texture, float x, float y, float tileWidth, float tileHeight, float reelDisplayWidth, float reelDisplayHeight, int endReel, Sound spinningSound, Sound stoppingSound, TweenManager tweenManager) {
 		this.texture = texture;
 		this.x = x;
@@ -76,7 +75,6 @@ public class AnimatedReel {
 	}
 	
 	private void initialiseAnimatedReel() {
-		random = new Random();
 		reel = new ReelTile(this.texture, (int) (this.texture.getHeight() / this.tileWidth), this.x, this.y, this.tileWidth, this.tileHeight, this.reelDisplayWidth, this.reelDisplayHeight, this.endReel, this.spinningSound);
 		reelScrollHeight = this.texture.getHeight();
 		reel.setSpinning(false);
@@ -205,6 +203,6 @@ public class AnimatedReel {
 	}
 
     private float getRandomVelocityMin() {
-    	return random.nextFloat() * (VELOCITY_MAX - VELOCITY_MIN + 1.0f) + VELOCITY_MIN; 
+    	return Random.getInstance().nextFloat() * (VELOCITY_MAX - VELOCITY_MIN + 1.0f) + VELOCITY_MIN;
     }
 }

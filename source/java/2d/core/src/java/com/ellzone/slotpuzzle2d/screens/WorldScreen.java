@@ -67,6 +67,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.maps.tiled.*;
 
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
+
 public class WorldScreen implements Screen {
 	
     public static final String LOG_TAG = "SlotPuzzle_WorldScreen";
@@ -122,7 +124,7 @@ public class WorldScreen implements Screen {
 	private void createWorldScreen() {
 		scrollSigns = new Array<ScrollSign>();
 		levelEntrances = new Array<LevelEntrance>();
-		getAssets();
+		getAssets(game.annotationAssetManager);
 		loadWorld();
 		initialiseCamera();
 		initialiseUniversalTweenEngine();
@@ -133,9 +135,9 @@ public class WorldScreen implements Screen {
 		createPopUps();
 	}
     
-	private void getAssets() {
-		worldMap = game.assetManager.get(WORLD_MAP);
-		tilesAtlas = game.assetManager.get(TILE_PACK_ATLAS, TextureAtlas.class);
+	private void getAssets(AnnotationAssetManager annotationAssetManager) {
+		worldMap = annotationAssetManager.get(WORLD_MAP);
+		tilesAtlas = annotationAssetManager.get(TILE_PACK_ATLAS, TextureAtlas.class);
 	}
 
 	private void initialiseCamera() {

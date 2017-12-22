@@ -16,13 +16,13 @@
 
 package com.ellzone.slotpuzzle2d.sprites;
 
-import java.util.Random;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+import com.ellzone.slotpuzzle2d.utils.Random;
 
 public class ReelTile extends ReelSprite {
     private Texture texture;
@@ -45,8 +45,7 @@ public class ReelTile extends ReelSprite {
 	private Sound spinningSound;
 	private long spinningSoundId;
 	private float spinngPitch;
-	private Random random;
-    private Pixmap flashOnReelPixmap;
+	private Pixmap flashOnReelPixmap;
 	
     public ReelTile(Texture texture, float x, float y, float tileWidth, float tileHeight, int endReel, Sound spinningSound) {
         this.texture = texture;
@@ -74,14 +73,15 @@ public class ReelTile extends ReelSprite {
     }
 
     private void defineReelSlotTileScroll() {
-    	random = new Random();
-        setPosition((int)this.x, (int)this.y);
+    	setPosition((int)this.x, (int)this.y);
         setOrigin((int)this.x, (int)this.y);
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         region = new TextureRegion(texture);
         int randomSy = 0;
         if (numberOfReelsInTexture > 0) {
-            randomSy = random.nextInt(numberOfReelsInTexture) * (int)tileHeight;
+            randomSy = Random.getInstance().nextInt(numberOfReelsInTexture) * (int)tileHeight;
+            sy = randomSy;
+            System.out.println("randomSy ="+randomSy);
         }
 
         if ((reelDisplayWidth == 0) && (reelDisplayHeight == 0)) {
@@ -142,7 +142,7 @@ public class ReelTile extends ReelSprite {
 
     public void setEndReel() {
         float syModulus = sy % texture.getHeight();
-        super.setEndReel((int) ((int) syModulus / tileHeight));
+        super.setEndReel((int) ((int) ((syModulus + (tileHeight / 2)) % texture.getHeight()) / tileHeight));
     }
 
 	public int getCurrentReel() {
@@ -246,9 +246,6 @@ public class ReelTile extends ReelSprite {
 
 	@Override
 	public void dispose() {
-		if (region != null) {
-			region.getTexture().dispose();
-		}
 		if (flashOnReelPixmap != null) {
             flashOnReelPixmap.dispose();
         }

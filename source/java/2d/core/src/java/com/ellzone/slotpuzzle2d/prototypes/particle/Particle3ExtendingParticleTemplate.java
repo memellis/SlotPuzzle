@@ -16,18 +16,20 @@
 
 package com.ellzone.slotpuzzle2d.prototypes.particle;
 
-import java.util.Random;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.ellzone.slotpuzzle2d.prototypes.Reels;
+import com.ellzone.slotpuzzle2d.sprites.Reels;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
-import com.ellzone.slotpuzzle2d.prototypes.ReelTiles;
-import com.ellzone.slotpuzzle2d.prototypes.Particles;
+import com.ellzone.slotpuzzle2d.sprites.ReelTiles;
+import com.ellzone.slotpuzzle2d.physics.Particles;
 import com.ellzone.slotpuzzle2d.physics.Particle;
 import com.ellzone.slotpuzzle2d.physics.Vector;
 import com.badlogic.gdx.Gdx;
+import com.ellzone.slotpuzzle2d.utils.Random;
+
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
 public class Particle3ExtendingParticleTemplate extends ParticleTemplate {
 	private static final float VELOCITY_MIN = 2.0f;
@@ -45,29 +47,27 @@ public class Particle3ExtendingParticleTemplate extends ParticleTemplate {
     private float savedAmplitude;
     private float savedSy;
     private boolean saveAmplitude;
-	private Random random;
-    private float plotTime;
+	private float plotTime;
 	private ShapeRenderer shapeRenderer;
 	private float slotReelScrollheight;
 	
 	@Override
 	protected void initialiseOverride() {
-		initialiseReelTiles();
+		initialiseReelTiles(annotationAssetManager);
 		initialiseParticles();
         initialiseDampenedSine();
 		shapeRenderer = new ShapeRenderer();
-		random = new Random();
-		
+
 		Gdx.app.log("Slot_Puzzle", "displayWindowWidth"+displayWindowWidth);
 	}
 	
 	@Override
-	protected void loadAssetsOverride() {
-		reels = new Reels();
-        reelSprites = reels.getReels();
+    protected void loadAssetsOverride(AnnotationAssetManager annotationAssetManager) {
 	}
 	
-	private void initialiseReelTiles() {
+	private void initialiseReelTiles(AnnotationAssetManager annotationAssetManager) {
+        reels = new Reels(annotationAssetManager);
+        reelSprites = reels.getReels();
         reelTiles = new ReelTiles(reels);
 		reelTilesArray = reelTiles.getReelTiles();
 		slotReelScrollheight = reelTiles.getReelTileTextureHeight();
@@ -136,7 +136,7 @@ public class Particle3ExtendingParticleTemplate extends ParticleTemplate {
                     reelSlot.setSy(savedSy + dsEndReel);
                     if(Math.abs(ds)<0.0000001f) {
                         reinitialiseParticle(0);
-                        reelSlot.setEndReel(random.nextInt(reels.getReels().length - 1));
+                        reelSlot.setEndReel(com.ellzone.slotpuzzle2d.utils.Random.getInstance().nextInt(reels.getReels().length - 1));
                     }
                 }
             }
@@ -152,9 +152,9 @@ public class Particle3ExtendingParticleTemplate extends ParticleTemplate {
         if (points.size >= 2) {
 			shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            int rr = random.nextInt(255);
-            int rg = random.nextInt(255);
-            int rb = random.nextInt(255);
+            int rr = Random.getInstance().nextInt(255);
+            int rg = Random.getInstance().nextInt(255);
+            int rb = Random.getInstance().nextInt(255);
             shapeRenderer.setColor(rr, rg, rb, 255);
             for (int i = 0; i < points.size - 1; i++) {
                 shapeRenderer.line(points.get(i).x, points.get(i).y, points.get(i + 1).x, points.get(i + 1).y);

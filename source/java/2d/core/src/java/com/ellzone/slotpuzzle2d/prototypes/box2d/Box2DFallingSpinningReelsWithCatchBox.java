@@ -43,11 +43,13 @@ import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
+
 public class Box2DFallingSpinningReelsWithCatchBox extends SPPrototype {
     private OrthographicCamera camera;
     private Viewport viewport;
     private SpriteBatch batch;
-    private AssetManager assetManager;
+    private AnnotationAssetManager annotationAssetManager;
     private PhysicsManagerCustomBodies physics;
     private BoxBodyBuilder bodyFactory;
     private AnimatedReelHelper animatedReelHelper;
@@ -63,9 +65,9 @@ public class Box2DFallingSpinningReelsWithCatchBox extends SPPrototype {
         batch = new SpriteBatch();
         viewport = new FitViewport(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT, new OrthographicCamera());
 
-        this.assetManager = assetManager;
+        this.annotationAssetManager = annotationAssetManager;
         initialiseUniversalTweenEngine();
-        animatedReelHelper = new AnimatedReelHelper(this.assetManager, this.tweenManager, 7 * 4);
+        animatedReelHelper = new AnimatedReelHelper(this.annotationAssetManager, this.tweenManager, 7 * 4);
         animatedReels = animatedReelHelper.getAnimatedReels();
 
         physics = new PhysicsManagerCustomBodies(camera);

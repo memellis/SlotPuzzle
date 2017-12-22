@@ -2,7 +2,8 @@ package com.ellzone.slotpuzzle2d.sprites;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.ellzone.slotpuzzle2d.utils.Assets;
+import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
 public class Reels {
     public final static String REEL_PACK_ATLAS = "reel/reels.pack.atlas";
@@ -19,24 +20,20 @@ public class Reels {
     private int spriteWidth;
     private int spriteHeight;
 
-    public Reels() {
-        initialiseReels();
+    public Reels(AnnotationAssetManager annotationAssetManager) {
+        initialiseReels(annotationAssetManager);
     }
 
-    private void initialiseReels() {
-        Assets.inst().load(REEL_PACK_ATLAS, TextureAtlas.class);
-        Assets.inst().update();
-        Assets.inst().finishLoading();
-
-        TextureAtlas atlas = Assets.inst().get("reel/reels.pack.atlas", TextureAtlas.class);
-        cherry = atlas.createSprite(CHERRY);
-        cheesecake = atlas.createSprite(CHEESECAKE);
-        grapes = atlas.createSprite(GRAPES);
-        jelly = atlas.createSprite(JELLY);
-        lemon = atlas.createSprite(LEMON);
-        peach = atlas.createSprite(PEACH);
-        pear = atlas.createSprite(PEAR);
-        tomato = atlas.createSprite(TOMATO);
+    private void initialiseReels(AnnotationAssetManager annotationAssetManager) {
+        TextureAtlas reelAtlas = annotationAssetManager.get(AssetsAnnotation.REELS);
+        cherry = reelAtlas.createSprite(AssetsAnnotation.CHERRY40x40);
+        cheesecake = reelAtlas.createSprite(AssetsAnnotation.CHEESECAKE40x40);
+        grapes = reelAtlas.createSprite(AssetsAnnotation.GRAPES40x40);
+        jelly = reelAtlas.createSprite(AssetsAnnotation.JELLY40x40);
+        lemon = reelAtlas.createSprite(AssetsAnnotation.LEMON40x40);
+        peach = reelAtlas.createSprite(AssetsAnnotation.PEACH40x40);
+        pear = reelAtlas.createSprite(AssetsAnnotation.PEAR40x40);
+        tomato = reelAtlas.createSprite(AssetsAnnotation.TOMATO40x40);
 
         reels = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
         for (Sprite sprite : reels) {
@@ -59,7 +56,6 @@ public class Reels {
     }
 
     public void dispose() {
-        Assets.inst().dispose();
         for (Sprite reel : reels) {
             reel.getTexture().dispose();
         }

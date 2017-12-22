@@ -21,7 +21,6 @@ import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.screens.PlayScreen;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
-
 import java.util.Stack;
 
 public class PuzzleGridTypeReelTile {
@@ -490,17 +489,18 @@ public class PuzzleGridTypeReelTile {
     }
 
     public ReelTileGridValue[][] populateMatchGrid(Array<ReelTile> reelLevel, int gridWidth, int gridHeight) {
-        ReelTileGridValue[][] matchGrid = new ReelTileGridValue[gridWidth][gridHeight];
+        ReelTileGridValue[][] matchGrid = new ReelTileGridValue[gridHeight][gridWidth];
         int r, c;
         for (int i = 0; i < reelLevel.size; i++) {
             c = (int) (reelLevel.get(i).getX() - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
             r = (int) (reelLevel.get(i).getY() - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
-            r = PlayScreen.GAME_LEVEL_HEIGHT - r;
-            if ((r >= 0) & (r <= PlayScreen.GAME_LEVEL_HEIGHT) & (c >= 0) & (c <= PlayScreen.GAME_LEVEL_WIDTH)) {
+            r = gridHeight - r;
+            if ((r >= 0) & (r <= gridHeight) & (c >= 0) & (c <= gridWidth)) {
                 if (reelLevel.get(i).isReelTileDeleted()) {
                     matchGrid[r][c] = new ReelTileGridValue(r, c, i, -1);
                 } else {
                     matchGrid[r][c] = new ReelTileGridValue(reelLevel.get(i), r, c, i, reelLevel.get(i).getEndReel());
+                    System.out.println("populateMatchGrid r="+r+"c="+c+" v="+matchGrid[r][c].value);
                 }
             } else {
                 Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "I don't respond to r="+r+" c="+c);

@@ -39,6 +39,8 @@ import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.utils.FileUtils;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+import com.ellzone.slotpuzzle2d.utils.Random;
+
 import aurelienribon.tweenengine.equations.Elastic;
 
 public class CreateLevelReels extends SPPrototypeTemplate {
@@ -99,7 +101,6 @@ public class CreateLevelReels extends SPPrototypeTemplate {
     private void initialiseFontTexture(String reelText) {
         Pixmap textPixmap = new Pixmap(REEL_WIDTH, reelText.length() * REEL_HEIGHT, Pixmap.Format.RGBA8888);
         textPixmap = PixmapProcessors.createDynamicVerticalFontText(fontSmall, reelText, textPixmap);
-        PixmapProcessors.savePixmap(textPixmap, "../android/assets/reel/reelfont.png");
         textTexture = new Texture(textPixmap);
         reelTextureHeight = textTexture.getHeight();
     }
@@ -112,7 +113,7 @@ public class CreateLevelReels extends SPPrototypeTemplate {
             c = (float)(20 + (i % 10) * REEL_WIDTH);
             r = 350f -  (float)Math.floor(i / 10.0f) * (REEL_HEIGHT + 5);
             ReelLetterTile reelLetter = new ReelLetterTile(textTexture, c, r, (float)REEL_WIDTH, (float)REEL_HEIGHT, i);
-            reelLetter.setSy(random.nextInt(reelText.length() - 1) * REEL_HEIGHT);
+            reelLetter.setSy(Random.getInstance().nextInt(reelText.length() - 1) * REEL_HEIGHT);
             reelLetter.setSpinning();
             reelLetterTiles.add(reelLetter);
         }
@@ -192,7 +193,7 @@ public class CreateLevelReels extends SPPrototypeTemplate {
         for (ReelLetterTile reel : reelLetterTiles) {
             reel.setEndReel(dsIndex);
             reel.setSpinning(true);
-            nextSy = random.nextInt(reelLetterTiles.size - 1) * REEL_HEIGHT;
+            nextSy = Random.getInstance().nextInt(reelLetterTiles.size - 1) * REEL_HEIGHT;
             reel.setSy(nextSy);
             dampenedSines.get(dsIndex).initialiseDampenedSine();
             dampenedSines.get(dsIndex).position.y = nextSy;
@@ -245,7 +246,7 @@ public class CreateLevelReels extends SPPrototypeTemplate {
                             reel.setEndReel(reel.getCurrentReel());
                         }
                     } else {
-                        reel.setEndReel(random.nextInt(sprites.length - 1));
+                        reel.setEndReel(Random.getInstance().nextInt(reels.getReels().length - 1));
                         reel.setSpinning(true);
                         reel.setSy(0);
                         dampenedSines.get(dsIndex).initialiseDampenedSine();

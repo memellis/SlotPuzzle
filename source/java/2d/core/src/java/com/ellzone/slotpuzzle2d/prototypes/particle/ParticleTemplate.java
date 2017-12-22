@@ -17,9 +17,12 @@
 package com.ellzone.slotpuzzle2d.prototypes.particle;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.math.MathUtils;
@@ -30,6 +33,9 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.*;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
+import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
+
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
 public abstract class ParticleTemplate extends SPPrototype {
 	public static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
@@ -40,9 +46,10 @@ public abstract class ParticleTemplate extends SPPrototype {
     protected SpriteBatch batch;
 	protected int displayWindowWidth;
 	protected int displayWindowHeight;
+	protected AnnotationAssetManager annotationAssetManager;
 	
 	protected abstract void initialiseOverride();
-    protected abstract void loadAssetsOverride();
+    protected abstract void loadAssetsOverride(AnnotationAssetManager annotationAssetManager);
     protected abstract void disposeOverride();
     protected abstract void updateOverride(float delta);
     protected abstract void renderOverride(float delta);
@@ -58,7 +65,7 @@ public abstract class ParticleTemplate extends SPPrototype {
         initialiseLibGdx();
 		initialiseScreen();
         initialiseCamera();
-        loadAssets();
+        annotationAssetManager = loadAssets();
         initialiseUniversalTweenEngine();
         initialiseOverride();
     }
@@ -87,18 +94,22 @@ public abstract class ParticleTemplate extends SPPrototype {
         initialiseUniversalTweenEngineOverride();
     }
 	
-	protected void loadAssets() {
+	protected AnnotationAssetManager loadAssets() {
         if (isCustomDisplay()) {
-            loadAssetsOverride();
-            return;
+            loadAssetsOverride(annotationAssetManager);
+            return null;
         }
 
-        loadAssetsOverride();
+        AnnotationAssetManager annotationAssetManager = new AnnotationAssetManager();
+        annotationAssetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+        annotationAssetManager.load(new AssetsAnnotation());
+        annotationAssetManager.finishLoading();
+
+        loadAssetsOverride(annotationAssetManager);
+
+        return annotationAssetManager;
     }
-	
-	protected void loadReelAssets() {
-	}
-	
+
 	@Override
     public void resize(int width, int height) {
         float halfHeight = MINIMUM_VIEWPORT_SIZE * 0.5f;

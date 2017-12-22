@@ -22,9 +22,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
-import com.ellzone.slotpuzzle2d.sprites.Reels;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
-import com.ellzone.slotpuzzle2d.utils.Assets;
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
 public abstract class AbstractAnimatedReelHelper {
     public static String REELS_ATLAS = "reel/reels.pack.atlas";
@@ -54,8 +53,8 @@ public abstract class AbstractAnimatedReelHelper {
         this.reelStoppingSound = assetManager.get("sounds/reel-stopped.wav");
     }
 
-    Reels initialiseReels() {
-        reels = new Reels();
+    Reels initialiseReels(AnnotationAssetManager annotationAssetManager) {
+        reels = new Reels(annotationAssetManager);
         spriteWidth = reels.getReelWidth();
         spriteHeight = reels.getReelHeight();
         return reels;

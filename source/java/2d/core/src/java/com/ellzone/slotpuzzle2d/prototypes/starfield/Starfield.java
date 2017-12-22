@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.ellzone.slotpuzzle2d.physics.Point;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototypeTemplate;
+import com.ellzone.slotpuzzle2d.utils.Random;
 
 public class Starfield extends SPPrototypeTemplate {
     class Star {
@@ -39,31 +40,27 @@ public class Starfield extends SPPrototypeTemplate {
         for (int i=0; i<stars.length; i++) {
             stars[i] = new Star();
             stars[i].position = new Point((int)(Math.random()*displayWindowWidth), (int)(Math.random()*displayWindowHeight));
-            stars[i].flashState = random.nextBoolean();
-            stars[i].flashTimer = random.nextFloat()*0.3f;
-            stars[i].color = new Color(random.nextFloat(), random.nextFloat(), random.nextFloat(), 0);
+            stars[i].flashState = Random.getInstance().nextBoolean();
+            stars[i].flashTimer = Random.getInstance().nextFloat() * 0.3f;
+            stars[i].color = new Color(Random.getInstance().nextFloat(), Random.getInstance().nextFloat(), Random.getInstance().nextFloat(), 0);
         }
         shapeRenderer = new ShapeRenderer();
     }
 
     @Override
     protected void initialiseScreenOverride() {
-
     }
 
     @Override
     protected void loadAssetsOverride() {
-
     }
 
     @Override
     protected void disposeOverride() {
-
     }
 
     @Override
     protected void updateOverride(float dt) {
-
     }
 
     @Override
@@ -73,7 +70,6 @@ public class Starfield extends SPPrototypeTemplate {
 
     @Override
     protected void initialiseUniversalTweenEngineOverride() {
-
     }
 
     private void updateBackground(float delta, ShapeRenderer shapeRenderer) {

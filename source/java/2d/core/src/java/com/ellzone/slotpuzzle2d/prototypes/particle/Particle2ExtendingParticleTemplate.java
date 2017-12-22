@@ -19,12 +19,15 @@ package com.ellzone.slotpuzzle2d.prototypes.particle;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.math.Vector2;
+import com.ellzone.slotpuzzle2d.physics.Particles;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
-import com.ellzone.slotpuzzle2d.prototypes.Reels;
+import com.ellzone.slotpuzzle2d.sprites.Reels;
 import com.ellzone.slotpuzzle2d.physics.Vector;
 import com.ellzone.slotpuzzle2d.physics.Particle;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.ellzone.slotpuzzle2d.prototypes.*;
+import com.ellzone.slotpuzzle2d.sprites.ReelTiles;
+
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
 public class Particle2ExtendingParticleTemplate extends ParticleTemplate {
     private static final float VELOCITY_MIN = 2.0f;
@@ -46,7 +49,7 @@ public class Particle2ExtendingParticleTemplate extends ParticleTemplate {
 	
 	@Override
 	protected void initialiseOverride() {
-		initialiseReelTiles();
+		initialiseReelTiles(annotationAssetManager);
 		intialiseParticles();
 		shapeRenderer = new ShapeRenderer();
         graphStep = 0;
@@ -56,12 +59,12 @@ public class Particle2ExtendingParticleTemplate extends ParticleTemplate {
 	}
 
 	@Override
-	protected void loadAssetsOverride() {
-		reels = new Reels();
-        reelSprites = reels.getReels();
+	protected void loadAssetsOverride(AnnotationAssetManager annotationAssetManager) {
 	}
 
-	private void initialiseReelTiles() {
+	private void initialiseReelTiles(AnnotationAssetManager annotationAssetManager) {
+        reels = new Reels(annotationAssetManager);
+        reelSprites = reels.getReels();
         reelTiles = new ReelTiles(reels);
 		reelTilesArray = reelTiles.getReelTiles();
     }

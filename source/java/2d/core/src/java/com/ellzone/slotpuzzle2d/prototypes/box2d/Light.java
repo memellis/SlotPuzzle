@@ -123,7 +123,7 @@ public class Light extends SPPrototypeTemplate {
     @Override
     protected void renderOverride(float dt) {
         batch.begin();
-        for (Sprite sprite : sprites) {
+        for (Sprite sprite : reels.getReels()) {
             sprite.draw(batch);
         }
         batch.end();

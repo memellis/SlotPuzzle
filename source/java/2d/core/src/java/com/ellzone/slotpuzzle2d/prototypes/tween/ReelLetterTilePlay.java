@@ -41,6 +41,7 @@ import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.utils.FileUtils;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.ellzone.slotpuzzle2d.utils.Random;
 
 
 public class ReelLetterTilePlay extends SPPrototypeTemplate {
@@ -106,7 +107,7 @@ public class ReelLetterTilePlay extends SPPrototypeTemplate {
         for (int i = 0; i < reelText.length(); i++) {
 
             ReelLetterTile reelLetter = new ReelLetterTile(textTexture, (float) startPosition + i * REEL_WIDTH, (float)  displayWindowHeight / 3, (float) REEL_WIDTH, (float) REEL_HEIGHT, i);
-            reelLetter.setSy(random.nextInt(reelText.length() - 1) * REEL_HEIGHT);
+            reelLetter.setSy(Random.getInstance().nextInt(reelText.length() - 1) * REEL_HEIGHT);
             reelLetter.setSpinning();
             reelLetterTiles.add(reelLetter);
         }
@@ -186,7 +187,7 @@ public class ReelLetterTilePlay extends SPPrototypeTemplate {
         for (ReelLetterTile reel : reelLetterTiles) {
             reel.setEndReel(dsIndex);
             reel.setSpinning(true);
-            nextSy = random.nextInt(reelLetterTiles.size - 1) * REEL_HEIGHT;
+            nextSy = Random.getInstance().nextInt(reelLetterTiles.size - 1) * REEL_HEIGHT;
             reel.setSy(nextSy);
             dampenedSines.get(dsIndex).initialiseDampenedSine();
             dampenedSines.get(dsIndex).position.y = nextSy;
@@ -241,7 +242,7 @@ public class ReelLetterTilePlay extends SPPrototypeTemplate {
                             reel.setEndReel(reel.getCurrentReel());
                         }
                     } else {
-                        reel.setEndReel(random.nextInt(sprites.length - 1));
+                        reel.setEndReel(Random.getInstance().nextInt(sprites.length - 1));
                         reel.setSpinning(true);
                         reel.setSy(0);
                         dampenedSines.get(dsIndex).initialiseDampenedSine();

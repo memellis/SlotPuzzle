@@ -20,13 +20,14 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
-import com.ellzone.slotpuzzle2d.prototypes.Reels;
+import com.ellzone.slotpuzzle2d.sprites.Reels;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import com.ellzone.slotpuzzle2d.utils.Random;
+
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
 public class AnimatedReelHelper {
     public static String REELS_ATLAS = "reel/reels.pack.atlas";
@@ -34,7 +35,7 @@ public class AnimatedReelHelper {
     public static String REEL_SPIN_CLICK_SOUND = "sounds/click2.wav";
     public static String REEL_STOPPED_SOUND = "sounds/reel-stopped.wav";
 
-    private AssetManager assetManager;
+    private AnnotationAssetManager annotationAssetManager;
     private TweenManager tweenManager;
     private int numberOfAnimatedReels;
     private Sound pullLeverSound, reelSpinningSound, reelStoppingSound;
@@ -45,27 +46,27 @@ public class AnimatedReelHelper {
     private Reels reels;
     private int spriteWidth, spriteHeight;
 
-    public AnimatedReelHelper(AssetManager assetManager, TweenManager tweenManager, int numberOfAnimatedReels) {
-        this.assetManager = assetManager;
+    public AnimatedReelHelper(AnnotationAssetManager annotationAssetManager, TweenManager tweenManager, int numberOfAnimatedReels) {
+        this.annotationAssetManager = annotationAssetManager;
         this.tweenManager = tweenManager;
         this.numberOfAnimatedReels = numberOfAnimatedReels;
-        create(this.assetManager);
+        create(annotationAssetManager);
     }
 
-    private void create(AssetManager assetManager) {
-        getAssets(assetManager);
-        initialiseReels();
+    private void create(AnnotationAssetManager annotationAssetManager) {
+        getAssets(annotationAssetManager);
+        initialiseReels(annotationAssetManager);
         initialiseReelSlots();
     }
 
-     private void getAssets(AssetManager assetManager) {
-        this.pullLeverSound = assetManager.get(AssetsAnnotation.SOUND_PULL_LEVER);
-        this.reelSpinningSound = assetManager.get(AssetsAnnotation.SOUND_REEL_SPINNING);
-        this.reelStoppingSound = assetManager.get(AssetsAnnotation.SOUND_REEL_STOPPED);
+     private void getAssets(AnnotationAssetManager annotationAssetManager) {
+        this.pullLeverSound = annotationAssetManager.get(AssetsAnnotation.SOUND_PULL_LEVER);
+        this.reelSpinningSound = annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_SPINNING);
+        this.reelStoppingSound = annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_STOPPED);
     }
 
-    private void initialiseReels(){
-        reels = new Reels();
+    private void initialiseReels(AnnotationAssetManager annotationAssetManager){
+        reels = new Reels(annotationAssetManager);
         spriteWidth = reels.getReelWidth();
         spriteHeight = reels.getReelHeight();
     }

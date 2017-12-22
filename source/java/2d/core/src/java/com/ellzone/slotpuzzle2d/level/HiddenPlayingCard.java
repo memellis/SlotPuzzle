@@ -29,6 +29,7 @@ public class HiddenPlayingCard {
 
     private TextureAtlas carddeckAtlas;
     private TiledMap level;
+    private Array<Integer> hiddenPlayingCards;
 
     public HiddenPlayingCard(TiledMap level, TextureAtlas carddeckAtlas) {
         this.level = level;
@@ -42,7 +43,7 @@ public class HiddenPlayingCard {
         int maxNumberOfPlayingCardsForLevel = level.getLayers().get(LevelCreator.HIDDEN_PATTERN_LAYER_NAME).getObjects().getByType(RectangleMapObject.class).size;
         MapProperties levelProperties = level.getProperties();
         int numberOfCardsToDisplayForLevel = Integer.parseInt(levelProperties.get("Number Of Cards", String.class));
-        Array<Integer> hiddenPlayingCards = new Array<Integer>();
+        this.hiddenPlayingCards = new Array<Integer>();
 
         for (int i=0; i<numberOfCardsToDisplayForLevel; i++) {
             int nextRandomHiddenPlayCard = Random.getInstance().nextInt(maxNumberOfPlayingCardsForLevel);

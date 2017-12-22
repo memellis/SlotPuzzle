@@ -17,6 +17,7 @@ package com.ellzone.slotpuzzle2d.prototypes.minislotmachine;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -71,6 +72,10 @@ import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+import com.ellzone.slotpuzzle2d.utils.Random;
+
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
+
 import aurelienribon.tweenengine.equations.Elastic;
 import aurelienribon.tweenengine.equations.Quad;
 import aurelienribon.tweenengine.equations.Sine;
@@ -163,7 +168,7 @@ public class MiniSlotMachineLevelFallingReels extends SPPrototypeTemplate {
     @Override
     protected void initialiseOverride() {
         createPlayScreen();
-        initialiseReels();
+        initialiseReels(this.annotationAssetManager);
         createSlotReelTexture();
         getMapProperties(this.miniSlotmachineLevel);
         initialiseLevelDoor();
@@ -205,8 +210,8 @@ public class MiniSlotMachineLevelFallingReels extends SPPrototypeTemplate {
         initialisePlayScreen();
     }
 
-    private void initialiseReels() {
-        this.reels = new Reels();
+    private void initialiseReels(AnnotationAssetManager annotationAssetManager) {
+        this.reels = new Reels(annotationAssetManager);
     }
 
     private void initialiseLevelDoor() {
@@ -344,11 +349,11 @@ public class MiniSlotMachineLevelFallingReels extends SPPrototypeTemplate {
         int numberOfCardsToDisplayForLevel = Integer.parseInt(levelProperties.get("Number Of Cards", String.class));
         hiddenPlayingCards = new Array<Integer>();
         for (int i=0; i<numberOfCardsToDisplayForLevel; i++) {
-            int nextRandomHiddenPlayCard = random.nextInt(maxNumberOfPlayingCardsForLevel);
+            int nextRandomHiddenPlayCard = Random.getInstance().nextInt(maxNumberOfPlayingCardsForLevel);
             hiddenPlayingCards.add(nextRandomHiddenPlayCard);
             if ((i & 1) == 0) {
-                randomSuit = Suit.values()[random.nextInt(NUMBER_OF_SUITS)];
-                randomPip = Pip.values()[random.nextInt(NUMBER_OF_CARDS_IN_A_SUIT)];
+                randomSuit = Suit.values()[Random.getInstance().nextInt(NUMBER_OF_SUITS)];
+                randomPip = Pip.values()[Random.getInstance().nextInt(NUMBER_OF_CARDS_IN_A_SUIT)];
             }
 
             Card card = new Card(randomSuit,
@@ -381,12 +386,12 @@ public class MiniSlotMachineLevelFallingReels extends SPPrototypeTemplate {
     }
 
     private void addReel(Rectangle mapRectangle, Array<ReelTile> reelTiles) {
-        int endReel = random.nextInt(this.reels.getReels().length);
+        int endReel = Random.getInstance().nextInt(this.reels.getReels().length);
         ReelTile reel = new ReelTile(slotReelTexture, this.reels.getReels().length, 0, 0, reels.getReelWidth(), reels.getReelHeight(), reels.getReelWidth(), reels.getReelHeight(), endReel, this.reelSpinningSound);
         reel.setX(mapRectangle.getX());
         reel.setY(mapRectangle.getY());
         reel.setSx(0);
-        int startReel = random.nextInt((int) slotReelScrollheight);
+        int startReel = Random.getInstance().nextInt((int) slotReelScrollheight);
         startReel = (startReel / ((int) this.reels.getReelWidth())) * (int) this.reels.getReelHeight();
         reel.setSy(startReel);
         addReelListener(reel);
@@ -615,7 +620,7 @@ public class MiniSlotMachineLevelFallingReels extends SPPrototypeTemplate {
         scores.add(score);
         Timeline.createSequence()
                 .beginParallel()
-                .push(SlotPuzzleTween.to(score, ScoreAccessor.POS_XY, 2.0f).targetRelative(random.nextInt(20), random.nextInt(160)).ease(Quad.IN))
+                .push(SlotPuzzleTween.to(score, ScoreAccessor.POS_XY, 2.0f).targetRelative(Random.getInstance().nextInt(20), Random.getInstance().nextInt(160)).ease(Quad.IN))
                 .push(SlotPuzzleTween.to(score, ScoreAccessor.SCALE_XY, 2.0f).target(2.0f, 2.0f).ease(Quad.IN))
                 .end()
                 .setUserData(score)
@@ -800,7 +805,7 @@ public class MiniSlotMachineLevelFallingReels extends SPPrototypeTemplate {
                 } else {
                     if (!reel.getFlashTween()) {
                         reelSlowingTargetTime = 3.0f;
-                        reel.setEndReel(random.nextInt(reels.getReels().length - 1));
+                        reel.setEndReel(Random.getInstance().nextInt(reels.getReels().length - 1));
 
                         reel.startSpinning();
                         reelsSpinning++;

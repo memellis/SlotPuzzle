@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.MathUtils;
+import com.ellzone.slotpuzzle2d.sprites.Reels;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
@@ -46,13 +47,12 @@ public abstract class SPPrototypeTemplate extends SPPrototype {
 
     protected final TweenManager tweenManager = new TweenManager();
     protected AnnotationAssetManager annotationAssetManager;
-    protected Sprite cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato;
+    protected Reels reels;
     protected Sprite[] sprites;
 	protected int spriteWidth, spriteHeight;
     protected PerspectiveCamera cam;
     protected OrthographicCamera orthographicCamera;
     protected SpriteBatch batch;
-    protected final Random random = new Random();
     protected BitmapFont font;
 	protected FitViewport viewport;
 	protected Stage stage;
@@ -77,48 +77,41 @@ public abstract class SPPrototypeTemplate extends SPPrototype {
         initialiseLibGdx();
 		initialiseScreen();
 		initialiseCamera();
-        loadAssets();
+        annotationAssetManager = loadAssets();
+        reels = initialiseReels(annotationAssetManager);
         initialiseUniversalTweenEngine();
         initialiseOverride();
     }
 
-    protected void loadAssets() {
+    protected AnnotationAssetManager loadAssets() {
         if (isCustomDisplay()) {
             loadAssetsOverride();
-            return;
+            return null;
         }
-        this.annotationAssetManager =  new AnnotationAssetManager();
-        this.annotationAssetManager = new AnnotationAssetManager();
-        this.annotationAssetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-        this.annotationAssetManager.load(new AssetsAnnotation());
-        this.annotationAssetManager.finishLoading();
 
-
-        TextureAtlas reelAtlas = this.annotationAssetManager.get(AssetsAnnotation.REELS);
-        this.cherry = reelAtlas.createSprite("cherry");
-        this.cheesecake = reelAtlas.createSprite("cheesecake");
-        this.grapes = reelAtlas.createSprite("grapes");
-        this.jelly = reelAtlas.createSprite("jelly");
-        this.lemon = reelAtlas.createSprite("lemon");
-        this.peach = reelAtlas.createSprite("peach");
-        this.pear = reelAtlas.createSprite("pear");
-        this.tomato = reelAtlas.createSprite("tomato");
-
-        int i = 0;
-        this.sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
-		this.spriteWidth = (int) cherry.getWidth();
-		this.spriteHeight = (int) cherry.getWidth();
-        float startPosition = (displayWindowWidth - sprites.length * cherry.getWidth()) / 2;
-        for (Sprite sprite : this.sprites) {
-            sprite.setOrigin(0, 0);
-            sprite.setX(startPosition + i * sprite.getWidth());
-			sprite.setY((float) displayWindowHeight / 2 - sprite.getHeight() / 2);
-            i++;
-        }
+        AnnotationAssetManager annotationAssetManager = new AnnotationAssetManager();
+        annotationAssetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+        annotationAssetManager.load(new AssetsAnnotation());
+        annotationAssetManager.finishLoading();
 
         loadAssetsOverride();
+
+        return annotationAssetManager;
     }
 
+    private Reels initialiseReels(AnnotationAssetManager annotationAssetManager) {
+        Reels reels = new Reels(annotationAssetManager);
+        sprites = reels.getReels();
+        float startPosition = (displayWindowWidth - sprites.length * sprites[0].getWidth()) / 2;
+        int i = 0;
+        for (Sprite sprite : sprites) {
+            sprite.setOrigin(0, 0);
+            sprite.setX(startPosition + i * sprite.getWidth());
+            sprite.setY((float) displayWindowHeight / 2 - sprite.getHeight() / 2);
+            i++;
+        }
+        return reels;
+    }
 	
     protected void initialiseCamera() {
         this.cam = new PerspectiveCamera();
@@ -203,9 +196,6 @@ public abstract class SPPrototypeTemplate extends SPPrototype {
 		if (this.stage != null) {
 			this.stage.dispose();
 		}
-        for (Sprite sprite : this.sprites) {
-            sprite.getTexture().dispose();
-        }
         this.annotationAssetManager.dispose();
 
         disposeOverride();

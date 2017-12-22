@@ -20,14 +20,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.ellzone.slotpuzzle2d.prototypes.Reels;
-import com.ellzone.slotpuzzle2d.prototypes.ReelTiles;
+import com.ellzone.slotpuzzle2d.sprites.Reels;
+import com.ellzone.slotpuzzle2d.sprites.ReelTiles;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
-import com.ellzone.slotpuzzle2d.prototypes.Particles;
+import com.ellzone.slotpuzzle2d.physics.Particles;
 import com.ellzone.slotpuzzle2d.physics.Particle;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.physics.Vector;
-import com.ellzone.slotpuzzle2d.physics.DampenedSine;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsEvent;
@@ -38,8 +37,6 @@ import aurelienribon.tweenengine.equations.Elastic;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
 import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
@@ -47,6 +44,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
 public class Particle6ExtendingParticleTemplate extends ParticleTemplate {
 	private static final String PrototypeName = "Particle6";
@@ -89,7 +88,7 @@ public class Particle6ExtendingParticleTemplate extends ParticleTemplate {
 
 	@Override
 	protected void initialiseOverride() {
-		initialiseReelTiles();
+		initialiseReelTiles(annotationAssetManager);
 		initialiseParticles();
         initialiseDampenedSine();
 		shapeRenderer = new ShapeRenderer();
@@ -99,12 +98,12 @@ public class Particle6ExtendingParticleTemplate extends ParticleTemplate {
 	}
 
 	@Override
-	protected void loadAssetsOverride() {
-		reels = new Reels();
-        reelSprites = reels.getReels();
+	protected void loadAssetsOverride(AnnotationAssetManager annotationAssetManager) {
 	}
 
-	private void initialiseReelTiles() {
+	private void initialiseReelTiles(AnnotationAssetManager annotationAssetManager) {
+        reels = new Reels(annotationAssetManager);
+        reelSprites = reels.getReels();
 		reelTiles = new ReelTiles(reels);
 		reelTilesArray = reelTiles.getReelTiles();
 		slotReelScrollheight = reelTiles.getReelTileTextureHeight();

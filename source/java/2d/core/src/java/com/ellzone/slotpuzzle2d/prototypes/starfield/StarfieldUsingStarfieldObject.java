@@ -19,6 +19,7 @@ package com.ellzone.slotpuzzle2d.prototypes.starfield;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototypeTemplate;
 import com.ellzone.slotpuzzle2d.sprites.StarField;
+import com.ellzone.slotpuzzle2d.utils.Random;
 
 public class StarfieldUsingStarfieldObject extends SPPrototypeTemplate {
     public static float SCALE = 0.5f;
@@ -34,7 +35,7 @@ public class StarfieldUsingStarfieldObject extends SPPrototypeTemplate {
                                   SCALE,
                                   displayWindowWidth,
                                   displayWindowHeight,
-                                  random,
+                                  Random.getInstance(),
                                   viewport);
     }
 

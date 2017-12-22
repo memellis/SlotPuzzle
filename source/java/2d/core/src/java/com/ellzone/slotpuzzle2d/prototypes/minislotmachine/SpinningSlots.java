@@ -19,34 +19,29 @@ package com.ellzone.slotpuzzle2d.prototypes.minislotmachine;
 import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.physics.DampenedSineParticle;
-import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
+import com.ellzone.slotpuzzle2d.prototypes.SPPrototypeTemplate;
 import com.ellzone.slotpuzzle2d.sprites.AnimatedHandle;
 import com.ellzone.slotpuzzle2d.sprites.AnimatedReel;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
-import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Assets;
+import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import aurelienribon.tweenengine.equations.Back;
 import aurelienribon.tweenengine.equations.Cubic;
 import aurelienribon.tweenengine.equations.Quad;
 import aurelienribon.tweenengine.equations.Quart;
-import com.ellzone.slotpuzzle2d.prototypes.*;
-import org.xml.sax.*;
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
 public class SpinningSlots extends SPPrototypeTemplate {
 	
@@ -60,6 +55,7 @@ public class SpinningSlots extends SPPrototypeTemplate {
 	private AnimatedHandle animatedHandle;
 	private TextureAtlas handleAtlas;
 	private int reelSpriteHelp;
+	private Sprite[] sprites;
 	 
 	@Override
 	protected void initialiseOverride() {
@@ -68,24 +64,13 @@ public class SpinningSlots extends SPPrototypeTemplate {
 
     @Override
     protected void initialiseScreenOverride() {
-
     }
 
     @Override
 	protected void loadAssetsOverride() {
-		Assets.inst().load("reel/reels.pack.atlas", TextureAtlas.class);
-		Assets.inst().load("handle/handle.pack.atlas", TextureAtlas.class);
-		Assets.inst().load("sounds/pull-lever1.wav", Sound.class);
-		Assets.inst().load("sounds/click2.wav", Sound.class);
-		Assets.inst().load("sounds/reel-stopped.wav", Sound.class);
-		Assets.inst().update();
-		Assets.inst().finishLoading();
-		
-		handleAtlas = Assets.inst().get("handle/handle.pack.atlas", TextureAtlas.class);
-
-		pullLeverSound = Assets.inst().get("sounds/pull-lever1.wav");
-		reelSpinningSound = Assets.inst().get("sounds/click2.wav");
-		reelStoppingSound = Assets.inst().get("sounds/reel-stopped.wav");
+		pullLeverSound = annotationAssetManager.get(AssetsAnnotation.SOUND_PULL_LEVER);
+		reelSpinningSound = annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_SPINNING);
+		reelStoppingSound = annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_STOPPED);
 	}
 
 	@Override

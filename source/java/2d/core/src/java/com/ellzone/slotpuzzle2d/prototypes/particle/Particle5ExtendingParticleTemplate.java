@@ -21,17 +21,19 @@ import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsEvent;
-import com.ellzone.slotpuzzle2d.prototypes.Reels;
+import com.ellzone.slotpuzzle2d.sprites.Reels;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import java.util.Random;
-import com.ellzone.slotpuzzle2d.prototypes.ReelTiles;
-import com.ellzone.slotpuzzle2d.prototypes.Particles;
+import com.ellzone.slotpuzzle2d.sprites.ReelTiles;
+import com.ellzone.slotpuzzle2d.physics.Particles;
 import com.ellzone.slotpuzzle2d.physics.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.ellzone.slotpuzzle2d.physics.Particle;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
 public class Particle5ExtendingParticleTemplate extends ParticleTemplate {
 	private Array<DampenedSine> dampenedSines;
@@ -53,7 +55,7 @@ public class Particle5ExtendingParticleTemplate extends ParticleTemplate {
 
 	@Override
 	protected void initialiseOverride() {
-		initialiseReelTiles();
+		initialiseReelTiles(annotationAssetManager);
 		initialiseParticles();
         initialiseDampenedSine();
 		shapeRenderer = new ShapeRenderer();
@@ -62,12 +64,12 @@ public class Particle5ExtendingParticleTemplate extends ParticleTemplate {
 	}
 
 	@Override
-	protected void loadAssetsOverride() {
-		reels = new Reels();
-        reelSprites = reels.getReels();
+	protected void loadAssetsOverride(AnnotationAssetManager annotationAssetManager) {
 	}
 	
-	private void initialiseReelTiles() {
+	private void initialiseReelTiles(AnnotationAssetManager annotationAssetManager) {
+        reels = new Reels(annotationAssetManager);
+        reelSprites = reels.getReels();
 		reelTiles = new ReelTiles(reels);
 		reelTilesArray = reelTiles.getReelTiles();
 		slotReelScrollheight = reelTiles.getReelTileTextureHeight();

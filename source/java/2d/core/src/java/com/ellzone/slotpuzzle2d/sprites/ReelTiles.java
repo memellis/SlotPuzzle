@@ -14,19 +14,16 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.ellzone.slotpuzzle2d.prototypes;
+package com.ellzone.slotpuzzle2d.sprites;
 
-import java.util.Random;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+import com.ellzone.slotpuzzle2d.utils.Random;
 
 public class ReelTiles {
 	private Array<ReelTile> reelTiles;
-	private Random random;
 	private Reels reels;
 	private Pixmap slotReelScrollPixmap;
 	private Texture slotReelScrollTexture;
@@ -38,16 +35,15 @@ public class ReelTiles {
 	}
 	
 	private void initialiseReelTiles() {
-	    random = new Random();
 	    reelTiles = new Array<ReelTile>();
 	    slotReelScrollPixmap = new Pixmap(reels.getReelHeight(), reels.getReelHeight(), Pixmap.Format.RGBA8888);
-	    slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(reels.getReels());
+	    PixmapProcessors.savePixmap(slotReelScrollPixmap);
 	    slotReelScrollTexture = new Texture(slotReelScrollPixmap);
 	    reelTile = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getHeight() / reels.getReelHeight(), 0, 32, reels.getReelWidth(), reels.getReelHeight(), reels.getReelWidth(), reels.getReelHeight(), 0, null);
 	    reelTile.setX(0);
 	    reelTile.setY(0);
 	    reelTile.setSx(0);
-	    reelTile.setEndReel(random.nextInt(reels.getReels().length - 1));
+	    reelTile.setEndReel(Random.getInstance().nextInt(reels.getReels().length - 1));
 	    reelTile.setSy(slotReelScrollTexture.getHeight() + 128 + reelTile.getEndReel() * 32 );
 	    reelTiles.add(reelTile);
 	}
@@ -63,5 +59,4 @@ public class ReelTiles {
 	public int getReelTileTextureHeight() {
 		return slotReelScrollTexture.getHeight();
 	}
-
 }

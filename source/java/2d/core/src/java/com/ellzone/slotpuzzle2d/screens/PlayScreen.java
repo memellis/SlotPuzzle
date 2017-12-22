@@ -69,12 +69,16 @@ import com.ellzone.slotpuzzle2d.sprites.ReelStoppedFlashingEvent;
 import com.ellzone.slotpuzzle2d.sprites.ReelStoppedSpinningEvent;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.sprites.Score;
+import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import com.ellzone.slotpuzzle2d.tweenengine.BaseTween;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
+
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
+
 import aurelienribon.tweenengine.equations.Back;
 import aurelienribon.tweenengine.equations.Cubic;
 import aurelienribon.tweenengine.equations.Elastic;
@@ -162,8 +166,7 @@ public class PlayScreen implements Screen {
 		playState = PlayStates.INITIALISING;
 		initialiseScreen();
 		initialiseTweenEngine();
-		loadAssets();
-		getAssets();
+		getAssets(game.annotationAssetManager);
 		createSprites();
 		initialisePlayScreen();
 		createSlotReelTexture();
@@ -187,41 +190,27 @@ public class PlayScreen implements Screen {
 		SlotPuzzleTween.registerAccessor(Score.class, new ScoreAccessor());
 	}
 
-	private void loadAssets() {
-		game.assetManager.load("reel/reels.pack.atlas", TextureAtlas.class);
-		game.assetManager.load("tiles/tiles.pack.atlas", TextureAtlas.class);
-		game.assetManager.load("playingcards/carddeck.atlas", TextureAtlas.class);
-		game.assetManager.load("sounds/cha-ching.mp3", Sound.class);
-		game.assetManager.load("sounds/pull-lever1.mp3", Sound.class);
-		game.assetManager.load("sounds/reel-spinning.mp3", Sound.class);
-		game.assetManager.load("sounds/reel-stopped.mp3", Sound.class);
-		game.assetManager.load("sounds/jackpot.mp3", Sound.class);
-		game.assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-		game.assetManager.load("levels/level " + (this.levelDoor.id + 1) + " - 40x40.tmx", TiledMap.class);
-		game.assetManager.finishLoading();
-	}
-
-	private void getAssets() {
-	    reelAtlas = game.assetManager.get("reel/reels.pack.atlas", TextureAtlas.class);
-        tilesAtlas = game.assetManager.get("tiles/tiles.pack.atlas", TextureAtlas.class);
-        carddeckAtlas = game.assetManager.get("playingcards/carddeck.atlas", TextureAtlas.class);
-        chaChingSound = game.assetManager.get("sounds/cha-ching.mp3", Sound.class);
-        pullLeverSound = game.assetManager.get("sounds/pull-lever1.mp3", Sound.class);
-        reelSpinningSound = game.assetManager.get("sounds/reel-spinning.mp3", Sound.class);
-        reelStoppedSound = game.assetManager.get("sounds/reel-stopped.mp3", Sound.class);
-        jackpotSound = game.assetManager.get("sounds/jackpot.mp3", Sound.class);
-	    level = game.assetManager.get("levels/level " + (this.levelDoor.id + 1) + " - 40x40.tmx");
+	private void getAssets(AnnotationAssetManager annotationAssetManager) {
+	    reelAtlas = annotationAssetManager.get(AssetsAnnotation.REELS);
+        tilesAtlas = annotationAssetManager.get(AssetsAnnotation.TILES);
+        carddeckAtlas = annotationAssetManager.get(AssetsAnnotation.CARDDECK);
+        chaChingSound = annotationAssetManager.get(AssetsAnnotation.SOUND_CHA_CHING);
+        pullLeverSound = annotationAssetManager.get(AssetsAnnotation.SOUND_PULL_LEVER);
+        reelSpinningSound = annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_SPINNING);
+        reelStoppedSound = annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_STOPPED);
+        jackpotSound = annotationAssetManager.get(AssetsAnnotation.SOUND_JACKPOINT);
+	    level = annotationAssetManager.get("levels/level " + (this.levelDoor.id + 1) + " - 40x40.tmx");
  	}
 
 	private void createSprites() {
-		cherry = reelAtlas.createSprite("cherry 40x40");
-		cheesecake = reelAtlas.createSprite("cheesecake 40x40");
-		grapes = reelAtlas.createSprite("grapes 40x40");
-		jelly = reelAtlas.createSprite("jelly 40x40");
-		lemon = reelAtlas.createSprite("lemon 40x40");
-		peach = reelAtlas.createSprite("peach 40x40");
-		pear = reelAtlas.createSprite("pear 40x40");
-		tomato = reelAtlas.createSprite("tomato 40x40");
+		cherry = reelAtlas.createSprite(AssetsAnnotation.CHERRY40x40);
+		cheesecake = reelAtlas.createSprite(AssetsAnnotation.CHEESECAKE40x40);
+		grapes = reelAtlas.createSprite(AssetsAnnotation.GRAPES40x40);
+		jelly = reelAtlas.createSprite(AssetsAnnotation.JELLY40x40);
+		lemon = reelAtlas.createSprite(AssetsAnnotation.LEMON40x40);
+		peach = reelAtlas.createSprite(AssetsAnnotation.PEACH40x40);
+		pear = reelAtlas.createSprite(AssetsAnnotation.PEAR40x40);
+		tomato = reelAtlas.createSprite(AssetsAnnotation.TOMATO40x40);
 
 		sprites = new Sprite[] {cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato};
 		for (Sprite sprite : sprites) {
@@ -231,22 +220,22 @@ public class PlayScreen implements Screen {
 		spriteHeight = sprites[0].getHeight();
 
 		popUpSprites = new Array<Sprite>();
-        popUpSprites.add(tilesAtlas.createSprite("GamePopUp"));
-	    popUpSprites.add(tilesAtlas.createSprite("level"));
+        popUpSprites.add(tilesAtlas.createSprite(AssetsAnnotation.GAME_POPUP));
+	    popUpSprites.add(tilesAtlas.createSprite(AssetsAnnotation.LEVEL_SPRITE));
 	    setPopUpSpritePositions();
 
 	    levelLostSprites = new Array<Sprite>();
-	    levelLostSprites.add(tilesAtlas.createSprite("GamePopUp"));
-	    levelLostSprites.add(tilesAtlas.createSprite("level"));
-	    levelLostSprites.add(tilesAtlas.createSprite("level"));
-	    levelLostSprites.add(tilesAtlas.createSprite("over"));
+	    levelLostSprites.add(tilesAtlas.createSprite(AssetsAnnotation.GAME_POPUP));
+	    levelLostSprites.add(tilesAtlas.createSprite(AssetsAnnotation.LEVEL_SPRITE));
+	    levelLostSprites.add(tilesAtlas.createSprite(AssetsAnnotation.LEVEL_SPRITE));
+	    levelLostSprites.add(tilesAtlas.createSprite(AssetsAnnotation.OVER));
 	    setLevelLostSpritePositions();
 
 	    levelWonSprites = new Array<Sprite>();
-	    levelWonSprites.add(tilesAtlas.createSprite("GamePopUp"));
-	    levelWonSprites.add(tilesAtlas.createSprite("level"));
-	    levelWonSprites.add(tilesAtlas.createSprite("level"));
-	    levelWonSprites.add(tilesAtlas.createSprite("complete"));
+	    levelWonSprites.add(tilesAtlas.createSprite(AssetsAnnotation.GAME_POPUP));
+	    levelWonSprites.add(tilesAtlas.createSprite(AssetsAnnotation.LEVEL_SPRITE));
+	    levelWonSprites.add(tilesAtlas.createSprite(AssetsAnnotation.LEVEL_SPRITE));
+	    levelWonSprites.add(tilesAtlas.createSprite(AssetsAnnotation.COMPLETE));
 	    setLevelWonSpritePositions();
 	}
 
@@ -365,7 +354,7 @@ public class PlayScreen implements Screen {
 
 	private void addReel(Rectangle mapRectangle) {
         int endReel = random.nextInt(sprites.length);
-		ReelTile reel = new ReelTile(slotReelTexture, sprites.length, 0, 0, spriteWidth, spriteHeight, spriteWidth, spriteHeight, endReel, game.assetManager.get("sounds/reel-spinning.mp3", Sound.class));
+		ReelTile reel = new ReelTile(slotReelTexture, sprites.length, 0, 0, spriteWidth, spriteHeight, spriteWidth, spriteHeight, endReel, (Sound) game.annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_SPINNING));
 		reel.setX(mapRectangle.getX());
 		reel.setY(mapRectangle.getY());
 		reel.setSx(0);
@@ -1092,8 +1081,8 @@ public class PlayScreen implements Screen {
                 game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
                 hud.stage.draw();
             } else {
-                if (game.assetManager.getProgress() < 1) {
-                    game.assetManager.update();
+                if (game.annotationAssetManager.getProgress() < 1) {
+                    game.annotationAssetManager.update();
                 } else {
                     isLoaded = true;
                 }

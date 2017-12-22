@@ -16,7 +16,6 @@
 
 package com.ellzone.slotpuzzle2d.prototypes.bezier;
 
-import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -27,13 +26,13 @@ import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototypeTemplate;
+import com.ellzone.slotpuzzle2d.utils.Random;
 
 public class Bezier2 extends SPPrototypeTemplate {
     private Pixmap slotReelScrollPixmap;
     private Texture slotReelScrollTexture;
     private ReelTile reelTile;
     private Array<ReelTile> reelTiles;
-    private Random random;
     private ShapeRenderer shapeRenderer;
     private Array<Vector2> points = new Array<Vector2>();
     private Array<Vector2> reelSpinBezier = new Array<Vector2>();
@@ -91,16 +90,15 @@ public class Bezier2 extends SPPrototypeTemplate {
 	}
 	
     private void initialiseReelSlots() {
-        random = new Random();
         reelTiles = new Array<ReelTile>();
         slotReelScrollPixmap = new Pixmap(spriteWidth, spriteHeight, Pixmap.Format.RGBA8888);
-        slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
+        slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(reels.getReels());
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         reelTile = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getHeight() / spriteHeight, 0, 32, spriteWidth, spriteHeight, spriteWidth, spriteHeight, 0, null);
         reelTile.setX(0);
         reelTile.setY(0);
         reelTile.setSx(0);
-        reelTile.setEndReel(random.nextInt(sprites.length - 1));
+        reelTile.setEndReel(Random.getInstance().nextInt(reels.getReels().length - 1));
         reelTile.setSy(0);
         reelTiles.add(reelTile);
     }

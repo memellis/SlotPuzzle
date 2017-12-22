@@ -34,7 +34,7 @@ public class CollidingFallingReels extends SPPrototypeTemplate {
     World world;
     Body body,body2;
     Body bodyEdgeScreen;
-
+    Sprite[] sprites;
     Matrix4 debugMatrix;
 
     final float PIXELS_TO_METERS = 100f;
@@ -45,7 +45,7 @@ public class CollidingFallingReels extends SPPrototypeTemplate {
 
     @Override
     protected void initialiseOverride() {
-
+        sprites = reels.getReels();
         sprites[0].setPosition(-sprites[0].getWidth() / 2, -sprites[0].getHeight()/2 + 200);
         sprites[1].setPosition(-sprites[0].getWidth() / 2 + 20, -sprites[0].getHeight()/2 + 400);
 
@@ -116,12 +116,10 @@ public class CollidingFallingReels extends SPPrototypeTemplate {
 
     @Override
     protected void initialiseScreenOverride() {
-
     }
 
     @Override
     protected void loadAssetsOverride() {
-
     }
 
     @Override
@@ -132,7 +130,6 @@ public class CollidingFallingReels extends SPPrototypeTemplate {
 
     @Override
     protected void updateOverride(float dt) {
-
     }
 
     @Override
@@ -181,6 +178,5 @@ public class CollidingFallingReels extends SPPrototypeTemplate {
 
     @Override
     protected void initialiseUniversalTweenEngineOverride() {
-
     }
 }

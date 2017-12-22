@@ -18,7 +18,7 @@ package com.ellzone.slotpuzzle2d.prototypes.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -33,7 +33,6 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -76,8 +75,10 @@ import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
+import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
-import java.util.Random;
+import com.ellzone.slotpuzzle2d.utils.Random;
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 import aurelienribon.tweenengine.equations.Elastic;
 import aurelienribon.tweenengine.equations.Quad;
 import aurelienribon.tweenengine.equations.Sine;
@@ -101,6 +102,7 @@ public class PlayScreenPrototype implements Screen {
     private Viewport viewport;
     private Stage stage;
     private OrthographicCamera camera;
+    private AnnotationAssetManager annotationAssetManager;
     private TextureAtlas reelAtlas, tilesAtlas, carddeckAtlas;
     private Sound chaChingSound, pullLeverSound, reelSpinningSound, reelStoppedSound, jackpotSound;
     private TiledMap level;
@@ -147,9 +149,8 @@ public class PlayScreenPrototype implements Screen {
         playState = PlayScreen.PlayStates.INITIALISING;
         initialiseScreen();
         initialiseTweenEngine();
-        loadAssets();
-        getAssets();
-        initialiseReels();
+        getAssets(this.game.annotationAssetManager);
+        initialiseReels(this.game.annotationAssetManager);
         initialisePlayScreen();
         createSlotReelTexture();
         createLevels();
@@ -173,38 +174,24 @@ public class PlayScreenPrototype implements Screen {
         SlotPuzzleTween.registerAccessor(Score.class, new ScoreAccessor());
     }
 
-    private void loadAssets() {
-        this.game.assetManager.load("reel/reels.pack.atlas", TextureAtlas.class);
-        this.game.assetManager.load("tiles/tiles.pack.atlas", TextureAtlas.class);
-        this.game.assetManager.load("playingcards/carddeck.atlas", TextureAtlas.class);
-        this.game.assetManager.load("sounds/cha-ching.mp3", Sound.class);
-        this.game.assetManager.load("sounds/pull-lever1.mp3", Sound.class);
-        this.game.assetManager.load("sounds/reel-spinning.mp3", Sound.class);
-        this.game.assetManager.load("sounds/reel-stopped.mp3", Sound.class);
-        this.game.assetManager.load("sounds/jackpot.mp3", Sound.class);
-        this.game.assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-        this.game.assetManager.load("levels/level " + (this.levelDoor.id + 1) + " - 40x40.tmx", TiledMap.class);
-        this.game.assetManager.finishLoading();
+
+    private void getAssets(AnnotationAssetManager annotationAssetManager) {
+        this.reelAtlas = annotationAssetManager.get(AssetsAnnotation.REELS);
+        this.tilesAtlas = annotationAssetManager.get(AssetsAnnotation.TILES);
+        this.carddeckAtlas = annotationAssetManager.get(AssetsAnnotation.CARDDECK);
+        this.chaChingSound = annotationAssetManager.get(AssetsAnnotation.SOUND_CHA_CHING);
+        this.pullLeverSound = annotationAssetManager.get(AssetsAnnotation.SOUND_PULL_LEVER);
+        this.reelSpinningSound = annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_SPINNING);
+        this.reelStoppedSound = annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_STOPPED);
+        this.jackpotSound = annotationAssetManager.get(AssetsAnnotation.SOUND_JACKPOINT);
+        this.level = annotationAssetManager.get("levels/level " + (this.levelDoor.id + 1) + " - 40x40.tmx");
     }
 
-    private void getAssets() {
-        this.reelAtlas = game.assetManager.get("reel/reels.pack.atlas", TextureAtlas.class);
-        this.tilesAtlas = game.assetManager.get("tiles/tiles.pack.atlas", TextureAtlas.class);
-        this.carddeckAtlas = game.assetManager.get("playingcards/carddeck.atlas", TextureAtlas.class);
-        this.chaChingSound = game.assetManager.get("sounds/cha-ching.mp3", Sound.class);
-        this.pullLeverSound = game.assetManager.get("sounds/pull-lever1.mp3", Sound.class);
-        this.reelSpinningSound = game.assetManager.get("sounds/reel-spinning.mp3", Sound.class);
-        this.reelStoppedSound = game.assetManager.get("sounds/reel-stopped.mp3", Sound.class);
-        this.jackpotSound = game.assetManager.get("sounds/jackpot.mp3", Sound.class);
-        this.level = game.assetManager.get("levels/level " + (this.levelDoor.id + 1) + " - 40x40.tmx");
-    }
-
-    private void initialiseReels() {
-        reels = new Reels();
+    private void initialiseReels(AnnotationAssetManager annotationAssetManager) {
+        reels = new Reels(annotationAssetManager);
     }
 
     private void initialisePlayScreen() {
-        this.random = new Random();
         this.tileMapRenderer = new OrthogonalTiledMapRenderer(level);
         this.dampenedSines = new Array<DampenedSineParticle>();
         this.font = new BitmapFont();
@@ -254,7 +241,7 @@ public class PlayScreenPrototype implements Screen {
         int numberOfCardsToDisplayForLevel = Integer.parseInt(levelProperties.get("Number Of Cards", String.class));
         hiddenPlayingCards = new Array<Integer>();
         for (int i=0; i<numberOfCardsToDisplayForLevel; i++) {
-            int nextRandomHiddenPlayCard = random.nextInt(maxNumberOfPlayingCardsForLevel);
+            int nextRandomHiddenPlayCard = Random.getInstance().nextInt(maxNumberOfPlayingCardsForLevel);
             hiddenPlayingCards.add(nextRandomHiddenPlayCard);
             if ((i & 1) == 0) {
                 randomSuit = Suit.values()[random.nextInt(NUMBER_OF_SUITS)];
@@ -284,8 +271,8 @@ public class PlayScreenPrototype implements Screen {
     }
 
     private void addReel(Rectangle mapRectangle) {
-        int endReel = random.nextInt(this.reels.getReels().length);
-        ReelTile reel = new ReelTile(slotReelTexture, this.reels.getReels().length, 0, 0, reels.getReelWidth(), reels.getReelHeight(), reels.getReelWidth(), reels.getReelHeight(), endReel, game.assetManager.get("sounds/reel-spinning.mp3", Sound.class));
+        int endReel = Random.getInstance().nextInt(this.reels.getReels().length);
+        ReelTile reel = new ReelTile(slotReelTexture, this.reels.getReels().length, 0, 0, reels.getReelWidth(), reels.getReelHeight(), reels.getReelWidth(), reels.getReelHeight(), endReel, (Sound) game.annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_SPINNING));
         reel.setX(mapRectangle.getX());
         reel.setY(mapRectangle.getY());
         reel.setSx(0);
@@ -884,8 +871,8 @@ public class PlayScreenPrototype implements Screen {
             hud.stage.draw();
             stage.draw();
         } else {
-            if (game.assetManager.getProgress() < 1) {
-                game.assetManager.update();
+            if (game.annotationAssetManager.getProgress() < 1) {
+                game.annotationAssetManager.update();
             } else {
                 isLoaded = true;
             }
@@ -894,37 +881,38 @@ public class PlayScreenPrototype implements Screen {
 
     @Override
     public void show() {
-
     }
 
     @Override
     public void resize(int width, int height) {
-
     }
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
     }
 
     @Override
     public void dispose() {
-        stage.dispose();
-        font.dispose();
+        if (stage != null ) {
+            stage.dispose();
+        }
+        if (font != null ) {
+            font.dispose();
+        }
         for (ReelTile reel : reelTiles) {
             reel.dispose();
         }
-        chaChingSound.dispose();
+        if (chaChingSound != null) {
+            chaChingSound.dispose();
+        }
     }
 
     private void drawPlayingCards(SpriteBatch spriteBatch) {
