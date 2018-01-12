@@ -1,0 +1,29 @@
+This guide lists the steps for setting up GNURoot Debian
+for SlotPuzzle development on a Samsung Galaxy Note 4
+
+1. Install GNURoot
+
+2. Launch GNURoot to get a terminal window prompt
+   and type the following commands:
+
+# apt-get update # refresh apt-get
+
+# apt-get install git-core # install git
+
+# apt-get install nano
+
+# apt-get install wget
+
+# apt-get install unzip
+
+# cd /usr/local/src
+
+# git clone https://github.com/memellis/SlotPuzzle
+
+# cd SlotPuzzle
+
+# git config --global user.email "you@example.com"
+
+# git config --global user.name "Mark Ellis"
+
+
