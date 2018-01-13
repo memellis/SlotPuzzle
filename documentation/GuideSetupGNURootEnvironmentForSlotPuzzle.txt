@@ -10,11 +10,15 @@ for SlotPuzzle development on a Samsung Galaxy Note 4
 
 # apt-get install git-core # install git
 
+# apt-get install ssh
+
 # apt-get install nano
 
 # apt-get install wget
 
 # apt-get install unzip
+
+# apt-get install xclip
 
 # cd /usr/local/src
 
@@ -25,5 +29,9 @@ for SlotPuzzle development on a Samsung Galaxy Note 4
 # git config --global user.email "you@example.com"
 
 # git config --global user.name "Mark Ellis"
+
+# ssh-keygen -t rsa -b 4096 -C "memellis@gmail.com"
+
+# eval "(ssh-agen -s)"
 
 
