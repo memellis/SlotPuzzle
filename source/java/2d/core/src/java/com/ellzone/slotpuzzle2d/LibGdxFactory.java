@@ -18,6 +18,7 @@ package com.ellzone.slotpuzzle2d;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.ellzone.slotpuzzle2d.screens.LoadingScreen;
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
 /** Class designed for giving ability to easy mock all low level LibGdx objects. */
 public class LibGdxFactory {
@@ -57,4 +58,6 @@ public class LibGdxFactory {
     public LoadingScreen newLoadScreen(SlotPuzzle game) {
         return new LoadingScreen(game);
     }
+
+    public AnnotationAssetManager newAnnotationAssetManager() { return new AnnotationAssetManager(); }
 }
