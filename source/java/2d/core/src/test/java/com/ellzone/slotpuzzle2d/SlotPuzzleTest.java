@@ -22,11 +22,12 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.screens.LoadingScreen;
+
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
 import org.junit.After;
 import org.junit.Before;
@@ -36,11 +37,7 @@ import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
@@ -77,6 +74,7 @@ public class SlotPuzzleTest {
 
         when(mLibGdxFactory.newSpriteBatch()).thenReturn(mock(SpriteBatch.class));
         when(mLibGdxFactory.newLoadScreen(any(SlotPuzzle.class))).thenReturn(mock(LoadingScreen.class));
+        when(mLibGdxFactory.newAnnotationAssetManager()).thenReturn(mock(AnnotationAssetManager.class));
     }
 
     @After
