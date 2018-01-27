@@ -65,7 +65,7 @@ public class SlotPuzzle extends Game {
 	}
 
 	private AnnotationAssetManager loadAssets(AnnotationAssetManager annotationAssetManager) {
-		annotationAssetManager = new AnnotationAssetManager();
+		annotationAssetManager = LibGdxFactory.getInstance().newAnnotationAssetManager();
 		annotationAssetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
 		annotationAssetManager.load(new AssetsAnnotation());
 		annotationAssetManager.finishLoading();
