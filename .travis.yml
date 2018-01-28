@@ -15,7 +15,9 @@ android:
   - android-sdk-license-.+
   - google-gdk-license-.+
 before_script: cd source/java/2d
-script: gradle clean desktop:build android:build core:test
+script: 
+  - gradle clean desktop:build android:build core:test
+  - gradle codeCoverageReport
 after_success:
 - bash ${TRAVIS_BUILD_DIR}/.set_tags.sh
 - bash <(curl -s https://codecov.io/bash)
