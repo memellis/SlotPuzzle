@@ -220,10 +220,6 @@ public class TestPuzzleGridType {
     @Test
     @Parameters(method = "puzzleGridData")
     public void testRowsAboveMe(TupleValueIndex[][] testPuzzleGrid, int r, int c, TupleValueIndex[] expectedReelsAbove) {
-        System.out.println(testPuzzleGrid[0][0].getValue());
-        System.out.println("r="+r);
-        System.out.println("c="+c);
-        System.out.println(expectedReelsAbove[0].getValue());
         PuzzleGridType puzzleGridType = new PuzzleGridType();
         TupleValueIndex[] reelsAboveMe = puzzleGridType.getReelsAboveMe(testPuzzleGrid, r, c);
         assertThat(reelsAboveMe.length, is(expectedReelsAbove.length));
@@ -233,7 +229,6 @@ public class TestPuzzleGridType {
             assertThat(reelsAboveMe[index].index, is(expectedReelsAbove[index].index));
             assertThat(reelsAboveMe[index].value, is(expectedReelsAbove[index].value));
         }
-
     }
 
     private Object puzzleGridData() {
@@ -258,12 +253,17 @@ public class TestPuzzleGridType {
         testPuzzleGrid[3][2] = new TupleValueIndex(3, 2, 14, 3);
         testPuzzleGrid[3][3] = new TupleValueIndex(3, 3, 15, -1);
 
-        int r[] = new int[] { 0, 1 };
-        int c[] = new int[] { 0, 1 };
+        int r[] = new int[] { 0, 0, 0, 0 };
+        int c[] = new int[] { 0, 1, 2, 3 };
 
-        TupleValueIndex[] expectedTiles = new TupleValueIndex[] {
-                new TupleValueIndex(1, 0, 4, 1),
-                new TupleValueIndex(3, 0, 12, 3)
+        TupleValueIndex[][] expectedTiles = new TupleValueIndex[][] {
+                {new TupleValueIndex(1, 0, 4, 1),
+                 new TupleValueIndex(3, 0, 12, 3)},
+                {new TupleValueIndex(1, 1, 5, 1),
+                 new TupleValueIndex(3, 1, 13, 3)},
+                {new TupleValueIndex(1, 2, 6, 1),
+                 new TupleValueIndex(3, 2, 14, 3)},
+                {new TupleValueIndex(1, 3, 7, 1)}
         };
 
         return new Object[] {
@@ -271,7 +271,13 @@ public class TestPuzzleGridType {
                     testPuzzleGrid,
                     r[0],
                     c[0],
-                    expectedTiles
+                    expectedTiles[0]
+            },
+            new Object[] {
+                    testPuzzleGrid,
+                    r[1],
+                    c[1],
+                    expectedTiles[1]
             }
         };
      }
