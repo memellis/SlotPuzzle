@@ -216,7 +216,7 @@ public class PuzzleGridType {
                         return true;
                     }
                 } else {
-                    System.out.println("anyLonelyTiles Null r="+r+" c="+c);
+					Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "anyLonelyTiles Null r="+r+" c="+c);
                 }
 			}
 		}
@@ -249,7 +249,7 @@ public class PuzzleGridType {
                         matchedSlots.add(new TupleValueIndex(r, c, workingGrid[r][c].index, workingGrid[r][c].value));
                     }
                 } else {
-                    System.out.println("getLonelyTiles null r="+r+" c="+c);
+					Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "getLonelyTiles null r="+r+" c="+c);
                 }
             }
 		}
@@ -360,7 +360,7 @@ public class PuzzleGridType {
 			if (workingGrid[matchSlot.r][matchSlot.c] != null) {
                 workingGrid[matchSlot.r][matchSlot.c].value = -1;
             } else {
-                System.out.println("r="+matchSlot.r+" c="+matchSlot.c);
+				Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "r="+matchSlot.r+" c="+matchSlot.c);
             }
 
 		}
@@ -374,9 +374,9 @@ public class PuzzleGridType {
                     System.out.print(" ! ");
                 } else {
                     if (puzzleGrid[r][c].value == -1) {
-                        System.out.print(puzzleGrid[r][c].value + " ");
+						System.out.print(puzzleGrid[r][c].value + " ");
                     } else {
-                        System.out.print(" " + puzzleGrid[r][c].value + " ");
+						System.out.print(" " + puzzleGrid[r][c].value + " ");
                     }
                 }
 			}
@@ -421,4 +421,16 @@ public class PuzzleGridType {
         }
        return duplicateMatches;
     }
+
+	public TupleValueIndex[] getReelsAboveMe(TupleValueIndex[][] grid, int row, int column) {
+        Array<TupleValueIndex> reelsAboveMe = new Array<TupleValueIndex>();
+		int aboveCo = row + 1;
+        while (aboveCo < grid.length) {
+        	if (grid[aboveCo][column].value != -1) {
+        		reelsAboveMe.add(grid[aboveCo][column]);
+			}
+			aboveCo++;
+		}
+		return reelsAboveMe.toArray(TupleValueIndex.class);
+	}
 }
