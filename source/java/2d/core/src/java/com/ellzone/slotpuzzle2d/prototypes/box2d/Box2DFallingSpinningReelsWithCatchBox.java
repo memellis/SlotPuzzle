@@ -18,11 +18,14 @@ package com.ellzone.slotpuzzle2d.prototypes.box2d;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -42,6 +45,7 @@ import com.ellzone.slotpuzzle2d.sprites.AnimatedReelHelper;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.tweenengine.SlotPuzzleTween;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
+import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
 
 import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
@@ -65,7 +69,7 @@ public class Box2DFallingSpinningReelsWithCatchBox extends SPPrototype {
         batch = new SpriteBatch();
         viewport = new FitViewport(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT, new OrthographicCamera());
 
-        this.annotationAssetManager = annotationAssetManager;
+        this.annotationAssetManager = loadAssets();
         initialiseUniversalTweenEngine();
         animatedReelHelper = new AnimatedReelHelper(this.annotationAssetManager, this.tweenManager, 7 * 4);
         animatedReels = animatedReelHelper.getAnimatedReels();
@@ -89,8 +93,15 @@ public class Box2DFallingSpinningReelsWithCatchBox extends SPPrototype {
                 centreX + 7 * 42 / 2,
                 centreY + 4 * 42 / 2);
 
-        reelBoxes = new Array<Body>();
         reelBoxes = createReelBoxes();
+    }
+
+    private AnnotationAssetManager loadAssets() {
+        AnnotationAssetManager annotationAssetManager = new AnnotationAssetManager();
+        annotationAssetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+        annotationAssetManager.load(new AssetsAnnotation());
+        annotationAssetManager.finishLoading();
+        return annotationAssetManager;
     }
 
     private Array<Body> createReelBoxes() {
@@ -101,7 +112,8 @@ public class Box2DFallingSpinningReelsWithCatchBox extends SPPrototype {
                         centreX - 7 * 40 / 2 + 20 + (column * 40),
                         SlotPuzzleConstants.V_HEIGHT + (row * 40) / 2,
                         20,
-                        20));
+                        20,
+                        false));
             }
         }
         return reelBoxes;

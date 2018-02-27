@@ -33,8 +33,11 @@ public class ReelTile extends ReelSprite {
     private float reelDisplayWidth = 0, reelDisplayHeight = 0;
     private float x;
     private float y;
+    private float destinationX;
+    private float destinationY;
     private float sx = 0;
     private float sy = 0;
+    private int index = -1;
 	private boolean tileDeleted;
 	private boolean reelFlash;
 	private boolean reelFlashTween;
@@ -81,7 +84,6 @@ public class ReelTile extends ReelSprite {
         if (numberOfReelsInTexture > 0) {
             randomSy = Random.getInstance().nextInt(numberOfReelsInTexture) * (int)tileHeight;
             sy = randomSy;
-            System.out.println("randomSy ="+randomSy);
         }
 
         if ((reelDisplayWidth == 0) && (reelDisplayHeight == 0)) {
@@ -124,6 +126,22 @@ public class ReelTile extends ReelSprite {
          this.setFlashOn();
 	}
 
+	public float getDestinationX() {
+        return this.destinationX;
+    }
+
+    public float getDestinationY() {
+        return this.destinationY;
+    }
+
+    public void setDestinationX(float destinationX) {
+        this.destinationX = destinationX;
+    }
+
+    public void setDestinationY(float destinationY) {
+        this.destinationY = destinationY;
+    }
+
     public float getSx() {
         return this.sx;
     }
@@ -157,6 +175,8 @@ public class ReelTile extends ReelSprite {
 	public void deleteReelTile() {
         this.tileDeleted = true;
 	}
+
+	public void unDeleteReelTile() { this.tileDeleted = false; }
 	
 	public void startSpinning() {
 		super.setSpinning(true);
@@ -250,4 +270,8 @@ public class ReelTile extends ReelSprite {
             flashOnReelPixmap.dispose();
         }
 	}
+
+	public void setIndex(int index) { this.index = index; }
+
+	public int getIndex() { return this.index; }
 }

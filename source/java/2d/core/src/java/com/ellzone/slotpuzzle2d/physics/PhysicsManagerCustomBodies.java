@@ -33,6 +33,7 @@ public class PhysicsManagerCustomBodies {
         if (this.world == null) {
             this.world = new World(new Vector2(0, -5), true);
             this.disposeWorld = true;
+            this.world.setContactListener(new B2dContactListener());
         }
         this.bodyFactory = new BoxBodyBuilder();
 
@@ -62,8 +63,14 @@ public class PhysicsManagerCustomBodies {
         return this.bodyFactory.createEdgeBody(this.world, bodyType, v1x, v1y, v2x, v2y);
     }
 
-    public Body createBoxBody(BodyDef.BodyType bodyType, float posx, float posy, float width, float height) {
-        return  this.bodyFactory.createBoxBody(this.world, bodyType, posx, posy, width, height);
+    public Body createBoxBody(BodyDef.BodyType bodyType, float posx, float posy, float width, float height, boolean fixedRotation) {
+        return  this.bodyFactory.createBoxBody(this.world, bodyType, posx, posy, width, height, fixedRotation);
+    }
+
+    public static Boolean isStopped(Body body) {
+        System.out.println("isStopped()="+body.getLinearVelocity().x);
+        System.out.println("isStopped()="+body.getLinearVelocity().y);
+        return body.getLinearVelocity().x <= 0.3f && body.getLinearVelocity().y <= 0.3f;
     }
 
     public void update(float dt){
@@ -108,6 +115,11 @@ public class PhysicsManagerCustomBodies {
         for (Joint joint : joints) {
             world.destroyJoint(joint);
         }
+    }
+
+    public void deleteBody(Body body) {
+        world.destroyBody(body);
+        System.out.println("destroyedBody="+body);
     }
 
     public Matrix4 getDebugMatrix() {

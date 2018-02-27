@@ -98,10 +98,11 @@ public class BoxBodyBuilder {
         fixtureDef.shape.dispose();
     }
 
-    Body createBoxBody(World world, BodyDef.BodyType bodyType, float posx, float posy, float width, float height) {
+    Body createBoxBody(World world, BodyDef.BodyType bodyType, float posx, float posy, float width, float height, boolean fixedRotation) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = bodyType;
         bodyDef.position.set(convertToBox(posx), convertToBox(posy));
+        bodyDef.fixedRotation = fixedRotation;
 
         Body body = world.createBody(bodyDef);
 

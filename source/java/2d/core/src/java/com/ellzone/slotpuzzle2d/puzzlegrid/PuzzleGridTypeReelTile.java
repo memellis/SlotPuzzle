@@ -21,9 +21,12 @@ import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.screens.PlayScreen;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
+
+import java.text.MessageFormat;
 import java.util.Stack;
 
 public class PuzzleGridTypeReelTile {
+    public static final float FLOAT_ROUNDING_DELTA_FOR_BOX2D = 1.0f;
 
     public ReelTileGridValue[][] matchRowSlots(ReelTileGridValue[][] puzzleGrid) {
         int arraySizeR = puzzleGrid.length;
@@ -363,7 +366,7 @@ public class PuzzleGridTypeReelTile {
         for(int r = 0; r < puzzleGrid.length; r++){
             for (int c = 0; c < puzzleGrid[r].length; c++) {
                 if (puzzleGrid[r][c] == null) {
-                    System.out.print("  ");
+                    System.out.print(" ! ");
                 } else {
                     if (puzzleGrid[r][c].value == -1) {
                         System.out.print(puzzleGrid[r][c].value + " ");
@@ -492,21 +495,36 @@ public class PuzzleGridTypeReelTile {
         ReelTileGridValue[][] matchGrid = new ReelTileGridValue[gridHeight][gridWidth];
         int r, c;
         for (int i = 0; i < reelLevel.size; i++) {
-            c = (int) (reelLevel.get(i).getX() - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
-            r = (int) (reelLevel.get(i).getY() - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
-            r = gridHeight - r;
+            c = getColumnFromLevel(reelLevel.get(i).getDestinationX());
+            r = getRowFromLevel(reelLevel.get(i).getDestinationY(), gridHeight);
             if ((r >= 0) & (r <= gridHeight) & (c >= 0) & (c <= gridWidth)) {
                 if (reelLevel.get(i).isReelTileDeleted()) {
                     matchGrid[r][c] = new ReelTileGridValue(r, c, i, -1);
                 } else {
                     matchGrid[r][c] = new ReelTileGridValue(reelLevel.get(i), r, c, i, reelLevel.get(i).getEndReel());
-                    System.out.println("populateMatchGrid r="+r+"c="+c+" v="+matchGrid[r][c].value);
                 }
+                Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE, MessageFormat.format("r={0} c={1} x={2} y={3} dx={4} dy={5} i={6} v={7}",
+                        r, c,
+                        reelLevel.get(i).getX(), reelLevel.get(i).getY(),
+                        reelLevel.get(i).getDestinationX(), reelLevel.get(i).getDestinationY(),
+                        i,
+                        reelLevel.get(i).getEndReel()));
             } else {
                 Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "I don't respond to r="+r+" c="+c);
             }
         }
         return matchGrid;
+    }
+
+    public static int getRowFromLevel(float y, int levelHeight) {
+        int row = (int) (y - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
+        row = levelHeight - 1 - row;
+        return row;
+    }
+
+    public static int getColumnFromLevel(float x) {
+        int column = (int) (x - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
+        return column;
     }
 
     public Array<ReelTileGridValue> depthFirstSearch(ReelTileGridValue startReelTile) {

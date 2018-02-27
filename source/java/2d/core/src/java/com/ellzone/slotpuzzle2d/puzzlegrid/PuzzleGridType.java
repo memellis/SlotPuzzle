@@ -368,7 +368,7 @@ public class PuzzleGridType {
 	}
 	
 	public static void printGrid(TupleValueIndex[][] puzzleGrid){
-		for(int r = 0; r < puzzleGrid.length; r++){
+		for(int r =0; r<puzzleGrid.length ; r++){
 			for (int c = 0; c < puzzleGrid[r].length; c++) {
 				if (puzzleGrid[r][c] == null) {
                     System.out.print(" ! ");
@@ -422,14 +422,16 @@ public class PuzzleGridType {
        return duplicateMatches;
     }
 
-	public TupleValueIndex[] getReelsAboveMe(TupleValueIndex[][] grid, int row, int column) {
+	public static TupleValueIndex[] getReelsAboveMe(TupleValueIndex[][] grid, int row, int column) {
         Array<TupleValueIndex> reelsAboveMe = new Array<TupleValueIndex>();
-		int aboveCo = row + 1;
-        while (aboveCo < grid.length) {
-        	if (grid[aboveCo][column].value != -1) {
-        		reelsAboveMe.add(grid[aboveCo][column]);
+		int aboveCo = row - 1;
+        while ((aboveCo > 0) & (aboveCo < grid.length)) {
+        	if (grid[aboveCo][column] != null) {
+				if (grid[aboveCo][column].value != -1) {
+					reelsAboveMe.add(grid[aboveCo][column]);
+				}
 			}
-			aboveCo++;
+			aboveCo--;
 		}
 		return reelsAboveMe.toArray(TupleValueIndex.class);
 	}

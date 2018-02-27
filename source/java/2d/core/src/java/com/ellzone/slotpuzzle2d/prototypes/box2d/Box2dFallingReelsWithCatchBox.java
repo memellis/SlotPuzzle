@@ -17,9 +17,12 @@
 package com.ellzone.slotpuzzle2d.prototypes.box2d;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.Array;
@@ -28,10 +31,14 @@ import com.ellzone.slotpuzzle2d.camera.CameraHelper;
 import com.ellzone.slotpuzzle2d.physics.BoxBodyBuilder;
 import com.ellzone.slotpuzzle2d.physics.PhysicsManagerCustomBodies;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
+import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
+
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
 public class Box2dFallingReelsWithCatchBox extends SPPrototype {
     private OrthographicCamera camera;
     private SpriteBatch batch;
+    private AnnotationAssetManager annotationAssetManager;
     PhysicsManagerCustomBodies physics;
     BoxBodyBuilder bodyFactory;
     Array<Body> reelBoxes;
@@ -42,6 +49,7 @@ public class Box2dFallingReelsWithCatchBox extends SPPrototype {
     public void create() {
         camera = CameraHelper.GetCamera(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT);
         batch = new SpriteBatch();
+        annotationAssetManager = loadAssets();
 
         physics = new PhysicsManagerCustomBodies(camera);
         bodyFactory = physics.getBodyFactory();
@@ -66,6 +74,14 @@ public class Box2dFallingReelsWithCatchBox extends SPPrototype {
         reelBoxes = createReelBoxes();
     }
 
+    private AnnotationAssetManager loadAssets() {
+        AnnotationAssetManager annotationAssetManager = new AnnotationAssetManager();
+        annotationAssetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+        annotationAssetManager.load(new AssetsAnnotation());
+        annotationAssetManager.finishLoading();
+        return annotationAssetManager;
+    }
+
     private Array<Body> createReelBoxes() {
         Array<Body> reelBoxes = new Array<Body>();
         for (int row = 0; row < 4; row++) {
@@ -74,7 +90,8 @@ public class Box2dFallingReelsWithCatchBox extends SPPrototype {
                                                    centreX - 7 * 40 / 2 + 20 + (column * 40),
                                                    SlotPuzzleConstants.V_HEIGHT + (row * 40) / 2,
                                                    20,
-                                                   20));
+                                                   20,
+                                                   false));
             }
         }
         return reelBoxes;
