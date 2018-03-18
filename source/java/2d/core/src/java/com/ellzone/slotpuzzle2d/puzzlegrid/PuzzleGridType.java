@@ -425,7 +425,7 @@ public class PuzzleGridType {
 	public static TupleValueIndex[] getReelsAboveMe(TupleValueIndex[][] grid, int row, int column) {
         Array<TupleValueIndex> reelsAboveMe = new Array<TupleValueIndex>();
 		int aboveCo = row - 1;
-        while ((aboveCo > 0) & (aboveCo < grid.length)) {
+        while ((aboveCo >= 0) & (aboveCo < grid.length)) {
         	if (grid[aboveCo][column] != null) {
 				if (grid[aboveCo][column].value != -1) {
 					reelsAboveMe.add(grid[aboveCo][column]);
