@@ -29,12 +29,15 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
-import com.ellzone.slotpuzzle2d.prototypes.Reels;
 import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGridTypeReelTile;
 import com.ellzone.slotpuzzle2d.puzzlegrid.ReelTileGridValue;
 import com.ellzone.slotpuzzle2d.screens.PlayScreen;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
+import com.ellzone.slotpuzzle2d.sprites.Reels;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +53,7 @@ import static org.junit.Assert.assertEquals;
 public class TestPuzzleGridTypeReelTile {
     private Reels reels;
     private Texture slotReelTexture;
-    private AssetManager assetManager;
+    private AnnotationAssetManager annotationAssetManager;
     private TiledMap level;
     private int mapWidth, mapHeight, tilePixelWidth, tilePixelHeight, gridWidth;
     private Array<ReelTile> reelTiles;
@@ -58,11 +61,12 @@ public class TestPuzzleGridTypeReelTile {
 
     @Before
     public void setUp() throws Exception {
-        reels = new Reels();
+        annotationAssetManager = annotationAssetManager = new AnnotationAssetManager();
+        reels = new Reels(annotationAssetManager);
         reelTiles = new Array<ReelTile>();
         slotReelTexture = createSlotReelTexture(reels);
-        loadAssets();
-        getAssets();
+        loadAssets(annotationAssetManager);
+        getAssets(annotationAssetManager);
         getMapProperties(level);
         createLevel(reelTiles, reels);
     }
@@ -84,7 +88,6 @@ public class TestPuzzleGridTypeReelTile {
         int linkReelTileGridValueIndex = matchedSlots.indexOf(linkReelTileGridValue, true);
         assertEquals(matchedSlots.get(2).getS(), linkReelTileGridValue.getReelTile());
         assertEquals(matchedSlots.get(linkReelTileGridValueIndex).getN(), matchedSlots.get(2).getReelTile());
-        //assertEquals(matchedSlots.get(linkReelTileGridValueIndex).getS(), matchedSlots.get(linkReelTileGridValueIndex + 1).getReelTile());
 
         assertEquals(matchedSlots.get(0).getR(), 3);
         assertEquals(matchedSlots.get(0).getC(), 2);
@@ -152,15 +155,14 @@ public class TestPuzzleGridTypeReelTile {
         reelTiles.add(reel);
     }
 
-    private void loadAssets() {
-        assetManager = new AssetManager();
-        assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-        assetManager.load("levels/mini slot machine level.tmx", TiledMap.class);
-        assetManager.finishLoading();
+    private void loadAssets(AnnotationAssetManager annotationAssetManager) {
+        annotationAssetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+        annotationAssetManager.load("levels/mini slot machine level.tmx", TiledMap.class);
+        annotationAssetManager.finishLoading();
     }
 
-    private void getAssets() {
-        level = assetManager.get("levels/mini slot machine level.tmx");
+    private void getAssets(AnnotationAssetManager annotationAssetManager) {
+        level = annotationAssetManager.get("levels/mini slot machine level.tmx");
     }
 
     private void getMapProperties(TiledMap level) {
