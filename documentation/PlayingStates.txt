@@ -1,0 +1,26 @@
+@startuml
+
+state Intro {
+[*] --> IntroFallingSequence
+IntroFallingSequence -> IntroSpinningSequence : NumberOfReelsFalling == 0
+IntroSpinningSequence --> IntroEndingSequence : NumberOfReelsSpinning == 0 
+IntroEndingSequence --> IntroFlashingSequence : NumberOfMatchedReels > 0 
+IntroEndingSequence --> Drop : NumberOfMatchedReels == 0
+IntroFlashingSequence --> Drop : NumberOfReelsFlashing == 0
+IntroFlashingSequence --> Play : NumberOfReelsDeleted == 0
+}
+
+state Drop {
+Drop --> DropReels : NumberOfReelsDeleted > 0
+DropReels --> Fallen : NumberOfReelsDropped == 0
+Fallen --> Spin : NumberOfReelsSpinning > 0
+Spin -> Match : NumberOfReelsFalling == 0
+Match -> Flash : NumberOfMatchedReels > 0
+Match -> Play : NumberOfMatchedReels == 0
+Flash --> Drop : NumberOfReelsDeleted > 0
+}
+
+State Play {
+}
+
+@enduml
