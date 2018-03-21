@@ -22,7 +22,7 @@ allprojects {
         roboVMVersion = '1.9.0'
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.6.0'
-        aiVersion = '1.6.0'
+        aiVersion = '1.8.1'
         gdxUtilsVersion = '0.13.3'
     }
 
@@ -67,6 +67,7 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
+        compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         compile fileTree(dir: '../libs', include: '*.jar')
     }
 }
@@ -120,6 +121,7 @@ project(":core") {
         compile "com.badlogicgames.box2dlights:box2dlights:1.4"
         compile "net.dermetfan.libgdx-utils:libgdx-utils:$gdxUtilsVersion"
         compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:$gdxUtilsVersion"
+        compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         compile fileTree(dir: '../libs', include: '*.jar')
 
         testCompile "junit:junit:4.12"
