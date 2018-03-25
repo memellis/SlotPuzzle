@@ -22,7 +22,7 @@ import static junit.framework.TestCase.assertEquals;
 public class TestPlay {
 
     @Test
-    public void testPlay() {
+    public void testIntroDropPlay() {
         Play play = new Play(PlaySimulator.class.getSimpleName());
         assertEquals(play.getStateMachine().getCurrentState(), PlayState.INTRO_FALLING_SEQUENCE);
 
@@ -34,7 +34,47 @@ public class TestPlay {
 
         playUpdateUntilStopped(play);
         assertEquals(play.getStateMachine().getCurrentState(), PlayState.INTRO_ENDING_SEQUENCE);
+
+        playUpdateUntilStopped(play);
+        assertEquals(play.getStateMachine().getCurrentState(), PlayState.DROP);
+
+        playUpdateUntilStopped(play);
+        assertEquals(play.getStateMachine().getCurrentState(), PlayState.SPIN);
+
+        playUpdateUntilStopped(play);
+        assertEquals(play.getStateMachine().getCurrentState(), PlayState.FLASH);
+
+        playUpdateUntilStopped(play);
+        assertEquals(play.getStateMachine().getCurrentState(), PlayState.PLAY);
     }
+
+    @Test
+    public void testIntroDropDropPlay() {
+        Play play = new Play(PlaySimulator.class.getSimpleName());
+        assertEquals(play.getStateMachine().getCurrentState(), PlayState.INTRO_FALLING_SEQUENCE);
+
+        playUpdateUntilStopped(play);
+        assertEquals(play.getStateMachine().getCurrentState(), PlayState.INTRO_SPINNING_SEQUENCE);
+
+        playUpdateUntilStopped(play);
+        assertEquals(play.getStateMachine().getCurrentState(), PlayState.INTRO_FLASHING_SEQUENCE);
+
+        playUpdateUntilStopped(play);
+        assertEquals(play.getStateMachine().getCurrentState(), PlayState.INTRO_ENDING_SEQUENCE);
+
+        playUpdateUntilStopped(play);
+        assertEquals(play.getStateMachine().getCurrentState(), PlayState.DROP);
+
+        playUpdateUntilStopped(play);
+        assertEquals(play.getStateMachine().getCurrentState(), PlayState.SPIN);
+
+        playUpdateUntilStopped(play);
+        assertEquals(play.getStateMachine().getCurrentState(), PlayState.FLASH);
+
+        playUpdateUntilStopped(play);
+        assertEquals(play.getStateMachine().getCurrentState(), PlayState.PLAY);
+    }
+
 
     private void playUpdateUntilStopped(Play play) {
         play.getConcretePlay().start();
