@@ -22,6 +22,7 @@ public class PlaySimulator implements PlayInterface {
         numberOfReelsSpinning,
         numberOfReelsToDelete,
         numberOfReelsMatched,
+        reelMatchCount,
         numberOfReelsFlashing;
 
     private boolean
@@ -29,7 +30,8 @@ public class PlaySimulator implements PlayInterface {
         reelsSpinning,
         reelsFlashing,
         reelsDeleted,
-        startTimer;
+        startTimer,
+        simulateIntroDropDropPlay;
 
     private float
         timeCount = 0.0f;
@@ -46,12 +48,14 @@ public class PlaySimulator implements PlayInterface {
         numberOfReelsSpinning = 24;
         numberOfReelsToDelete = 0;
         numberOfReelsMatched = 0;
+        reelMatchCount = 0;
         numberOfReelsFlashing = 0;
 
         reelsFalling = true;
         reelsSpinning = true;
         reelsFlashing = false;
         startTimer = false;
+        simulateIntroDropDropPlay = false;
     }
 
     @Override
@@ -116,13 +120,23 @@ public class PlaySimulator implements PlayInterface {
                     case INTRO_ENDING_SEQUENCE:
                         simulateIntroEndingSequence();
                         break;
-                    case DROP_REELS:
-                        simulateDropReels();
+                    case DROP:
+                        simulateDrop();
+                        break;
+                    case SPIN:
+                        simulateSpin();
+                        break;
+                   case FLASH:
+                        simulateFlash();
                         break;
                 }
                 timeCount = 0.0f;
             }
         }
+    }
+
+    public void setSimulatorIntroDropDropPlay() {
+        simulateIntroDropDropPlay = true;
     }
 
     private void simulateIntroFallingSequence() {
@@ -164,11 +178,41 @@ public class PlaySimulator implements PlayInterface {
             System.out.println("Another reel has been deleted. There are " + numberOfReelsToDelete + " left.");
         } else {
             startTimer = false;
+            numberOfReelsFalling = 10;
         }
     }
 
-    private void simulateDropReels() {
-        startTimer = false;
+    private void simulateDrop() {
+        numberOfReelsFalling--;
+        if (numberOfReelsFalling > 0) {
+            System.out.println("Another reel has fallen. There are " + numberOfReelsFalling + " left.");
+        } else {
+            startTimer = false;
+            numberOfReelsSpinning = 10;
+        }
+    }
+
+    private void simulateSpin() {
+        numberOfReelsSpinning--;
+        if (numberOfReelsSpinning > 0) {
+            System.out.println("Another reel has stopped spinning. There are " + numberOfReelsSpinning + " left.");
+        } else {
+            startTimer = false;
+            numberOfReelsFlashing = 10;
+            numberOfReelsMatched = 0;
+       }
+    }
+
+    private void simulateFlash() {
+        numberOfReelsFlashing--;
+        if (numberOfReelsFlashing > 0) {
+            System.out.println("Another reel has stopped flashing. There are " + numberOfReelsFlashing + " left.");
+        } else {
+            startTimer = false;
+            if (simulateIntroDropDropPlay) {
+                numberOfReelsMatched = 10;
+            }
+       }
     }
 
     @Override
