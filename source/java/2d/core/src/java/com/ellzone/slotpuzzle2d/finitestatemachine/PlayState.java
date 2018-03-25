@@ -35,13 +35,10 @@ IntroFlashingSequence --> Play : NumberOfReelsDeleted == 0
 }
 
 state Drop {
-Drop --> DropReels : NumberOfReelsToDelete > 0
-DropReels --> Fallen : NumberOfReelsDropped == 0
-Fallen --> Spin : NumberOfReelsSpinning > 0
-Spin -> Match : NumberOfReelsFalling == 0
-Match -> Flash : NumberOfMatchedReels > 0
-Match -> Play : NumberOfMatchedReels == 0
-Flash --> Drop : NumberOfReelsDeleted > 0
+Drop --> Spin : NumberOfReelsSFalling == 0
+Spin -> Flash : NumberOfReelsSpinning == 0
+Flash --> Drop : (NumberOfReelsFlashing == 0) & (NumberOfReelsDeleted == 0) & (NumberOfMatchedReeks > 0)
+Flash --> Play : (NumberOfReelsFlashing == 0) & (NumberOfReelsDeleted == 0) & (NumberOfMatchedReels == 0)
 }
 
 State Play {
@@ -129,7 +126,7 @@ public enum PlayState implements State<Play> {
         @Override
         public void update(Play play) {
             if (!play.getConcretePlay().areReelsDeleted()) {
-                play.getStateMachine().changeState(DROP_REELS);
+                play.getStateMachine().changeState(DROP);
             }
         }
 
@@ -144,7 +141,7 @@ public enum PlayState implements State<Play> {
         }
     },
 
-    DROP_REELS() {
+    DROP() {
         @Override
         public void enter(Play play) {
 
@@ -152,7 +149,9 @@ public enum PlayState implements State<Play> {
 
         @Override
         public void update(Play play) {
-
+            if (!play.getConcretePlay().areReelsFalling()) {
+                play.getStateMachine().changeState(SPIN);
+            }
         }
 
         @Override
@@ -165,28 +164,6 @@ public enum PlayState implements State<Play> {
             return false;
         }
 
-    },
-
-    FALL() {
-        @Override
-        public void enter(Play play) {
-
-        }
-
-        @Override
-        public void update(Play play) {
-
-        }
-
-        @Override
-        public void exit(Play play) {
-
-        }
-
-        @Override
-        public boolean onMessage(Play play, Telegram telegram) {
-            return false;
-        }
     },
 
     SPIN() {
@@ -197,29 +174,9 @@ public enum PlayState implements State<Play> {
 
         @Override
         public void update(Play play) {
-
-        }
-
-        @Override
-        public void exit(Play play) {
-
-        }
-
-        @Override
-        public boolean onMessage(Play play, Telegram telegram) {
-            return false;
-        }
-    },
-
-    MATCH() {
-        @Override
-        public void enter(Play play) {
-
-        }
-
-        @Override
-        public void update(Play play) {
-
+            if (!play.getConcretePlay().areReelsSpinning()) {
+                play.getStateMachine().changeState(FLASH);
+            }
         }
 
         @Override
@@ -234,6 +191,34 @@ public enum PlayState implements State<Play> {
     },
 
     FLASH() {
+        @Override
+        public void enter(Play play) {
+
+        }
+
+        @Override
+        public void update(Play play) {
+            if (!play.getConcretePlay().areReelsFlashing() & play.getConcretePlay().getNumberOfReelsMatched() == 0) {
+                play.getStateMachine().changeState(PLAY);
+            } else {
+                if (!play.getConcretePlay().areReelsFlashing() & play.getConcretePlay().getNumberOfReelsMatched() >= 0) {
+                    play.getStateMachine().changeState(DROP);
+                }
+            }
+        }
+
+        @Override
+        public void exit(Play play) {
+
+        }
+
+        @Override
+        public boolean onMessage(Play play, Telegram telegram) {
+            return false;
+        }
+    },
+
+    PLAY() {
         @Override
         public void enter(Play play) {
 
