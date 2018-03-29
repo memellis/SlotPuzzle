@@ -24,7 +24,7 @@ public class Play {
     private PlayInterface concretePlay;
 
     public Play() {
-        this(RealPlay.class.getName());
+        this(RealPlay.class.getSimpleName());
     }
 
     public Play(String playType) {

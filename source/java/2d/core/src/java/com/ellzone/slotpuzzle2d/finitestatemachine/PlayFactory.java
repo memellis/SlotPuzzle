@@ -34,7 +34,7 @@ public class PlayFactory {
         if (playType.equalsIgnoreCase(PlaySimulator.class.getSimpleName())) {
             return new PlaySimulator(play);
         }
-        if (playType.equalsIgnoreCase(Play.class.getSimpleName())) {
+        if (playType.equalsIgnoreCase(RealPlay.class.getSimpleName())) {
             return new RealPlay();
         }
         return null;
