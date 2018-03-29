@@ -16,8 +16,6 @@ package com.ellzone.slotpuzzle2d.finitestatemachine;
  * limitations under the License.
  ******************************************************************************/
 
-import com.badlogic.gdx.ai.fsm.StateMachine;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
