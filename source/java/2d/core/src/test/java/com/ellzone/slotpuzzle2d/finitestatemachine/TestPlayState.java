@@ -109,6 +109,18 @@ public class TestPlayState {
         verifyAll();
     }
 
+    @Test
+    public void testPlayStateSpinSequence() throws Exception {
+        expect(playMock.getConcretePlay()).andReturn(playSimulatorMock);
+        expect(playSimulatorMock.areReelsSpinning()).andReturn(false);
+        expect(playMock.getStateMachine()).andReturn(stateMachineMock);
+        stateMachineMock.changeState(PlayState.FLASH);
+        PowerMock.expectLastCall();
+        replayAll();
+        PlayState.SPIN.update(playMock);
+        verifyAll();
+    }
+
     private void replayAll() {
         PowerMock.replay(playMock, playSimulatorMock, Play.class);
     }
