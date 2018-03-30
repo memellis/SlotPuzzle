@@ -1,5 +1,3 @@
-package com.ellzone.slotpuzzle2d.finitestatemachine;
-
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
  *
@@ -15,6 +13,8 @@ package com.ellzone.slotpuzzle2d.finitestatemachine;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
+package com.ellzone.slotpuzzle2d.finitestatemachine;
 
 import com.badlogic.gdx.ai.fsm.StateMachine;
 
@@ -50,7 +50,7 @@ public class TestPlayState {
     }
 
     @Test
-    public void testPlayStateIntroFallingSequence() throws Exception {
+    public void testPlayStateIntroFallingSequence()  {
         expect(playMock.getConcretePlay()).andReturn(playSimulatorMock);
         expect(playSimulatorMock.areReelsFalling()).andReturn(false);
         expect(playMock.getStateMachine()).andReturn(stateMachineMock);
@@ -62,7 +62,7 @@ public class TestPlayState {
     }
 
     @Test
-    public void testPlayStateIntroSpinningSequence() throws Exception {
+    public void testPlayStateIntroSpinningSequence() {
         expect(playMock.getConcretePlay()).andReturn(playSimulatorMock);
         expect(playSimulatorMock.areReelsSpinning()).andReturn(false);
         expect(playMock.getStateMachine()).andReturn(stateMachineMock);
@@ -74,7 +74,7 @@ public class TestPlayState {
     }
 
     @Test
-    public void testPlayStateIntroFlashingSequence() throws Exception {
+    public void testPlayStateIntroFlashingSequence() {
         expect(playMock.getConcretePlay()).andReturn(playSimulatorMock);
         expect(playSimulatorMock.areReelsFlashing()).andReturn(false);
         expect(playMock.getStateMachine()).andReturn(stateMachineMock);
@@ -86,7 +86,7 @@ public class TestPlayState {
     }
 
     @Test
-    public void testPlayStateIntroEndingSequence() throws Exception {
+    public void testPlayStateIntroEndingSequence() {
         expect(playMock.getConcretePlay()).andReturn(playSimulatorMock);
         expect(playSimulatorMock.areReelsDeleted()).andReturn(false);
         expect(playMock.getStateMachine()).andReturn(stateMachineMock);
@@ -98,7 +98,7 @@ public class TestPlayState {
     }
 
     @Test
-    public void testPlayStateDropSequence() throws Exception {
+    public void testPlayStateDropSequence() {
         expect(playMock.getConcretePlay()).andReturn(playSimulatorMock);
         expect(playSimulatorMock.areReelsFalling()).andReturn(false);
         expect(playMock.getStateMachine()).andReturn(stateMachineMock);
@@ -110,7 +110,7 @@ public class TestPlayState {
     }
 
     @Test
-    public void testPlayStateSpinSequence() throws Exception {
+    public void testPlayStateSpinSequence() {
         expect(playMock.getConcretePlay()).andReturn(playSimulatorMock);
         expect(playSimulatorMock.areReelsSpinning()).andReturn(false);
         expect(playMock.getStateMachine()).andReturn(stateMachineMock);
@@ -118,6 +118,20 @@ public class TestPlayState {
         PowerMock.expectLastCall();
         replayAll();
         PlayState.SPIN.update(playMock);
+        verifyAll();
+    }
+
+    @Test
+    public void testPlayStateFlashSequence() {
+        expect(playMock.getConcretePlay()).andReturn(playSimulatorMock);
+        expect(playSimulatorMock.areReelsFlashing()).andReturn(false);
+        expect(playMock.getConcretePlay()).andReturn(playSimulatorMock);
+        expect(playSimulatorMock.getNumberOfReelsMatched()).andReturn(0);
+        expect(playMock.getStateMachine()).andReturn(stateMachineMock);
+        stateMachineMock.changeState(PlayState.PLAY);
+        PowerMock.expectLastCall();
+        replayAll();
+        PlayState.FLASH.update(playMock);
         verifyAll();
     }
 
