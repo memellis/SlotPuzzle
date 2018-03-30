@@ -58,9 +58,10 @@ public class TestPlayState {
         expect(playMock.getStateMachine()).andReturn(stateMachineMock);
         stateMachineMock.changeState(PlayState.INTRO_SPINNING_SEQUENCE);
         PowerMock.expectLastCall();
-        playAll();
+        replayAll();
         PlayState.INTRO_FALLING_SEQUENCE.update(playMock);
-        verifyAll();}
+        verifyAll();
+    }
 
     @Test
     public void testPlayStateIntroSpinningSequence() throws Exception {
@@ -69,11 +70,24 @@ public class TestPlayState {
         expect(playMock.getStateMachine()).andReturn(stateMachineMock);
         stateMachineMock.changeState(PlayState.INTRO_FLASHING_SEQUENCE);
         PowerMock.expectLastCall();
-        PowerMock.replay(playMock, playSimulatorMock, Play.class);
+        replayAll();
         PlayState.INTRO_SPINNING_SEQUENCE.update(playMock);
+        verifyAll();
     }
 
-    private void playAll() {
+    @Test
+    public void testPlayStateIntroFlashingSequence() throws Exception {
+        expect(playMock.getConcretePlay()).andReturn(playSimulatorMock);
+        expect(playSimulatorMock.areReelsFlashing()).andReturn(false);
+        expect(playMock.getStateMachine()).andReturn(stateMachineMock);
+        stateMachineMock.changeState(PlayState.INTRO_ENDING_SEQUENCE);
+        PowerMock.expectLastCall();
+        replayAll();
+        PlayState.INTRO_FLASHING_SEQUENCE.update(playMock);
+        verifyAll();
+    }
+
+    private void replayAll() {
         PowerMock.replay(playMock, playSimulatorMock, Play.class);
     }
 
