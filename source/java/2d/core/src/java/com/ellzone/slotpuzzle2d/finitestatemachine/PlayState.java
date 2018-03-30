@@ -201,7 +201,7 @@ public enum PlayState implements State<Play> {
             if (!play.getConcretePlay().areReelsFlashing() & play.getConcretePlay().getNumberOfReelsMatched() == 0) {
                 play.getStateMachine().changeState(PLAY);
             } else {
-                if (!play.getConcretePlay().areReelsFlashing() & play.getConcretePlay().getNumberOfReelsMatched() >= 0) {
+                if (!play.getConcretePlay().areReelsFlashing() & play.getConcretePlay().getNumberOfReelsMatched() > 0) {
                     play.getStateMachine().changeState(DROP);
                 }
             }
