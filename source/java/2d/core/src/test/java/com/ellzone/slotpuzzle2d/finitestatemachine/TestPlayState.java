@@ -18,7 +18,6 @@ package com.ellzone.slotpuzzle2d.finitestatemachine;
 
 import com.badlogic.gdx.ai.fsm.StateMachine;
 
-import org.easymock.Capture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,10 +31,9 @@ import static org.easymock.EasyMock.expect;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( {Play.class} )
 public class TestPlayState {
-    private
-        Play playMock;
-        StateMachine stateMachineMock;
-        PlaySimulator playSimulatorMock;
+    private Play playMock;
+    private StateMachine stateMachineMock;
+    private PlaySimulator playSimulatorMock;
 
     @Before
     public void setUp() {
@@ -84,6 +82,30 @@ public class TestPlayState {
         PowerMock.expectLastCall();
         replayAll();
         PlayState.INTRO_FLASHING_SEQUENCE.update(playMock);
+        verifyAll();
+    }
+
+    @Test
+    public void testPlayStateIntroEndingSequence() throws Exception {
+        expect(playMock.getConcretePlay()).andReturn(playSimulatorMock);
+        expect(playSimulatorMock.areReelsDeleted()).andReturn(false);
+        expect(playMock.getStateMachine()).andReturn(stateMachineMock);
+        stateMachineMock.changeState(PlayState.DROP);
+        PowerMock.expectLastCall();
+        replayAll();
+        PlayState.INTRO_ENDING_SEQUENCE.update(playMock);
+        verifyAll();
+    }
+
+    @Test
+    public void testPlayStateDropSequence() throws Exception {
+        expect(playMock.getConcretePlay()).andReturn(playSimulatorMock);
+        expect(playSimulatorMock.areReelsFalling()).andReturn(false);
+        expect(playMock.getStateMachine()).andReturn(stateMachineMock);
+        stateMachineMock.changeState(PlayState.SPIN);
+        PowerMock.expectLastCall();
+        replayAll();
+        PlayState.DROP.update(playMock);
         verifyAll();
     }
 
