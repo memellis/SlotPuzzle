@@ -1,21 +1,5 @@
 package com.ellzone.slotpuzzle2d.finitestatemachine;
 
-import com.badlogic.gdx.ai.fsm.StateMachine;
-
-import org.easymock.Capture;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-
-import static org.easymock.EasyMock.expect;
-import static org.powermock.api.easymock.PowerMock.expectLastCall;
-import static org.powermock.api.easymock.PowerMock.replay;
-import static org.powermock.api.easymock.PowerMock.verify;
-
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
  *
@@ -32,8 +16,21 @@ import static org.powermock.api.easymock.PowerMock.verify;
  * limitations under the License.
  ******************************************************************************/
 
+import com.badlogic.gdx.ai.fsm.StateMachine;
+
+import org.easymock.Capture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import static org.easymock.EasyMock.expect;
+
 @RunWith(PowerMockRunner.class)
-@PrepareForTest( {PlayState.class} )
+@PrepareForTest( {Play.class} )
 public class TestPlayState {
     private
         Play playMock;
@@ -55,15 +52,14 @@ public class TestPlayState {
     }
 
     @Test
-    public void testPlayStateFallingSequence() throws Exception {
+    public void testPlayStateIntroFallingSequence() throws Exception {
         expect(playMock.getConcretePlay()).andReturn(playSimulatorMock);
-        expect(playSimulatorMock.areReelsFalling()).andReturn(true);
+        expect(playSimulatorMock.areReelsFalling()).andReturn(false);
         expect(playMock.getStateMachine()).andReturn(stateMachineMock);
         stateMachineMock.changeState(PlayState.INTRO_SPINNING_SEQUENCE);
-        expectLastCall().atLeastOnce();
+        PowerMock.expectLastCall();
+        PowerMock.replay(playMock, playSimulatorMock, Play.class);
         PlayState.INTRO_FALLING_SEQUENCE.update(playMock);
-        replay( PlayState.class);
-        verify(PlayState.class);
+        PowerMock.verify(playMock, playSimulatorMock, Play.class);
     }
-
 }
