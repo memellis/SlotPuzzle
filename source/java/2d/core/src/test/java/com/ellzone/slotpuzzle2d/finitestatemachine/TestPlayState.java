@@ -122,13 +122,31 @@ public class TestPlayState {
     }
 
     @Test
-    public void testPlayStateFlashSequence() {
+    public void testPlayStateFlashtoPlaySequence() {
         expect(playMock.getConcretePlay()).andReturn(playSimulatorMock);
         expect(playSimulatorMock.areReelsFlashing()).andReturn(false);
         expect(playMock.getConcretePlay()).andReturn(playSimulatorMock);
         expect(playSimulatorMock.getNumberOfReelsMatched()).andReturn(0);
         expect(playMock.getStateMachine()).andReturn(stateMachineMock);
         stateMachineMock.changeState(PlayState.PLAY);
+        PowerMock.expectLastCall();
+        replayAll();
+        PlayState.FLASH.update(playMock);
+        verifyAll();
+    }
+
+    @Test
+    public void testPlayStateFlashtoDropSequence() {
+        expect(playMock.getConcretePlay()).andReturn(playSimulatorMock);
+        expect(playSimulatorMock.areReelsFlashing()).andReturn(false);
+        expect(playMock.getConcretePlay()).andReturn(playSimulatorMock);
+        expect(playSimulatorMock.getNumberOfReelsMatched()).andReturn(1);
+        expect(playMock.getConcretePlay()).andReturn(playSimulatorMock);
+        expect(playSimulatorMock.areReelsFlashing()).andReturn(false);
+        expect(playMock.getStateMachine()).andReturn(stateMachineMock);
+        expect(playMock.getConcretePlay()).andReturn(playSimulatorMock);
+        expect(playSimulatorMock.getNumberOfReelsMatched()).andReturn(1);
+        stateMachineMock.changeState(PlayState.DROP);
         PowerMock.expectLastCall();
         replayAll();
         PlayState.FLASH.update(playMock);
