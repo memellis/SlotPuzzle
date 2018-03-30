@@ -20,7 +20,7 @@ import com.badlogic.gdx.ai.fsm.State;
 import com.badlogic.gdx.ai.msg.Telegram;
 
 /*
-Search for PlanetUML
+Search for PlanetUML with your favourite Internet earch engine.
 
 @startuml
 
