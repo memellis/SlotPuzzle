@@ -41,3 +41,4 @@ https://github.com/libgdx/libgdx/wiki/Gradle-and-Eclipse
 Using Gradle on the command line:
 
 	https://github.com/libgdx/libgdx/wiki/Gradle-on-the-Commandline
+
