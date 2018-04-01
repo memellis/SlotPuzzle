@@ -1,17 +1,17 @@
-/*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
+/*
+ Copyright 2011 See AUTHORS file.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software * distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
 
 package com.ellzone.slotpuzzle2d.prototypes.minislotmachine;
 
@@ -46,10 +46,8 @@ import com.ellzone.slotpuzzle2d.physics.DampenedSineParticle;
 import com.ellzone.slotpuzzle2d.physics.PhysicsManagerCustomBodies;
 import com.ellzone.slotpuzzle2d.physics.Vector;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototypeTemplate;
-import com.ellzone.slotpuzzle2d.prototypes.tween.LevelOverPopUpUsingLevelPopUp;
 import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGridType;
 import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGridTypeReelTile;
-import com.ellzone.slotpuzzle2d.puzzlegrid.ReelTileGridValue;
 import com.ellzone.slotpuzzle2d.puzzlegrid.TupleValueIndex;
 import com.ellzone.slotpuzzle2d.scene.Hud;
 import com.ellzone.slotpuzzle2d.scene.MapTile;
@@ -64,6 +62,51 @@ import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import com.ellzone.slotpuzzle2d.utils.Random;
 import net.dermetfan.gdx.assets.AnnotationAssetManager;
+
+/*
+Search for PlanetUML with your favourite Internet earch engine.
+
+@startuml
+
+SPProtoypeTemplate <|-- MiniSlotMachinePrototypeWithLevelCreator : extends
+MiniSlotMachinePrototypeWithLevelCreator --> LevelCreator : uses
+PhysicsManagerCustomBodies --> World : creates
+B2dContactListener --> World : registered with
+B2dContactListener --> MiniSlotMachinePrototypeWithLevelCreator : calls dealWithMethods
+
+class MiniSlotMachinePrototypeWithLevelCreator {
++{static} int numberOfReelsToFall
++{static} int numberOfReelsToHitSinkBottom
++{static} int numberOfReelsAboveHitsIntroSpinning
+-OrthographicCamera camera
+
+#initialiseOverride()
+-getAssests()
+-initialisePhysics()
+-getMapProperties(TiledMap level)
+-createSlotReelTexture()
+-createPlayScreen()
+-initialiseReels(AnnotationAssetManager annotationAssetManager)
+-initialiseLevelDoor()
+-initialisePlayScreen()
+-handleInput(float dt)
+-processIsTileClicked()
+#updateOverride(float dt)
+-handlePlayState(PlayScreen.PlayStates playState)
+#renderOverride(float dt)
+-renderReelBoxes(SpriteBatch batch, Array<Body> reelBoxes, Array<ReelTile> reelTiles)
++drawPlayingCards(SpriteBatch spriteBatch)
+#initialiseUniversalTweenEngineOverride()
++PlayScreen.PlayStates getPlayState()
++dealWithHitSinkBottom(ReelTile reelTile)
++void dealWithReelTileHittingReelTile(ReelTile reelTileA, ReelTile reelTileB)
+-swapReelsAboveMe(ReelTile reelTileA, ReelTile reelTileB)
+-int getRow(float y)
+-int getColumn(float x)
+}
+
+@enduml
+ */
 
 public class MiniSlotMachineLevelPrototypeWithLevelCreator extends SPPrototypeTemplate {
     public static final int GAME_LEVEL_WIDTH = 12;
@@ -243,27 +286,27 @@ public class MiniSlotMachineLevelPrototypeWithLevelCreator extends SPPrototypeTe
                 case INTRO_FLASHING:
                     Gdx.app.debug(logTag, "Intro Flashing");
                     break;
-                case PLAYING:
-                    Gdx.app.debug(logTag, "Playing");
-                    processIsTileClicked();
-                    break;
                 case LEVEL_LOST:
                     Gdx.app.debug(logTag, "Lost Level");
+                    break;
+                case PLAYING:
+                    Gdx.app.debug(logTag, "Play");
+                    processIsTileClicked();
+                    break;
+                case REELS_SPINNING:
+                    Gdx.app.debug(logTag, "Reels Spinning");
+                    break;
+                case REELS_FLASHING:
+                    Gdx.app.debug(logTag, "Reels Flashing");
+                case RESTARTING_LEVEL:
+                    Gdx.app.debug(logTag, "Restarting Level");
                     break;
                 case WON_LEVEL:
                     Gdx.app.debug(logTag, "Won Level");
                     break;
-                case RESTARTING_LEVEL:
-                    Gdx.app.debug(logTag, "Restarting Level");
-                    break;
                 default: break;
             }
         }
-    }
-
-    public boolean isOver(Sprite sprite, float x, float y) {
-        return sprite.getX() <= x && x <= sprite.getX() + sprite.getWidth()
-                && sprite.getY() <= y && y <= sprite.getY() + sprite.getHeight();
     }
 
     private void processIsTileClicked() {
@@ -438,7 +481,8 @@ public class MiniSlotMachineLevelPrototypeWithLevelCreator extends SPPrototypeTe
         if (this.getPlayState() == PlayScreen.PlayStates.INTRO_SPINNING) {
             levelCreator.setHitSinkBottom(true);
         }
-        if (this.getPlayState() == PlayScreen.PlayStates.INTRO_FLASHING) {
+        if ((this.getPlayState() == PlayScreen.PlayStates.INTRO_FLASHING) |
+            (this.getPlayState() == PlayScreen.PlayStates.REELS_FLASHING)) {
             System.out.println("In dealWithHitSinkBottom + reelTile="+reelTile);
             System.out.println("reelTileA.destinationX="+reelTile.getDestinationX());
             System.out.println("reelTileA.destinationY="+reelTile.getDestinationY());
@@ -446,7 +490,6 @@ public class MiniSlotMachineLevelPrototypeWithLevelCreator extends SPPrototypeTe
             int c = PuzzleGridTypeReelTile.getColumnFromLevel(reelTile.getDestinationX());
             System.out.println("reelTileA r="+r+" c="+c+" v="+reelTile.getEndReel() );
 
-            // Swap tile that's fallen to the bottom with tile that is at the bottom
             int currentTileAtBottomIndex = levelCreator.findReel((int)reelTile.getDestinationX(), 120);
             if (currentTileAtBottomIndex != -1) {
                 reelTiles.get(currentTileAtBottomIndex).setDestinationY(reelTile.getDestinationY());
@@ -488,34 +531,35 @@ public class MiniSlotMachineLevelPrototypeWithLevelCreator extends SPPrototypeTe
                 numberOfReelsAboveHitsIntroSpinning++;
             }
         }
-        if(levelCreator.getPlayState() == PlayScreen.PlayStates.INTRO_FLASHING) {
-            if  (cA == cB) {
-                System.out.println("dealWithReelTileHittingReelTile INTRO_FLASHING...");
-                if (Math.abs(rA - rB) > 1) {
-                    System.out.println("Difference between rows is > 1");
-                    if (rA > rB) {
-                        swapReelsAboveMe(reelTileB, reelTileA);
-                    } else {
-                        swapReelsAboveMe(reelTileA, reelTileB);
+        if ((levelCreator.getPlayState() == PlayScreen.PlayStates.INTRO_FLASHING) |
+            (levelCreator.getPlayState() == PlayScreen.PlayStates.INTRO_FLASHING)) {
+                if  (cA == cB) {
+                    System.out.println("dealWithReelTileHittingReelTile INTRO_FLASHING...");
+                    if (Math.abs(rA - rB) > 1) {
+                        System.out.println("Difference between rows is > 1");
+                        if (rA > rB) {
+                            swapReelsAboveMe(reelTileB, reelTileA);
+                        } else {
+                            swapReelsAboveMe(reelTileA, reelTileB);
+                        }
+                        levelCreator.printMatchGrid(reelTiles, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT);
                     }
-                    levelCreator.printMatchGrid(reelTiles, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT);
-                }
-                if (Math.abs(rA - rB) == 1) {
-                    System.out.println("Difference between rows is == 1");
-                    if (rA > rB) {
-                        swapReelsAboveMe(reelTileB, reelTileA);
-                    } else {
-                        swapReelsAboveMe(reelTileA, reelTileB);
+                    if (Math.abs(rA - rB) == 1) {
+                        System.out.println("Difference between rows is == 1");
+                        if (rA > rB) {
+                            swapReelsAboveMe(reelTileB, reelTileA);
+                        } else {
+                            swapReelsAboveMe(reelTileA, reelTileB);
+                        }
+                        levelCreator.printMatchGrid(reelTiles, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT);
                     }
-                    levelCreator.printMatchGrid(reelTiles, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT);
-                }
-                if (Math.abs(rA - rB) == 0) {
-                    System.out.println("Difference between rows is == 0. I shouldn't get this.");
-                }
-                System.out.println("reelTileA.destinationX="+reelTileA.getDestinationX());
-                System.out.println("reelTileA.destinationY="+reelTileA.getDestinationY());
-                System.out.println("reelTileB.destinationX="+reelTileB.getDestinationX());
-                System.out.println("reelTileB.destinationY="+reelTileB.getDestinationY());
+                    if (Math.abs(rA - rB) == 0) {
+                        System.out.println("Difference between rows is == 0. I shouldn't get this.");
+                    }
+                    System.out.println("reelTileA.destinationX="+reelTileA.getDestinationX());
+                    System.out.println("reelTileA.destinationY="+reelTileA.getDestinationY());
+                    System.out.println("reelTileB.destinationX="+reelTileB.getDestinationX());
+                    System.out.println("reelTileB.destinationY="+reelTileB.getDestinationY());
             }
         }
     }
