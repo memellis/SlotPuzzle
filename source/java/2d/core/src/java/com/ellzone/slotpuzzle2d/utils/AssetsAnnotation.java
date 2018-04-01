@@ -10,13 +10,16 @@ import net.dermetfan.gdx.assets.AnnotationAssetManager;
 public class AssetsAnnotation {
 
     @AnnotationAssetManager.Asset(TiledMap.class)
-    public static String MINI_SLOT_MACHINE_LEVEL = "levels/mini slot machine level.tmx",
-                         LEVEL1 = "levels/level 1 - 40x40.tmx",
-                         LEVEL2 = "levels/level 2 - 40x40.tmx",
-                         LEVEL3 = "levels/level 3 - 40x40.tmx",
-                         LEVEL4 = "levels/level 4 - 40x40.tmx",
-                         LEVEL5 = "levels/level 5 - 40x40.tmx",
-                         WORLD_MAP = "levels/WorldMap.tmx";
+    public static
+        String
+            MINI_SLOT_MACHINE_LEVEL = "levels/mini slot machine level.tmx",
+            MINI_SLOT_MACHINE_LEVEL1 = "levels/mini slot machine level 1.tmx",
+            LEVEL1 = "levels/level 1 - 40x40.tmx",
+            LEVEL2 = "levels/level 2 - 40x40.tmx",
+            LEVEL3 = "levels/level 3 - 40x40.tmx",
+            LEVEL4 = "levels/level 4 - 40x40.tmx",
+            LEVEL5 = "levels/level 5 - 40x40.tmx",
+            WORLD_MAP = "levels/WorldMap.tmx";
 
     @AnnotationAssetManager.Asset(TextureAtlas.class)
     public static String CARDDECK = "playingcards/carddeck.atlas",
