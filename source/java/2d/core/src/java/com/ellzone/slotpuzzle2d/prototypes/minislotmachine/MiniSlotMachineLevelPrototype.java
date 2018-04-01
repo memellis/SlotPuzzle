@@ -717,7 +717,7 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
                     Gdx.app.debug(logTag, "Intro Flashing");
                     break;
                 case PLAYING:
-                    Gdx.app.debug(logTag, "Playing");
+                    Gdx.app.debug(logTag, "Play");
                     processIsTileClicked();
                     break;
                 case LEVEL_LOST:
