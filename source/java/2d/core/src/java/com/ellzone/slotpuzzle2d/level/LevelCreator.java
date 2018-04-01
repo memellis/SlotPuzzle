@@ -32,9 +32,7 @@ import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.effects.ScoreAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.physics.PhysicsManagerCustomBodies;
-import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.MiniSlotMachineLevelPrototype;
 import com.ellzone.slotpuzzle2d.prototypes.minislotmachine.MiniSlotMachineLevelPrototypeWithLevelCreator;
-import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGrid;
 import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGridType;
 import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGridTypeReelTile;
 import com.ellzone.slotpuzzle2d.puzzlegrid.ReelTileGridValue;
@@ -56,11 +54,67 @@ import com.ellzone.slotpuzzle2d.tweenengine.TweenCallback;
 import com.ellzone.slotpuzzle2d.tweenengine.TweenManager;
 import com.ellzone.slotpuzzle2d.utils.Random;
 import net.dermetfan.gdx.assets.AnnotationAssetManager;
-
 import java.text.MessageFormat;
-
 import aurelienribon.tweenengine.equations.Quad;
 import aurelienribon.tweenengine.equations.Sine;
+
+/*
+
+@startuml
+
+MiniSlotMachineLevelPrototypeWithLevelCreator <-- LevelCreator : uses
+
+class LevelCreator {
+-TweenCallback deleteScoreCallback
+-TweenCallback reelFlashCallback
+-TweenCallback deleteReelCallback
+-Array<ReelTile> createLevel(LevelDoor levelDoor, TiledMap level, Array<ReelTile> reelTiles, int levelWidth, int levelHeight)
+-Array<ReelTile> checkLevel(Array<ReelTile> reelLevel, int levelWidth, int levelHeight)
+-Array<ReelTile> adjustForAnyLonelyReels(Array<ReelTile> levelReel, int levelWidth, int levelHeight)
+-Array<ReelTile> populateLevel(TiledMap level, Array<ReelTile> reelTiles, int levelWidth, int levelHeight)
++ReelTileGridValue[][] populateMatchGrid(Array<ReelTile> reelLevel, int gridWidth, int gridHeight)
++printMatchGrid(Array<ReelTile> reelLevel, int gridWidth, int gridHeight)
+-int getRowFromLevel(float y, int levelHeight)
+-int getColumnFromLevel(float x)
++LevelCreator(LevelDoor levelDoor, TiledMap level, AnnotationAssetManager annotationAssetManager, TextureAtlas carddeckAtlas, TweenManager tweenManager, PhysicsManagerCustomBodies physics, int levelWidth, int levelHeight, PlayScreen.PlayStates playState)
+-addReel(Rectangle mapRectangle, Array<ReelTile> reelTiles, int index)
++setPlayState(PlayScreen.PlayStates playState)
++PlayScreen.PlayStates getPlayState()
+-actionReelStoppedSpinning(ReelTileEvent event, ReelTile source)
+-actionReelStoppedFlashing(ReelTileEvent event, ReelTile reelTile)
+-ReelTileGridValue[][] flashSlots(Array<ReelTile> reelTiles, int levelWidth, int levelHeight)
+-flashMatchedSlotsBatch(Array<ReelTileGridValue> matchedSlots, float pushPause)
+-flashMatchedSlots(Array<ReelTileGridValue> matchedSlots, PuzzleGridTypeReelTile puzzleGridTypeReelTile)
+-boolean testForHiddenPatternRevealed(Array<ReelTile> levelReel, int levelWidth, int levelHeight)
+-boolean testForHiddenPlayingCardsRevealed(Array<ReelTile> levelReel, int levelWidth, int levelHeight)
+-hiddenPatternRevealed(TupleValueIndex[][] grid)
+-testForJackpot(Array<ReelTile> levelReel, int levelWidth, int levelHeight)
+-iWonTheLevel()
++Array<ReelTile> getReelTiles()
++Array<Body> getReelBoxes()
++Array<AnimatedReel> getAnimatedReels()
+-reelScoreAnimation(ReelTile source)
+-deleteReelAnimation(ReelTile source)
+-testPlayingCardLevelWon(int levelWidth, int levelHeight)
+-testForHiddenPlatternLevelWon(int levelWidth, int levelHeight)
+-initialiseReelFlash(ReelTile reel, float pushPause)
+-delegateReelFlashCallback(int type, BaseTween<?> source)
++update(float dt)
+-createReplacementReelBoxes()
+-setHitSinkBottom(boolean hitSinkBottom)
++setNumberOfReelsSpinning(int numberOfReelsSpinning)
++int getNumberOfReelsSpinning()
++Array<Score> getScores()
++Array<Integer> getReplacementReelBoxes()
+-playSound(Sound sound)
++printReelBoxes(Array<Body> reelBoxes)
++printReelTiles()
++int findReel(int destinationX, int destinationY)
+}
+
+@enduml
+
+*/
 
 public class LevelCreator {
 
@@ -90,6 +144,7 @@ public class LevelCreator {
     public Array<Integer> replacementReelBoxes;
     private PuzzleGridTypeReelTile puzzleGridTypeReelTile;
     private int numberOfReelBoxesToReplace, numberOfReelBoxesToDelete;
+    boolean matchedReels = false;
 
     public LevelCreator(LevelDoor levelDoor, TiledMap level, AnnotationAssetManager annotationAssetManager, TextureAtlas carddeckAtlas, TweenManager tweenManager, PhysicsManagerCustomBodies physics, int levelWidth, int levelHeight, PlayScreen.PlayStates playState) {
         this.levelDoor = levelDoor;
@@ -302,15 +357,20 @@ public class LevelCreator {
 
         matchedSlots = PuzzleGridTypeReelTile.adjustMatchSlotDuplicates(matchedSlots, duplicateMatchedSlots);
 
-        matchedSlots.reverse();
-        numberOfReelBoxesToReplace = matchedSlots.size - 1 - duplicateMatchedSlots.size / 2;
-        numberOfReelBoxesToDelete = matchedSlots.size - 1 - duplicateMatchedSlots.size / 2;
+        if (matchedSlots.size > 0) {
+            matchedSlots.reverse();
+            numberOfReelBoxesToReplace = matchedSlots.size - 1 - duplicateMatchedSlots.size / 2;
+            numberOfReelBoxesToDelete = matchedSlots.size - 1 - duplicateMatchedSlots.size / 2;
 
-        for (TupleValueIndex matchedSlot : matchedSlots) {
-            reelTiles.get(matchedSlot.index).setScore(matchedSlot.value);
+            for (TupleValueIndex matchedSlot : matchedSlots) {
+                reelTiles.get(matchedSlot.index).setScore(matchedSlot.value);
+            }
+
+            flashMatchedSlots(matchedSlots, puzzleGridTypeReelTile);
+            matchedReels = true;
+        } else {
+            matchedReels = false;
         }
-
-        flashMatchedSlots(matchedSlots, puzzleGridTypeReelTile);
         return puzzleGrid;
     }
 
@@ -356,12 +416,12 @@ public class LevelCreator {
         }
     }
 
-    boolean testForHiddenPatternRevealed(Array<ReelTile> levelReel, int levelWidth, int levelHeight) {
+    private boolean testForHiddenPatternRevealed(Array<ReelTile> levelReel, int levelWidth, int levelHeight) {
         TupleValueIndex[][] matchGrid = flashSlots(levelReel, levelWidth, levelHeight);
         return hiddenPatternRevealed(matchGrid);
     }
 
-    boolean testForHiddenPlayingCardsRevealed(Array<ReelTile> levelReel, int levelWidth, int levelHeight) {
+    private boolean testForHiddenPlayingCardsRevealed(Array<ReelTile> levelReel, int levelWidth, int levelHeight) {
         TupleValueIndex[][] matchGrid = flashSlots(levelReel, levelWidth, levelHeight);
         return hiddenPlayingCardsRevealed(matchGrid);
     }
@@ -465,6 +525,7 @@ public class LevelCreator {
                 case TweenCallback.COMPLETE:
                     Score score = (Score) source.getUserData();
                     scores.removeValue(score, false);
+
             }
         }
     };
@@ -497,8 +558,16 @@ public class LevelCreator {
                     replacementReelBoxes.add(reelTilesIndex);
                     numberOfReelBoxesToDelete--;
                     if (numberOfReelBoxesToDelete <= 0) {
-                        System.out.println("dropReplacementReelBoxes is true");
-                        dropReplacementReelBoxes = true;
+                        if ((playState == PlayScreen.PlayStates.INTRO_FLASHING) |
+                            (playState == PlayScreen.PlayStates.REELS_FLASHING)) {
+                            // Need to detect when all reels have fallen
+                            if (matchedReels == false) {
+                                dropReplacementReelBoxes = true;
+                                System.out.println("================Drop Replacementment boxes");
+                            } else {
+                                flashSlots(reelTiles, levelWidth, levelHeight);
+                            }
+                        }
                     }
 
                     if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
@@ -713,5 +782,3 @@ public class LevelCreator {
         return -1;
     }
 }
-
-
