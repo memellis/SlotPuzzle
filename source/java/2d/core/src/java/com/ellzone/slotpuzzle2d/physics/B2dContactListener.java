@@ -68,7 +68,7 @@ public class B2dContactListener implements ContactListener {
         System.out.println("reelTileB="+reelTileB+" reelTileB.x="+reelTileB.getX()+" reelTileB.y="+reelTileB.getY());
 
         MiniSlotMachineLevelPrototypeWithLevelCreator.numberOfReelsToFall--;
-        if (MiniSlotMachineLevelPrototypeWithLevelCreator.numberOfReelsToFall<=0) {
+        if (MiniSlotMachineLevelPrototypeWithLevelCreator.numberOfReelsToFall <= 0) {
             if (this.prototype != null) {
                 this.prototype.dealWithReelTileHittingReelTile(reelTileA, reelTileB);
             } else {
