@@ -40,6 +40,7 @@ import com.ellzone.slotpuzzle2d.effects.ScoreAccessor;
 import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.level.Card;
 import com.ellzone.slotpuzzle2d.level.LevelCreator;
+import com.ellzone.slotpuzzle2d.level.LevelCreatorScenario1;
 import com.ellzone.slotpuzzle2d.level.LevelDoor;
 import com.ellzone.slotpuzzle2d.physics.BoxBodyBuilder;
 import com.ellzone.slotpuzzle2d.physics.DampenedSineParticle;
@@ -75,7 +76,7 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
     public static final String HIDDEN_PATTERN_LAYER_NAME = "Hidden Pattern Object";
     public static final int NUMBER_OF_SUITS = 4;
     public static final int NUMBER_OF_CARDS_IN_A_SUIT = 13;
-    public static final int MAX_NUMBER_OF_REELS_HIT_SINK_BOTTOM = 8;
+    public static final int MAX_NUMBER_OF_REELS_HIT_SINK_BOTTOM = 3;
 
     public static int numberOfReelsToHitSinkBottom;
     public static int numberOfReelsToFall;
@@ -105,7 +106,7 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
     private float reelSlowingTargetTime;
     private Array<Timeline> endReelSeqs;
     private Timeline reelFlashSeq;
-    private LevelCreator levelCreator;
+    private LevelCreatorScenario1 levelCreator;
     private boolean gameOver = false;
     private boolean inRestartLevel = false;
     private boolean win = false;
@@ -133,7 +134,7 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         initialiseLevelDoor();
         createPlayScreen();
         initialisePhysics();
-        this.levelCreator = new LevelCreator(this.levelDoor, this.miniSlotMachineLevel, this.annotationAssetManager, this.carddeckAtlas, this.tweenManager, this.physics, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT, PlayScreen.PlayStates.INITIALISING);
+        this.levelCreator = new LevelCreatorScenario1(this.levelDoor, this.miniSlotMachineLevel, this.annotationAssetManager, this.carddeckAtlas, this.tweenManager, this.physics, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT, PlayScreen.PlayStates.INITIALISING);
         this.levelCreator.setPlayState(PlayScreen.PlayStates.INITIALISING);
         this.reelTiles = this.levelCreator.getReelTiles();
         this.animatedReels = this.levelCreator.getAnimatedReels();
@@ -439,7 +440,10 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         }
         if ((this.getPlayState() == PlayScreen.PlayStates.INTRO_FLASHING) |
                 (this.getPlayState() == PlayScreen.PlayStates.REELS_FLASHING)) {
-            System.out.println("In dealWithHitSinkBottom + reelTile="+reelTile);
+            /*
+            This is the point
+             */
+            System.out.println("FLASHING STATE: In dealWithHitSinkBottom + reelTile="+reelTile);
             System.out.println("reelTileA.destinationX="+reelTile.getDestinationX());
             System.out.println("reelTileA.destinationY="+reelTile.getDestinationY());
             int r = PuzzleGridTypeReelTile.getRowFromLevel(reelTile.getDestinationY(), GAME_LEVEL_HEIGHT);
@@ -488,15 +492,17 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
             }
         }
         if ((levelCreator.getPlayState() == PlayScreen.PlayStates.INTRO_FLASHING) |
-                (levelCreator.getPlayState() == PlayScreen.PlayStates.INTRO_FLASHING)) {
+            (this.getPlayState() == PlayScreen.PlayStates.REELS_FLASHING)) {
             if  (cA == cB) {
-                System.out.println("dealWithReelTileHittingReelTile INTRO_FLASHING...");
+                System.out.println("FLASHING STATE:dealWithReelTileHittingReelTile...");
                 if (Math.abs(rA - rB) > 1) {
                     System.out.println("Difference between rows is > 1");
                     if (rA > rB) {
                         swapReelsAboveMe(reelTileB, reelTileA);
+                        reelsLeftToFall(reelTileB, reelTileA, rB, cB);
                     } else {
                         swapReelsAboveMe(reelTileA, reelTileB);
+                        reelsLeftToFall(reelTileA, reelTileB, rA, cA);
                     }
                     levelCreator.printMatchGrid(reelTiles, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT);
                 }
@@ -504,8 +510,10 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
                     System.out.println("Difference between rows is == 1");
                     if (rA > rB) {
                         swapReelsAboveMe(reelTileB, reelTileA);
+                        reelsLeftToFall(reelTileB, reelTileA, rB, cB);
                     } else {
                         swapReelsAboveMe(reelTileA, reelTileB);
+                        reelsLeftToFall(reelTileA, reelTileB, rA, cA);
                     }
                     levelCreator.printMatchGrid(reelTiles, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT);
                 }
@@ -534,6 +542,7 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         reelTileA.unDeleteReelTile();
 
         deletedReel.setDestinationY(savedDestinationY);
+        deletedReel.setY(savedDestinationY);
         deletedReel.deleteReelTile();
 
         ReelTile currentReel = reelTileA;
@@ -570,5 +579,25 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
 
     private int getColumn(float x) {
         return PuzzleGridTypeReelTile.getColumnFromLevel(x);
+    }
+
+    private void reelsLeftToFall(ReelTile reelTileA, ReelTile reelTileB, int rA, int cA) {
+        Array<TupleValueIndex> reelsToFall = levelCreator.getReelsToFall();
+        int index = 0;
+        boolean foundReelToFall = false;
+        while ((index < reelsToFall.size) & (!foundReelToFall)) {
+            if ((reelsToFall.get(index).getR() == rA) & (reelsToFall.get(index).getC() == cA)) {
+                foundReelToFall = true;
+            } else {
+                index++;
+            }
+        }
+        if (foundReelToFall) {
+            reelsToFall.removeIndex(index);
+            levelCreator.setReelsToFall(reelsToFall);
+            if (reelsToFall.size == 0) {
+                levelCreator.setReelsAboveHaveFallen(true);
+            }
+        }
     }
 }
