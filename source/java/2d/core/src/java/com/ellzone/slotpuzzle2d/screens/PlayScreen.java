@@ -18,7 +18,6 @@ package com.ellzone.slotpuzzle2d.screens;
 import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -33,7 +32,6 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -107,7 +105,7 @@ public class PlayScreen implements Screen {
 	public static final String LEVEL_LOST_DESC =  "Sorry you lost that level. Touch/Press to restart the level.";
 	public static final String LEVEL_WON_DESC =  "Well done you've won that level. Touch/Press to start the nextlevel.";
 
-	public enum PlayStates {INITIALISING, INTRO_SEQUENCE, INTRO_POPUP, INTRO_SPINNING, HIT_SINK_BOTTOM, INTRO_FLASHING, CREATED_REELS_HAVE_FALLEN, PLAYING, LEVEL_TIMED_OUT, LEVEL_LOST, WON_LEVEL, RESTARTING_LEVEL};
+	public enum PlayStates {INITIALISING, INTRO_SEQUENCE, INTRO_POPUP, INTRO_SPINNING, HIT_SINK_BOTTOM, INTRO_FLASHING, CREATED_REELS_HAVE_FALLEN, PLAYING, LEVEL_TIMED_OUT, LEVEL_LOST, WON_LEVEL, RESTARTING_LEVEL, REELS_SPINNING, REELS_FLASHING};
 	private PlayStates playState;
 	private SlotPuzzle game;
 	private final OrthographicCamera camera = new OrthographicCamera();
@@ -751,7 +749,7 @@ public class PlayScreen implements Screen {
 					Gdx.app.debug(SLOTPUZZLE_SCREEN, "Intro Flashing");
 					break;
 				case PLAYING:
-					Gdx.app.debug(SLOTPUZZLE_SCREEN, "Playing");
+					Gdx.app.debug(SLOTPUZZLE_SCREEN, "Play");
 					processIsTileClicked();
 					break;
 				case LEVEL_LOST:
