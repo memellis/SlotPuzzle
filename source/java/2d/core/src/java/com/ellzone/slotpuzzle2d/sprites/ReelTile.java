@@ -274,4 +274,23 @@ public class ReelTile extends ReelSprite {
 	public void setIndex(int index) { this.index = index; }
 
 	public int getIndex() { return this.index; }
+
+	public void saveRegion() {
+        if (region != null) {
+            PixmapProcessors.saveTextureRegion(region);
+        }
+    }
+
+    public void saveFlashRegion() {
+        if(flashReel != null) {
+            PixmapProcessors.saveTextureRegion(flashReel);
+        }
+    }
+
+    public void resetReel() {
+        flashOnReelPixmap = null;
+        float syModulus = sy % texture.getHeight();
+        region.setRegion((int) sx, (int) syModulus, (int)reelDisplayWidth, (int)reelDisplayHeight);
+        setRegion(region);
+    }
 }
