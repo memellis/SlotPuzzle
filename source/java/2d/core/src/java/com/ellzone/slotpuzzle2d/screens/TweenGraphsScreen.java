@@ -409,7 +409,7 @@ public class TweenGraphsScreen implements Screen {
             }
             game.batch.end();
 
-            //camController.update();
+            //camController.Play();
 
             ReelSlotTileScroll3D tile = tiles.first();
             tile.angle = (tile.angle + 90 * delta) % 360;
