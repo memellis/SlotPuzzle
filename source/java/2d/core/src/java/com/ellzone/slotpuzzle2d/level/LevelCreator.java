@@ -145,6 +145,7 @@ public class LevelCreator {
     private PuzzleGridTypeReelTile puzzleGridTypeReelTile;
     private int numberOfReelBoxesToReplace, numberOfReelBoxesToDelete;
     boolean matchedReels = false;
+    boolean reelsAboveHaveFallen = false;
 
     public LevelCreator(LevelDoor levelDoor, TiledMap level, AnnotationAssetManager annotationAssetManager, TextureAtlas carddeckAtlas, TweenManager tweenManager, PhysicsManagerCustomBodies physics, int levelWidth, int levelHeight, PlayScreen.PlayStates playState) {
         this.levelDoor = levelDoor;
@@ -324,6 +325,10 @@ public class LevelCreator {
                 }
             } else {
                 System.out.println(reelsSpinning+" reels not spinning and notHitSinkBottom");
+                printReelTiles();
+                if (testForJackpot(reelTiles, this.levelWidth, this.levelHeight)) {
+                    iWonABonus();
+                }
             }
         }
     }
@@ -561,11 +566,13 @@ public class LevelCreator {
                         if ((playState == PlayScreen.PlayStates.INTRO_FLASHING) |
                             (playState == PlayScreen.PlayStates.REELS_FLASHING)) {
                             // Need to detect when all reels have fallen
-                            if (matchedReels == false) {
-                                dropReplacementReelBoxes = true;
-                                System.out.println("================Drop Replacementment boxes");
-                            } else {
-                                flashSlots(reelTiles, levelWidth, levelHeight);
+                            if (reelsAboveHaveFallen) {
+                                if (!matchedReels) {
+                                    dropReplacementReelBoxes = true;
+                                    System.out.println("================Drop Replacementment boxes");
+                                } else {
+                                    flashSlots(reelTiles, levelWidth, levelHeight);
+                                }
                             }
                         }
                     }
@@ -659,11 +666,6 @@ public class LevelCreator {
 
     public void update(float dt) {
         if (dropReplacementReelBoxes) {
-            System.out.println("Nows the time to print out the grid state");
-            TupleValueIndex[][] matchGrid = puzzleGridTypeReelTile.populateMatchGrid(reelTiles, levelWidth, levelHeight);
-            TupleValueIndex[] reelsAboveMe = null;
-            System.out.println("Replacement boxes list");
-            PuzzleGridType puzzleGridType = new PuzzleGridType();
             for (Integer replacementReelBox : replacementReelBoxes) {
                 Gdx.app.log(SlotPuzzleConstants.SLOT_PUZZLE, MessageFormat.format("r={0} c={1} x={2} y={3} dx={4} dy={5} i={6} v={7}",
                         PuzzleGridTypeReelTile.getRowFromLevel(reelTiles.get(replacementReelBox).getDestinationY(), levelHeight),
@@ -674,27 +676,7 @@ public class LevelCreator {
                         reelTiles.get(replacementReelBox).getDestinationY(),
                         replacementReelBox.intValue(),
                         reelTiles.get(replacementReelBox).getEndReel()));
-                reelsAboveMe = puzzleGridType.getReelsAboveMe(matchGrid,
-                                                              PuzzleGridTypeReelTile.getRowFromLevel(reelTiles.get(replacementReelBox).getDestinationY(), levelHeight),
-                                                              PuzzleGridTypeReelTile.getColumnFromLevel(reelTiles.get(replacementReelBox).getDestinationX()));
-                System.out.print("Reels above me:");
-                for (int rami=0; rami<reelsAboveMe.length; rami++) {
-                    System.out.print(" r=" + reelsAboveMe[rami].getR() + " c=" + reelsAboveMe[rami].getC() + " v="+reelsAboveMe[rami].getValue());
-                    System.out.print(" dropped by " + reelTiles.get(reelsAboveMe[rami].getIndex()).getDestinationY() + " - " +
-                            reelTiles.get(reelsAboveMe[rami].getIndex()).getY() + " = " + (reelTiles.get(reelsAboveMe[rami].getIndex()).getDestinationY() - reelTiles.get(reelsAboveMe[rami].getIndex()).getY()));
-                }
-                System.out.println();
             }
-            System.out.println("================================");
-            PuzzleGridType.printGrid(matchGrid);
-            //
-            // This is maybe a good time to chjeck to see where deletd reels
-            // have reels aboove them.
-            //
-            // There is currently a bug still where some tiles are
-            // not matching in where they have fallen to their final position.
-            //
-            //            createReplacementReelBoxes();
         }
         this.animatedReelHelper.update(dt);
         this.physics.update(dt);
