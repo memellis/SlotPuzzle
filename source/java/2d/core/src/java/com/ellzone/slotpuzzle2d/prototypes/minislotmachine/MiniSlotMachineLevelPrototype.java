@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Copyright 2011 See AUTHORS file.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ */
 
 package com.ellzone.slotpuzzle2d.prototypes.minislotmachine;
 
@@ -41,7 +41,6 @@ import com.ellzone.slotpuzzle2d.level.Card;
 import com.ellzone.slotpuzzle2d.level.LevelDoor;
 import com.ellzone.slotpuzzle2d.level.Pip;
 import com.ellzone.slotpuzzle2d.level.Suit;
-import com.ellzone.slotpuzzle2d.level.MiniSlotMachineLevel;
 import com.ellzone.slotpuzzle2d.physics.DampenedSineParticle;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsEvent;
