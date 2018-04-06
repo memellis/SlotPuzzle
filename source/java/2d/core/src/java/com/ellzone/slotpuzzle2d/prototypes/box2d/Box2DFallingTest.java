@@ -226,7 +226,7 @@ public class Box2DFallingTest extends SPPrototype implements InputProcessor {
 
     @Override
     public void render () {
-        // first we update the world. For simplicity
+        // first we Play the world. For simplicity
         // we use the delta time provided by the Graphics
         // instance. Normally you'll want to fix the time
         // step.
@@ -288,12 +288,12 @@ public class Box2DFallingTest extends SPPrototype implements InputProcessor {
         }
         renderer.end();
 
-        // finally we render the time it took to update the world
+        // finally we render the time it took to Play the world
         // for this we have to set the projection matrix again, so
         // we work in pixel coordinates
         batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.begin();
-        font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond() + " update time: " + updateTime, 0, 20);
+        font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond() + " Play time: " + updateTime, 0, 20);
         batch.end();
     }
 
@@ -375,7 +375,7 @@ public class Box2DFallingTest extends SPPrototype implements InputProcessor {
 
     @Override
     public boolean touchDragged (int x, int y, int pointer) {
-        // if a mouse joint exists we simply update
+        // if a mouse joint exists we simply Play
         // the target of the joint based on the new
         // mouse coordinates
         if (mouseJoint != null) {
