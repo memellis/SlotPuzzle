@@ -84,8 +84,6 @@ public class PhysicsManagerCustomBodies {
     }
 
     public static Boolean isStopped(Body body) {
-        System.out.println("isStopped()="+body.getLinearVelocity().x);
-        System.out.println("isStopped()="+body.getLinearVelocity().y);
         return body.getLinearVelocity().x <= 0.3f && body.getLinearVelocity().y <= 0.3f;
     }
 
@@ -135,7 +133,12 @@ public class PhysicsManagerCustomBodies {
 
     public void deleteBody(Body body) {
         world.destroyBody(body);
-        System.out.println("destroyedBody="+body);
+     }
+
+    public boolean isBodyDestroyed(Body body) {
+        Array<Body> bodies = new Array<Body>();
+        world.getBodies(bodies);
+        return bodies.contains(body, true);
     }
 
     public Matrix4 getDebugMatrix() {
