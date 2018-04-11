@@ -37,6 +37,7 @@ output.json
 obj/
 .externalNativeBuild
 
+*.log
 *.iml
 .gradle
 /local.properties
