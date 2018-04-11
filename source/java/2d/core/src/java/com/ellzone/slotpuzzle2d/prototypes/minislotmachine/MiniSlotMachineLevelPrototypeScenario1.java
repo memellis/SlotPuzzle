@@ -116,6 +116,7 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
     private PhysicsManagerCustomBodies physics;
     private BoxBodyBuilder bodyFactory;
     private Array<Body> reelBoxes;
+    private Array<Body> reelBoxesCollided;
     private Body reelSinkLhs, reelSinkRhs, reelSinkBottom;
     private float centreX = SlotPuzzleConstants.V_WIDTH / 2;
     private float centreY = SlotPuzzleConstants.V_HEIGHT / 2;
@@ -138,6 +139,7 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         this.reelTiles = this.levelCreator.getReelTiles();
         this.animatedReels = this.levelCreator.getAnimatedReels();
         reelBoxes = this.levelCreator.getReelBoxes();
+        reelBoxesCollided = new Array<Body>();
         hud = new Hud(batch);
         hud.setLevelName(levelDoor.levelName);
         hud.startWorldTimer();
@@ -342,7 +344,6 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
     }
 
     private void handlePlayState(PlayScreen.PlayStates playState) {
-        System.out.println("playState="+playState);
         switch (playState) {
             case INTRO_POPUP:
                 break;
@@ -403,8 +404,6 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
                     reelTile.setSize(40, 40);
                     reelTile.setRotation(angle);
                     reelTile.draw(batch);
-                } else {
-                    System.out.println("deleted reelTile="+reelTile+" index="+index+" x="+reelTile.getX()+" "+reelTile.getY());
                 }
             }
             index++;
@@ -439,47 +438,31 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         }
         if ((this.getPlayState() == PlayScreen.PlayStates.INTRO_FLASHING) |
                 (this.getPlayState() == PlayScreen.PlayStates.REELS_FLASHING)) {
-            /*
-            This is the point
-             */
-            System.out.println("FLASHING STATE: In dealWithHitSinkBottom + reelTile="+reelTile);
-            System.out.println("reelTileA.destinationX="+reelTile.getDestinationX());
-            System.out.println("reelTileA.destinationY="+reelTile.getDestinationY());
+
             int r = PuzzleGridTypeReelTile.getRowFromLevel(reelTile.getDestinationY(), GAME_LEVEL_HEIGHT);
             int c = PuzzleGridTypeReelTile.getColumnFromLevel(reelTile.getDestinationX());
-            System.out.println("reelTileA r="+r+" c="+c+" v="+reelTile.getEndReel() );
 
             int currentTileAtBottomIndex = levelCreator.findReel((int)reelTile.getDestinationX(), 120);
             if (currentTileAtBottomIndex != -1) {
-                reelTiles.get(currentTileAtBottomIndex).setDestinationY(reelTile.getDestinationY());
-                reelTiles.get(currentTileAtBottomIndex).setY(reelTile.getDestinationY());
-                reelTile.setY(120);
-                reelTile.setDestinationY(120);
+                swapReelsAboveMe(reelTile);
+                reelsLeftToFall(r, c);
             }
-            levelCreator.printMatchGrid(reelTiles, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT);
         }
     }
 
     public void dealWithReelTileHittingReelTile(ReelTile reelTileA, ReelTile reelTileB) {
         int rA, cA, rB, cB;
-        System.out.println("In dealWithReelTileHittingReelTile + reelTileA="+reelTileA+" reelTileB="+reelTileB);
-        System.out.println("reelTileA.destinationX="+reelTileA.getDestinationX());
-        System.out.println("reelTileA.destinationY="+reelTileA.getDestinationY());
-        System.out.println("reelTileB.destinationX="+reelTileB.getDestinationX());
-        System.out.println("reelTileB.destinationY="+reelTileB.getDestinationY());
+
         rA = PuzzleGridTypeReelTile.getRowFromLevel(reelTileA.getDestinationY(), GAME_LEVEL_HEIGHT);
         cA = PuzzleGridTypeReelTile.getColumnFromLevel(reelTileA.getDestinationX());
-        System.out.println("reelTileA r="+rA+" c="+cA+" v="+reelTileA.getEndReel() );
         rB = PuzzleGridTypeReelTile.getRowFromLevel(reelTileB.getDestinationY(), GAME_LEVEL_HEIGHT);
         cB = PuzzleGridTypeReelTile.getColumnFromLevel(reelTileB.getDestinationX());
-        System.out.println("reelTileB r="+rB+" c="+cB+" v="+reelTileB.getEndReel());
         if ((Math.abs(rA - rB) == 1) & (cA == cB)) {
             reelTileA.setY(reelTileA.getDestinationY());
             Body reelbox = reelBoxes.get(reelTileA.getIndex());
             if (PhysicsManagerCustomBodies.isStopped(reelbox)) {
                 if (levelCreator.getPlayState() == PlayScreen.PlayStates.INTRO_SPINNING) {
                     numberOfReelsAboveHitsIntroSpinning++;
-                    System.out.println("numberOfReelsAboveHitsIntroSpinning="+numberOfReelsAboveHitsIntroSpinning);
                 }
             }
         }
@@ -493,36 +476,29 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         if ((levelCreator.getPlayState() == PlayScreen.PlayStates.INTRO_FLASHING) |
             (this.getPlayState() == PlayScreen.PlayStates.REELS_FLASHING)) {
             if  (cA == cB) {
-                System.out.println("FLASHING STATE:dealWithReelTileHittingReelTile...");
                 if (Math.abs(rA - rB) > 1) {
-                    System.out.println("Difference between rows is > 1");
                     if (rA > rB) {
                         swapReelsAboveMe(reelTileB, reelTileA);
-                        reelsLeftToFall(reelTileB, reelTileA, rB, cB);
+                        reelsLeftToFall(rB, cB);
                     } else {
                         swapReelsAboveMe(reelTileA, reelTileB);
-                        reelsLeftToFall(reelTileA, reelTileB, rA, cA);
+                        reelsLeftToFall(rA, cA);
                     }
                     levelCreator.printMatchGrid(reelTiles, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT);
                 }
                 if (Math.abs(rA - rB) == 1) {
-                    System.out.println("Difference between rows is == 1");
                     if (rA > rB) {
                         swapReelsAboveMe(reelTileB, reelTileA);
-                        reelsLeftToFall(reelTileB, reelTileA, rB, cB);
+                        reelsLeftToFall(rB, cB);
                     } else {
                         swapReelsAboveMe(reelTileA, reelTileB);
-                        reelsLeftToFall(reelTileA, reelTileB, rA, cA);
+                        reelsLeftToFall(rA, cA);
                     }
                     levelCreator.printMatchGrid(reelTiles, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT);
                 }
                 if (Math.abs(rA - rB) == 0) {
                     System.out.println("Difference between rows is == 0. I shouldn't get this.");
                 }
-                System.out.println("reelTileA.destinationX="+reelTileA.getDestinationX());
-                System.out.println("reelTileA.destinationY="+reelTileA.getDestinationY());
-                System.out.println("reelTileB.destinationX="+reelTileB.getDestinationX());
-                System.out.println("reelTileB.destinationY="+reelTileB.getDestinationY());
             }
         }
     }
@@ -542,13 +518,10 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
 
         deletedReel.setDestinationY(savedDestinationY);
         deletedReel.setY(savedDestinationY);
-        deletedReel.deleteReelTile();
 
         ReelTile currentReel = reelTileA;
 
         for (int reelsAboveMeIndex = 0; reelsAboveMeIndex < reelsAboveMe.length; reelsAboveMeIndex++) {
-            System.out.println("currentReel destination r="+getRow(currentReel.getDestinationY())+" c="+getColumn(currentReel.getDestinationX()));
-
             savedDestinationY = reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex()).getDestinationY();
             reelHasFallenFrom = levelCreator.findReel((int) currentReel.getDestinationX(), (int) currentReel.getDestinationY() + 40);
             deletedReel = reelTiles.get(reelHasFallenFrom);
@@ -559,13 +532,38 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
             deletedReel.setDestinationY(savedDestinationY);
             deletedReel.setY(savedDestinationY);
 
-            System.out.println("reelTileA.destinationY="+reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex()).getDestinationY());
-            System.out.println("reelTileB.destinationY="+reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex()).getY());
-            int rA = PuzzleGridTypeReelTile.getRowFromLevel(reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex()).getDestinationY(), GAME_LEVEL_HEIGHT);
-            System.out.println("reelTileA r="+rA+" v="+reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex()).getEndReel() );
-            int rB = PuzzleGridTypeReelTile.getRowFromLevel(reelTileB.getDestinationY(), GAME_LEVEL_HEIGHT);
-            int cB = PuzzleGridTypeReelTile.getColumnFromLevel(reelTileB.getDestinationX());
-            System.out.println("reelTileB r="+rB+" c="+cB+" v="+reelTileB.getEndReel());
+            currentReel = reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex());
+        }
+    }
+
+    private void swapReelsAboveMe(ReelTile reelTile) {
+        TupleValueIndex[] reelsAboveMe = PuzzleGridType.getReelsAboveMe(levelCreator.populateMatchGrid(reelTiles, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT),
+                PuzzleGridTypeReelTile.getRowFromLevel(reelTile.getDestinationY(), GAME_LEVEL_HEIGHT),
+                PuzzleGridTypeReelTile.getColumnFromLevel(reelTile.getDestinationX()));
+
+        float savedDestinationY = reelTile.getDestinationY();
+        int reelHasFallenFrom = levelCreator.findReel((int)reelTile.getDestinationX(), (int) 120);
+        ReelTile deletedReel = reelTiles.get(reelHasFallenFrom);
+
+        reelTile.setDestinationY(120);
+        reelTile.setY(120);
+        reelTile.unDeleteReelTile();
+
+        deletedReel.setDestinationY(savedDestinationY);
+        deletedReel.setY(savedDestinationY);
+
+        ReelTile currentReel = reelTile;
+
+        for (int reelsAboveMeIndex = 0; reelsAboveMeIndex < reelsAboveMe.length; reelsAboveMeIndex++) {
+            savedDestinationY = reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex()).getDestinationY();
+            reelHasFallenFrom = levelCreator.findReel((int) currentReel.getDestinationX(), (int) currentReel.getDestinationY() + 40);
+            deletedReel = reelTiles.get(reelHasFallenFrom);
+
+            reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex()).setDestinationY(currentReel.getDestinationY() + 40);
+            reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex()).setY(currentReel.getDestinationY() + 40);
+
+            deletedReel.setDestinationY(savedDestinationY);
+            deletedReel.setY(savedDestinationY);
 
             currentReel = reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex());
         }
@@ -580,23 +578,35 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         return PuzzleGridTypeReelTile.getColumnFromLevel(x);
     }
 
-    private void reelsLeftToFall(ReelTile reelTileA, ReelTile reelTileB, int rA, int cA) {
+    private void reelsLeftToFall(int rA, int cA) {
         Array<TupleValueIndex> reelsToFall = levelCreator.getReelsToFall();
+        boolean finishedColumn = false;
+        int index;
+        int row = rA;
+        while (!finishedColumn) {
+            index = findReelToFall(row, cA, reelsToFall);
+            if (index >= 0) {
+                reelsToFall.removeIndex(index);
+                levelCreator.setReelsToFall(reelsToFall);
+                if (reelsToFall.size == 0) {
+                    levelCreator.setReelsAboveHaveFallen(true);
+                }
+            } else {
+                finishedColumn = true;
+            }
+            row--;
+        }
+    }
+
+    private int findReelToFall(int row, int column, Array<TupleValueIndex> reelsToFall) {
         int index = 0;
-        boolean foundReelToFall = false;
-        while ((index < reelsToFall.size) & (!foundReelToFall)) {
-            if ((reelsToFall.get(index).getR() == rA) & (reelsToFall.get(index).getC() == cA)) {
-                foundReelToFall = true;
+        while (index < reelsToFall.size) {
+            if ((reelsToFall.get(index).getR() == row) & (reelsToFall.get(index).getC() == column)) {
+                return index;
             } else {
                 index++;
             }
         }
-        if (foundReelToFall) {
-            reelsToFall.removeIndex(index);
-            levelCreator.setReelsToFall(reelsToFall);
-            if (reelsToFall.size == 0) {
-                levelCreator.setReelsAboveHaveFallen(true);
-            }
-        }
+        return -1;
     }
 }
