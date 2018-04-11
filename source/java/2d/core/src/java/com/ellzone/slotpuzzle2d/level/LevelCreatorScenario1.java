@@ -522,30 +522,10 @@ public class LevelCreatorScenario1 {
                     reelsFlashing--;
                     numberOfReelBoxesToDelete--;
                     if (numberOfReelBoxesToDelete < 0) {
-                        if ((playState == PlayScreen.PlayStates.INTRO_FLASHING) |
-                                (playState == PlayScreen.PlayStates.REELS_FLASHING)) {
+                        if ((playState == PlayScreen.PlayStates.INTRO_FLASHING) | (playState == PlayScreen.PlayStates.REELS_FLASHING)) {
                             findReelsAboveMe();
-
-                            ReelTileGridValue[][] puzzleGrid = puzzleGridTypeReelTile.populateMatchGrid(reelTiles, levelWidth, levelHeight);
-
-                            Array<ReelTileGridValue> matchedSlots = puzzleGridTypeReelTile.matchGridSlots(puzzleGrid);
-                            Array<ReelTileGridValue> duplicateMatchedSlots = PuzzleGridTypeReelTile.findDuplicateMatches(matchedSlots);
-
-                            matchedSlots = PuzzleGridTypeReelTile.adjustMatchSlotDuplicates(matchedSlots, duplicateMatchedSlots);
-
-                            if (matchedSlots.size > 0) {
-                                matchedSlots.reverse();
-                                numberOfReelBoxesToReplace = matchedSlots.size - 1 - duplicateMatchedSlots.size / 2;
-                                numberOfReelBoxesToDelete = matchedSlots.size - 1 - duplicateMatchedSlots.size / 2;
-
-                                for (TupleValueIndex matchedSlot : matchedSlots) {
-                                    reelTiles.get(matchedSlot.index).setScore(matchedSlot.value);
-                                }
-
-                                flashMatchedSlots(matchedSlots, puzzleGridTypeReelTile);
-                                matchedReels = true;
-                            } else {
-                                matchedReels = false;
+                            matchedReels = isThereMatchedSlots();
+                            if (!matchedReels) {
                                 if (replacementReelBoxes.size == 0) {
                                     playState = PlayScreen.PlayStates.PLAYING;
                                 } else {
@@ -567,6 +547,26 @@ public class LevelCreatorScenario1 {
             }
         }
     };
+
+    private boolean isThereMatchedSlots() {
+        ReelTileGridValue[][] puzzleGrid = puzzleGridTypeReelTile.populateMatchGrid(reelTiles, levelWidth, levelHeight);
+        Array<ReelTileGridValue> matchedSlots = puzzleGridTypeReelTile.matchGridSlots(puzzleGrid);
+        Array<ReelTileGridValue> duplicateMatchedSlots = PuzzleGridTypeReelTile.findDuplicateMatches(matchedSlots);
+
+        matchedSlots = PuzzleGridTypeReelTile.adjustMatchSlotDuplicates(matchedSlots, duplicateMatchedSlots);
+        if (matchedSlots.size > 0) {
+            matchedSlots.reverse();
+            numberOfReelBoxesToReplace = matchedSlots.size - 1 - duplicateMatchedSlots.size / 2;
+            numberOfReelBoxesToDelete = matchedSlots.size - 1 - duplicateMatchedSlots.size / 2;
+
+            for (TupleValueIndex matchedSlot : matchedSlots) {
+                reelTiles.get(matchedSlot.index).setScore(matchedSlot.value);
+            }
+            flashMatchedSlots(matchedSlots, puzzleGridTypeReelTile);
+            return true;
+        }
+        return false;
+    }
 
     private void testPlayingCardLevelWon(int levelWidth, int levelHeight) {
         PuzzleGridType puzzleGrid = new PuzzleGridType();
@@ -652,20 +652,8 @@ public class LevelCreatorScenario1 {
                 Array<ReelTileGridValue> matchedSlots = puzzleGridTypeReelTile.matchGridSlots(puzzleGrid);
                 Array<ReelTileGridValue> duplicateMatchedSlots = PuzzleGridTypeReelTile.findDuplicateMatches(matchedSlots);
 
-                matchedSlots = PuzzleGridTypeReelTile.adjustMatchSlotDuplicates(matchedSlots, duplicateMatchedSlots);
-                if (matchedSlots.size > 0) {
-                    matchedSlots.reverse();
-                    numberOfReelBoxesToReplace = matchedSlots.size - 1 - duplicateMatchedSlots.size / 2;
-                    numberOfReelBoxesToDelete = matchedSlots.size - 1 - duplicateMatchedSlots.size / 2;
-
-                    for (TupleValueIndex matchedSlot : matchedSlots) {
-                        reelTiles.get(matchedSlot.index).setScore(matchedSlot.value);
-                    }
-
-                    flashMatchedSlots(matchedSlots, puzzleGridTypeReelTile);
-                    matchedReels = true;
-                } else {
-                    matchedReels = false;
+                matchedReels = isThereMatchedSlots();
+                if (!matchedReels) {
                     if (replacementReelBoxes.size == 0) {
                         playState = PlayScreen.PlayStates.PLAYING;
                     } else {
@@ -678,26 +666,8 @@ public class LevelCreatorScenario1 {
             } else {
                 if ((playState == PlayScreen.PlayStates.INTRO_FLASHING) | (playState == PlayScreen.PlayStates.REELS_FLASHING) | playState == PlayScreen.PlayStates.PLAYING) {
                     if ((numberOfReelBoxesToDelete < 0) & (!matchedReels) & (reelsToFall.size == 0) & (replacementReelBoxes.size > 0) & (reelsFlashing == 0)) {
-
-                        ReelTileGridValue[][] puzzleGrid = puzzleGridTypeReelTile.populateMatchGrid(reelTiles, levelWidth, levelHeight);
-
-                        Array<ReelTileGridValue> matchedSlots = puzzleGridTypeReelTile.matchGridSlots(puzzleGrid);
-                        Array<ReelTileGridValue> duplicateMatchedSlots = PuzzleGridTypeReelTile.findDuplicateMatches(matchedSlots);
-
-                        matchedSlots = PuzzleGridTypeReelTile.adjustMatchSlotDuplicates(matchedSlots, duplicateMatchedSlots);
-                        if (matchedSlots.size > 0) {
-                            matchedSlots.reverse();
-                            numberOfReelBoxesToReplace = matchedSlots.size - 1 - duplicateMatchedSlots.size / 2;
-                            numberOfReelBoxesToDelete = matchedSlots.size - 1 - duplicateMatchedSlots.size / 2;
-
-                            for (TupleValueIndex matchedSlot : matchedSlots) {
-                                reelTiles.get(matchedSlot.index).setScore(matchedSlot.value);
-                            }
-
-                            flashMatchedSlots(matchedSlots, puzzleGridTypeReelTile);
-                            matchedReels = true;
-                        } else {
-                            matchedReels = false;
+                        matchedReels = isThereMatchedSlots();
+                        if (!matchedReels) {
                             if ((numberOfReelBoxesToDelete < 0) & (reelsToFall.size == 0) & (replacementReelBoxes.size > 0) & (reelsToFall.size ==0)) {
                                 createReplacementReelBoxes();
                             }
@@ -715,7 +685,6 @@ public class LevelCreatorScenario1 {
                playState = PlayScreen.PlayStates.PLAYING;
            }
         }
-
         this.animatedReelHelper.update(dt);
         this.physics.update(dt);
         updateReelBoxes();
@@ -819,10 +788,6 @@ public class LevelCreatorScenario1 {
 
     public void setReelsAboveHaveFallen(boolean reelsAboveHaveFallen) {
         this.reelsAboveHaveFallen = reelsAboveHaveFallen;
-    }
-
-    public void setReelBoxesThatHaveCollided(Array<Body> reelBoxesCollided) {
-        this.reelBoxesCollided = reelBoxesCollided;
     }
 
     private void updateReelBoxes() {
