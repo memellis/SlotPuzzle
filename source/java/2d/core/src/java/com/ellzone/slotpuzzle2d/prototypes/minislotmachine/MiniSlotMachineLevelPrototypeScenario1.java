@@ -268,7 +268,6 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
     }
 
     private void processIsTileClicked() {
-        System.out.println("processIsTileClicked();");
         int touchX = Gdx.input.getX();
         int touchY = Gdx.input.getY();
         Vector2 newPoints = new Vector2(touchX, touchY);
@@ -278,10 +277,7 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         r = GAME_LEVEL_HEIGHT - 1 - r ;
         if ((r >= 0) & (r <= GAME_LEVEL_HEIGHT) & (c >= 0) & (c <= GAME_LEVEL_WIDTH)) {
             TupleValueIndex[][] grid = levelCreator.populateMatchGrid(reelTiles, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT);
-            System.out.println("touched r="+r+" c="+c);
             if (grid[r][c] != null) {
-                System.out.println("grid["+r+","+c+"].index="+grid[r][c].index);
-
                 ReelTile reel = reelTiles.get(grid[r][c].index);
                 AnimatedReel animatedReel = levelCreator.getAnimatedReels().get(grid[r][c].index);
                 if (!reel.isReelTileDeleted()) {
@@ -484,7 +480,6 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
                         swapReelsAboveMe(reelTileA, reelTileB);
                         reelsLeftToFall(rA, cA);
                     }
-                    levelCreator.printMatchGrid(reelTiles, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT);
                 }
                 if (Math.abs(rA - rB) == 1) {
                     if (rA > rB) {
@@ -494,7 +489,6 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
                         swapReelsAboveMe(reelTileA, reelTileB);
                         reelsLeftToFall(rA, cA);
                     }
-                    levelCreator.printMatchGrid(reelTiles, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT);
                 }
                 if (Math.abs(rA - rB) == 0) {
                     System.out.println("Difference between rows is == 0. I shouldn't get this.");
@@ -567,7 +561,6 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
 
             currentReel = reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex());
         }
-        levelCreator.printMatchGrid(reelTiles, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT);
     }
 
     private int getRow(float y) {
