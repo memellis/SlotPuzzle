@@ -76,8 +76,6 @@ public class B2dContactListenerScenario1 implements ContactListener {
         if (MiniSlotMachineLevelPrototypeScenario1.numberOfReelsToFall <= 0) {
             if (this.prototype != null) {
                 this.prototype.dealWithReelTileHittingReelTile(reelTileA, reelTileB);
-            } else {
-                System.out.println("prototype is currently null");
             }
         }
     }
