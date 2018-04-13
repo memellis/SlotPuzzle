@@ -231,6 +231,12 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
             viewport.unproject(unprojTouch);
             PlayScreen.PlayStates playState = levelCreator.getPlayState();
             switch (playState) {
+                case CREATED_REELS_HAVE_FALLEN:
+                    Gdx.app.debug(logTag, playState.toString());
+                    break;
+                case HIT_SINK_BOTTOM:
+                    Gdx.app.debug(logTag, playState.toString());
+                    break;
                 case INITIALISING:
                     Gdx.app.debug(logTag, playState.toString());
                     break;
@@ -238,11 +244,15 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
                     Gdx.app.debug(logTag, playState.toString());
                     break;
                 case INTRO_POPUP:
+                    Gdx.app.debug(logTag, playState.toString());
                     break;
                 case INTRO_SPINNING:
                     Gdx.app.debug(logTag, playState.toString());
                     break;
                 case INTRO_FLASHING:
+                    Gdx.app.debug(logTag, playState.toString());
+                    break;
+                case LEVEL_TIMED_OUT:
                     Gdx.app.debug(logTag, playState.toString());
                     break;
                 case LEVEL_LOST:
@@ -257,6 +267,7 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
                     break;
                 case REELS_FLASHING:
                     Gdx.app.debug(logTag, playState.toString());
+                    break;
                 case RESTARTING_LEVEL:
                     Gdx.app.debug(logTag, playState.toString());
                     break;
