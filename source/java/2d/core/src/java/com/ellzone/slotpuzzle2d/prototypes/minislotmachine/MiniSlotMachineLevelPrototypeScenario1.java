@@ -229,38 +229,39 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
             touchY = Gdx.input.getY();
             Vector3 unprojTouch = new Vector3(touchX, touchY, 0);
             viewport.unproject(unprojTouch);
-            switch (levelCreator.getPlayState()) {
+            PlayScreen.PlayStates playState = levelCreator.getPlayState();
+            switch (playState) {
                 case INITIALISING:
-                    Gdx.app.debug(logTag, "Initialising");
+                    Gdx.app.debug(logTag, playState.toString());
                     break;
                 case INTRO_SEQUENCE:
-                    Gdx.app.debug(logTag, "Intro Sequence");
+                    Gdx.app.debug(logTag, playState.toString());
                     break;
                 case INTRO_POPUP:
                     break;
                 case INTRO_SPINNING:
-                    Gdx.app.debug(logTag, "Intro Spinning");
+                    Gdx.app.debug(logTag, playState.toString());
                     break;
                 case INTRO_FLASHING:
-                    Gdx.app.debug(logTag, "Intro Flashing");
+                    Gdx.app.debug(logTag, playState.toString());
                     break;
                 case LEVEL_LOST:
-                    Gdx.app.debug(logTag, "Lost Level");
+                    Gdx.app.debug(logTag, playState.toString());
                     break;
                 case PLAYING:
-                    Gdx.app.debug(logTag, "Play");
+                    Gdx.app.debug(logTag, playState.toString());
                     processIsTileClicked();
                     break;
                 case REELS_SPINNING:
-                    Gdx.app.debug(logTag, "Reels Spinning");
+                    Gdx.app.debug(logTag, playState.toString());
                     break;
                 case REELS_FLASHING:
-                    Gdx.app.debug(logTag, "Reels Flashing");
+                    Gdx.app.debug(logTag, playState.toString());
                 case RESTARTING_LEVEL:
-                    Gdx.app.debug(logTag, "Restarting Level");
+                    Gdx.app.debug(logTag, playState.toString());
                     break;
                 case WON_LEVEL:
-                    Gdx.app.debug(logTag, "Won Level");
+                    Gdx.app.debug(logTag, playState.toString());
                     break;
                 default: break;
             }
