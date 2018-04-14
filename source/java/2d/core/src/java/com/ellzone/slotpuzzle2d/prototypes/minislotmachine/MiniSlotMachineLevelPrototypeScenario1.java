@@ -127,18 +127,26 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         initialiseReels(this.annotationAssetManager);
         createSlotReelTexture();
         getAssets(annotationAssetManager);
-        this.miniSlotMachineLevel = annotationAssetManager.get(AssetsAnnotation.MINI_SLOT_MACHINE_LEVEL1);
+        miniSlotMachineLevel = annotationAssetManager.get(AssetsAnnotation.MINI_SLOT_MACHINE_LEVEL1);
         getMapProperties(this.miniSlotMachineLevel);
         numberOfReelsToHitSinkBottom = 0;
         numberOfReelsAboveHitsIntroSpinning = 0;
         initialiseLevelDoor();
         createPlayScreen();
         initialisePhysics();
-        this.levelCreator = new LevelCreatorScenario1(this.levelDoor, this.miniSlotMachineLevel, this.annotationAssetManager, this.carddeckAtlas, this.tweenManager, this.physics, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT, PlayScreen.PlayStates.INITIALISING);
-        this.levelCreator.setPlayState(PlayScreen.PlayStates.INITIALISING);
-        this.reelTiles = this.levelCreator.getReelTiles();
-        this.animatedReels = this.levelCreator.getAnimatedReels();
-        reelBoxes = this.levelCreator.getReelBoxes();
+        levelCreator = new LevelCreatorScenario1(levelDoor,
+                                                 miniSlotMachineLevel,
+                                                 annotationAssetManager,
+                                                 carddeckAtlas,
+                                                 tweenManager,
+                                                 physics,
+                                                 GAME_LEVEL_WIDTH,
+                                                 GAME_LEVEL_HEIGHT,
+                                                 PlayScreen.PlayStates.INITIALISING);
+        levelCreator.setPlayState(PlayScreen.PlayStates.INITIALISING);
+        reelTiles = levelCreator.getReelTiles();
+        animatedReels = levelCreator.getAnimatedReels();
+        reelBoxes = levelCreator.getReelBoxes();
         reelBoxesCollided = new Array<Body>();
         hud = new Hud(batch);
         hud.setLevelName(levelDoor.levelName);
