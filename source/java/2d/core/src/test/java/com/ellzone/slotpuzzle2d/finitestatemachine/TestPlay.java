@@ -16,10 +16,52 @@
 
 package com.ellzone.slotpuzzle2d.finitestatemachine;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+
 import static junit.framework.TestCase.assertEquals;
+import static org.powermock.api.easymock.PowerMock.createMock;
 
 public class TestPlay {
+    private Input mockInput;
+    private Application mockApplication;
+
+    @Before
+    public void setUp() {
+        setUpMocks();
+        mockGdx();
+    }
+
+    private void setUpMocks() {
+        mockInput = createMock(Input.class);
+        mockApplication = createMock(Application.class);
+    }
+
+    private void mockGdx() {
+        Gdx.input = mockInput;
+        Gdx.app = mockApplication;
+    }
+
+    @After
+    public  void tearDown() {
+        tearDownMocks();
+        tearDownGdx();
+    }
+
+    private void tearDownMocks() {
+        Gdx.input = null;
+        Gdx.app = null;
+    }
+
+    private void tearDownGdx() {
+        mockInput = null;
+        mockApplication = null;
+    }
 
     @Test
     public void testIntroDropPlay() {
