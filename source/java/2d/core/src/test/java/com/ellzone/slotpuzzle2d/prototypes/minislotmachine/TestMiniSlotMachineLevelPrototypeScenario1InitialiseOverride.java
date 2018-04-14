@@ -107,6 +107,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1InitialiseOverride {
         cardDeckAtlasMock = createMock(TextureAtlas.class);
         tweenManagerMock = createMock(TweenManager.class);
         physicsMock = createMock(PhysicsManagerCustomBodies.class);
+        spriteBatchMock = createMock(SpriteBatch.class);
     }
 
 
