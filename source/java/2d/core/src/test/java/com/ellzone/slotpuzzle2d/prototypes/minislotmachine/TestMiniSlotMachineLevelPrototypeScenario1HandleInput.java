@@ -82,6 +82,31 @@ public class TestMiniSlotMachineLevelPrototypeScenario1HandleInput {
         Gdx.app = mockApplication;
     }
 
+    private void tearDown() {
+        tearDownMocks();
+        tearDownGdx();
+        tearDownCaptureArguments();
+    }
+
+    private void tearDownMocks() {
+        partialMockMiniSlotMachineLevelPrototypeScenario1 = null;
+        mockInput = null;
+        mockApplication = null;
+        mockViewPort = null;
+        levelCreatorScenario1Mock = null;
+        vector3Mock = null;
+    }
+
+    private void tearDownGdx() {
+        Gdx.input = null;
+        Gdx.app = null;
+    }
+
+    private void tearDownCaptureArguments() {
+        logCaptureArgument1 = null;
+        logCaptureArgument2 = null;
+    }
+
     @Test
     public void testHandleInput() throws Exception {
         for (PlayScreen.PlayStates playState : PlayScreen.PlayStates.values()) {
@@ -96,6 +121,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1HandleInput {
         inokeHandleInput();
         assertThat(logCaptureArgument2.getValue(), CoreMatchers.equalTo(playState.toString()));
         verifyAll();
+        tearDown();
     }
 
     private void verifyAll() {
