@@ -76,16 +76,30 @@ public class TestMiniSlotMachineLevelPrototypeScenario1InitialiseOverride {
     private PhysicsManagerCustomBodies physicsMock;
     private SpriteBatch spriteBatchMock;
 
+    @Before
+    public void setUp() {
+        setUpMocks();
+    }
+
     private void setUpMocks() {
+        setUpPowerMocks();
+        setUpEasyMocks();
+    }
+
+    private void setUpPowerMocks() {
         partialMockMiniSlotMachineLevelPrototypeScenario1 = PowerMock.createNicePartialMock(MiniSlotMachineLevelPrototypeScenario1.class,
                 "initialiseReels",
-                              "createSlotReelTexture",
-                              "getAssets",
-                              "getMapProperties",
-                              "initialiseLevelDoor",
-                              "createPlayScreen",
-                              "initialisePhysics"
-                );
+                "createSlotReelTexture",
+                "getAssets",
+                "getMapProperties",
+                "initialiseLevelDoor",
+                "createPlayScreen",
+                "initialisePhysics"
+        );
+        mockStatic(CameraHelper.class);
+    }
+
+    private void setUpEasyMocks() {
         levelCreatorScenario1Mock = createMock(LevelCreatorScenario1.class);
         hudMock = createMock(Hud.class);
         orthographicCameraMock = createMock(OrthographicCamera.class);
@@ -95,13 +109,8 @@ public class TestMiniSlotMachineLevelPrototypeScenario1InitialiseOverride {
         cardDeckAtlasMock = createMock(TextureAtlas.class);
         tweenManagerMock = createMock(TweenManager.class);
         physicsMock = createMock(PhysicsManagerCustomBodies.class);
-        mockStatic(CameraHelper.class);
     }
 
-    @Before
-    public void setUp() {
-        setUpMocks();
-    }
 
     @After
     public void tearDown() {
@@ -117,6 +126,18 @@ public class TestMiniSlotMachineLevelPrototypeScenario1InitialiseOverride {
     private void expectations() throws Exception {
         expect(CameraHelper.GetCamera(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT)).andReturn(orthographicCameraMock);
         expect(annotationAssetManagerMock.get(AssetsAnnotation.MINI_SLOT_MACHINE_LEVEL1)).andReturn(tiledMapMock);
+        levelCreatorExpectations();
+        hudExpectations();
+        levelCreatorScenario1Mock.setPlayState(PlayScreen.PlayStates.INTRO_SPINNING);
+    }
+
+    private void hudExpectations() throws Exception {
+        whenNew(Hud.class).withArguments(spriteBatchMock).thenReturn(hudMock);
+        hudMock.setLevelName(null);
+        hudMock.startWorldTimer();
+    }
+
+    private void levelCreatorExpectations() throws Exception {
         whenNew(LevelCreatorScenario1.class).withArguments(levelDoorMock,
                                                            tiledMapMock,
                                                            annotationAssetManagerMock,
@@ -130,10 +151,6 @@ public class TestMiniSlotMachineLevelPrototypeScenario1InitialiseOverride {
         expect(levelCreatorScenario1Mock.getReelTiles()).andReturn(null);
         expect(levelCreatorScenario1Mock.getAnimatedReels()).andReturn(null);
         expect(levelCreatorScenario1Mock.getReelBoxes()).andReturn(null);
-        whenNew(Hud.class).withArguments(spriteBatchMock).thenReturn(hudMock);
-        hudMock.setLevelName(null);
-        hudMock.startWorldTimer();
-        levelCreatorScenario1Mock.setPlayState(PlayScreen.PlayStates.INTRO_SPINNING);
     }
 
     private void setFields() {
