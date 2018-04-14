@@ -82,7 +82,6 @@ public class TestMiniSlotMachineLevelPrototypeScenario1 {
         Gdx.app = mockApplication;
     }
 
-
     @Test
     public void testHandleInput() throws Exception {
         for (PlayScreen.PlayStates playState : PlayScreen.PlayStates.values()) {
