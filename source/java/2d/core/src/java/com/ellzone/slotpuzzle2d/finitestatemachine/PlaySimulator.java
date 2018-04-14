@@ -16,7 +16,12 @@
 
 package com.ellzone.slotpuzzle2d.finitestatemachine;
 
+import com.badlogic.gdx.Gdx;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
+
 public class PlaySimulator implements PlayInterface {
+    private String logTag = SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName();
+
     private int
         numberOfReelsFalling,
         numberOfReelsSpinning,
@@ -142,7 +147,7 @@ public class PlaySimulator implements PlayInterface {
     private void simulateIntroFallingSequence() {
         numberOfReelsFalling--;
         if (numberOfReelsFalling > 0) {
-            System.out.println("Another reel has fallen. There are " + numberOfReelsFalling + " left.");
+            Gdx.app.debug(logTag, "Another reel has fallen. There are " + numberOfReelsFalling + " left.");
         } else {
             startTimer = false;
         }
@@ -151,7 +156,7 @@ public class PlaySimulator implements PlayInterface {
     private void simulateIntroSpinningSequence() {
         numberOfReelsSpinning--;
         if (numberOfReelsSpinning > 0) {
-            System.out.println("Another reel has stopped spinning. There are " + numberOfReelsSpinning + " left.");
+            Gdx.app.debug(logTag,"Another reel has stopped spinning. There are " + numberOfReelsSpinning + " left.");
         } else {
             startTimer = false;
             numberOfReelsFlashing = 10;
@@ -164,7 +169,7 @@ public class PlaySimulator implements PlayInterface {
     private void simulateIntroReelsFlashingSequence() {
         numberOfReelsFlashing--;
         if (numberOfReelsFlashing > 0) {
-            System.out.println("Another reel has stopped flashing. There are " + numberOfReelsFlashing + " left.");
+            Gdx.app.debug(logTag, "Another reel has stopped flashing. There are " + numberOfReelsFlashing + " left.");
         } else {
             startTimer = false;
             numberOfReelsMatched = 10;
@@ -175,7 +180,7 @@ public class PlaySimulator implements PlayInterface {
     private void simulateIntroEndingSequence() {
         numberOfReelsToDelete--;
         if (numberOfReelsToDelete > 0) {
-            System.out.println("Another reel has been deleted. There are " + numberOfReelsToDelete + " left.");
+            Gdx.app.debug(logTag,"Another reel has been deleted. There are " + numberOfReelsToDelete + " left.");
         } else {
             startTimer = false;
             numberOfReelsFalling = 10;
@@ -185,7 +190,7 @@ public class PlaySimulator implements PlayInterface {
     private void simulateDrop() {
         numberOfReelsFalling--;
         if (numberOfReelsFalling > 0) {
-            System.out.println("Another reel has fallen. There are " + numberOfReelsFalling + " left.");
+            Gdx.app.debug(logTag,"Another reel has fallen. There are " + numberOfReelsFalling + " left.");
         } else {
             startTimer = false;
             numberOfReelsSpinning = 10;
@@ -195,7 +200,7 @@ public class PlaySimulator implements PlayInterface {
     private void simulateSpin() {
         numberOfReelsSpinning--;
         if (numberOfReelsSpinning > 0) {
-            System.out.println("Another reel has stopped spinning. There are " + numberOfReelsSpinning + " left.");
+            Gdx.app.debug(logTag,"Another reel has stopped spinning. There are " + numberOfReelsSpinning + " left.");
         } else {
             startTimer = false;
             numberOfReelsFlashing = 10;
@@ -206,7 +211,7 @@ public class PlaySimulator implements PlayInterface {
     private void simulateFlash() {
         numberOfReelsFlashing--;
         if (numberOfReelsFlashing > 0) {
-            System.out.println("Another reel has stopped flashing. There are " + numberOfReelsFlashing + " left.");
+            Gdx.app.debug(logTag,"Another reel has stopped flashing. There are " + numberOfReelsFlashing + " left.");
         } else {
             startTimer = false;
             if (simulateIntroDropDropPlay) {
