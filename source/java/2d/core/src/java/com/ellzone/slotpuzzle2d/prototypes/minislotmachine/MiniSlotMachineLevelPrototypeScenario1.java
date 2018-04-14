@@ -61,7 +61,6 @@ import com.ellzone.slotpuzzle2d.tweenengine.Timeline;
 import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import com.ellzone.slotpuzzle2d.utils.Random;
-
 import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
 public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate {
@@ -123,17 +122,33 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
 
     @Override
     protected void initialiseOverride() {
+        getCamera();
+        initialseAssests();
+        initialiseReelCounts();
+        initialiseLevelDoor();
+        createPlayScreen();
+        initialisePhysics();
+        initialiseLevel();
+    }
+
+    private void getCamera() {
         camera = CameraHelper.GetCamera(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT);
+    }
+
+    private void initialiseReelCounts() {
+        numberOfReelsToHitSinkBottom = 0;
+        numberOfReelsAboveHitsIntroSpinning = 0;
+    }
+
+    private void initialseAssests() {
         initialiseReels(this.annotationAssetManager);
         createSlotReelTexture();
         getAssets(annotationAssetManager);
         miniSlotMachineLevel = annotationAssetManager.get(AssetsAnnotation.MINI_SLOT_MACHINE_LEVEL1);
         getMapProperties(this.miniSlotMachineLevel);
-        numberOfReelsToHitSinkBottom = 0;
-        numberOfReelsAboveHitsIntroSpinning = 0;
-        initialiseLevelDoor();
-        createPlayScreen();
-        initialisePhysics();
+    }
+
+    private void initialiseLevel() {
         levelCreator = new LevelCreatorScenario1(levelDoor,
                                                  miniSlotMachineLevel,
                                                  annotationAssetManager,
@@ -148,10 +163,14 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         animatedReels = levelCreator.getAnimatedReels();
         reelBoxes = levelCreator.getReelBoxes();
         reelBoxesCollided = new Array<Body>();
+        initialiseHud();
+        levelCreator.setPlayState(PlayScreen.PlayStates.INTRO_SPINNING);
+    }
+
+    private void initialiseHud() {
         hud = new Hud(batch);
         hud.setLevelName(levelDoor.levelName);
         hud.startWorldTimer();
-        levelCreator.setPlayState(PlayScreen.PlayStates.INTRO_SPINNING);
     }
 
     private void getAssets(AnnotationAssetManager annotationAssetManager) {
@@ -231,63 +250,71 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
 
     public void handleInput(float dt) {
         int touchX, touchY;
-
         if (Gdx.input.justTouched()) {
             touchX = Gdx.input.getX();
             touchY = Gdx.input.getY();
             Vector3 unprojTouch = new Vector3(touchX, touchY, 0);
             viewport.unproject(unprojTouch);
             PlayScreen.PlayStates playState = levelCreator.getPlayState();
-            switch (playState) {
-                case CREATED_REELS_HAVE_FALLEN:
-                    Gdx.app.debug(logTag, playState.toString());
-                    break;
-                case HIT_SINK_BOTTOM:
-                    Gdx.app.debug(logTag, playState.toString());
-                    break;
-                case INITIALISING:
-                    Gdx.app.debug(logTag, playState.toString());
-                    break;
-                case INTRO_SEQUENCE:
-                    Gdx.app.debug(logTag, playState.toString());
-                    break;
-                case INTRO_POPUP:
-                    Gdx.app.debug(logTag, playState.toString());
-                    break;
-                case INTRO_SPINNING:
-                    Gdx.app.debug(logTag, playState.toString());
-                    break;
-                case INTRO_FLASHING:
-                    Gdx.app.debug(logTag, playState.toString());
-                    break;
-                case LEVEL_TIMED_OUT:
-                    Gdx.app.debug(logTag, playState.toString());
-                    break;
-                case LEVEL_LOST:
-                    Gdx.app.debug(logTag, playState.toString());
-                    break;
-                case PLAYING:
-                    Gdx.app.debug(logTag, playState.toString());
-                    processIsTileClicked();
-                    break;
-                case REELS_SPINNING:
-                    Gdx.app.debug(logTag, playState.toString());
-                    break;
-                case REELS_FLASHING:
-                    Gdx.app.debug(logTag, playState.toString());
-                    break;
-                case RESTARTING_LEVEL:
-                    Gdx.app.debug(logTag, playState.toString());
-                    break;
-                case WON_LEVEL:
-                    Gdx.app.debug(logTag, playState.toString());
-                    break;
-                default: break;
-            }
+            switchPlayState(playState);
+        }
+    }
+
+    private void switchPlayState(PlayScreen.PlayStates playState) {
+        switch (playState) {
+            case CREATED_REELS_HAVE_FALLEN:
+                Gdx.app.debug(logTag, playState.toString());
+                break;
+            case HIT_SINK_BOTTOM:
+                Gdx.app.debug(logTag, playState.toString());
+                break;
+            case INITIALISING:
+                Gdx.app.debug(logTag, playState.toString());
+                break;
+            case INTRO_SEQUENCE:
+                Gdx.app.debug(logTag, playState.toString());
+                break;
+            case INTRO_POPUP:
+                Gdx.app.debug(logTag, playState.toString());
+                break;
+            case INTRO_SPINNING:
+                Gdx.app.debug(logTag, playState.toString());
+                break;
+            case INTRO_FLASHING:
+                Gdx.app.debug(logTag, playState.toString());
+                break;
+            case LEVEL_TIMED_OUT:
+                Gdx.app.debug(logTag, playState.toString());
+                break;
+            case LEVEL_LOST:
+                Gdx.app.debug(logTag, playState.toString());
+                break;
+            case PLAYING:
+                Gdx.app.debug(logTag, playState.toString());
+                processIsTileClicked();
+                break;
+            case REELS_SPINNING:
+                Gdx.app.debug(logTag, playState.toString());
+                break;
+            case REELS_FLASHING:
+                Gdx.app.debug(logTag, playState.toString());
+                break;
+            case RESTARTING_LEVEL:
+                Gdx.app.debug(logTag, playState.toString());
+                break;
+            case WON_LEVEL:
+                Gdx.app.debug(logTag, playState.toString());
+                break;
+            default: break;
         }
     }
 
     private void processIsTileClicked() {
+        Vector2 tileClicked = getTileClicked();
+        processTileClicked(tileClicked);
+    }
+
+    private Vector2 getTileClicked() {
         int touchX = Gdx.input.getX();
         int touchY = Gdx.input.getY();
         Vector2 newPoints = new Vector2(touchX, touchY);
@@ -295,45 +322,56 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         int c = (int) (newPoints.x - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
         int r = (int) (newPoints.y - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
         r = GAME_LEVEL_HEIGHT - 1 - r ;
-        if ((r >= 0) & (r <= GAME_LEVEL_HEIGHT) & (c >= 0) & (c <= GAME_LEVEL_WIDTH)) {
-            TupleValueIndex[][] grid = levelCreator.populateMatchGrid(reelTiles, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT);
-            if (grid[r][c] != null) {
-                ReelTile reel = reelTiles.get(grid[r][c].index);
-                AnimatedReel animatedReel = levelCreator.getAnimatedReels().get(grid[r][c].index);
-                if (!reel.isReelTileDeleted()) {
-                    if (reel.isSpinning()) {
-                        if (animatedReel.getDampenedSineState() == DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE) {
-                            reel.setEndReel(reel.getCurrentReel());
-                            displaySpinHelp = true;
-                            displaySpinHelpSprite = reel.getCurrentReel();
-                            Hud.addScore(-1);
-                            pullLeverSound.play();
-                            reelSpinningSound.play();
-                        }
-                    } else {
-                        if (!reel.getFlashTween()) {
-                            reelSlowingTargetTime = 3.0f;
-                            reel.setEndReel(Random.getInstance().nextInt(reels.getReels().length - 1));
-                            reel.startSpinning();
-                            levelCreator.setNumberOfReelsSpinning(levelCreator.getNumberOfReelsSpinning()+1);
-                            reel.setSy(0);
-                            animatedReel.reinitialise();
-                            Hud.addScore(-1);
-                            if (pullLeverSound != null) {
-                                pullLeverSound.play();
-                            }
-                        }
-                    }
-                }
-            } else {
-                Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE,"grid["+r+","+c+"] is null");
-            }
+        return new Vector2(c, r);
+    }
 
-        } else {
-            Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "I don't respond to r="+r+"c="+c);
+    private void processTileClicked(Vector2 tileClicked) {
+        int r = (int) tileClicked.y;
+        int c = (int) tileClicked.x;
+        TupleValueIndex[][] grid = levelCreator.populateMatchGrid(reelTiles, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT);
+        if (grid[r][c] != null) {
+            ReelTile reel = reelTiles.get(grid[r][c].index);
+            AnimatedReel animatedReel = levelCreator.getAnimatedReels().get(grid[r][c].index);
+            processReelClicked(reel, animatedReel);
         }
     }
 
+    private void processReelClicked(ReelTile reel, AnimatedReel animatedReel) {
+        if (!reel.isReelTileDeleted()) {
+            if (reel.isSpinning()) {
+                if (animatedReel.getDampenedSineState() == DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE) {
+                    setEndReelWithCurrentReel(reel);
+                }
+            } else {
+                if (!reel.getFlashTween()) {
+                    startReelSpinning(reel, animatedReel);
+                }
+            }
+        }
+    }
+
+    private void setEndReelWithCurrentReel(ReelTile reel) {
+        reel.setEndReel(reel.getCurrentReel());
+        displaySpinHelp = true;
+        displaySpinHelpSprite = reel.getCurrentReel();
+        Hud.addScore(-1);
+        pullLeverSound.play();
+        reelSpinningSound.play();
+    }
+
+    private void startReelSpinning(ReelTile reel, AnimatedReel animatedReel) {
+        reelSlowingTargetTime = 3.0f;
+        reel.setEndReel(Random.getInstance().nextInt(reels.getReels().length - 1));
+        reel.startSpinning();
+        levelCreator.setNumberOfReelsSpinning(levelCreator.getNumberOfReelsSpinning() + 1);
+        reel.setSy(0);
+        animatedReel.reinitialise();
+        Hud.addScore(-1);
+        if (pullLeverSound != null) {
+            pullLeverSound.play();
+        }
+    }
+    
     @Override
     protected void loadAssetsOverride() {
     }
@@ -473,42 +511,21 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         cA = PuzzleGridTypeReelTile.getColumnFromLevel(reelTileA.getDestinationX());
         rB = PuzzleGridTypeReelTile.getRowFromLevel(reelTileB.getDestinationY(), GAME_LEVEL_HEIGHT);
         cB = PuzzleGridTypeReelTile.getColumnFromLevel(reelTileB.getDestinationX());
+
         if ((Math.abs(rA - rB) == 1) & (cA == cB)) {
-            reelTileA.setY(reelTileA.getDestinationY());
-            Body reelbox = reelBoxes.get(reelTileA.getIndex());
-            if (PhysicsManagerCustomBodies.isStopped(reelbox)) {
-                if (levelCreator.getPlayState() == PlayScreen.PlayStates.INTRO_SPINNING) {
-                    numberOfReelsAboveHitsIntroSpinning++;
-                }
-            }
+            processReelTileHit(reelTileA);
         }
         if ((Math.abs(rA - rB) == 1) & (cA == cB)) {
-            reelTileB.setY(reelTileB.getDestinationY());
-            Body reelbox = reelBoxes.get(reelTileB.getIndex());
-            if (PhysicsManagerCustomBodies.isStopped(reelbox)) {
-                numberOfReelsAboveHitsIntroSpinning++;
-            }
+            processReelTileHit(reelTileB);
         }
         if ((levelCreator.getPlayState() == PlayScreen.PlayStates.INTRO_FLASHING) |
             (this.getPlayState() == PlayScreen.PlayStates.REELS_FLASHING)) {
             if  (cA == cB) {
                 if (Math.abs(rA - rB) > 1) {
-                    if (rA > rB) {
-                        swapReelsAboveMe(reelTileB, reelTileA);
-                        reelsLeftToFall(rB, cB);
-                    } else {
-                        swapReelsAboveMe(reelTileA, reelTileB);
-                        reelsLeftToFall(rA, cA);
-                    }
+                    procssTileHittingTile(reelTileA, reelTileB, rA, cA, rB, cA);
                 }
                 if (Math.abs(rA - rB) == 1) {
-                    if (rA > rB) {
-                        swapReelsAboveMe(reelTileB, reelTileA);
-                        reelsLeftToFall(rB, cB);
-                    } else {
-                        swapReelsAboveMe(reelTileA, reelTileB);
-                        reelsLeftToFall(rA, cA);
-                    }
+                    procssTileHittingTile(reelTileA, reelTileB, rA, cA, rB, cB);
                 }
                 if (Math.abs(rA - rB) == 0) {
                     System.out.println("Difference between rows is == 0. I shouldn't get this.");
@@ -517,11 +534,40 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         }
     }
 
+    private void processReelTileHit(ReelTile reelTile) {
+        reelTile.setY(reelTile.getDestinationY());
+        Body reelbox = reelBoxes.get(reelTile.getIndex());
+        if (PhysicsManagerCustomBodies.isStopped(reelbox)) {
+            if (levelCreator.getPlayState() == PlayScreen.PlayStates.INTRO_SPINNING) {
+                numberOfReelsAboveHitsIntroSpinning++;
+            }
+        }
+    }
+
+    private void procssTileHittingTile(ReelTile reelTileA, ReelTile reelTileB, int rA, int cA, int rB, int cB) {
+        if (rA > rB) {
+            swapReelsAboveMe(reelTileB, reelTileA);
+            reelsLeftToFall(rB, cB);
+        } else {
+            swapReelsAboveMe(reelTileA, reelTileB);
+            reelsLeftToFall(rA, cA);
+        }
+    }
+
     private void swapReelsAboveMe(ReelTile reelTileA, ReelTile reelTileB) {
         TupleValueIndex[] reelsAboveMe = PuzzleGridType.getReelsAboveMe(levelCreator.populateMatchGrid(reelTiles, GAME_LEVEL_WIDTH, GAME_LEVEL_HEIGHT),
                 PuzzleGridTypeReelTile.getRowFromLevel(reelTileA.getDestinationY(), GAME_LEVEL_HEIGHT),
                 PuzzleGridTypeReelTile.getColumnFromLevel(reelTileA.getDestinationX()));
 
+        swapReels(reelTileA, reelTileB);
+        ReelTile currentReel = reelTileA;
+
+        for (int reelsAboveMeIndex = 0; reelsAboveMeIndex < reelsAboveMe.length; reelsAboveMeIndex++) {
+            currentReel = swapReels(reelsAboveMe, reelsAboveMeIndex, currentReel);
+        }
+    }
+
+    private void swapReels(ReelTile reelTileA, ReelTile reelTileB) {
         float savedDestinationY = reelTileA.getDestinationY();
         int reelHasFallenFrom = levelCreator.findReel((int)reelTileB.getDestinationX(), (int) reelTileB.getDestinationY() + 40);
         ReelTile deletedReel = reelTiles.get(reelHasFallenFrom);
@@ -532,22 +578,20 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
 
         deletedReel.setDestinationY(savedDestinationY);
         deletedReel.setY(savedDestinationY);
+    }
 
-        ReelTile currentReel = reelTileA;
+    private ReelTile swapReels(TupleValueIndex[] reelsAboveMe, int reelsAboveMeIndex, ReelTile currentReel) {
+        float savedDestinationY = reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex()).getDestinationY();
+        int reelHasFallenFrom = levelCreator.findReel((int) currentReel.getDestinationX(), (int) currentReel.getDestinationY() + 40);
+        ReelTile deletedReel = reelTiles.get(reelHasFallenFrom);
 
-        for (int reelsAboveMeIndex = 0; reelsAboveMeIndex < reelsAboveMe.length; reelsAboveMeIndex++) {
-            savedDestinationY = reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex()).getDestinationY();
-            reelHasFallenFrom = levelCreator.findReel((int) currentReel.getDestinationX(), (int) currentReel.getDestinationY() + 40);
-            deletedReel = reelTiles.get(reelHasFallenFrom);
+        reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex()).setDestinationY(currentReel.getDestinationY() + 40);
+        reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex()).setY(currentReel.getDestinationY() + 40);
 
-            reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex()).setDestinationY(currentReel.getDestinationY() + 40);
-            reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex()).setY(currentReel.getDestinationY() + 40);
+        deletedReel.setDestinationY(savedDestinationY);
+        deletedReel.setY(savedDestinationY);
 
-            deletedReel.setDestinationY(savedDestinationY);
-            deletedReel.setY(savedDestinationY);
-
-            currentReel = reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex());
-        }
+        return reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex());
     }
 
     private void swapReelsAboveMe(ReelTile reelTile) {
@@ -581,14 +625,6 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
 
             currentReel = reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex());
         }
-    }
-
-    private int getRow(float y) {
-        return PuzzleGridTypeReelTile.getRowFromLevel(y, GAME_LEVEL_HEIGHT);
-    }
-
-    private int getColumn(float x) {
-        return PuzzleGridTypeReelTile.getColumnFromLevel(x);
     }
 
     private void reelsLeftToFall(int rA, int cA) {
