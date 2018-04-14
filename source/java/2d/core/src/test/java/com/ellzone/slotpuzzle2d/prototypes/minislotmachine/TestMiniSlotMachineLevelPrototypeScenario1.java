@@ -46,8 +46,8 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 @PrepareForTest( {MiniSlotMachineLevelPrototypeScenario1.class} )
 
 public class TestMiniSlotMachineLevelPrototypeScenario1 {
-    public static final String VIEWPORT_FIELD_NAME = "viewport";
-    public static final String LEVEL_CREATOR_FIELD_NAME = "levelCreator";
+    private static final String VIEWPORT_FIELD_NAME = "viewport";
+    private static final String LEVEL_CREATOR_FIELD_NAME = "levelCreator";
 
     private MiniSlotMachineLevelPrototypeScenario1 partialMockMiniSlotMachineLevelPrototypeScenario1;
     private Input mockInput;
@@ -55,7 +55,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1 {
     private FitViewport mockViewPort;
     private LevelCreatorScenario1 levelCreatorScenario1Mock;
     private Vector3 vector3Mock;
-    Capture<String> logCaptureArgument1, logCaptureArgument2;
+    private Capture<String> logCaptureArgument1, logCaptureArgument2;
 
     private void setUp() {
         setUpMocks();
@@ -94,7 +94,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1 {
         expectations(playState);
         replayAll();
         inokeHandleInput();
-        assertThat(logCaptureArgument2.getValue(), CoreMatchers.<String>equalTo(playState.toString()));
+        assertThat(logCaptureArgument2.getValue(), CoreMatchers.equalTo(playState.toString()));
         verifyAll();
     }
 
