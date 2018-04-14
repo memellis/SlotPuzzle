@@ -176,11 +176,7 @@ public class TestPuzzleGrid {
 			assertTrue(matchedSlots.get(i).getR() == expectedMatchedSlots.get(i).getR());
 			assertTrue(matchedSlots.get(i).getC() == expectedMatchedSlots.get(i).getC());
 			assertTrue(matchedSlots.get(i).getValue() == expectedMatchedSlots.get(i).getValue());
-			System.out.print(matchedSlots.get(i).getR() + " " + expectedMatchedSlots.get(i).getR() + " ");
-			System.out.print(matchedSlots.get(i).getC() + " " + expectedMatchedSlots.get(i).getC() + " ");
-			System.out.println(matchedSlots.get(i).getValue() + " " + expectedMatchedSlots.get(i).getValue());
 		}
-		PuzzleGrid.printMatchedSlots(matchedSlots);
 	}
 	
 	private void assertTrueGridsAreEqual(int[][] first, int[][] second) {
