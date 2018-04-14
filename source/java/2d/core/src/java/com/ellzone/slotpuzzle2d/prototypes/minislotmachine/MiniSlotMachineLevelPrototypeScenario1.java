@@ -64,13 +64,13 @@ import com.ellzone.slotpuzzle2d.utils.Random;
 import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
 public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate {
-    public static final int GAME_LEVEL_WIDTH = 12;
-    public static final int GAME_LEVEL_HEIGHT = 9;
+    static final int GAME_LEVEL_WIDTH = 12;
+    static final int GAME_LEVEL_HEIGHT = 9;
     public static final String REEL_OBJECT_LAYER = "Reels";
     public static final String HIDDEN_PATTERN_LEVEL_TYPE = "HiddenPattern";
-    public static final String PLAYING_CARD_LEVEL_TYPE = "PlayingCard";
-    public static final String MINI_SLOT_MACHINE_LEVEL_NAME = "Mini Slot Machine";
-    public static final String BONUS_LEVEL_TYPE = "BonusLevelType";
+    private static final String PLAYING_CARD_LEVEL_TYPE = "PlayingCard";
+    private static final String MINI_SLOT_MACHINE_LEVEL_NAME = "Mini Slot Machine";
+    static final String BONUS_LEVEL_TYPE = "BonusLevelType";
     public static final String HIDDEN_PATTERN_LAYER_NAME = "Hidden Pattern Object";
     public static final int NUMBER_OF_SUITS = 4;
     public static final int NUMBER_OF_CARDS_IN_A_SUIT = 13;
@@ -78,7 +78,7 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
 
     public static int numberOfReelsToHitSinkBottom;
     public static int numberOfReelsToFall;
-    public static int numberOfReelsAboveHitsIntroSpinning;
+    private static int numberOfReelsAboveHitsIntroSpinning;
 
     private String logTag = SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName();
     private OrthographicCamera camera;
@@ -580,6 +580,19 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         deletedReel.setY(savedDestinationY);
     }
 
+    private void swapReels(ReelTile reelTile) {
+        float savedDestinationY = reelTile.getDestinationY();
+        int reelHasFallenFrom = levelCreator.findReel((int)reelTile.getDestinationX(), (int) 120);
+        ReelTile deletedReel = reelTiles.get(reelHasFallenFrom);
+
+        reelTile.setDestinationY(120);
+        reelTile.setY(120);
+        reelTile.unDeleteReelTile();
+
+        deletedReel.setDestinationY(savedDestinationY);
+        deletedReel.setY(savedDestinationY);
+    }
+
     private ReelTile swapReels(TupleValueIndex[] reelsAboveMe, int reelsAboveMeIndex, ReelTile currentReel) {
         float savedDestinationY = reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex()).getDestinationY();
         int reelHasFallenFrom = levelCreator.findReel((int) currentReel.getDestinationX(), (int) currentReel.getDestinationY() + 40);
@@ -599,31 +612,11 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
                 PuzzleGridTypeReelTile.getRowFromLevel(reelTile.getDestinationY(), GAME_LEVEL_HEIGHT),
                 PuzzleGridTypeReelTile.getColumnFromLevel(reelTile.getDestinationX()));
 
-        float savedDestinationY = reelTile.getDestinationY();
-        int reelHasFallenFrom = levelCreator.findReel((int)reelTile.getDestinationX(), (int) 120);
-        ReelTile deletedReel = reelTiles.get(reelHasFallenFrom);
-
-        reelTile.setDestinationY(120);
-        reelTile.setY(120);
-        reelTile.unDeleteReelTile();
-
-        deletedReel.setDestinationY(savedDestinationY);
-        deletedReel.setY(savedDestinationY);
-
+        swapReels(reelTile);
         ReelTile currentReel = reelTile;
 
         for (int reelsAboveMeIndex = 0; reelsAboveMeIndex < reelsAboveMe.length; reelsAboveMeIndex++) {
-            savedDestinationY = reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex()).getDestinationY();
-            reelHasFallenFrom = levelCreator.findReel((int) currentReel.getDestinationX(), (int) currentReel.getDestinationY() + 40);
-            deletedReel = reelTiles.get(reelHasFallenFrom);
-
-            reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex()).setDestinationY(currentReel.getDestinationY() + 40);
-            reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex()).setY(currentReel.getDestinationY() + 40);
-
-            deletedReel.setDestinationY(savedDestinationY);
-            deletedReel.setY(savedDestinationY);
-
-            currentReel = reelTiles.get(reelsAboveMe[reelsAboveMeIndex].getIndex());
+            currentReel = swapReels(reelsAboveMe, reelsAboveMeIndex, currentReel);
         }
     }
 
