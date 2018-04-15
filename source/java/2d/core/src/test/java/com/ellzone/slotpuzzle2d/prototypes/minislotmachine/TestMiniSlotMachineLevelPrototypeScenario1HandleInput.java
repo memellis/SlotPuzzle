@@ -131,7 +131,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1HandleInput {
     private void inokeHandleInput() {
         Whitebox.setInternalState(partialMockMiniSlotMachineLevelPrototypeScenario1, VIEWPORT_FIELD_NAME, mockViewPort);
         Whitebox.setInternalState(partialMockMiniSlotMachineLevelPrototypeScenario1, LEVEL_CREATOR_FIELD_NAME, levelCreatorScenario1Mock);
-        partialMockMiniSlotMachineLevelPrototypeScenario1.handleInput(0.0f);
+        partialMockMiniSlotMachineLevelPrototypeScenario1.handleInput();
     }
 
     private void replayAll() {
