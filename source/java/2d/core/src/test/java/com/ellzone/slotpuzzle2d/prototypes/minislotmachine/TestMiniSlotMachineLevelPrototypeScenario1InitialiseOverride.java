@@ -196,7 +196,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1InitialiseOverride {
         expectations();
         replayAll();
         partialMockMiniSlotMachineLevelPrototypeScenario1.initialiseOverride();
-        verifyAll();
         assertThat(playStatesCapture.getValue().toString(), CoreMatchers.equalTo(PlayScreen.PlayStates.INTRO_SPINNING.toString()));
-    }
+        verifyAll();
+   }
 }
