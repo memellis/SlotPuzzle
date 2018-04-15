@@ -24,7 +24,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -41,16 +40,13 @@ import com.ellzone.slotpuzzle2d.effects.SpriteAccessor;
 import com.ellzone.slotpuzzle2d.level.Card;
 import com.ellzone.slotpuzzle2d.level.LevelCreatorScenario1;
 import com.ellzone.slotpuzzle2d.level.LevelDoor;
-import com.ellzone.slotpuzzle2d.physics.BoxBodyBuilder;
 import com.ellzone.slotpuzzle2d.physics.DampenedSineParticle;
 import com.ellzone.slotpuzzle2d.physics.PhysicsManagerCustomBodies;
-import com.ellzone.slotpuzzle2d.physics.Vector;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototypeTemplate;
 import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGridType;
 import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGridTypeReelTile;
 import com.ellzone.slotpuzzle2d.puzzlegrid.TupleValueIndex;
 import com.ellzone.slotpuzzle2d.scene.Hud;
-import com.ellzone.slotpuzzle2d.scene.MapTile;
 import com.ellzone.slotpuzzle2d.screens.PlayScreen;
 import com.ellzone.slotpuzzle2d.sprites.AnimatedReel;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
@@ -78,24 +74,14 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
     private String logTag = SlotPuzzleConstants.SLOT_PUZZLE + this.getClass().getName();
     private OrthographicCamera camera;
     private TiledMap miniSlotMachineLevel;
-    private MapTile mapTile;
-    private MapProperties levelProperties;
-    private TextureAtlas reelAtlas, tilesAtlas, carddeckAtlas;
-    private Array<DampenedSineParticle> dampenedSines;
+    private TextureAtlas carddeckAtlas;
     private Reels reels;
     private Array<ReelTile> reelTiles;
     private Array<AnimatedReel> animatedReels;
     private LevelDoor levelDoor;
     private Array<Card> cards;
-    private Array<Integer> hiddenPlayingCards;
     private OrthogonalTiledMapRenderer tileMapRenderer;
-    private Pixmap slotReelPixmap, slotReelScrollPixmap;
-    private Texture slotReelTexture, slotReelScrollTexture;
-    private int slotReelScrollheight;
     private Sound chaChingSound, pullLeverSound, reelSpinningSound, reelStoppedSound, jackpotSound;
-    private Vector accelerator, velocityMin;
-    private float acceleratorY, accelerateY, acceleratorFriction, velocityFriction, velocityY, velocityYMin;
-    private float reelSlowingTargetTime;
     private Array<Timeline> endReelSeqs;
     private Timeline reelFlashSeq;
     private LevelCreatorScenario1 levelCreator;
@@ -104,12 +90,9 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
     private boolean win = false;
     private boolean displaySpinHelp;
     private int displaySpinHelpSprite;
-    private int mapWidth, mapHeight, tilePixelWidth, tilePixelHeight;
     private Hud hud;
     private PhysicsManagerCustomBodies physics;
-    private BoxBodyBuilder bodyFactory;
     private Array<Body> reelBoxes;
-    private Array<Body> reelBoxesCollided;
 
     @Override
     protected void initialiseOverride() {
@@ -136,7 +119,6 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         createSlotReelTexture();
         getAssets(annotationAssetManager);
         miniSlotMachineLevel = annotationAssetManager.get(AssetsAnnotation.MINI_SLOT_MACHINE_LEVEL1);
-        getMapProperties(this.miniSlotMachineLevel);
     }
 
     private void initialiseLevel() {
@@ -153,7 +135,6 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         reelTiles = levelCreator.getReelTiles();
         animatedReels = levelCreator.getAnimatedReels();
         reelBoxes = levelCreator.getReelBoxes();
-        reelBoxesCollided = new Array<>();
         initialiseHud();
         levelCreator.setPlayState(PlayScreen.PlayStates.INTRO_SPINNING);
     }
@@ -175,7 +156,6 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
 
     private void initialisePhysics() {
         physics = new PhysicsManagerCustomBodies(camera);
-        bodyFactory = physics.getBodyFactory();
 
         float centreX = SlotPuzzleConstants.V_WIDTH / 2;
         float centreY = SlotPuzzleConstants.V_HEIGHT / 2;
@@ -197,22 +177,13 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
                 centreY + 4 * 40 / 2 - 40);
     }
 
-    private void getMapProperties(TiledMap level) {
-        MapProperties mapProperties = level.getProperties();
-        mapWidth = mapProperties.get("width", Integer.class);
-        mapHeight = mapProperties.get("height", Integer.class);
-        tilePixelWidth = mapProperties.get("tilewidth", Integer.class);
-        tilePixelHeight = mapProperties.get("tileheight", Integer.class);
-    }
-
     private void createSlotReelTexture() {
-        slotReelPixmap = new Pixmap(PlayScreen.TILE_WIDTH, PlayScreen.TILE_HEIGHT, Pixmap.Format.RGBA8888);
+        Pixmap slotReelPixmap = new Pixmap(PlayScreen.TILE_WIDTH, PlayScreen.TILE_HEIGHT, Pixmap.Format.RGBA8888);
         slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedPixmap(reels.getReels(), reels.getReels().length);
-        slotReelTexture = new Texture(slotReelPixmap);
-        slotReelScrollPixmap = new Pixmap(reels.getReelWidth(), reels.getReelHeight(), Pixmap.Format.RGBA8888);
+        Texture slotReelTexture = new Texture(slotReelPixmap);
+        Pixmap slotReelScrollPixmap = new Pixmap(reels.getReelWidth(), reels.getReelHeight(), Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(reels.getReels());
-        slotReelScrollTexture = new Texture(slotReelScrollPixmap);
-        slotReelScrollheight = slotReelScrollTexture.getHeight();
+        Texture slotReelScrollTexture = new Texture(slotReelScrollPixmap);
     }
 
     @Override
@@ -234,10 +205,8 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
     }
 
     private void initialisePlayScreen() {
-        this.tileMapRenderer = new OrthogonalTiledMapRenderer(miniSlotMachineLevel);
-        this.font = new BitmapFont();
-        int sW = SlotPuzzleConstants.V_WIDTH;
-        int sH = SlotPuzzleConstants.V_HEIGHT;
+        tileMapRenderer = new OrthogonalTiledMapRenderer(miniSlotMachineLevel);
+        font = new BitmapFont();
         reelTiles = new Array<>();
     }
 
@@ -353,7 +322,6 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
     }
 
     private void startReelSpinning(ReelTile reel, AnimatedReel animatedReel) {
-        reelSlowingTargetTime = 3.0f;
         reel.setEndReel(Random.getInstance().nextInt(reels.getReels().length - 1));
         reel.startSpinning();
         levelCreator.setNumberOfReelsSpinning(levelCreator.getNumberOfReelsSpinning() + 1);
