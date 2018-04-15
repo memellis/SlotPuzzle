@@ -33,6 +33,9 @@ import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
 
 import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
+import org.easymock.Capture;
+import org.easymock.EasyMock;
+import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +47,9 @@ import org.powermock.reflect.Whitebox;
 
 import static com.ellzone.slotpuzzle2d.prototypes.minislotmachine.MiniSlotMachineLevelPrototypeScenario1.GAME_LEVEL_HEIGHT;
 import static com.ellzone.slotpuzzle2d.prototypes.minislotmachine.MiniSlotMachineLevelPrototypeScenario1.GAME_LEVEL_WIDTH;
+import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.expect;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.powermock.api.easymock.PowerMock.createMock;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
 import static org.powermock.api.easymock.PowerMock.replay;
@@ -52,7 +57,7 @@ import static org.powermock.api.easymock.PowerMock.verify;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest( {MiniSlotMachineLevelPrototypeScenario1.class, CameraHelper.class} )
+@PrepareForTest( {MiniSlotMachineLevelPrototypeScenario1.class, LevelCreatorScenario1.class, CameraHelper.class} )
 
 public class TestMiniSlotMachineLevelPrototypeScenario1InitialiseOverride {
     private static final String ANNOTATION_ASSET_MANAGER_FIELD_NAME = "annotationAssetManager";
@@ -73,6 +78,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1InitialiseOverride {
     private TweenManager tweenManagerMock;
     private PhysicsManagerCustomBodies physicsMock;
     private SpriteBatch spriteBatchMock;
+    private Capture<PlayScreen.PlayStates> playStatesCapture;
 
     @Before
     public void setUp() {
@@ -82,17 +88,18 @@ public class TestMiniSlotMachineLevelPrototypeScenario1InitialiseOverride {
     private void setUpMocks() {
         setUpPowerMocks();
         setUpEasyMocks();
+        setUpCaptureArguments();
     }
 
     private void setUpPowerMocks() {
         partialMockMiniSlotMachineLevelPrototypeScenario1 = PowerMock.createNicePartialMock(MiniSlotMachineLevelPrototypeScenario1.class,
                 "initialiseReels",
-                "createSlotReelTexture",
-                "getAssets",
-                "getMapProperties",
-                "initialiseLevelDoor",
-                "createPlayScreen",
-                "initialisePhysics"
+                              "createSlotReelTexture",
+                              "getAssets",
+                              "getMapProperties",
+                              "initialiseLevelDoor",
+                              "createPlayScreen",
+                              "initialisePhysics"
         );
         mockStatic(CameraHelper.class);
     }
@@ -110,16 +117,30 @@ public class TestMiniSlotMachineLevelPrototypeScenario1InitialiseOverride {
         spriteBatchMock = createMock(SpriteBatch.class);
     }
 
+    private void setUpCaptureArguments() {
+        playStatesCapture = EasyMock.newCapture();
+    }
 
     @After
     public void tearDown() {
-        tearDownMocks();
+        tearDownPowerMocks();
     }
 
-    private void tearDownMocks() {
+    private void tearDownPowerMocks() {
         partialMockMiniSlotMachineLevelPrototypeScenario1 = null;
+    }
+
+    private void tearEasyMocks() {
         levelCreatorScenario1Mock = null;
         hudMock = null;
+        orthographicCameraMock = null;
+        annotationAssetManagerMock = null;
+        levelDoorMock = null;
+        tiledMapMock = null;
+        cardDeckAtlasMock = null;
+        tweenManagerMock = null;
+        physicsMock = null;
+        spriteBatchMock = null;
     }
 
     private void expectations() throws Exception {
@@ -127,7 +148,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1InitialiseOverride {
         expect(annotationAssetManagerMock.get(AssetsAnnotation.MINI_SLOT_MACHINE_LEVEL1)).andReturn(tiledMapMock);
         levelCreatorExpectations();
         hudExpectations();
-        levelCreatorScenario1Mock.setPlayState(PlayScreen.PlayStates.INTRO_SPINNING);
+        levelCreatorScenario1Mock.setPlayState(capture(playStatesCapture));
     }
 
     private void hudExpectations() throws Exception {
@@ -150,7 +171,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1InitialiseOverride {
         expect(levelCreatorScenario1Mock.getReelTiles()).andReturn(null);
         expect(levelCreatorScenario1Mock.getAnimatedReels()).andReturn(null);
         expect(levelCreatorScenario1Mock.getReelBoxes()).andReturn(null);
-    }
+        }
 
     private void setFields() {
         Whitebox.setInternalState(partialMockMiniSlotMachineLevelPrototypeScenario1, ANNOTATION_ASSET_MANAGER_FIELD_NAME, annotationAssetManagerMock);
@@ -176,5 +197,6 @@ public class TestMiniSlotMachineLevelPrototypeScenario1InitialiseOverride {
         replayAll();
         partialMockMiniSlotMachineLevelPrototypeScenario1.initialiseOverride();
         verifyAll();
+        assertThat(playStatesCapture.getValue().toString(), CoreMatchers.equalTo(PlayScreen.PlayStates.INTRO_SPINNING.toString()));
     }
 }
