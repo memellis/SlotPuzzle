@@ -66,14 +66,9 @@ import net.dermetfan.gdx.assets.AnnotationAssetManager;
 public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate {
     static final int GAME_LEVEL_WIDTH = 12;
     static final int GAME_LEVEL_HEIGHT = 9;
-    public static final String REEL_OBJECT_LAYER = "Reels";
-    public static final String HIDDEN_PATTERN_LEVEL_TYPE = "HiddenPattern";
     private static final String PLAYING_CARD_LEVEL_TYPE = "PlayingCard";
     private static final String MINI_SLOT_MACHINE_LEVEL_NAME = "Mini Slot Machine";
-    static final String BONUS_LEVEL_TYPE = "BonusLevelType";
-    public static final String HIDDEN_PATTERN_LAYER_NAME = "Hidden Pattern Object";
-    public static final int NUMBER_OF_SUITS = 4;
-    public static final int NUMBER_OF_CARDS_IN_A_SUIT = 13;
+    private static final String BONUS_LEVEL_TYPE = "BonusLevelType";
     public static final int MAX_NUMBER_OF_REELS_HIT_SINK_BOTTOM = 3;
 
     public static int numberOfReelsToHitSinkBottom;
@@ -94,7 +89,6 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
     private Array<Card> cards;
     private Array<Integer> hiddenPlayingCards;
     private OrthogonalTiledMapRenderer tileMapRenderer;
-    private int sW, sH;
     private Pixmap slotReelPixmap, slotReelScrollPixmap;
     private Texture slotReelTexture, slotReelScrollTexture;
     private int slotReelScrollheight;
@@ -116,9 +110,6 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
     private BoxBodyBuilder bodyFactory;
     private Array<Body> reelBoxes;
     private Array<Body> reelBoxesCollided;
-    private Body reelSinkLhs, reelSinkRhs, reelSinkBottom;
-    private float centreX = SlotPuzzleConstants.V_WIDTH / 2;
-    private float centreY = SlotPuzzleConstants.V_HEIGHT / 2;
 
     @Override
     protected void initialiseOverride() {
@@ -162,7 +153,7 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         reelTiles = levelCreator.getReelTiles();
         animatedReels = levelCreator.getAnimatedReels();
         reelBoxes = levelCreator.getReelBoxes();
-        reelBoxesCollided = new Array<Body>();
+        reelBoxesCollided = new Array<>();
         initialiseHud();
         levelCreator.setPlayState(PlayScreen.PlayStates.INTRO_SPINNING);
     }
@@ -186,18 +177,20 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         physics = new PhysicsManagerCustomBodies(camera);
         bodyFactory = physics.getBodyFactory();
 
-        reelSinkBottom = physics.createEdgeBody(BodyDef.BodyType.StaticBody,
+        float centreX = SlotPuzzleConstants.V_WIDTH / 2;
+        float centreY = SlotPuzzleConstants.V_HEIGHT / 2;
+        Body reelSinkBottom = physics.createEdgeBody(BodyDef.BodyType.StaticBody,
                 centreX - 8 * 40 / 2 - 4,
                 centreY - 4 * 40 / 2 - 40,
                 centreX + 8 * 40 / 2 + 4,
                 centreY - 4 * 40 / 2 - 40);
         reelSinkBottom.setUserData(this);
-        reelSinkLhs = physics.createEdgeBody(BodyDef.BodyType.StaticBody,
+        physics.createEdgeBody(BodyDef.BodyType.StaticBody,
                 centreX - 8 * 40 / 2 - 4,
                 centreY - 4 * 40 / 2 - 40,
                 centreX - 8 * 40 / 2 - 4,
                 centreY + 4 * 40 / 2 - 40);
-        reelSinkRhs = physics.createEdgeBody(BodyDef.BodyType.StaticBody,
+        physics.createEdgeBody(BodyDef.BodyType.StaticBody,
                 centreX + 8 * 40 / 2 + 4,
                 centreY - 4 * 40 / 2 - 40,
                 centreX + 8 * 40 / 2 + 4,
@@ -216,7 +209,7 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         slotReelPixmap = new Pixmap(PlayScreen.TILE_WIDTH, PlayScreen.TILE_HEIGHT, Pixmap.Format.RGBA8888);
         slotReelPixmap = PixmapProcessors.createDynamicScrollAnimatedPixmap(reels.getReels(), reels.getReels().length);
         slotReelTexture = new Texture(slotReelPixmap);
-        slotReelScrollPixmap = new Pixmap((int) reels.getReelWidth(), (int)reels.getReelHeight(), Pixmap.Format.RGBA8888);
+        slotReelScrollPixmap = new Pixmap(reels.getReelWidth(), reels.getReelHeight(), Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(reels.getReels());
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
         slotReelScrollheight = slotReelScrollTexture.getHeight();
@@ -243,12 +236,12 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
     private void initialisePlayScreen() {
         this.tileMapRenderer = new OrthogonalTiledMapRenderer(miniSlotMachineLevel);
         this.font = new BitmapFont();
-        this.sW = SlotPuzzleConstants.V_WIDTH;
-        this.sH = SlotPuzzleConstants.V_HEIGHT;
-        reelTiles = new Array<ReelTile>();
+        int sW = SlotPuzzleConstants.V_WIDTH;
+        int sH = SlotPuzzleConstants.V_HEIGHT;
+        reelTiles = new Array<>();
     }
 
-    public void handleInput(float dt) {
+    public void handleInput() {
         int touchX, touchY;
         if (Gdx.input.justTouched()) {
             touchX = Gdx.input.getX();
@@ -424,7 +417,7 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
 
     @Override
     protected void renderOverride(float dt) {
-        handleInput(dt);
+        handleInput();
         tileMapRenderer.render();
         batch.begin();
         if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
@@ -437,14 +430,14 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
             reels.getReels()[displaySpinHelpSprite].draw(batch);
         }
         batch.end();
-        renderReelBoxes(batch, reelBoxes, reelTiles);
+        renderReelBoxes(batch, reelBoxes);
         physics.draw(batch);
         batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
         stage.draw();
     }
 
-    private void renderReelBoxes(SpriteBatch batch, Array<Body> reelBoxes, Array<ReelTile> reelTiles) {
+    private void renderReelBoxes(SpriteBatch batch, Array<Body> reelBoxes) {
         batch.begin();
         batch.setProjectionMatrix(viewport.getCamera().combined);
         int index = 0;
@@ -465,7 +458,7 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         batch.end();
     }
 
-    public void drawPlayingCards(SpriteBatch spriteBatch) {
+    private void drawPlayingCards(SpriteBatch spriteBatch) {
         for (Card card : cards) {
             card.draw(spriteBatch);
         }
@@ -480,10 +473,6 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
 
     public PlayScreen.PlayStates getPlayState() {
         return this.levelCreator.getPlayState();
-    }
-
-    public void setPlayState(PlayScreen.PlayStates playState) {
-        this.levelCreator.setPlayState(playState);
     }
 
     public void dealWithHitSinkBottom(ReelTile reelTile) {
@@ -582,7 +571,7 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
 
     private void swapReels(ReelTile reelTile) {
         float savedDestinationY = reelTile.getDestinationY();
-        int reelHasFallenFrom = levelCreator.findReel((int)reelTile.getDestinationX(), (int) 120);
+        int reelHasFallenFrom = levelCreator.findReel((int)reelTile.getDestinationX(), 120);
         ReelTile deletedReel = reelTiles.get(reelHasFallenFrom);
 
         reelTile.setDestinationY(120);
