@@ -19,6 +19,7 @@ package com.ellzone.slotpuzzle2d.prototypes.minislotmachine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -29,6 +30,8 @@ import com.ellzone.slotpuzzle2d.puzzlegrid.ReelTileGridValue;
 import com.ellzone.slotpuzzle2d.scene.Hud;
 import com.ellzone.slotpuzzle2d.sprites.AnimatedReel;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
+import com.ellzone.slotpuzzle2d.sprites.Reels;
+import com.ellzone.slotpuzzle2d.utils.Random;
 
 import org.junit.After;
 import org.junit.Before;
@@ -46,7 +49,7 @@ import static org.powermock.api.easymock.PowerMock.replay;
 import static org.powermock.api.easymock.PowerMock.verify;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest( {MiniSlotMachineLevelPrototypeScenario1.class, Vector2.class, Hud.class } )
+@PrepareForTest( {MiniSlotMachineLevelPrototypeScenario1.class, Vector2.class, Hud.class, Random.class } )
 
 public class TestMiniSlotMachineLevelPrototypeScenario1ProcessIsTiledClicked {
     private final static String VIEWPORT_FIELD_NAME = "viewport";
@@ -55,6 +58,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ProcessIsTiledClicked {
     private final static String ANIMATEDREELS_FIELD_NAME = "animatedReels";
     private final static String PULLLEVELSOUND_FIELD_NAME = "pullLeverSound";
     private final static String REELSPIININGSOUND_FIELD_NAME = "reelSpinningSound";
+    private final static String REELS_FIELD_NAME = "reels";
 
     private MiniSlotMachineLevelPrototypeScenario1 partialMockMiniSlotMachineLevelPrototypeScenario1;
     private LevelCreatorScenario1 levelCreatorScenario1Mock;
@@ -67,6 +71,10 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ProcessIsTiledClicked {
     private Array<AnimatedReel> animatedReelsMock;
     private AnimatedReel animatedReelMock;
     private Sound pullLeverSoundMock, reelSpinningSoundMock;
+    private boolean spinning;
+    private Random randomMock;
+    private Reels reelsMock;
+    private Sprite spriteMock;
 
     @Before
     public void setUp() {
@@ -78,6 +86,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ProcessIsTiledClicked {
         partialMockMiniSlotMachineLevelPrototypeScenario1 = PowerMock.createNicePartialMock(MiniSlotMachineLevelPrototypeScenario1.class,
                 "initialiseOverride");
         PowerMock.mockStatic(Hud.class);
+        PowerMock.mockStatic(Random.class);
     }
 
     private void setUpCreateMocks() {
@@ -91,6 +100,9 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ProcessIsTiledClicked {
         animatedReelMock = createMock(AnimatedReel.class);
         pullLeverSoundMock = createMock(Sound.class);
         reelSpinningSoundMock = createMock(Sound.class);
+        randomMock = createMock(Random.class);
+        reelsMock = createMock(Reels.class);
+        spriteMock = createMock(Sprite.class);
     }
 
     private void mockGdx() {
@@ -111,16 +123,26 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ProcessIsTiledClicked {
     }
 
     private void tearDownCreateMocks() {
-
+        inputMock = null;
+        vector2Mock = null;
+        viewportMock = null;
+        levelCreatorScenario1Mock = null;
+        reelTilesMock = null;
+        reelTileMock = null;
+        animatedReelsMock = null;
+        animatedReelMock = null;
+        pullLeverSoundMock = null;
+        reelSpinningSoundMock = null;
+        randomMock = null;
+        reelsMock = null;
     }
 
-
     private void tearDownMockGdx() {
-
+        inputMock = null;
     }
 
     private void tearDownPowerMocks() {
-
+        partialMockMiniSlotMachineLevelPrototypeScenario1 = null;
     }
 
     private void setFieldsInClassUnderTest() {
@@ -130,6 +152,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ProcessIsTiledClicked {
         Whitebox.setInternalState(partialMockMiniSlotMachineLevelPrototypeScenario1, ANIMATEDREELS_FIELD_NAME, animatedReelsMock);
         Whitebox.setInternalState(partialMockMiniSlotMachineLevelPrototypeScenario1, PULLLEVELSOUND_FIELD_NAME, pullLeverSoundMock);
         Whitebox.setInternalState(partialMockMiniSlotMachineLevelPrototypeScenario1, REELSPIININGSOUND_FIELD_NAME, reelSpinningSoundMock);
+        Whitebox.setInternalState(partialMockMiniSlotMachineLevelPrototypeScenario1, REELS_FIELD_NAME, reelsMock);
     }
 
     private void setUpTestData() {
@@ -159,7 +182,10 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ProcessIsTiledClicked {
         expectationsGetTileClicked();
         expectationsProcessTileClicked();
         expectationsProcessReelClicked();
-        expectationssetEndReelWithCurrentReel();
+        if (spinning)
+            expectationssetEndReelWithCurrentReel();
+        else
+            expectationsStartSpinning();
     }
 
     private void expectationssetEndReelWithCurrentReel() {
@@ -171,10 +197,27 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ProcessIsTiledClicked {
         expect(reelSpinningSoundMock.play()).andReturn(0L);
     }
 
+    private void expectationsStartSpinning() {
+        expect(Random.getInstance()).andReturn(randomMock);
+        expect(randomMock.nextInt(0)).andReturn(0);
+        expect(reelsMock.getReels()).andReturn(new Sprite[] {spriteMock});
+        reelTileMock.startSpinning();
+        reelTileMock.setEndReel(0);
+        expect(levelCreatorScenario1Mock.getNumberOfReelsSpinning()).andReturn(1);
+        levelCreatorScenario1Mock.setNumberOfReelsSpinning(2);
+        reelTileMock.setSy((int)0);
+        animatedReelMock.reinitialise();
+        Hud.addScore(-1);
+        expect(pullLeverSoundMock.play()).andReturn(0L);
+    }
+
     private void expectationsProcessReelClicked() {
         expect(reelTileMock.isReelTileDeleted()).andReturn(false);
-        expect(reelTileMock.isSpinning()).andReturn(true);
-        expect(animatedReelMock.getDampenedSineState()).andReturn(DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE);
+        expect(reelTileMock.isSpinning()).andReturn(spinning);
+        if (spinning)
+            expect(animatedReelMock.getDampenedSineState()).andReturn(DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE);
+        else
+            expect(reelTileMock.getFlashTween()).andReturn(false);
     }
 
     private void expectationsProcessTileClicked() {
@@ -205,6 +248,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ProcessIsTiledClicked {
     private void replayAll() {
         replay(partialMockMiniSlotMachineLevelPrototypeScenario1,
                 Vector2.class,
+                Random.class,
                 inputMock,
                 vector2Mock,
                 viewportMock,
@@ -214,7 +258,9 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ProcessIsTiledClicked {
                 animatedReelsMock,
                 animatedReelMock,
                 pullLeverSoundMock,
-                reelSpinningSoundMock);
+                reelSpinningSoundMock,
+                reelsMock,
+                randomMock);
     }
 
     private void verifyAll() {
@@ -228,11 +274,27 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ProcessIsTiledClicked {
                 animatedReelMock,
                 animatedReelMock,
                 pullLeverSoundMock,
-                reelSpinningSoundMock);
+                reelSpinningSoundMock,
+                reelsMock,
+                randomMock);
+    }
+
+    private void setSpinning(boolean spinning) {
+        this.spinning = spinning;
     }
 
     @Test
     public void testProcessIsTileClicked() throws Exception {
+        setSpinning(true);
+        expectations();
+        replayAll();
+        Whitebox.invokeMethod(partialMockMiniSlotMachineLevelPrototypeScenario1, "processIsTileClicked");
+        verifyAll();
+    }
+
+    @Test
+    public void testProcessIsTileClickedStartReelSpinning() throws Exception {
+        setSpinning(false);
         expectations();
         replayAll();
         Whitebox.invokeMethod(partialMockMiniSlotMachineLevelPrototypeScenario1, "processIsTileClicked");
