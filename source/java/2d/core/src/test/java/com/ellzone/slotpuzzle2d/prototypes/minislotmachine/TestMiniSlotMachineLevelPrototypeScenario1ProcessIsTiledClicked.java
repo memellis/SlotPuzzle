@@ -26,15 +26,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ellzone.slotpuzzle2d.level.LevelCreatorScenario1;
 import com.ellzone.slotpuzzle2d.physics.DampenedSineParticle;
 import com.ellzone.slotpuzzle2d.puzzlegrid.ReelTileGridValue;
-import com.ellzone.slotpuzzle2d.puzzlegrid.TupleValueIndex;
 import com.ellzone.slotpuzzle2d.scene.Hud;
 import com.ellzone.slotpuzzle2d.sprites.AnimatedReel;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
-import com.ellzone.slotpuzzle2d.testpuzzlegrid.TestPuzzleGridType;
 
-import org.easymock.Capture;
-import org.easymock.EasyMock;
-import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,8 +40,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.powermock.api.easymock.PowerMock.createMock;
 import static org.powermock.api.easymock.PowerMock.expectNew;
 import static org.powermock.api.easymock.PowerMock.replay;
@@ -162,24 +155,14 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ProcessIsTiledClicked {
         testPuzzleGrid[3][3] = new ReelTileGridValue(3, 3, 15, 0);
     }
 
-    private void expectationsInGetTileClicked() throws Exception {
-        expect(inputMock.getX()).andReturn(2);
-        expect(inputMock.getY()).andReturn(2);
-        expectNew(Vector2.class,2.0f, 2.0f).andReturn(vector2Mock);
-        vector2Mock.x = 2;
-        vector2Mock.y = 2;
-        expect(viewportMock.unproject(vector2Mock)).andReturn(vector2Mock);
-        expectNew(Vector2.class, -3.0f, 8.0f).andReturn(vector2Mock);
-        expect(levelCreatorScenario1Mock.populateMatchGrid(reelTilesMock,
-                partialMockMiniSlotMachineLevelPrototypeScenario1.GAME_LEVEL_WIDTH,
-                partialMockMiniSlotMachineLevelPrototypeScenario1.GAME_LEVEL_HEIGHT))
-               .andReturn(testPuzzleGrid);
-        expect(reelTilesMock.get(testPuzzleGrid[2][2].index)).andReturn(reelTileMock);
-        expect(levelCreatorScenario1Mock.getAnimatedReels()).andReturn(animatedReelsMock);
-        expect(animatedReelsMock.get(testPuzzleGrid[2][2].index)).andReturn(animatedReelMock);
-        expect(reelTileMock.isReelTileDeleted()).andReturn(false);
-        expect(reelTileMock.isSpinning()).andReturn(true);
-        expect(animatedReelMock.getDampenedSineState()).andReturn(DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE);
+    private void expectationsProcessIsGetTileClicked() throws Exception {
+        expectationsGetTileClicked();
+        expectationsProcessTileClicked();
+        expectationsProcessReelClicked();
+        expectationssetEndReelWithCurrentReel();
+    }
+
+    private void expectationssetEndReelWithCurrentReel() {
         expect(reelTileMock.getCurrentReel()).andReturn(0);
         reelTileMock.setEndReel(0);
         expect(reelTileMock.getCurrentReel()).andReturn(0);
@@ -188,9 +171,35 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ProcessIsTiledClicked {
         expect(reelSpinningSoundMock.play()).andReturn(0L);
     }
 
+    private void expectationsProcessReelClicked() {
+        expect(reelTileMock.isReelTileDeleted()).andReturn(false);
+        expect(reelTileMock.isSpinning()).andReturn(true);
+        expect(animatedReelMock.getDampenedSineState()).andReturn(DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE);
+    }
+
+    private void expectationsProcessTileClicked() {
+        expect(levelCreatorScenario1Mock.populateMatchGrid(reelTilesMock,
+                partialMockMiniSlotMachineLevelPrototypeScenario1.GAME_LEVEL_WIDTH,
+                partialMockMiniSlotMachineLevelPrototypeScenario1.GAME_LEVEL_HEIGHT))
+                .andReturn(testPuzzleGrid);
+        expect(reelTilesMock.get(testPuzzleGrid[2][2].index)).andReturn(reelTileMock);
+        expect(levelCreatorScenario1Mock.getAnimatedReels()).andReturn(animatedReelsMock);
+        expect(animatedReelsMock.get(testPuzzleGrid[2][2].index)).andReturn(animatedReelMock);
+    }
+
+    private void expectationsGetTileClicked() throws Exception {
+        expect(inputMock.getX()).andReturn(2);
+        expect(inputMock.getY()).andReturn(2);
+        expectNew(Vector2.class,2.0f, 2.0f).andReturn(vector2Mock);
+        vector2Mock.x = 2;
+        vector2Mock.y = 2;
+        expect(viewportMock.unproject(vector2Mock)).andReturn(vector2Mock);
+        expectNew(Vector2.class, -3.0f, 8.0f).andReturn(vector2Mock);
+    }
+
     private void expectations() throws Exception {
         setFieldsInClassUnderTest();
-        expectationsInGetTileClicked();
+        expectationsProcessIsGetTileClicked();
     }
 
     private void replayAll() {
