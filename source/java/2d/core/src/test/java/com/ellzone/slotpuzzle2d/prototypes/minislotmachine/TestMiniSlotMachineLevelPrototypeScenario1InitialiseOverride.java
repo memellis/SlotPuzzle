@@ -171,7 +171,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1InitialiseOverride {
         expect(levelCreatorScenario1Mock.getReelTiles()).andReturn(null);
         expect(levelCreatorScenario1Mock.getAnimatedReels()).andReturn(null);
         expect(levelCreatorScenario1Mock.getReelBoxes()).andReturn(null);
-        }
+    }
 
     private void setFields() {
         Whitebox.setInternalState(partialMockMiniSlotMachineLevelPrototypeScenario1, ANNOTATION_ASSET_MANAGER_FIELD_NAME, annotationAssetManagerMock);
