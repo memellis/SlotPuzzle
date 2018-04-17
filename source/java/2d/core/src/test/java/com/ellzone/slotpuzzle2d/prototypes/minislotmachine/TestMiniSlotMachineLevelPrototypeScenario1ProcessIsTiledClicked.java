@@ -43,6 +43,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import static org.easymock.EasyMock.expect;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.powermock.api.easymock.PowerMock.createMock;
 import static org.powermock.api.easymock.PowerMock.expectNew;
 import static org.powermock.api.easymock.PowerMock.replay;
@@ -217,7 +219,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ProcessIsTiledClicked {
         reelTileMock.setEndReel(0);
         expect(levelCreatorScenario1Mock.getNumberOfReelsSpinning()).andReturn(1);
         levelCreatorScenario1Mock.setNumberOfReelsSpinning(2);
-        reelTileMock.setSy((int)0);
+        reelTileMock.setSy(0);
         animatedReelMock.reinitialise();
         Hud.addScore(-1);
         expect(pullLeverSoundMock.play()).andReturn(0L);
@@ -230,6 +232,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ProcessIsTiledClicked {
             expect(animatedReelMock.getDampenedSineState()).andReturn(DampenedSineParticle.DSState.UPDATING_DAMPENED_SINE);
         else
             expect(reelTileMock.getFlashTween()).andReturn(false);
+        expect(reelTileMock.isSpinning()).andReturn(spinning);
     }
 
     private void expectationsProcessTileClicked() {
@@ -301,6 +304,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ProcessIsTiledClicked {
         expectations();
         replayAll();
         Whitebox.invokeMethod(partialMockMiniSlotMachineLevelPrototypeScenario1, "processIsTileClicked");
+        assertThat(reelTileMock.isSpinning(), is(true));
         verifyAll();
     }
 
@@ -310,6 +314,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ProcessIsTiledClicked {
         expectations();
         replayAll();
         Whitebox.invokeMethod(partialMockMiniSlotMachineLevelPrototypeScenario1, "processIsTileClicked");
+        assertThat(reelTileMock.isSpinning(), is(false));
         verifyAll();
     }
 }
