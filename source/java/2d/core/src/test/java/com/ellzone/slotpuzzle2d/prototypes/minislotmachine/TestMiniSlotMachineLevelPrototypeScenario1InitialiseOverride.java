@@ -105,16 +105,24 @@ public class TestMiniSlotMachineLevelPrototypeScenario1InitialiseOverride {
     }
 
     private void setUpEasyMocks() {
-        levelCreatorScenario1Mock = createMock(LevelCreatorScenario1.class);
-        hudMock = createMock(Hud.class);
-        orthographicCameraMock = createMock(OrthographicCamera.class);
-        annotationAssetManagerMock = createMock(AnnotationAssetManager.class);
-        levelDoorMock = createMock(LevelDoor.class);
+        setUpEasyMocksPart1();
+        setUpEasyMocksPart2();
+    }
+
+    private void setUpEasyMocksPart2() {
         tiledMapMock = createMock(TiledMap.class);
         cardDeckAtlasMock = createMock(TextureAtlas.class);
         tweenManagerMock = createMock(TweenManager.class);
         physicsMock = createMock(PhysicsManagerCustomBodies.class);
         spriteBatchMock = createMock(SpriteBatch.class);
+    }
+
+    private void setUpEasyMocksPart1() {
+        levelCreatorScenario1Mock = createMock(LevelCreatorScenario1.class);
+        hudMock = createMock(Hud.class);
+        orthographicCameraMock = createMock(OrthographicCamera.class);
+        annotationAssetManagerMock = createMock(AnnotationAssetManager.class);
+        levelDoorMock = createMock(LevelDoor.class);
     }
 
     private void setUpCaptureArguments() {
