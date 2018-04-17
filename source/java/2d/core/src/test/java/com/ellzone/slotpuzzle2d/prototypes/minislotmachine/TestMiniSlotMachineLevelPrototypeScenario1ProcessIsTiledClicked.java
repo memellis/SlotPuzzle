@@ -90,18 +90,30 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ProcessIsTiledClicked {
     }
 
     private void setUpCreateMocks() {
-        inputMock = createMock(Input.class);
-        vector2Mock = createMock(Vector2.class);
-        viewportMock = createMock(FitViewport.class);
+        setUpLibGDXMocks();
+        levelcreatorMock();
+        setUpReelMocks();
+    }
+
+    private void levelcreatorMock() {
         levelCreatorScenario1Mock = createMock(LevelCreatorScenario1.class);
+    }
+
+    private void setUpReelMocks() {
+        randomMock = createMock(Random.class);
         reelTilesMock = createMock(Array.class);
         reelTileMock = createMock(ReelTile.class);
         animatedReelsMock = createMock(Array.class);
         animatedReelMock = createMock(AnimatedReel.class);
+        reelsMock = createMock(Reels.class);
+    }
+
+    private void setUpLibGDXMocks() {
+        inputMock = createMock(Input.class);
+        vector2Mock = createMock(Vector2.class);
+        viewportMock = createMock(FitViewport.class);
         pullLeverSoundMock = createMock(Sound.class);
         reelSpinningSoundMock = createMock(Sound.class);
-        randomMock = createMock(Random.class);
-        reelsMock = createMock(Reels.class);
         spriteMock = createMock(Sprite.class);
     }
 
