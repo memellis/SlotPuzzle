@@ -1,7 +1,6 @@
 package com.ellzone.slotpuzzle2d.prototypes.minislotmachine;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.ellzone.slotpuzzle2d.level.LevelCreatorScenario1;
 import com.ellzone.slotpuzzle2d.scene.Hud;
@@ -49,17 +48,15 @@ public class TestMiniSlotMachineLevelPrototypeScenario1UpdateOverride {
 
     private void setUpMocks() {
         setUpPowerMocks();
-        setUpLevelcreatorMock();
+        setUpEasyMock();
     }
 
-    private void setUpLevelcreatorMock() {
+    private void setUpEasyMock() {
         levelCreatorScenario1Mock = createMock(LevelCreatorScenario1.class);
         tweenManagerMock = createMock(TweenManager.class);
         tileMapRendererMock = createMock(OrthogonalTiledMapRenderer.class);
         orthographicCameraMock = createMock(OrthographicCamera.class);
         hudMock = createMock(Hud.class);
-
-
     }
 
     private void setUpPowerMocks() {
@@ -70,12 +67,16 @@ public class TestMiniSlotMachineLevelPrototypeScenario1UpdateOverride {
 
     @After
     public void tearDown() {
-        tearDownLevelCreatorMock();
+        tearDownEasyMocks();
         tearDownPowerMocks();
     }
 
-    private void tearDownLevelCreatorMock() {
+    private void tearDownEasyMocks() {
         levelCreatorScenario1Mock = null;
+        tweenManagerMock = null;
+        tileMapRendererMock = null;
+        orthographicCameraMock = null;
+        hudMock = null;
     }
 
     private void tearDownPowerMocks() {
