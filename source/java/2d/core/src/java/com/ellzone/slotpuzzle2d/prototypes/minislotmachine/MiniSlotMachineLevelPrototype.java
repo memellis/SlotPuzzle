@@ -131,7 +131,7 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
         this.reelTiles = createLevels(this.miniSlotMachineLevel, this.reelTiles);
         reelsSpinning = reelTiles.size - 1;
         hud = new Hud(batch);
-        hud.setLevelName(levelDoor.levelName);
+        hud.setLevelName(levelDoor.getLevelName());
         playState = PlayScreen.PlayStates.PLAYING;
     }
 
@@ -177,8 +177,8 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
 
     private void initialiseLevelDoor() {
         levelDoor = new LevelDoor();
-        levelDoor.levelName = MINI_SLOT_MACHINE_LEVEL_NAME;
-        levelDoor.levelType = BONUS_LEVEL_TYPE;
+        levelDoor.setLevelName(MINI_SLOT_MACHINE_LEVEL_NAME);
+        levelDoor.setLevelType(BONUS_LEVEL_TYPE);
     }
 
     private void initialisePlayScreen() {
@@ -192,7 +192,7 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
     }
 
     private Array<ReelTile> createLevels(TiledMap level, Array<ReelTile> reelTiles) {
-        if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+        if (levelDoor.getLevelType().equals(PLAYING_CARD_LEVEL_TYPE)) {
             initialiseHiddenPlayingCards();
         }
         reelTiles = populateLevel(level, reelTiles);
@@ -380,18 +380,18 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
         this.reelsSpinning--;
         if (playState == PlayScreen.PlayStates.PLAYING) {
             if (reelsSpinning <= -1) {
-                if (levelDoor.levelType.equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
+                if (levelDoor.getLevelType().equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
                     if (testForHiddenPatternRevealed(reelTiles)) {
                         iWonTheLevel();
                     }
                 }
-                if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+                if (levelDoor.getLevelType().equals(PLAYING_CARD_LEVEL_TYPE)) {
                         if (testForHiddenPlayingCardsRevealed(reelTiles)) {
                             iWonTheLevel();
                         }
                     }
                 }
-                if (levelDoor.levelType.equals(BONUS_LEVEL_TYPE)) {
+                if (levelDoor.getLevelType().equals(BONUS_LEVEL_TYPE)) {
                     if (testForJackpot(reelTiles)) {
                         iWonABonus();
                     }
@@ -623,10 +623,10 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
                     reelStoppedSound.play();
                     chaChingSound.play();
                     reel.deleteReelTile();
-                    if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+                    if (levelDoor.getLevelType().equals(PLAYING_CARD_LEVEL_TYPE)) {
                         testPlayingCardLevelWon();
                     } else {
-                        if (levelDoor.levelType.equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
+                        if (levelDoor.getLevelType().equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
                             testForHiddenPlatternLevelWon();
                         }
                     }
@@ -843,7 +843,7 @@ public class MiniSlotMachineLevelPrototype extends SPPrototypeTemplate {
         handleInput(dt);
         tileMapRenderer.render();
         batch.begin();
-        if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+        if (levelDoor.getLevelType().equals(PLAYING_CARD_LEVEL_TYPE)) {
             drawPlayingCards(batch);
         }
         for (ReelTile reel : reelTiles) {
