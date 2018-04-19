@@ -56,7 +56,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1RenderOverride {
     private Camera cameraMock;
     private Array<Body> reelBoxesMock;
     private Body reelBoxMock;
-    private Array<AnimatedReel> animatedReelsMock;
+    private Array animatedReelsMock;
     private AnimatedReel animatedReelMock;
     private ReelTile reelTileMock;
     private Vector2 vector2Mock;
@@ -97,7 +97,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1RenderOverride {
 
     private void setUpReelMocks() {
         reelBoxMock = createMock(Body.class);
-        reelBoxesMock = new Array<Body>();
+        reelBoxesMock = new Array<>();
         reelBoxesMock.add(reelBoxMock);
         animatedReelsMock = createMock(Array.class);
         animatedReelMock = createMock(AnimatedReel.class);
