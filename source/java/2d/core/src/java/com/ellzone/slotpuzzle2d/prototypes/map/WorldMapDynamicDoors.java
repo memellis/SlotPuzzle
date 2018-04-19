@@ -60,7 +60,7 @@ import com.ellzone.slotpuzzle2d.utils.Assets;
 import com.ellzone.slotpuzzle2d.utils.FileUtils;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import com.ellzone.slotpuzzle2d.level.LevelDoor;
-import com.ellzone.slotpuzzle2d.prototypes.menu.MenuScreen;
+
 import org.jrenner.smartfont.SmartFontGenerator;
 import java.io.IOException;
 
@@ -220,7 +220,7 @@ public class WorldMapDynamicDoors extends SPPrototype {
 
     private void createLevelEntrances() {
         for (int i = 0; i < levelDoors.size; i++) {
-            levelEntrances.add(new LevelEntrance((int) levelDoors.get(i).doorPosition.getWidth(), (int) levelDoors.get(i).doorPosition.getHeight()));
+            levelEntrances.add(new LevelEntrance((int) levelDoors.get(i).getDoorPosition().getWidth(), (int) levelDoors.get(i).getDoorPosition().getHeight()));
         }
     }
 
@@ -233,8 +233,8 @@ public class WorldMapDynamicDoors extends SPPrototype {
 
             drawLevelEntrance(levelNumber, layer);
             TextureRegion[][] splitTiles = TextureRegion.split(levelEntrances.get(levelNumber).getLevelEntrance(), 40, 40);
-            int xx = (int) levelDoors.get(levelNumber).doorPosition.getX() / 40;
-            int yy = (int) levelDoors.get(levelNumber).doorPosition.getY() / 40;
+            int xx = (int) levelDoors.get(levelNumber).getDoorPosition().getX() / 40;
+            int yy = (int) levelDoors.get(levelNumber).getDoorPosition().getY() / 40;
             for (int row = 0; row < splitTiles.length; row++) {
                 for (int col = 0; col < splitTiles[row].length; col++) {
                     TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
@@ -262,10 +262,10 @@ public class WorldMapDynamicDoors extends SPPrototype {
     }
 
     private void drawLevelEntrance(int levelNumber, TiledMapTileLayer layer) {
-        int levelDoorX = (int) levelDoors.get(levelNumber).doorPosition.getX() / 40;
-        int levelDoorY = (int) levelDoors.get(levelNumber).doorPosition.getY() / 40;
-        int levelDoorWidth = (int) levelDoors.get(levelNumber).doorPosition.getWidth() / 40;
-        int levelDoorHeight = (int) levelDoors.get(levelNumber).doorPosition.getHeight() / 40;
+        int levelDoorX = (int) levelDoors.get(levelNumber).getDoorPosition().getX() / 40;
+        int levelDoorY = (int) levelDoors.get(levelNumber).getDoorPosition().getY() / 40;
+        int levelDoorWidth = (int) levelDoors.get(levelNumber).getDoorPosition().getWidth() / 40;
+        int levelDoorHeight = (int) levelDoors.get(levelNumber).getDoorPosition().getHeight() / 40;
 
         drawOnCell(layer, levelDoorX - 1, levelDoorY + levelDoorHeight, new PixmapDrawAction() {
             @Override
@@ -304,9 +304,9 @@ public class WorldMapDynamicDoors extends SPPrototype {
         levelDoors = new Array<LevelDoor>();
         for (MapObject mapObject : worldMap.getLayers().get(WORLD_MAP_LEVEL_DOORS).getObjects().getByType(RectangleMapObject.class)) {
             LevelDoor levelDoor = new LevelDoor();
-            levelDoor.levelName = ((RectangleMapObject) mapObject).getName();
-            levelDoor.levelType = (String) ((RectangleMapObject) mapObject).getProperties().get("type");
-            levelDoor.doorPosition = ((RectangleMapObject) mapObject).getRectangle();
+            levelDoor.setLevelName(((RectangleMapObject) mapObject).getName());
+            levelDoor.setLevelType((String) ((RectangleMapObject) mapObject).getProperties().get("type"));
+            levelDoor.setDoorPosition(((RectangleMapObject) mapObject).getRectangle());
             levelDoors.add(levelDoor);
         }
     }
@@ -343,9 +343,9 @@ public class WorldMapDynamicDoors extends SPPrototype {
         TiledMapTileLayer.Cell cell;
 
         for (LevelDoor levelDoor : levelDoors) {
-            levelDoorX = (int) levelDoor.doorPosition.getX() / 40;
-            levelDoorY = (int) levelDoor.doorPosition.getY() / 40;
-            levelDoorHeight = (int) levelDoor.doorPosition.getHeight() / 40;
+            levelDoorX = (int) levelDoor.getDoorPosition().getX() / 40;
+            levelDoorY = (int) levelDoor.getDoorPosition().getY() / 40;
+            levelDoorHeight = (int) levelDoor.getDoorPosition().getHeight() / 40;
             for (int col = 0; col < (scrollSigns.get(levelNumber).getSignWidth()) / 40; col++) {
                 cell = new TiledMapTileLayer.Cell();
                 cell.setTile(new StaticTiledMapTile(new TextureRegion(scrollSigns.get(levelNumber), col * 40, 0, 40, 40)));
@@ -478,7 +478,7 @@ public class WorldMapDynamicDoors extends SPPrototype {
             float wy = screenYToWorldY(y);
             int levelDoorIndex = 0;
             for (LevelDoor levelDoor : levelDoors) {
-                if (levelDoor.doorPosition.contains(wx, wy)) {
+                if (levelDoor.getDoorPosition().contains(wx, wy)) {
                     enterLevel(levelDoor, levelDoorIndex);
                 }
                 levelDoorIndex++;
@@ -486,10 +486,10 @@ public class WorldMapDynamicDoors extends SPPrototype {
         }
 
         private void enterLevel(LevelDoor levelDoor, int levelDoorIndex) {
-            int sx = (int) worldXToScreenX(levelDoor.doorPosition.x);
-            int sy = (int) worldYToScreenY(levelDoor.doorPosition.y + 40);
-            int sw = (int) (levelDoor.doorPosition.width * screenOverCWWRatio);
-            int sh = (int) (levelDoor.doorPosition.height * screenOverCWHRatio);
+            int sx = (int) worldXToScreenX(levelDoor.getDoorPosition().x);
+            int sy = (int) worldYToScreenY(levelDoor.getDoorPosition().y + 40);
+            int sw = (int) (levelDoor.getDoorPosition().width * screenOverCWWRatio);
+            int sh = (int) (levelDoor.getDoorPosition().height * screenOverCWHRatio);
 
             levelDoorTexture = levelEntrances.get(levelDoorIndex).getLevelEntrance();
             levelDoorSprite = new Sprite(levelDoorTexture);
