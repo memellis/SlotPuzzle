@@ -73,17 +73,17 @@ public class TestMiniSlotMachineLevelPrototypeScenario1RenderOverride {
     private void setUpPowerMocks() {
         partialMockMiniSlotMachineLevelPrototypeScenario1 = PowerMock.createNicePartialMock(MiniSlotMachineLevelPrototypeScenario1.class,
                 "handleInput",
-                "drawPlayingCards");
+                              "drawPlayingCards");
     }
 
     private void setUpEasyMocks() {
         setUpLibGDXMocks();
         setUpReelMocks();
         setUpLevelMocks();
-        slotPuzzleMocks();
+        setUpSlotPuzzleMocks();
     }
 
-    private void slotPuzzleMocks() {
+    private void setUpSlotPuzzleMocks() {
         vector2Mock = createMock(Vector2.class);
         physicsMock = createMock(PhysicsManagerCustomBodies.class);
         hudMock = createMock(Hud.class);
@@ -113,7 +113,46 @@ public class TestMiniSlotMachineLevelPrototypeScenario1RenderOverride {
 
     @After
     public void tearDown() {
+        tearDownPowerMocks();
+        tearDownEasyMocks();
+     }
 
+    private void tearDownPowerMocks() {
+        partialMockMiniSlotMachineLevelPrototypeScenario1 = null;
+    }
+
+    private void tearDownEasyMocks() {
+        tearDownLibGDXMocks();
+        tearDownReelMocks();
+        tearDownLevelMocks();
+        tearDownSlotPuzzleMocks();
+    }
+
+    private void tearDownSlotPuzzleMocks() {
+        vector2Mock = null;
+        physicsMock = null;
+        hudMock = null;
+    }
+
+    private void tearDownLevelMocks() {
+        levelDoorMock = null;
+        levelCreatorScenario1Mock = null;
+        tileMapRendererMock = null;
+    }
+
+    private void tearDownReelMocks() {
+        reelBoxMock = null;
+        reelBoxesMock = null;
+        animatedReelsMock = null;
+        animatedReelMock = null;
+        reelTileMock = null;
+    }
+
+    private void tearDownLibGDXMocks() {
+        batchMock = null;
+        viewportMock = null;
+        cameraMock = null;
+        stageMock = null;
     }
 
     @Test
