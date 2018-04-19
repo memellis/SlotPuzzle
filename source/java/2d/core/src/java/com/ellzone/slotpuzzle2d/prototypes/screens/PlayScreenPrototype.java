@@ -155,7 +155,7 @@ public class PlayScreenPrototype implements Screen {
         createLevels();
         getMapProperties(this.level);
         hud = new Hud(this.game.batch);
-        hud.setLevelName(levelDoor.levelName);
+        hud.setLevelName(levelDoor.getLevelName());
         playState = PlayScreen.PlayStates.PLAYING;
     }
 
@@ -183,7 +183,7 @@ public class PlayScreenPrototype implements Screen {
         this.reelSpinningSound = annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_SPINNING);
         this.reelStoppedSound = annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_STOPPED);
         this.jackpotSound = annotationAssetManager.get(AssetsAnnotation.SOUND_JACKPOINT);
-        this.level = annotationAssetManager.get("levels/level " + (this.levelDoor.id + 1) + " - 40x40.tmx");
+        this.level = annotationAssetManager.get("levels/level " + (this.levelDoor.getId() + 1) + " - 40x40.tmx");
     }
 
     private void initialiseReels(AnnotationAssetManager annotationAssetManager) {
@@ -211,7 +211,7 @@ public class PlayScreenPrototype implements Screen {
     }
 
     private void createLevels() {
-        if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+        if (levelDoor.getLevelType().equals(PLAYING_CARD_LEVEL_TYPE)) {
             initialiseHiddenPlayingCards();
         }
         for (MapObject mapObject : level.getLayers().get(SLOT_REEL_OBJECT_LAYER).getObjects().getByType(RectangleMapObject.class)) {
@@ -286,12 +286,12 @@ public class PlayScreenPrototype implements Screen {
                                      reelsSpinning--;
                                      if (playState == PlayScreen.PlayStates.PLAYING) {
                                          if (reelsSpinning <= -1) {
-                                             if (levelDoor.levelType.equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
+                                             if (levelDoor.getLevelType().equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
                                                  if (testForHiddenPatternRevealed(reelTiles)) {
                                                      iWonTheLevel();
                                                  }
                                              } else {
-                                                 if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+                                                 if (levelDoor.getLevelType().equals(PLAYING_CARD_LEVEL_TYPE)) {
                                                      if (testForHiddenPlayingCardsRevealed(reelTiles)) {
                                                          iWonTheLevel();
                                                      }
@@ -562,10 +562,10 @@ public class PlayScreenPrototype implements Screen {
                     reelStoppedSound.play();
                     chaChingSound.play();
                     reel.deleteReelTile();
-                    if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+                    if (levelDoor.getLevelType().equals(PLAYING_CARD_LEVEL_TYPE)) {
                         testPlayingCardLevelWon();
                     } else {
-                        if (levelDoor.levelType.equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
+                        if (levelDoor.getLevelType().equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
                             testForHiddenPlatternLevelWon();
                         }
                     }
@@ -829,7 +829,7 @@ public class PlayScreenPrototype implements Screen {
             handleInput(delta);
             tileMapRenderer.render();
             game.batch.begin();
-            if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+            if (levelDoor.getLevelType().equals(PLAYING_CARD_LEVEL_TYPE)) {
                 drawPlayingCards(game.batch);
             }
             for (ReelTile reel : reelTiles) {
