@@ -120,7 +120,7 @@ public class LevelCreatorScenario1 {
     }
 
     private Array<ReelTile> createLevel(LevelDoor levelDoor, TiledMap level, Array<ReelTile> reelTiles, int levelWidth, int levelHeight) {
-        if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+        if (levelDoor.getLevelType().equals(PLAYING_CARD_LEVEL_TYPE)) {
             hiddenPlayingCard = new HiddenPlayingCard(level, carddeckAtlas);
         }
         reelTiles = populateLevel(level, reelTiles, levelWidth, levelHeight);
@@ -285,17 +285,17 @@ public class LevelCreatorScenario1 {
 
     private void allReelsHaveStoppedSpinning() {
         if ((reelsSpinning <= -1) & (hitSinkBottom)) {
-            if (levelDoor.levelType.equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
+            if (levelDoor.getLevelType().equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
                 if (testForHiddenPatternRevealed(reelTiles, levelWidth, levelHeight)) {
                     iWonTheLevel();
                 }
             }
-            if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+            if (levelDoor.getLevelType().equals(PLAYING_CARD_LEVEL_TYPE)) {
                 if (testForHiddenPlayingCardsRevealed(reelTiles, levelWidth, levelHeight)) {
                     iWonTheLevel();
                 }
             }
-            if (levelDoor.levelType.equals(BONUS_LEVEL_TYPE)) {
+            if (levelDoor.getLevelType().equals(BONUS_LEVEL_TYPE)) {
                 if (testForJackpot(reelTiles, levelWidth, levelHeight)) {
                     iWonABonus();
                 }
@@ -563,10 +563,10 @@ public class LevelCreatorScenario1 {
                         }
                     }
 
-                    if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+                    if (levelDoor.getLevelType().equals(PLAYING_CARD_LEVEL_TYPE)) {
                         testPlayingCardLevelWon(levelWidth, levelHeight);
                     } else {
-                        if (levelDoor.levelType.equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
+                        if (levelDoor.getLevelType().equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
                             testForHiddenPlatternLevelWon(levelWidth, levelHeight);
                         }
                     }
