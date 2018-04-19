@@ -172,7 +172,7 @@ public class PlayScreen implements Screen {
 		createLevels();
         getMapProperties(this.level);
         hud = new Hud(game.batch);
-		hud.setLevelName(levelDoor.levelName);
+		hud.setLevelName(levelDoor.getLevelName());
 		createReelIntroSequence();
    	}
 
@@ -198,7 +198,7 @@ public class PlayScreen implements Screen {
         reelSpinningSound = annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_SPINNING);
         reelStoppedSound = annotationAssetManager.get(AssetsAnnotation.SOUND_REEL_STOPPED);
         jackpotSound = annotationAssetManager.get(AssetsAnnotation.SOUND_JACKPOINT);
-	    level = annotationAssetManager.get("levels/level " + (this.levelDoor.id + 1) + " - 40x40.tmx");
+	    level = annotationAssetManager.get("levels/level " + (this.levelDoor.getId() + 1) + " - 40x40.tmx");
  	}
 
 	private void createSprites() {
@@ -273,9 +273,9 @@ public class PlayScreen implements Screen {
 	private void createPopUps() {
 	    currentLevelFont = new BitmapFont();
 	    currentLevelFont.getData().scale(1.5f);
-	    levelPopUp = new LevelPopUp(game.batch, tweenManager, popUpSprites, currentLevelFont, levelDoor.levelName, LEVEL_TIP_DESC);
-	    levelLostPopUp = new LevelPopUp(game.batch, tweenManager, levelLostSprites, currentLevelFont, levelDoor.levelName, LEVEL_LOST_DESC);
-	    levelWonPopUp = new LevelPopUp(game.batch, tweenManager, levelWonSprites, currentLevelFont, levelDoor.levelName, LEVEL_WON_DESC);
+	    levelPopUp = new LevelPopUp(game.batch, tweenManager, popUpSprites, currentLevelFont, levelDoor.getLevelName(), LEVEL_TIP_DESC);
+	    levelLostPopUp = new LevelPopUp(game.batch, tweenManager, levelLostSprites, currentLevelFont, levelDoor.getLevelName(), LEVEL_LOST_DESC);
+	    levelWonPopUp = new LevelPopUp(game.batch, tweenManager, levelWonSprites, currentLevelFont, levelDoor.getLevelName(), LEVEL_WON_DESC);
 	}
 
 	private void createSlotReelTexture() {
@@ -297,7 +297,7 @@ public class PlayScreen implements Screen {
     }
 
     private void createLevels() {
- 		if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+ 		if (levelDoor.getLevelType().equals(PLAYING_CARD_LEVEL_TYPE)) {
  			initialiseHiddenPlayingCards();
 		}
 		for (MapObject mapObject : level.getLayers().get(SLOT_REEL_OBJECT_LAYER).getObjects().getByType(RectangleMapObject.class)) {
@@ -368,12 +368,12 @@ public class PlayScreen implements Screen {
 						reelsSpinning--;
 						if (playState == PlayStates.PLAYING) {
 							if (reelsSpinning <= -1) {
-								if (levelDoor.levelType.equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
+								if (levelDoor.getLevelType().equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
 							        if (testForHiddenPatternRevealed(reels)) {
 							        	iWonTheLevel();
 							        }
 								} else {
-									if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+									if (levelDoor.getLevelType().equals(PLAYING_CARD_LEVEL_TYPE)) {
 										if (testForHiddenPlayingCardsRevealed(reels)) {
 											iWonTheLevel();
 										}
@@ -631,10 +631,10 @@ public class PlayScreen implements Screen {
 					reelStoppedSound.play();
 					chaChingSound.play();
 					reel.deleteReelTile();
-					if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+					if (levelDoor.getLevelType().equals(PLAYING_CARD_LEVEL_TYPE)) {
 						testPlayingCardLevelWon();
 					} else {
-						if (levelDoor.levelType.equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
+						if (levelDoor.getLevelType().equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
 							testForHiddenPlatternLevelWon();
 						}
 					}
@@ -1037,7 +1037,7 @@ public class PlayScreen implements Screen {
                 handleInput(delta);
                 renderer.render();
                 game.batch.begin();
-                if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+                if (levelDoor.getLevelType().equals(PLAYING_CARD_LEVEL_TYPE)) {
                     drawPlayingCards(game.batch);
                 }
                 for (ReelTile reel : reels) {
