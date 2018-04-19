@@ -19,8 +19,40 @@ package com.ellzone.slotpuzzle2d.level;
 import com.badlogic.gdx.math.Rectangle;
 
 public class LevelDoor {
-	public int id;
-	public Rectangle doorPosition;
-	public String levelName;
-	public String levelType; 
+	private int id;
+	private Rectangle doorPosition;
+	private String levelName;
+	private String levelType;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Rectangle getDoorPosition() {
+		return doorPosition;
+	}
+
+	public void setDoorPosition(Rectangle doorPosition) {
+		this.doorPosition = doorPosition;
+	}
+
+	public String getLevelName() {
+		return levelName;
+	}
+
+	public void setLevelName(String levelName) {
+		this.levelName = levelName;
+	}
+
+	public String getLevelType() {
+		return levelType;
+	}
+
+	public void setLevelType(String levelType) {
+		this.levelType = levelType;
+	}
 }
