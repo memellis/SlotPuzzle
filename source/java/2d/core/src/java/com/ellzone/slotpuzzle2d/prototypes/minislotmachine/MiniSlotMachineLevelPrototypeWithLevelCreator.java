@@ -183,7 +183,7 @@ public class MiniSlotMachineLevelPrototypeWithLevelCreator extends SPPrototypeTe
         this.animatedReels = this.levelCreator.getAnimatedReels();
         reelBoxes = this.levelCreator.getReelBoxes();
         hud = new Hud(batch);
-        hud.setLevelName(levelDoor.levelName);
+        hud.setLevelName(levelDoor.getLevelName());
         hud.startWorldTimer();
         levelCreator.setPlayState(PlayScreen.PlayStates.INTRO_SPINNING);
     }
@@ -251,8 +251,8 @@ public class MiniSlotMachineLevelPrototypeWithLevelCreator extends SPPrototypeTe
 
     private void initialiseLevelDoor() {
         levelDoor = new LevelDoor();
-        levelDoor.levelName = MINI_SLOT_MACHINE_LEVEL_NAME;
-        levelDoor.levelType = BONUS_LEVEL_TYPE;
+        levelDoor.setLevelName(MINI_SLOT_MACHINE_LEVEL_NAME);
+        levelDoor.setLevelType(BONUS_LEVEL_TYPE);
     }
 
     private void initialisePlayScreen() {
@@ -416,7 +416,7 @@ public class MiniSlotMachineLevelPrototypeWithLevelCreator extends SPPrototypeTe
         handleInput(dt);
         tileMapRenderer.render();
         batch.begin();
-        if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+        if (levelDoor.getLevelType().equals(PLAYING_CARD_LEVEL_TYPE)) {
             drawPlayingCards(batch);
         }
         for (Score score : levelCreator.getScores()) {
