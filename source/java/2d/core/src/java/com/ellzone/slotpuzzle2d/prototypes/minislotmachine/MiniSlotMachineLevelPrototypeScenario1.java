@@ -142,7 +142,7 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
 
     private void initialiseHud() {
         hud = new Hud(batch);
-        hud.setLevelName(levelDoor.levelName);
+        hud.setLevelName(levelDoor.getLevelName());
         hud.startWorldTimer();
     }
 
@@ -201,8 +201,8 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
 
     private void initialiseLevelDoor() {
         levelDoor = new LevelDoor();
-        levelDoor.levelName = MINI_SLOT_MACHINE_LEVEL_NAME;
-        levelDoor.levelType = BONUS_LEVEL_TYPE;
+        levelDoor.setLevelName(MINI_SLOT_MACHINE_LEVEL_NAME);
+        levelDoor.setLevelType(BONUS_LEVEL_TYPE);
     }
 
     private void initialisePlayScreen() {
@@ -344,8 +344,8 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
 
     @Override
     protected void updateOverride(float dt) {
-        this.tweenManager.update(dt);
-        this.levelCreator.update(dt);
+        tweenManager.update(dt);
+        levelCreator.update(dt);
         tileMapRenderer.setView(orthographicCamera);
         hud.update(dt);
         if (hud.getWorldTime() == 0) {
@@ -389,7 +389,7 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         handleInput();
         tileMapRenderer.render();
         batch.begin();
-        if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+        if (levelDoor.getLevelType().equals(PLAYING_CARD_LEVEL_TYPE)) {
             drawPlayingCards(batch);
         }
         for (Score score : levelCreator.getScores()) {
@@ -445,10 +445,10 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
     }
 
     public void dealWithHitSinkBottom(ReelTile reelTile) {
-        if (this.getPlayState() == PlayScreen.PlayStates.INTRO_SPINNING) {
+        if (getPlayState() == PlayScreen.PlayStates.INTRO_SPINNING) {
             levelCreator.setHitSinkBottom(true);
         }
-        if ((this.getPlayState() == PlayScreen.PlayStates.INTRO_FLASHING) |
+        if ((getPlayState() == PlayScreen.PlayStates.INTRO_FLASHING) |
                 (this.getPlayState() == PlayScreen.PlayStates.REELS_FLASHING)) {
 
             int r = PuzzleGridTypeReelTile.getRowFromLevel(reelTile.getDestinationY(), GAME_LEVEL_HEIGHT);
