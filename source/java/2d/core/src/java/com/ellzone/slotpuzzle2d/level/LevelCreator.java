@@ -170,7 +170,7 @@ public class LevelCreator {
     }
 
     private Array<ReelTile> createLevel(LevelDoor levelDoor, TiledMap level, Array<ReelTile> reelTiles, int levelWidth, int levelHeight) {
-        if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+        if (levelDoor.getLevelType().equals(PLAYING_CARD_LEVEL_TYPE)) {
             this.hiddenPlayingCard = new HiddenPlayingCard(level, carddeckAtlas);
         }
         reelTiles = populateLevel(level, reelTiles, levelWidth, levelHeight);
@@ -306,17 +306,17 @@ public class LevelCreator {
         this.reelsSpinning--;
         if ((this.playState == PlayScreen.PlayStates.PLAYING) | (this.playState == PlayScreen.PlayStates.INTRO_SPINNING)) {
             if ((reelsSpinning <= -1) & (hitSinkBottom)) {
-                if (levelDoor.levelType.equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
+                if (levelDoor.getLevelType().equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
                     if (testForHiddenPatternRevealed(reelTiles, this.levelWidth, this.levelHeight)) {
                         iWonTheLevel();
                     }
                 }
-                if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+                if (levelDoor.getLevelType().equals(PLAYING_CARD_LEVEL_TYPE)) {
                     if (testForHiddenPlayingCardsRevealed(reelTiles, this.levelWidth, this.levelHeight)) {
                         iWonTheLevel();
                     }
                 }
-                if (levelDoor.levelType.equals(BONUS_LEVEL_TYPE)) {
+                if (levelDoor.getLevelType().equals(BONUS_LEVEL_TYPE)) {
                     System.out.println("Testing for jackpot");
                     printReelTiles();
                     if (testForJackpot(reelTiles, this.levelWidth, this.levelHeight)) {
@@ -577,10 +577,10 @@ public class LevelCreator {
                         }
                     }
 
-                    if (levelDoor.levelType.equals(PLAYING_CARD_LEVEL_TYPE)) {
+                    if (levelDoor.getLevelType().equals(PLAYING_CARD_LEVEL_TYPE)) {
                         testPlayingCardLevelWon(levelWidth, levelHeight);
                     } else {
-                        if (levelDoor.levelType.equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
+                        if (levelDoor.getLevelType().equals(HIDDEN_PATTERN_LEVEL_TYPE)) {
                             testForHiddenPlatternLevelWon(levelWidth, levelHeight);
                         }
                     }
