@@ -147,8 +147,8 @@ public class MenuScreen implements Screen {
 
     private void setLevel() {
         this.levelDoor = new LevelDoor();
-        this.levelDoor.levelName = "Level 1";
-        this.levelDoor.levelType = "HiddenPattern";
+        this.levelDoor.setLevelName("Level 1");
+        this.levelDoor.setLevelType("HiddenPattern");
     }
 
     private void createTile() {
