@@ -24,13 +24,16 @@ define_environment_variables() {
     LIBGDX_BOX2DLIGHTS_ARCHIVE="box2dlights.jar"
     LIBGDX_BOX2DLIGHTS_SOURCE_ARCHIVE_URL="http://libgdx.badlogicgames.com/box2dlights/box2dlights-1.5-SNAPSHOT-sources.jar"
     LIBGDX_BOX2DLIGHTS_SOURCE_ARCHIVE="box2dlights-sources.jar"
+    LIBGDX_UTILS_ARCHIVE_URL="http://search.maven.org/remotecontent?filepath=net/dermetfan/libgdx-utils/libgdx-utils/0.13.4/libgdx-utils-0.13.4.jar"
+    LIBGDX_UTILS_ARCHIVE=libgdx-utils-0.13.4.jar
+
     SLOTPUZZLE_NAME="slotpuzzle"
     SPPROTOTYPES_NAME="spprototypes"
     SLOTPUZZLE_2D_SOURCE="${SLOTPUZZLE_HOME}/source/java/2d"
     SPPROTOTYPES_TEMPLATE="${SLOTPUZZLE_2D_SOURCE}/SPPrototypesTemplate"
     SLOTPUZZLE_AIDE_TEMPLATE="${SLOTPUZZLE_2D_SOURCE}/SlotPuzzleAideTemplate"
     SLOTPUZZLE_ANDROID="${SLOTPUZZLE_2D_SOURCE}/android"
-	SLOTPUZZLE_SPPROTOTYPES_ANDROID="${SLOTPUZZLE_2D_SOURCE}/androidSPPrototypes"
+    SLOTPUZZLE_SPPROTOTYPES_ANDROID="${SLOTPUZZLE_2D_SOURCE}/androidSPPrototypes"
     SLOTPUZZLE_CORE="${SLOTPUZZLE_2D_SOURCE}/core"
 }
 
@@ -161,7 +164,6 @@ create_aide_target() {
     mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/src
     cp -r ${SLOTPUZZLE_CORE}/src/java/com ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/src
     cp -r ${SLOTPUZZLE_CORE}/src/java/org ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/src
-    cp -r ${SLOTPUZZLE_CORE}/src/java/net ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/src
 
     mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
     cp ${LIBGDX_SRC_DIR}/gdx.jar ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
@@ -295,6 +297,8 @@ create_aide_target() {
     cp ${SLOTPUZZLE_2D_SOURCE}/libs/tween-engine-api.jar ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
     cp ${SLOTPUZZLE_2D_SOURCE}/libs/tween-engine-api-sources.jar ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
 
+    cp ${BUILD_DIR}/${LIBGDX_UTILS_ARCHIVE} ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}/libs
+
     cp -r ${SLOTPUZZLE_AIDE_TEMPLATE}/slotpuzzle-prototypes-android ${AIDE_INSTALL_DIR}
     cp -r ${AIDE_INSTALL_DIR}/slotpuzzle-android/assets ${AIDE_INSTALL_DIR}/slotpuzzle-prototypes-android
 
@@ -319,6 +323,8 @@ extract_archive ${BUILD_DIR} ${LIBGDX_NIGHTIES_SOURCE_ARCHIVE} ${LIBGDX_NIGHTIES
 get_archive ${BUILD_DIR} ${LIBGDX_BOX2DLIGHTS_ARCHIVE} ${LIBGDX_BOX2DLIGHTS_ARCHIVE_URL}
 
 get_archive ${BUILD_DIR} ${LIBGDX_BOX2DLIGHTS_SOURCE_ARCHIVE} ${LIBGDX_BOX2DLIGHTS_SOURCE_ARCHIVE_URL}
+
+get_archive ${BUILD_DIR} ${LIBGDX_UTILS_ARCHIVE} ${LIBGDX_UTILS_ARCHIVE_URL}
 
 create_aide_target ${BUILD_DIR}/${LIBGDX_NIGHTIES_SOURCE} ${INSTALL_DIR}/SlotPuzzle ${SPPROTOTYPES_TEMPLATE} ${SLOTPUZZLE_CORE} ${SLOTPUZZLE_ANDROID} ${SLOTPUZZLE_NAME}
 
