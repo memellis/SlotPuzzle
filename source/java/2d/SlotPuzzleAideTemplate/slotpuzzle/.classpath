@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" exported="true" path="libs/gdx-freetype.jar"/>
 	<classpathentry kind="lib" exported="true" path="libs/gdx-box2d.jar"/>
 	<classpathentry kind="lib" exported="true" path="libs/box2dlights.jar"/>
+	<classpathentry kind="lib" exported="true" path="libs/libgdx-utils-0.13.4.jar"/>
 </classpath>
 
