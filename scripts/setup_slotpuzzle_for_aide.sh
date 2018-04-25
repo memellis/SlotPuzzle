@@ -24,8 +24,8 @@ define_environment_variables() {
     LIBGDX_BOX2DLIGHTS_ARCHIVE="box2dlights.jar"
     LIBGDX_BOX2DLIGHTS_SOURCE_ARCHIVE_URL="http://libgdx.badlogicgames.com/box2dlights/box2dlights-1.5-SNAPSHOT-sources.jar"
     LIBGDX_BOX2DLIGHTS_SOURCE_ARCHIVE="box2dlights-sources.jar"
-    LIBGDX_UTILS_ARCHIVE_URL="http://search.maven.org/remotecontent?filepath=net/dermetfan/libgdx-utils/libgdx-utils/0.13.4/libgdx-utils-0.13.4.jar"
-    LIBGDX_UTILS_ARCHIVE=libgdx-utils-0.13.4.jar
+    LIBGDX_UTILS_ARCHIVE_URL="http://search.maven.org/remotecontent?filepath=net/dermetfan/libgdx-utils/libgdx-utils/0.13.3/libgdx-utils-0.13.3.jar"
+    LIBGDX_UTILS_ARCHIVE=libgdx-utils-0.13.3.jar
 
     SLOTPUZZLE_NAME="slotpuzzle"
     SPPROTOTYPES_NAME="spprototypes"
