@@ -441,7 +441,7 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
     }
 
     public PlayScreen.PlayStates getPlayState() {
-        return this.levelCreator.getPlayState();
+        return levelCreator.getPlayState();
     }
 
     public void dealWithHitSinkBottom(ReelTile reelTile) {
@@ -449,7 +449,7 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
             levelCreator.setHitSinkBottom(true);
         }
         if ((getPlayState() == PlayScreen.PlayStates.INTRO_FLASHING) |
-                (this.getPlayState() == PlayScreen.PlayStates.REELS_FLASHING)) {
+            (getPlayState() == PlayScreen.PlayStates.REELS_FLASHING)) {
 
             int r = PuzzleGridTypeReelTile.getRowFromLevel(reelTile.getDestinationY(), GAME_LEVEL_HEIGHT);
             int c = PuzzleGridTypeReelTile.getColumnFromLevel(reelTile.getDestinationX());
@@ -477,13 +477,13 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
             processReelTileHit(reelTileB);
         }
         if ((levelCreator.getPlayState() == PlayScreen.PlayStates.INTRO_FLASHING) |
-            (this.getPlayState() == PlayScreen.PlayStates.REELS_FLASHING)) {
+            (levelCreator.getPlayState() == PlayScreen.PlayStates.REELS_FLASHING)) {
             if  (cA == cB) {
                 if (Math.abs(rA - rB) > 1) {
-                    procssTileHittingTile(reelTileA, reelTileB, rA, cA, rB, cA);
+                    processTileHittingTile(reelTileA, reelTileB, rA, cA, rB, cA);
                 }
                 if (Math.abs(rA - rB) == 1) {
-                    procssTileHittingTile(reelTileA, reelTileB, rA, cA, rB, cB);
+                    processTileHittingTile(reelTileA, reelTileB, rA, cA, rB, cB);
                 }
                 if (Math.abs(rA - rB) == 0) {
                     System.out.println("Difference between rows is == 0. I shouldn't get this.");
@@ -502,7 +502,7 @@ public class MiniSlotMachineLevelPrototypeScenario1 extends SPPrototypeTemplate 
         }
     }
 
-    private void procssTileHittingTile(ReelTile reelTileA, ReelTile reelTileB, int rA, int cA, int rB, int cB) {
+    private void processTileHittingTile(ReelTile reelTileA, ReelTile reelTileB, int rA, int cA, int rB, int cB) {
         if (rA > rB) {
             swapReelsAboveMe(reelTileB, reelTileA);
             reelsLeftToFall(rB, cB);
