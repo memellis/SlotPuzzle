@@ -37,7 +37,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+//import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.effects.ReelAccessor;
 import com.ellzone.slotpuzzle2d.physics.DampenedSineParticle;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
@@ -79,6 +81,7 @@ public class Particle6 extends SPPrototype {
     private TweenManager tweenManager;
     private Skin skin;
     private Stage stage;
+	private FitViewport viewport;
     private Label acceleratorYLabel, accelerateYLabel,  velocityYLabel, velocityYMinLabel, acceleratorFrictionLabel, velocityFrictionLabel;
     private Label fpsLabel;
     private Vector accelerator, accelerate, velocity, velocityMin;
@@ -90,7 +93,8 @@ public class Particle6 extends SPPrototype {
         initialiseReelSlots();
         initialiseCamera();
         initialiseLibGdx();
-        initialiseUniversalTweenEngine();
+    	initialiseScreen();
+		initialiseUniversalTweenEngine();
         initialiseDampenedSine();
         initialiseUi();
     }
@@ -220,8 +224,13 @@ public class Particle6 extends SPPrototype {
         points.add(newPoint);
     }
 
+	private void initialiseScreen() {
+		viewport = new FitViewport(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT);
+		stage = new Stage(viewport, batch);
+	}
+	
     private void initialiseUi() {
-        stage = new Stage(new ScreenViewport());
+        //stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
@@ -344,8 +353,9 @@ public class Particle6 extends SPPrototype {
         cam.position.set(0, 0, distance);
         cam.lookAt(0, 0, 0);
         cam.update();
-        stage.getViewport().update(width, height, true);
-    }
+        //stage.getViewport().update(width, height, true);
+		viewport.update(width, height);
+	}
 
     private void update(float delta) {
         tweenManager.update(delta);
