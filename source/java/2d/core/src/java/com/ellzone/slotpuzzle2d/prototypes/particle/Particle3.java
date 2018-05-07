@@ -29,6 +29,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.ellzone.slotpuzzle2d.physics.Particle;
 import com.ellzone.slotpuzzle2d.physics.Vector;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototype;
@@ -40,6 +43,8 @@ public class Particle3 extends SPPrototype {
 
     private static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
     private static final float VELOCITY_MIN = 2.0f;
+	private FitViewport viewport;
+	private Stage stage;
     private PerspectiveCamera cam;
     private Sprite cheesecake;
     private Sprite cherry;
@@ -77,8 +82,9 @@ public class Particle3 extends SPPrototype {
         loadAssets();
         initialiseReelSlots();
         intialiseParticles();
-        initialiseCamera();
         initialiseLibGdx();
+		initialiseScreen();
+        initialiseCamera();
         initialiseDampenedSine();
     }
 
@@ -152,6 +158,11 @@ public class Particle3 extends SPPrototype {
         return (float) (initialAmplitude * Math.exp(-lambda * time) *  Math.cos(angularFrequency * time + phaseAngle));
     }
 
+	private void initialiseScreen() {
+		viewport = new FitViewport(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT);
+		stage = new Stage(viewport, batch);
+	}
+	
     private void initialiseCamera() {
         cam = new PerspectiveCamera();
         cam.position.set(0, 0, 10);
@@ -182,6 +193,7 @@ public class Particle3 extends SPPrototype {
         cam.position.set(0, 0, distance);
         cam.lookAt(0, 0, 0);
         cam.update();
+		viewport.update(width, height);
     }
 
     private void update(float delta) {
@@ -250,8 +262,9 @@ public class Particle3 extends SPPrototype {
             }
             batch.end();
             drawGraphPoint(shapeRenderer);
-        }
-    }
+			stage.draw();
+		}
+	  }
 
     @Override
     public void pause() {
@@ -265,5 +278,6 @@ public class Particle3 extends SPPrototype {
     public void dispose() {
         batch.dispose();
         Assets.inst().dispose();
-    }
+		stage.dispose();
+     }
 }
