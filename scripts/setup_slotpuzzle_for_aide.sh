@@ -190,6 +190,8 @@ create_aide_target() {
     cp "${SLOTPUZZLE_ANDROID}/assets/levels/level 3 - 40x40.tmx" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
     cp "${SLOTPUZZLE_ANDROID}/assets/levels/level 4 - 40x40.tmx" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
     cp "${SLOTPUZZLE_ANDROID}/assets/levels/level 5 - 40x40.tmx" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
+    cp "${SLOTPUZZLE_ANDROID}/assets/levels/mini slot machine level.tmx" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
+    cp "${SLOTPUZZLE_ANDROID}/assets/levels/mini slot machine level 1.tmx" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
     cp "${SLOTPUZZLE_ANDROID}/assets/levels/light_pink_transparent 1 40x40.png" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
     cp "${SLOTPUZZLE_ANDROID}/assets/levels/light_pink_transparent 40x40.png" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
     cp "${SLOTPUZZLE_ANDROID}/assets/levels/neon_tiles 40x40.png" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/levels
