@@ -30,6 +30,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.ellzone.slotpuzzle2d.physics.DampenedSine;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsCallback;
 import com.ellzone.slotpuzzle2d.physics.SPPhysicsEvent;
@@ -41,6 +44,8 @@ import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 public class Particle5 extends SPPrototype {
 
     private static final float MINIMUM_VIEWPORT_SIZE = 15.0f;
+	private FitViewport viewport;
+	private Stage stage;
     private PerspectiveCamera cam;
     private Sprite cherry, cheesecake, grapes, jelly, lemon, peach, pear, tomato;
     private Sprite[] sprites;
@@ -63,8 +68,9 @@ public class Particle5 extends SPPrototype {
     public void create() {
         loadAssets();
         initialiseReelSlots();
-        initialiseCamera();
         initialiseLibGdx();
+        initialiseCamera();
+		initialiseScreen();
         initialiseDampenedSine();
     }
 
@@ -107,6 +113,11 @@ public class Particle5 extends SPPrototype {
         reelTiles.add(reel);
     }
 
+	private void initialiseScreen() {
+		viewport = new FitViewport(SlotPuzzleConstants.V_WIDTH, SlotPuzzleConstants.V_HEIGHT);
+		stage = new Stage(viewport, batch);
+	}
+	
     private void initialiseCamera() {
         cam = new PerspectiveCamera();
         cam.position.set(0, 0, 10);
@@ -169,6 +180,7 @@ public class Particle5 extends SPPrototype {
         cam.position.set(0, 0, distance);
         cam.lookAt(0, 0, 0);
         cam.update();
+		viewport.update(width, height);
     }
 
     private void update(float delta) {
@@ -213,7 +225,8 @@ public class Particle5 extends SPPrototype {
         }
         batch.end();
         drawGraphPoint(shapeRenderer);
-    }
+		stage.draw();
+	}
 
     @Override
     public void pause() {
@@ -227,6 +240,7 @@ public class Particle5 extends SPPrototype {
     public void dispose() {
         batch.dispose();
         Assets.inst().dispose();
+		stage.dispose();
     }
 
     private void drawGraphPoint(ShapeRenderer shapeRenderer) {
