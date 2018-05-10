@@ -97,8 +97,8 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
         batch = new SpriteBatch();
         font = new BitmapFont();
         font.setColor(Color.RED);
-        loadAssets(this.annotationAssetManager);
-        reels = new Reels(this.annotationAssetManager);
+        loadAssets();
+        reels = new Reels(annotationAssetManager);
         spriteWidth = reels.getReelWidth();
         spriteHeight = reels.getReelHeight();
         this.displayWindowWidth = SlotPuzzleConstants.V_WIDTH;
@@ -108,7 +108,7 @@ public class Box2DFallingReels extends SPPrototype implements InputProcessor {
         Gdx.input.setInputProcessor(this);
     }
 
-    private void loadAssets(AnnotationAssetManager annotationAssetManager) {
+    private void loadAssets() {
         annotationAssetManager = new AnnotationAssetManager();
         annotationAssetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
         annotationAssetManager.load(new AssetsAnnotation());
