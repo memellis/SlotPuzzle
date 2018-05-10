@@ -275,6 +275,13 @@ create_aide_target() {
     cp "${SLOTPUZZLE_ANDROID}/assets/ui/uiskin.json" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/ui
     cp "${SLOTPUZZLE_ANDROID}/assets/ui/uiskin.png" ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets/ui
 
+    cp "${SLOTPUZZLE_ANDROID}/assets/arial-15.fnt ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets
+    cp "${SLOTPUZZLE_ANDROID}/assets/arial-15_00.png ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets
+    cp "${SLOTPUZZLE_ANDROID}/assets/arial-32.fnt ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets
+    cp "${SLOTPUZZLE_ANDROID}/assets/arial-32.png ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets
+    cp "${SLOTPUZZLE_ANDROID}/assets/badlogicsmall.jpg ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/assets
+
+
     cp ${LIBGDX_SRC_DIR}/gdx-backend-android.jar ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs
     mkdir -p ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/armeabi
     cp ${LIBGDX_SRC_DIR}/armeabi/libgdx.so ${AIDE_INSTALL_DIR}/${SLOTPUZZLE_NAME}-android/libs/armeabi
