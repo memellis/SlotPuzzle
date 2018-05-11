@@ -92,7 +92,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1SwapReels {
     @Test
     public void testSwapReelsReelTileAReelTileB() throws Exception {
         setFields();
-        setUpExpectations();
+        setUpSwapReelsReelTileAReelTileBExpectations();
         replayAll();
         Whitebox.invokeMethod(partialMockMiniSlotMachineLevelPrototypeScenario1,
                 "swapReels",
@@ -105,12 +105,27 @@ public class TestMiniSlotMachineLevelPrototypeScenario1SwapReels {
         verifyAll();
     }
 
+    @Test
+    public void testSwapReelsReelTile() throws Exception {
+        setFields();
+        setUpSwapReelTileExpectations();
+        replayAll();
+        Whitebox.invokeMethod(partialMockMiniSlotMachineLevelPrototypeScenario1,
+                "swapReels",
+                reelTileAMock);
+        assertThat(reelTileASetYCapture.getValue(), is(equalTo(120.0f)));
+        assertThat(reelTileASetYCapture.getValue(), is(equalTo( 120.0f)));
+        assertThat(deletedReelBSetDestinationYCapture.getValue(), is(equalTo(80.0f)));
+        assertThat(deletedReelSetYCapture.getValue(), is(equalTo( 80.0f)));
+        verifyAll();
+    }
+
     private void setFields() {
         Whitebox.setInternalState(partialMockMiniSlotMachineLevelPrototypeScenario1, LEVEL_CREATOR_FIELD_NAME, levelCreatorMock);
         Whitebox.setInternalState(partialMockMiniSlotMachineLevelPrototypeScenario1, REEL_TILES_FIELD_NAME, reelTilesMock);
     }
 
-    private void setUpExpectations() {
+    private void setUpSwapReelsReelTileAReelTileBExpectations() {
         expect(reelTileAMock.getDestinationY()).andReturn(80.0f);
         expect(reelTileBMock.getDestinationX()).andReturn((40.0f));
         expect(reelTileBMock.getDestinationY()).andReturn(120.0f);
@@ -119,6 +134,18 @@ public class TestMiniSlotMachineLevelPrototypeScenario1SwapReels {
         expect(reelTileBMock.getDestinationY()).andReturn(120.0f);
         reelTileAMock.setDestinationY(captureFloat(reelTileASetDestinationYCapture));
         expect(reelTileBMock.getDestinationY()).andReturn(120.0f);
+        reelTileAMock.setY(captureFloat(reelTileASetYCapture));
+        reelTileAMock.unDeleteReelTile();
+        deletedReelMock.setDestinationY(captureFloat(deletedReelBSetDestinationYCapture));
+        deletedReelMock.setY(captureFloat(deletedReelSetYCapture));
+    }
+
+    private void setUpSwapReelTileExpectations() {
+        expect(reelTileAMock.getDestinationY()).andReturn(80.0f);
+        expect(reelTileAMock.getDestinationX()).andReturn((40.0f));
+        expect(levelCreatorMock.findReel(40, 120)).andReturn(0);
+        expect(reelTilesMock.get(0)).andReturn(deletedReelMock);
+        reelTileAMock.setDestinationY(captureFloat(reelTileASetDestinationYCapture));
         reelTileAMock.setY(captureFloat(reelTileASetYCapture));
         reelTileAMock.unDeleteReelTile();
         deletedReelMock.setDestinationY(captureFloat(deletedReelBSetDestinationYCapture));
