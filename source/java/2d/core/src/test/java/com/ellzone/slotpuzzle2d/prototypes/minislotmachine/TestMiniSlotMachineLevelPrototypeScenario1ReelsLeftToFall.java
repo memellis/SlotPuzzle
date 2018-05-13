@@ -110,7 +110,9 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ReelsLeftToFall {
         Whitebox.invokeMethod(partialMockMiniSlotMachineLevelPrototypeScenario1,
                 "reelsLeftToFall",
                 3, 3);
+        assertThat(reelsToFall.size, is(equalTo(1)));
         verifyAll();
+
     }
 
     private void setUpTestDataOneReelToFall() {
