@@ -16,9 +16,10 @@ android:
   - google-gdk-license-.+
 before_script: cd source/java/2d
 script: 
-  - gradle clean desktop:build android:build core:test
+  - gradle clean desktop:build android:build core:test jacocoTestReport
 after_success:
 - bash ${TRAVIS_BUILD_DIR}/.set_tags.sh
+
 - bash <(curl -s https://codecov.io/bash)
 deploy:
   skip_cleanup: true
