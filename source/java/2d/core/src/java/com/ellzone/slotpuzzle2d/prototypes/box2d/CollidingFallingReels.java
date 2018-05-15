@@ -124,8 +124,10 @@ public class CollidingFallingReels extends SPPrototypeTemplate {
 
     @Override
     protected void disposeOverride() {
-        img.dispose();
-        world.dispose();
+        if (img != null)
+            img.dispose();
+        if (world != null)
+            world.dispose();
     }
 
     @Override
