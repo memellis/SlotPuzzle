@@ -125,7 +125,10 @@ public class TestMiniSlotMachineLevelPrototypeScenario1HandleInput {
     }
 
     private void verifyAll() {
-        verify(mockInput, mockApplication, levelCreatorScenario1Mock, partialMockMiniSlotMachineLevelPrototypeScenario1);
+        verify(mockInput,
+               mockApplication,
+               levelCreatorScenario1Mock,
+               partialMockMiniSlotMachineLevelPrototypeScenario1);
     }
 
     private void inokeHandleInput() {
@@ -135,7 +138,10 @@ public class TestMiniSlotMachineLevelPrototypeScenario1HandleInput {
     }
 
     private void replayAll() {
-        replay(mockInput, mockApplication, levelCreatorScenario1Mock, partialMockMiniSlotMachineLevelPrototypeScenario1);
+        replay(mockInput,
+               mockApplication,
+               levelCreatorScenario1Mock,
+               partialMockMiniSlotMachineLevelPrototypeScenario1);
     }
 
     private void expectations(PlayScreen.PlayStates playState) throws Exception {
