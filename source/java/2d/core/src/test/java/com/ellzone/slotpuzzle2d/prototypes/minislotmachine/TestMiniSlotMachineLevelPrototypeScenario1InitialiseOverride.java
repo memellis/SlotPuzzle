@@ -132,13 +132,14 @@ public class TestMiniSlotMachineLevelPrototypeScenario1InitialiseOverride {
     @After
     public void tearDown() {
         tearDownPowerMocks();
+        tearDownEasyMocks();
     }
 
     private void tearDownPowerMocks() {
         partialMockMiniSlotMachineLevelPrototypeScenario1 = null;
     }
 
-    private void tearEasyMocks() {
+    private void tearDownEasyMocks() {
         levelCreatorScenario1Mock = null;
         hudMock = null;
         orthographicCameraMock = null;
@@ -191,11 +192,18 @@ public class TestMiniSlotMachineLevelPrototypeScenario1InitialiseOverride {
     }
 
     private void replayAll() {
-        replay(CameraHelper.class, levelCreatorScenario1Mock, annotationAssetManagerMock, hudMock, partialMockMiniSlotMachineLevelPrototypeScenario1);
+        replay(CameraHelper.class,
+               levelCreatorScenario1Mock,
+               annotationAssetManagerMock,
+               hudMock,
+               partialMockMiniSlotMachineLevelPrototypeScenario1);
     }
 
     private void verifyAll() {
-        verify(levelCreatorScenario1Mock, annotationAssetManagerMock, hudMock, partialMockMiniSlotMachineLevelPrototypeScenario1);
+        verify(levelCreatorScenario1Mock,
+               annotationAssetManagerMock,
+               hudMock,
+               partialMockMiniSlotMachineLevelPrototypeScenario1);
     }
 
     @Test
