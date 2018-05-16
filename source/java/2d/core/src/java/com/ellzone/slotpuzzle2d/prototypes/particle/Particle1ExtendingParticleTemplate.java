@@ -24,11 +24,12 @@ import com.ellzone.slotpuzzle2d.physics.Particles;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
 import com.ellzone.slotpuzzle2d.sprites.ReelTiles;
 import com.ellzone.slotpuzzle2d.sprites.Reels;
+import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
+
 import net.dermetfan.gdx.assets.AnnotationAssetManager;
 
 public class Particle1ExtendingParticleTemplate extends ParticleTemplate {
 	private static final float VELOCITY_MIN = 2.0f;
-	protected AnnotationAssetManager annotationAssetManager;
 	private Reels reels;
 	private Sprite[] reelSprites;
 	private Array<Particle> reelParticles;
