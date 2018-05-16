@@ -28,6 +28,7 @@ import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
@@ -134,7 +135,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ReelHitsReel {
         setExpectations();
         replayAll();
         partialMockMiniSlotMachineLevelPrototypeScenario1.dealWithReelTileHittingReelTile(reelTileAMock, reelTileBMock);
-        assertions();
+        assertions(3,2, 2,2 );
         verifyAll();
     }
 
@@ -144,14 +145,12 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ReelHitsReel {
         setExpectationsWhenReelAAboveReelBGreaterThanOne();
         replayAll();
         partialMockMiniSlotMachineLevelPrototypeScenario1.dealWithReelTileHittingReelTile(reelTileAMock, reelTileBMock);
-        assertions();
+        assertions(3, 2,1, 2);
         verifyAll();
     }
 
     private void setExpectationsWhenReelAAboveReelBGreaterThanOne() throws Exception {
         setExpectsRowColumn(3, 2, 1, 2);
-        setExpectsProcessReelTileHit(reelTileAMock);
-        setExpectsProcessReelTileHit(reelTileBMock);
         setExpectsFlashing();
     }
 
@@ -220,12 +219,12 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ReelHitsReel {
                          levelCreatorMock);
     }
 
-    private void assertions() {
+    private void assertions(int rA, int cA, int rB, int cB) {
         assertThat(reelTileCaptureArg1.getValue(), is(equalTo(reelTileAMock)));
         assertThat(reelTileCaptureArg2.getValue(), is(equalTo(reelTileBMock)));
-        assertThat(rACapture.getValue(), is(equalTo(3)));
-        assertThat(cACapture.getValue(), is(equalTo(2)));
-        assertThat(rBCapture.getValue(), is(equalTo(2)));
-        assertThat(cBCapture.getValue(), is(equalTo(2)));
+        assertThat(rACapture.getValue(), is(equalTo(rA)));
+        assertThat(cACapture.getValue(), is(equalTo(cA)));
+        assertThat(rBCapture.getValue(), is(equalTo(rB)));
+        assertThat(cBCapture.getValue(), is(equalTo(cB)));
     }
 }
