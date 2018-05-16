@@ -37,14 +37,14 @@ public class ReelTiles {
 	private void initialiseReelTiles() {
 	    reelTiles = new Array<ReelTile>();
 	    slotReelScrollPixmap = new Pixmap(reels.getReelHeight(), reels.getReelHeight(), Pixmap.Format.RGBA8888);
-	    PixmapProcessors.savePixmap(slotReelScrollPixmap);
-	    slotReelScrollTexture = new Texture(slotReelScrollPixmap);
+		slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(reels.getReels());
+		slotReelScrollTexture = new Texture(slotReelScrollPixmap);
 	    reelTile = new ReelTile(slotReelScrollTexture, slotReelScrollTexture.getHeight() / reels.getReelHeight(), 0, 32, reels.getReelWidth(), reels.getReelHeight(), reels.getReelWidth(), reels.getReelHeight(), 0, null);
 	    reelTile.setX(0);
 	    reelTile.setY(0);
 	    reelTile.setSx(0);
 	    reelTile.setEndReel(Random.getInstance().nextInt(reels.getReels().length - 1));
-	    reelTile.setSy(slotReelScrollTexture.getHeight() + 128 + reelTile.getEndReel() * 32 );
+	    reelTile.setSy(slotReelScrollTexture.getHeight() + 128 + reelTile.getEndReel() * reels.getReelHeight() );
 	    reelTiles.add(reelTile);
 	}
 	
