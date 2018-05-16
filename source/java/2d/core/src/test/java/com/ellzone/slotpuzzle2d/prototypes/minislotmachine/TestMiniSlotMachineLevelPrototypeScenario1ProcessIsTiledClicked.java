@@ -262,36 +262,36 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ProcessIsTiledClicked {
 
     private void replayAll() {
         replay(partialMockMiniSlotMachineLevelPrototypeScenario1,
-                Vector2.class,
-                Random.class,
-                inputMock,
-                vector2Mock,
-                viewportMock,
-                levelCreatorScenario1Mock,
-                reelTilesMock,
-                reelTileMock,
-                animatedReelsMock,
-                animatedReelMock,
-                pullLeverSoundMock,
-                reelSpinningSoundMock,
-                reelsMock,
-                randomMock);
+               Vector2.class,
+               Random.class,
+               inputMock,
+               vector2Mock,
+               viewportMock,
+               levelCreatorScenario1Mock,
+               reelTilesMock,
+               reelTileMock,
+               animatedReelsMock,
+               animatedReelMock,
+               pullLeverSoundMock,
+               reelSpinningSoundMock,
+               reelsMock,
+               randomMock);
     }
 
     private void verifyAll() {
         verify(partialMockMiniSlotMachineLevelPrototypeScenario1,
-                inputMock,
-                vector2Mock,
-                viewportMock,
-                levelCreatorScenario1Mock,
-                reelTilesMock,
-                reelTileMock,
-                animatedReelMock,
-                animatedReelMock,
-                pullLeverSoundMock,
-                reelSpinningSoundMock,
-                reelsMock,
-                randomMock);
+               inputMock,
+               vector2Mock,
+               viewportMock,
+               levelCreatorScenario1Mock,
+               reelTilesMock,
+               reelTileMock,
+               animatedReelMock,
+               animatedReelMock,
+               pullLeverSoundMock,
+               reelSpinningSoundMock,
+               reelsMock,
+               randomMock);
     }
 
     private void setSpinning(boolean spinning) {
