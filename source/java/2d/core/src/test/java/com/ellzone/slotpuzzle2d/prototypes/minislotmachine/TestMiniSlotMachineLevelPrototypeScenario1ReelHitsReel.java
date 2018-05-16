@@ -48,7 +48,9 @@ import static org.powermock.api.easymock.PowerMock.expectPrivate;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest( {MiniSlotMachineLevelPrototypeScenario1.class, PuzzleGridTypeReelTile.class, PhysicsManagerCustomBodies.class} )
+@PrepareForTest( {MiniSlotMachineLevelPrototypeScenario1.class,
+                  PuzzleGridTypeReelTile.class,
+                  PhysicsManagerCustomBodies.class} )
 
 public class TestMiniSlotMachineLevelPrototypeScenario1ReelHitsReel {
     private static final String REELBOXES_FIELD_NAME = "reelBoxes";
@@ -101,6 +103,7 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ReelHitsReel {
     public void tearDown() {
         tearDownPowerMocks();
         tearDownEasyMocks();
+        tearDownCaptures();
     }
 
     private void tearDownPowerMocks() {
@@ -126,13 +129,30 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ReelHitsReel {
     }
 
     @Test
-    public void testDealWithReelHitsReelProcessReelA() throws Exception {
+    public void testDealWithReelHitsReel_whenReelAAboveReelBByOneReel() throws Exception {
         setFields();
-        setExpects();
+        setExpectations();
         replayAll();
         partialMockMiniSlotMachineLevelPrototypeScenario1.dealWithReelTileHittingReelTile(reelTileAMock, reelTileBMock);
         assertions();
         verifyAll();
+    }
+
+    @Test
+    public void testDealWithReelHitsReel_whenReelAAboveReelBGreaterThanOneReel() throws Exception {
+        setFields();
+        setExpectationsWhenReelAAboveReelBGreaterThanOne();
+        replayAll();
+        partialMockMiniSlotMachineLevelPrototypeScenario1.dealWithReelTileHittingReelTile(reelTileAMock, reelTileBMock);
+        assertions();
+        verifyAll();
+    }
+
+    private void setExpectationsWhenReelAAboveReelBGreaterThanOne() throws Exception {
+        setExpectsRowColumn(3, 2, 1, 2);
+        setExpectsProcessReelTileHit(reelTileAMock);
+        setExpectsProcessReelTileHit(reelTileBMock);
+        setExpectsFlashing();
     }
 
     private void setFields() {
@@ -140,21 +160,21 @@ public class TestMiniSlotMachineLevelPrototypeScenario1ReelHitsReel {
         Whitebox.setInternalState(partialMockMiniSlotMachineLevelPrototypeScenario1, LEVEL_CREATOR_FIELD_NAME, levelCreatorMock);
     }
 
-    private void setExpects() throws Exception {
-        setExpectsRowColumn();
+    private void setExpectations() throws Exception {
+        setExpectsRowColumn(3, 2, 2,2 );
         setExpectsProcessReelTileHit(reelTileAMock);
         setExpectsProcessReelTileHit(reelTileBMock);
         setExpectsFlashing();
     }
 
-    private void setExpectsRowColumn() {
-        expect(PuzzleGridTypeReelTile.getRowFromLevel(10.0f, 9)).andReturn(3);
+    private void setExpectsRowColumn(int rA, int cA, int rB, int cB) {
+        expect(PuzzleGridTypeReelTile.getRowFromLevel(10.0f, 9)).andReturn(rA);
         expect(reelTileAMock.getDestinationY()).andReturn(10.0f);
-        expect(PuzzleGridTypeReelTile.getColumnFromLevel(10.0f)).andReturn(2);
+        expect(PuzzleGridTypeReelTile.getColumnFromLevel(10.0f)).andReturn(cA);
         expect(reelTileAMock.getDestinationX()).andReturn(10.0f);
-        expect(PuzzleGridTypeReelTile.getRowFromLevel(10.0f, 9)).andReturn(2);
+        expect(PuzzleGridTypeReelTile.getRowFromLevel(10.0f, 9)).andReturn(rB);
         expect(reelTileBMock.getDestinationY()).andReturn(10.0f);
-        expect(PuzzleGridTypeReelTile.getColumnFromLevel(10.0f)).andReturn(2);
+        expect(PuzzleGridTypeReelTile.getColumnFromLevel(10.0f)).andReturn(cB);
         expect(reelTileBMock.getDestinationX()).andReturn(10.0f);
     }
 
