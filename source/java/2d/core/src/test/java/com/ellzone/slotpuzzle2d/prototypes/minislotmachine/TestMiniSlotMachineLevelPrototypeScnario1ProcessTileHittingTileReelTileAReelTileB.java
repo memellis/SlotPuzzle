@@ -26,7 +26,6 @@ import static org.powermock.api.easymock.PowerMock.verify;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( {MiniSlotMachineLevelPrototypeScenario1.class} )
 
-
 public class TestMiniSlotMachineLevelPrototypeScnario1ProcessTileHittingTileReelTileAReelTileB {
     private MiniSlotMachineLevelPrototypeScenario1 partialMockMiniSlotMachineLevelPrototypeScenario1;
     private ReelTile reelTileAMock, reelTileBMock;
@@ -83,22 +82,41 @@ public class TestMiniSlotMachineLevelPrototypeScnario1ProcessTileHittingTileReel
 
     @Test
     public void testProcessReelTileHitReelAGreatherThanReelB() throws Exception {
-        setExpectationsReelAGreatherThanReelB();
+        setExpectations();
         replayAll();
         Whitebox.invokeMethod(partialMockMiniSlotMachineLevelPrototypeScenario1,
                     "processTileHittingTile",
                     reelTileAMock,
-                    reelTileBMock,
+                               reelTileBMock,
                     3, 2, 1, 2
                     );
+        assertReelAGreaterReelB();
+        verifyAll();
+    }
+
+    @Test
+    public void testProcessReelTileHitReelALessThanOrEqualReelB() throws Exception {
+        setExpectations();
+        replayAll();
+        Whitebox.invokeMethod(partialMockMiniSlotMachineLevelPrototypeScenario1,
+                "processTileHittingTile",
+                reelTileAMock,
+                            reelTileBMock,
+                2, 2, 2, 2
+        );
+        assertReelALessThanOrEqualReelB();
+        verifyAll();
+    }
+
+    private void assertReelAGreaterReelB() {
         assertThat(reelTileCaptureA.getValue(), is(equalTo(reelTileBMock)));
         assertThat(reelTileCaptureB.getValue(), is(equalTo(reelTileAMock)));
         assertThat(rCapture.getValue(), is(equalTo(1)));
         assertThat(cCapture.getValue(), is(equalTo(2)));
-        verifyAll();
     }
 
-    private void setExpectationsReelAGreatherThanReelB() throws Exception {
+
+    private void setExpectations() throws Exception {
         PowerMock.expectPrivate(partialMockMiniSlotMachineLevelPrototypeScenario1,
                 "swapReelsAboveMe",
                 capture(reelTileCaptureA),
@@ -107,6 +125,13 @@ public class TestMiniSlotMachineLevelPrototypeScnario1ProcessTileHittingTileReel
                 "reelsLeftToFall",
                   captureInt(rCapture),
                   captureInt(cCapture));
+    }
+
+    private void assertReelALessThanOrEqualReelB() {
+        assertThat(reelTileCaptureA.getValue(), is(equalTo(reelTileAMock)));
+        assertThat(reelTileCaptureB.getValue(), is(equalTo(reelTileBMock)));
+        assertThat(rCapture.getValue(), is(equalTo(2)));
+        assertThat(cCapture.getValue(), is(equalTo(2)));
     }
 
     private void replayAll(){
