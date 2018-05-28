@@ -1,0 +1,3 @@
+[submodule "source/java/2d/core"]
+	path = source/java/2d/core
+	url = git@github.com:memellis/core.git
