@@ -1,7 +1,11 @@
+git:
+  submodules: false
 before_install:
-- eval `ssh-agent -s`
-- openssl aes-256-cbc -K $encrypted_fda7b6caa8fd_key -iv $encrypted_fda7b6caa8fd_iv -in .deploy_key.enc -d | ssh-add -
-- bash .android_license.sh
+  - eval `ssh-agent -s`
+  - openssl aes-256-cbc -K $encrypted_fda7b6caa8fd_key -iv $encrypted_fda7b6caa8fd_iv -in .deploy_key.enc -d | ssh-add -
+  - bash .android_license.sh
+  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+  - git submodule update --init --recursive
 language: android
 android:
   components:
