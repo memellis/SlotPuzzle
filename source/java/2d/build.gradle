@@ -3,10 +3,11 @@ buildscript {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         jcenter()
+        google()
     }
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
-        classpath 'com.android.tools.build:gradle:2.3.2'
+        classpath 'com.android.tools.build:gradle:3.0.0'
         classpath 'com.google.gms:google-services:3.0.0'
     }
 }
@@ -49,7 +50,7 @@ project(":desktop") {
 
 project(":android") {
     apply plugin: "android"
-    //apply plugin: 'com.google.gms.google-services'
+    apply plugin: 'com.google.gms.google-services'
 
     configurations { natives }
 
@@ -74,7 +75,7 @@ project(":android") {
 
 project(":androidSPPrototypes") {
     apply plugin: "android"
-    //apply plugin: 'com.google.gms.google-services'
+    apply plugin: 'com.google.gms.google-services'
 
     configurations { natives }
 
@@ -95,21 +96,6 @@ project(":androidSPPrototypes") {
         compile fileTree(dir: '../libs', include: '*.jar')
     }
 }
-
-//project(":html") {
-//    apply plugin: "gwt"
-//    apply plugin: "war"
-//
-//
-//    dependencies {
-//        compile project(":core")
-//        compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
-//        compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
-//        compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
-//        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion:sources"
-//        compile "com.badlogicgames.gdx:gdx-box2d-gwt:$gdxVersion:sources"
-//    }
-//}
 
 project(":core") {
     apply plugin: "java"
