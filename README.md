@@ -1,7 +1,5 @@
 [![Build Status](https://travis-ci.org/memellis/SlotPuzzle.svg?branch=master)](https://travis-ci.org/memellis/SlotPuzzle)
-<a href="https://codecov.io/github/rollup/rollup?branch=master">
-    <img src="https://codecov.io/github/rollup/rollup/coverage.svg?branch=master" alt="Coverage via Codecov" />
-</a>
+[![codecov](https://codecov.io/gh/memellis/SlotPuzzle/branch/master/graph/badge.svg)](https://codecov.io/gh/memellis/SlotPuzzle)
 
 SLOTPUZZLE
 ==========
