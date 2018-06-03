@@ -45,6 +45,12 @@ project(":desktop") {
         compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         compile "com.badlogicgames.box2dlights:box2dlights:1.4"
     }
+
+    copy {
+        from '../android/assets'
+        into 'assets'
+    }
+
 }
 
 project(":android") {
@@ -91,6 +97,11 @@ project(":androidSPPrototypes") {
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
         compile fileTree(dir: '../libs', include: '*.jar')
+    }
+
+    copy {
+        from '../android/assets'
+        into 'assets'
     }
 }
 
