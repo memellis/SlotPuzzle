@@ -50,7 +50,6 @@ project(":desktop") {
 
 project(":android") {
     apply plugin: "android"
-    apply plugin: 'com.google.gms.google-services'
 
     configurations { natives }
 
@@ -75,7 +74,6 @@ project(":android") {
 
 project(":androidSPPrototypes") {
     apply plugin: "android"
-    apply plugin: 'com.google.gms.google-services'
 
     configurations { natives }
 
