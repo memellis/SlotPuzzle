@@ -1,0 +1,20 @@
+
+slot_handle.pack.png
+size: 128,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+slot_handle
+  rotate: false
+  xy: 2, 56
+  size: 86, 269
+  orig: 86, 269
+  offset: 0, 0
+  index: -1
+slot_handle_base
+  rotate: false
+  xy: 2, 2
+  size: 54, 52
+  orig: 54, 52
+  offset: 0, 0
+  index: -1
