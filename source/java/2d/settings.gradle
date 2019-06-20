@@ -1,1 +1,1 @@
-include 'desktop', 'android', 'androidSPPrototypes', 'core', 'tests'
+include 'android', 'androidSPPrototypes', 'components', 'core', 'desktop', 'tests'
