@@ -39,8 +39,8 @@ android:
 
 before_script: cd source/java/2d
 script: 
-  - keytool -genkey -v -keystore ~/.android/android.keystore -alias debug -keyalg RSA -keysize 2048 -validity 10000
-  - keytool -genkey -v -keystore ~/.andriod/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "C=US, O=Android, CN=Android Debug"
+  - touch $HOME/.andriod/debug.keystore
+  - keytool -genkey -v -keystore $HOME/.andriod/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "C=US, O=Android, CN=Android Debug"
   - ls -l ~/.android
   - ./gradlew clean
   - ./gradlew desktop:build 
