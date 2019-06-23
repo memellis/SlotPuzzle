@@ -41,7 +41,7 @@ before_script: cd source/java/2d
 script: 
   - ./gradlew clean
   - ./gradlew desktop:build 
-  - ./gradlew android:build 
+  - ./gradlew android:build --parallel
   - ./gradlew core:test jacocoTestReport
   - ls ~/.android
 
