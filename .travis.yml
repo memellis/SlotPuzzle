@@ -40,6 +40,7 @@ android:
 before_script: cd source/java/2d
 script: 
   - ./gradlew clean desktop:build android:build core:test jacocoTestReport
+  - ls ~/.android
 
 after_success:
 - bash ${TRAVIS_BUILD_DIR}/.set_tags.sh
