@@ -39,11 +39,12 @@ android:
 
 before_script: cd source/java/2d
 script: 
+  - ls -l ~/.android
   - ./gradlew clean
   - ./gradlew desktop:build 
   - ./gradlew android:build --parallel
   - ./gradlew core:test jacocoTestReport
-  - ls ~/.android
+  - ls -l ~/.android
 
 after_success:
 - bash ${TRAVIS_BUILD_DIR}/.set_tags.sh
