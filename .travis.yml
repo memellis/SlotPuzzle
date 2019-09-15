@@ -45,6 +45,7 @@ script:
   - ./gradlew desktop:build 
   - ./gradlew android:build
   - ./gradlew core:test jacocoTestReport
+  - cat /home/travis/build/memellis/SlotPuzzle/source/java/2d/core/build/reports/tests/test/index.html
   - ls -l ~/.android
 
 after_success:
