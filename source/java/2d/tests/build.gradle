@@ -1,11 +1,7 @@
-
-
 apply plugin: "java"
 
-sourceCompatibility = 1.6
+sourceCompatibility = 1.7
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
-
 
 sourceSets {
 	test {
@@ -13,12 +9,10 @@ sourceSets {
             srcDir 'src'
         }
     }
-    
-    
 }
 
 dependencies {
-   testCompile 'junit:junit:4.12'
+   testImplementation 'junit:junit:4.12'
 }
 
 eclipse.project {

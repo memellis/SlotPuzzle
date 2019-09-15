@@ -10,7 +10,7 @@ buildscript {
     }
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
-        classpath 'com.android.tools.build:gradle:3.4.1'
+        classpath 'com.android.tools.build:gradle:3.5.0'
         classpath 'org.wisepersist:gwt-gradle-plugin:1.0.6'
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.5'
         classpath "net.onedaybeard.artemis:artemis-odb-gradle-plugin:2.2.0"
@@ -48,13 +48,13 @@ project(":desktop") {
     apply plugin: "java"
 
     dependencies {
-        compile project(":core")
-        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
-        compile "com.badlogicgames.box2dlights:box2dlights:box2DLightsVersion"
+        implementation project(":core")
+        implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+        implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+        implementation "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+        implementation "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
     }
 }
 
@@ -115,10 +115,9 @@ project(":components") {
     apply plugin: "java"
 
     dependencies {
-        compile "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
-        compile "net.mostlyoriginal.artemis-odb:contrib-core:$artemisContribVersion"
-
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        implementation "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
+        implementation "net.mostlyoriginal.artemis-odb:contrib-core:$artemisContribVersion"
+        implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
     }
 }
 
@@ -136,41 +135,41 @@ project(":core") {
     }
 
     dependencies {
-        compile project(":components")
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-        compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils:$gdxUtilsVersion"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:$gdxUtilsVersion"
-        compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
-        compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
-        compile fileTree(dir: '../libs', include: '*.jar')
+        implementation project(":components")
+        implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        implementation "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
+        implementation "net.dermetfan.libgdx-utils:libgdx-utils:$gdxUtilsVersion"
+        implementation "net.dermetfan.libgdx-utils:libgdx-utils-box2d:$gdxUtilsVersion"
+        implementation "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+        implementation "com.badlogicgames.ashley:ashley:$ashleyVersion"
+        implementation fileTree(dir: '../libs', include: '*.jar')
 
         compileOnly "net.onedaybeard.artemis:artemis-fluid-core:$artemisVersion"
-        compile "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
-        compile "net.onedaybeard.artemis:artemis-odb-serializer-json-libgdx:$artemisVersion"
-        compile "net.mostlyoriginal.artemis-odb:contrib-core:$artemisContribVersion"
-        compile "net.mostlyoriginal.artemis-odb:contrib-plugin-profiler:$artemisContribVersion"
+        implementation "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
+        implementation "net.onedaybeard.artemis:artemis-odb-serializer-json-libgdx:$artemisVersion"
+        implementation "net.mostlyoriginal.artemis-odb:contrib-core:$artemisContribVersion"
+        implementation "net.mostlyoriginal.artemis-odb:contrib-plugin-profiler:$artemisContribVersion"
 
-        testCompile "junit:junit:4.12"
-        testCompile "org.mockito:mockito-core:1.10.0"
-        testCompile 'org.powermock:powermock:1.6.6'
-        testCompile 'org.powermock:powermock-module-junit4:1.6.6'
-        testCompile 'org.powermock:powermock-api-mockito:1.6.6'
-        testCompile 'org.powermock:powermock-api-easymock:1.6.6'
-        testCompile 'org.easymock:easymock:3.5.1'
-        testCompile 'com.github.stefanbirkner:system-rules:1.16.0'
-        testCompile 'pl.pragmatists:JUnitParams:1.1.1'
+        testImplementation "junit:junit:4.+"
+        testImplementation 'org.hamcrest:hamcrest-library:1.+'
+        testImplementation "org.mockito:mockito-core:1.9.+"
+        testImplementation 'org.powermock:powermock:1.6.6'
+        testImplementation 'org.powermock:powermock-module-junit4:1.6.6'
+        testImplementation 'org.powermock:powermock-api-mockito:1.6.6'
+        testImplementation 'org.powermock:powermock-api-easymock:1.6.6'
+        testImplementation 'org.easymock:easymock:3.5.1'
+        testImplementation 'com.github.stefanbirkner:system-rules:1.16.0'
+        testImplementation 'pl.pragmatists:JUnitParams:1.1.1'
+        testImplementation 'org.junit.platform:junit-platform-runner:1.0.0-M4'
 
-        testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
-        testCompile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        testCompile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        testCompile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+        testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
 
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
     }
 }
 
@@ -180,22 +179,22 @@ project(":tests") {
     sourceSets.test.java.srcDirs = ["src/"]
 
     dependencies {
-        compile project(":core")
+        implementation project(":core")
 
-        compile "junit:junit:4.+"
-        compile "org.mockito:mockito-all:1.9.+"
+        implementation "junit:junit:4.+"
+        implementation "org.mockito:mockito-all:1.9.+"
 
-        compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion"        
+        implementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
 
-        testCompile 'junit:junit:4.+'
-        testCompile "org.mockito:mockito-all:1.9.+"
+        testImplementation 'junit:junit:4.+'
+        testImplementation "org.mockito:mockito-all:1.9.+"
 
-        testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
-        testCompile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        testCompile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-        testCompile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+        testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        testImplementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+        testImplementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
 	}
 }
