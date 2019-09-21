@@ -43,10 +43,10 @@ script:
 - "./gradlew android:build"
 - "./gradlew core:test jacocoTestReport"
 - "./gradlew assembleRelease
+- ls -l ${TRAVIS_BUILD_DIR}/source/java/2d/android/build/outputs/apk/*
 after_success:
 - bash ${TRAVIS_BUILD_DIR}/.set_tags.sh
 - bash <(curl -s https://codecov.io/bash)
-- ls -l ${TRAVIS_BUILD_DIR}/source/java/2d/android/build/outputs/apk/*
 deploy:
   skip_cleanup: true
   provider: releases
