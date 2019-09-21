@@ -10,6 +10,7 @@ before_install:
   -in deploy_android_release.tar.enc -out deploy_android_release.tar -d
 - ls -l
 - tar xf deploy_android_release.tar
+- chmod 400 deploy.rsa
 - eval `ssh-agent -s`
 - cat deploy.rsa | ssh-add -
 - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
