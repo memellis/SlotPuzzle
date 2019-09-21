@@ -9,7 +9,7 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_ad9f1e893abb_key -iv $encrypted_ad9f1e893abb_iv
   -in deploy_android_release.tar.enc -out deploy_android_release.tar -d
 - ls -l
-- tar xf deploy_android_release.tar deploy_android_release.tar
+- tar xf deploy_android_release.tar
 - eval `ssh-agent -s`
 - cat deploy.rsa | ssh-add -
 - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
