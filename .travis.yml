@@ -37,15 +37,10 @@ android:
   - google-gdk-license-.+
 before_script: cd source/java/2d
 script:
-- keytool -genkey -v -keystore $HOME/.android/debug.keystore -storepass android -alias
-  androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname
-  "C=US, O=Android, CN=Android Debug"
 - "./gradlew clean"
 - "./gradlew desktop:build"
 - "./gradlew android:build"
 - "./gradlew core:test jacocoTestReport"
-- cat /home/travis/build/memellis/SlotPuzzle/source/java/2d/core/build/reports/tests/test/index.html
-- ls -l ~/.android
 after_success:
 - bash ${TRAVIS_BUILD_DIR}/.set_tags.sh
 - bash <(curl -s https://codecov.io/bash)
