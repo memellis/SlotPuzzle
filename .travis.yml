@@ -42,7 +42,7 @@ script:
 - "./gradlew desktop:build"
 - "./gradlew android:build"
 - "./gradlew core:test jacocoTestReport"
-- "./gradlew assembleRelease
+- "./gradlew assembleRelease"
 - ls -l ${TRAVIS_BUILD_DIR}/source/java/2d/android/build/outputs/apk/*
 after_success:
 - bash ${TRAVIS_BUILD_DIR}/.set_tags.sh
