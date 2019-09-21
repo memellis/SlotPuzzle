@@ -3,29 +3,27 @@ env:
   - ANDROID_API_LEVEL=28
   - ANDROID_BUILD_TOOLS_VERSION=28.0.3
   - ANDROID_ABI=armeabi-v7a
-
 git:
   submodules: false
-
 before_install:
-  - eval `ssh-agent -s`
-  - openssl aes-256-cbc -K $encrypted_fda7b6caa8fd_key -iv $encrypted_fda7b6caa8fd_iv -in .deploy_key.enc -d | ssh-add -
-  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
-  - git submodule update --init --recursive
-  - touch $HOME/.android/repositories.cfg
-  - yes | sdkmanager "platforms;android-28"
-  - yes | sdkmanager "build-tools;28.0.3"
-
+- openssl aes-256-cbc -K $encrypted_ad9f1e893abb_key -iv $encrypted_ad9f1e893abb_iv
+  -in deploy_android_release.tar.enc -out deploy_android_release.tar -d
+- tar xf deploy_android_release.tar deploy_android_release.tar
+- eval `ssh-agent -s`
+- cat deploy.rsa | ssh-add -
+- sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+- git submodule update --init --recursive
+- touch $HOME/.android/repositories.cfg
+- yes | sdkmanager "platforms;android-28"
+- yes | sdkmanager "build-tools;28.0.3"
 before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-  - $HOME/.gradle/caches/
-  - $HOME/.gradle/wrapper/
-  - $HOME/.android/build-cache
-
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+  - "$HOME/.android/build-cache"
 language: android
 android:
   components:
@@ -33,30 +31,29 @@ android:
   - platform-tools
   - tools
   licenses:
-  - 'android-sdk-preview-license-52d11cd2'
-  - 'android-sdk-license-.+'
-  - 'google-gdk-license-.+'
-
+  - android-sdk-preview-license-52d11cd2
+  - android-sdk-license-.+
+  - google-gdk-license-.+
 before_script: cd source/java/2d
-script: 
-  - keytool -genkey -v -keystore $HOME/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "C=US, O=Android, CN=Android Debug"
-  - ls -l ~/.android
-  - ./gradlew clean
-  - ./gradlew desktop:build 
-  - ./gradlew android:build
-  - ./gradlew core:test jacocoTestReport
-  - cat /home/travis/build/memellis/SlotPuzzle/source/java/2d/core/build/reports/tests/test/index.html
-  - ls -l ~/.android
-
+script:
+- keytool -genkey -v -keystore $HOME/.android/debug.keystore -storepass android -alias
+  androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname
+  "C=US, O=Android, CN=Android Debug"
+- ls -l ~/.android
+- "./gradlew clean"
+- "./gradlew desktop:build"
+- "./gradlew android:build"
+- "./gradlew core:test jacocoTestReport"
+- cat /home/travis/build/memellis/SlotPuzzle/source/java/2d/core/build/reports/tests/test/index.html
+- ls -l ~/.android
 after_success:
 - bash ${TRAVIS_BUILD_DIR}/.set_tags.sh
-
 - bash <(curl -s https://codecov.io/bash)
 deploy:
   skip_cleanup: true
   provider: releases
   api_key:
     secure: LByOdo4kGYraj8v7j3EppiOfc19jfhc3uW2Wr8ohbvLG23MbbiGNhd4N5twkwJacPJTmtVs31ALxAvrBs68SSgC8u2s/PoOPr9+bKXek1hShLC04kXwADv98j16DEf20PaOTF7NWEQZ9+kLbioAalC0aJeZNNkox/e+owUrzPls/5kmUw0PE2ZtcfYg45Nw0acVcRmihBtZVusq1K/Ne6Y2LOLvS6Pbb9mVTT7AaL8UB90jdksPWjIlcK4LhjTkie9YRXl/94ntgNkGvka3VzPL9GhzXEyImY2gKzOvxyJaDjLdM0srcIOO90aW0mihZn8aO3bpFI05EeuE49lpYMwHG2DiHc6Dq+DFQjzRp+mTFGixxifld6C/g10Ap2KDoz4gM1iTY2rNG+2Utr0Op/OSDe5J+dkk+23N5xmX8hN+oNa/MYjkUPc8Wjhbh+N6LmkuWXN7Rhi6DGP8E06lNl14gw+FJX62wyE6d5QmDg1KknVKlGVYRdfbr0yapTRcfCwVnIS9GcEbdVTOMGcZaithqGhpY7oed63wpvBuAADXexJpVdcJ4Az+FEydBbbmENbGWvG6v+MFmkYI6kEY9AX+4mry/r5OBkwugj0qNZLnUl6k8vOcxkRTxWVgsst6qmbVJ7FA1eFiWOJXEM5yqeD41w1JXh5i9h1bNuUME2T8=
-  file: ${TRAVIS_BUILD_DIR}/source/java/2d/android/build/outputs/apk/android-debug.apk
+  file: "${TRAVIS_BUILD_DIR}/source/java/2d/android/build/outputs/apk/android-debug.apk"
   on:
     repo: memellis/SlotPuzzle
