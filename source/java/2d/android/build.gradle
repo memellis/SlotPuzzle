@@ -27,6 +27,7 @@ android {
     def isRunningOnTravis = System.getenv("CI") == "true"
 
     if (isRunningOnTravis) {
+        println "I'm configuring the keystore"
         // configure keystore
         signingConfigs.release.storeFile = file("../../../../memellis.jks")
         signingConfigs.release.storePassword = System.getenv("keystore_password")

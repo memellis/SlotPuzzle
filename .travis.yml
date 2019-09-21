@@ -42,6 +42,7 @@ script:
 - "./gradlew desktop:build"
 - "./gradlew android:build"
 - "./gradlew core:test jacocoTestReport"
+- "./gradlew assembleRelease
 after_success:
 - bash ${TRAVIS_BUILD_DIR}/.set_tags.sh
 - bash <(curl -s https://codecov.io/bash)
