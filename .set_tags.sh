@@ -20,6 +20,7 @@ if [ "$TRAVIS_BRANCH" = "$BRANCH" ]; then
            git tag -a v${TRAVIS_BUILD_NUMBER} -m "Travis build $TRAVIS_BUILD_NUMBER pushed a tag." 
            git push git@github.com:memellis/SlotPuzzle.git master
            git fetch origin
+           git status
 
            echo -e "Done magic with tags.\n"
         fi
