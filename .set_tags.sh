@@ -21,6 +21,7 @@ if [ "$TRAVIS_BRANCH" = "$BRANCH" ]; then
            git push git@github.com:memellis/SlotPuzzle.git master
            git fetch origin
            git status
+           git tag -n  
 
            echo -e "Done magic with tags.\n"
         fi
