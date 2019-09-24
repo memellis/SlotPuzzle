@@ -48,12 +48,6 @@ script:
 after_success:
 - bash -xv ${TRAVIS_BUILD_DIR}/.set_tags.sh
 - bash <(curl -s https://codecov.io/bash)
-before_deploy:
-  - git config --global user.email "memellis@gmail.com"
-  - git config --global user.name "memellis"
-  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
-  - git tag $TRAVIS_TAG
-  - git status
 deploy:
   skip_cleanup: true
   provider: releases
