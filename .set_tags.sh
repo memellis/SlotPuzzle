@@ -18,8 +18,7 @@ if [ "$TRAVIS_BRANCH" = "$BRANCH" ]; then
            # Add tag and push to master.
 
            git tag -a v${TRAVIS_BUILD_NUMBER} -m "Travis build $TRAVIS_BUILD_NUMBER pushed a tag." 
-           git push git@github.com:memellis/SlotPuzzle.git master
-           git push origin --tags
+           git push git@github.com:memellis/SlotPuzzle.git master --tags
            git fetch origin
            git status
            git tag -n  
