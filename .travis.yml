@@ -53,7 +53,7 @@ deploy:
   provider: releases
   api_key:
     secure: LByOdo4kGYraj8v7j3EppiOfc19jfhc3uW2Wr8ohbvLG23MbbiGNhd4N5twkwJacPJTmtVs31ALxAvrBs68SSgC8u2s/PoOPr9+bKXek1hShLC04kXwADv98j16DEf20PaOTF7NWEQZ9+kLbioAalC0aJeZNNkox/e+owUrzPls/5kmUw0PE2ZtcfYg45Nw0acVcRmihBtZVusq1K/Ne6Y2LOLvS6Pbb9mVTT7AaL8UB90jdksPWjIlcK4LhjTkie9YRXl/94ntgNkGvka3VzPL9GhzXEyImY2gKzOvxyJaDjLdM0srcIOO90aW0mihZn8aO3bpFI05EeuE49lpYMwHG2DiHc6Dq+DFQjzRp+mTFGixxifld6C/g10Ap2KDoz4gM1iTY2rNG+2Utr0Op/OSDe5J+dkk+23N5xmX8hN+oNa/MYjkUPc8Wjhbh+N6LmkuWXN7Rhi6DGP8E06lNl14gw+FJX62wyE6d5QmDg1KknVKlGVYRdfbr0yapTRcfCwVnIS9GcEbdVTOMGcZaithqGhpY7oed63wpvBuAADXexJpVdcJ4Az+FEydBbbmENbGWvG6v+MFmkYI6kEY9AX+4mry/r5OBkwugj0qNZLnUl6k8vOcxkRTxWVgsst6qmbVJ7FA1eFiWOJXEM5yqeD41w1JXh5i9h1bNuUME2T8=
-  file: "${TRAVIS_BUILD_DIR}/source/java/2d/android/build/outputs/apk/*"
+  file: "${TRAVIS_BUILD_DIR}/source/java/2d/android/build/outputs/apk/release/android-release.apk
   file_glob: true
   on:
     repo: memellis/SlotPuzzle
