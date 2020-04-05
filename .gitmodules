@@ -1,9 +1,9 @@
 [submodule "source/java/2d/core"]
 	path = source/java/2d/core
-	url = git@github.com:memellis/core.git
+	url = https://github.com/memellis/core.git
 [submodule "source/java/2d/android/assets"]
 	path = source/java/2d/android/assets
-	url = git@github.com:memellis/assets.git
+	url = https://github.com/memellis/assets.git
 [submodule "source/java/2d/desktop/assets"]
 	path = source/java/2d/desktop/assets
 	url = https://github.com/memellis/assets
