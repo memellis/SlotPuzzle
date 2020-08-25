@@ -17,7 +17,6 @@
 package com.ellzone;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -32,8 +31,8 @@ import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGridTypeReelTile;
 import com.ellzone.slotpuzzle2d.puzzlegrid.ReelTileGridValue;
 import com.ellzone.slotpuzzle2d.screens.PlayScreen;
+import com.ellzone.slotpuzzle2d.sprites.ReelSprites;
 import com.ellzone.slotpuzzle2d.sprites.ReelTile;
-import com.ellzone.slotpuzzle2d.sprites.Reels;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
 import net.dermetfan.gdx.assets.AnnotationAssetManager;
@@ -51,7 +50,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(GdxTestRunnerGetAllTestClasses.class)
 
 public class TestPuzzleGridTypeReelTile {
-    private Reels reels;
+    private ReelSprites reelSprites;
     private Texture slotReelTexture;
     private AnnotationAssetManager annotationAssetManager;
     private TiledMap level;
@@ -62,13 +61,13 @@ public class TestPuzzleGridTypeReelTile {
     @Before
     public void setUp() throws Exception {
         annotationAssetManager = annotationAssetManager = new AnnotationAssetManager();
-        reels = new Reels(annotationAssetManager);
+        reelSprites = new ReelSprites(annotationAssetManager);
         reelTiles = new Array<ReelTile>();
-        slotReelTexture = createSlotReelTexture(reels);
+        slotReelTexture = createSlotReelTexture(reelSprites);
         loadAssets(annotationAssetManager);
         getAssets(annotationAssetManager);
         getMapProperties(level);
-        createLevel(reelTiles, reels);
+        createLevel(reelTiles, reelSprites);
     }
 
     @Test
@@ -123,34 +122,34 @@ public class TestPuzzleGridTypeReelTile {
         assertEquals(matchSlotBatch.get(4).getNReelTileGridValue(), matchSlotBatch.get(3));
     }
 
-    private Texture createSlotReelTexture(Reels reels) {
-        Pixmap slotReelScrollPixmap = new Pixmap((int) reels.getReelWidth(), (int) reels.getReelHeight(), Pixmap.Format.RGBA8888);
-        slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(reels.getReels());
+    private Texture createSlotReelTexture(ReelSprites reelSprites) {
+        Pixmap slotReelScrollPixmap = new Pixmap((int) reelSprites.getReelWidth(), (int) reelSprites.getReelHeight(), Pixmap.Format.RGBA8888);
+        slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(reelSprites.getSprites());
         return new Texture(slotReelScrollPixmap);
     }
 
-    private void createLevel(Array<ReelTile> reelTiles, Reels reels) {
+    private void createLevel(Array<ReelTile> reelTiles, ReelSprites reelSprites) {
         for (MapObject mapObject : level.getLayers().get(PlayScreen.SLOT_REEL_OBJECT_LAYER).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle mapRectangle = ((RectangleMapObject) mapObject).getRectangle();
             int c = (int) (mapRectangle.getX() - PlayScreen.PUZZLE_GRID_START_X) / PlayScreen.TILE_WIDTH;
             int r = (int) (mapRectangle.getY() - PlayScreen.PUZZLE_GRID_START_Y) / PlayScreen.TILE_HEIGHT;
             r = PlayScreen.GAME_LEVEL_HEIGHT - r;
             if ((r >= 0) & (r <= PlayScreen.GAME_LEVEL_HEIGHT) & (c >= 0) & (c <= PlayScreen.GAME_LEVEL_WIDTH)) {
-                addReel(mapRectangle, reelTiles, reels);
+                addReel(mapRectangle, reelTiles, reelSprites);
             } else {
                 Gdx.app.debug(SlotPuzzleConstants.SLOT_PUZZLE, "I don't respond to grid r="+r+" c="+c+". There it won't be added to the level! Sort it out in a level editor.");
             }
         }
     }
 
-    private void addReel(Rectangle mapRectangle, Array<ReelTile> reelTiles, Reels reels) {
-        int endReel = random.nextInt(reels.getReels().length);
-        ReelTile reel = new ReelTile(slotReelTexture, reels.getReels().length, 0, 0, reels.getReelWidth(), reels.getReelHeight(), reels.getReelWidth(), reels.getReelHeight(), endReel, null);
+    private void addReel(Rectangle mapRectangle, Array<ReelTile> reelTiles, ReelSprites reelSprites) {
+        int endReel = random.nextInt(reelSprites.getSprites().length);
+        ReelTile reel = new ReelTile(slotReelTexture, reelSprites.getSprites().length, 0, 0, reelSprites.getReelWidth(), reelSprites.getReelHeight(), reelSprites.getReelWidth(), reelSprites.getReelHeight(), endReel, null);
         reel.setX(mapRectangle.getX());
         reel.setY(mapRectangle.getY());
         reel.setSx(0);
         int startReel = random.nextInt((int) slotReelTexture.getHeight());
-        startReel = (startReel / ((int) reels.getReelWidth())) * (int)reels.getReelHeight();
+        startReel = (startReel / ((int) reelSprites.getReelWidth())) * (int) reelSprites.getReelHeight();
         reel.setSy(startReel);
         reelTiles.add(reel);
     }

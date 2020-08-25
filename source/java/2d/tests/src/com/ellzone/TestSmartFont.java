@@ -93,7 +93,7 @@ public class TestSmartFont {
 	}
 	
 	@Test
-	/* Test for bug when first creating a font that's not been cached
+	/* TestPuzzleGridTypeReelTile for bug when first creating a font that's not been cached
 	 * Bug caused nullPointer exception in PixmapProcessors.createDynamicVerticalFontText when retrieving imagepaths from fontData
 	 * Added fix for imagepaths not being populated before font saved
 	 */

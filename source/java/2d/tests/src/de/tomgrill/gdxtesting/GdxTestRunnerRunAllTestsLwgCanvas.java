@@ -27,7 +27,7 @@ public class GdxTestRunnerRunAllTestsLwgCanvas extends JFrame {
             List<FrameworkMethod> testChildren = testClass.getSuperChildren();
             Map<FrameworkMethod, RunNotifier> childrenForTestClass = new HashMap<FrameworkMethod, RunNotifier>();
             for (FrameworkMethod testChild : testChildren) {
-                System.out.println("Test method: " + testChild);
+                System.out.println("TestPuzzleGridTypeReelTile method: " + testChild);
                 if (this.runChildren.containsKey(testChild)) {
                     childrenForTestClass.put(testChild, this.runChildren.get(testChild));
                 }
