@@ -60,6 +60,13 @@ public class TestVersionInfoFile {
         assertThat(versionInfoLoaded.getAuthor(), is(equalTo("Mark Ellis")));
     }
 
+    @Test
+    public void testGetYearFromVersionInfo() {
+        VersionInfo versionInfo = getVersionInfo();
+        String year = versionInfo.getTimestampSerializer().getYear();
+        assertThat(year, is(equalTo("2020")));
+    }
+
     private VersionInfo getVersionInfo() {
         VersionInfo versionInfo = new VersionInfo();
         versionInfo.setAuthor("Mark Ellis");
