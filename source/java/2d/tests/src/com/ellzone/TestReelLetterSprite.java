@@ -61,11 +61,12 @@ public class TestReelLetterSprite {
 		generatedFontDir.mkdirs();
 		
 		exoFile = Gdx.files.local("generated-fonts/LiberationMono-Regular.ttf");
-		try {
-	        FileUtils.copyFile(exoFileInternal, exoFile);
-		} catch (IOException ex) {
-			Gdx.app.error(SlotPuzzleConstants.SLOT_PUZZLE, "Could not copy " + exoFileInternal.file().getPath() + " to file " + exoFile.file().getAbsolutePath() + " " + ex.getMessage());
-		}
+		if (!exoFile.exists())
+			try {
+				FileUtils.copyFile(exoFileInternal, exoFile);
+			} catch (IOException ex) {
+				Gdx.app.error(SlotPuzzleConstants.SLOT_PUZZLE, "Could not copy " + exoFileInternal.file().getPath() + " to file " + exoFile.file().getAbsolutePath() + " " + ex.getMessage());
+			}
 		fontSmall = fontGen.createFont(exoFile, "exo-small", TestReelLetterSprite.EXO_FONT_SMALL_SIZE);
 	}
 	

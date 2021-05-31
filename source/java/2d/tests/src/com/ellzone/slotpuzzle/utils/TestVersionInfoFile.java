@@ -64,7 +64,7 @@ public class TestVersionInfoFile {
     public void testGetYearFromVersionInfo() {
         VersionInfo versionInfo = getVersionInfo();
         String year = versionInfo.getTimestampSerializer().getYear();
-        assertThat(year, is(equalTo("2020")));
+        assertThat(year, is(equalTo("2021")));
     }
 
     private VersionInfo getVersionInfo() {

@@ -27,7 +27,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.ellzone.slotpuzzle2d.SlotPuzzle;
 import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
 import com.ellzone.slotpuzzle2d.utils.FileUtils;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
@@ -58,11 +57,12 @@ public class TestSmartFont {
 		generatedFontDir.mkdirs();
 		exoFile = Gdx.files.local("generated-fonts/LiberationMono-Regular.ttf");
 		
-		try {
-	        FileUtils.copyFile(exoFileInternal, exoFile);
-		} catch (IOException ex) {
-			Gdx.app.error(SlotPuzzleConstants.SLOT_PUZZLE, "Could not copy " + exoFileInternal.file().getPath() + " to file " + exoFile.file().getAbsolutePath() + " " + ex.getMessage());
-		}
+		if (!exoFile.exists())
+			try {
+				FileUtils.copyFile(exoFileInternal, exoFile);
+			} catch (IOException ex) {
+				Gdx.app.error(SlotPuzzleConstants.SLOT_PUZZLE, "Could not copy " + exoFileInternal.file().getPath() + " to file " + exoFile.file().getAbsolutePath() + " " + ex.getMessage());
+			}
 	}
 
 	@After

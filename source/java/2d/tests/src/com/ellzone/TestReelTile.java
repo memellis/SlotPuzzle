@@ -63,7 +63,14 @@ public class TestReelTile {
         int endReel = random.nextInt(sprites.length);
         spriteWidth = sprites[0].getWidth();
         spriteHeight = sprites[0].getHeight();;
-        ReelTile reelTile = new ReelTile(slotReelScrollTexture, 0, 0, (int) spriteWidth, (int) spriteHeight, endReel, null);
+        ReelTile reelTile = new ReelTile(
+        		slotReelScrollTexture,
+				0,
+				0,
+				(int) spriteWidth,
+				(int) spriteHeight,
+				endReel,
+				null);
         reelTile.setX(0);
         reelTile.setY(0);
         reelTile.setSx(0);
@@ -73,10 +80,15 @@ public class TestReelTile {
         Pixmap reelRegionPixmap;
         Pixmap spritePixmap;
   
-        for (int loopThruReelTileCo = 0; loopThruReelTileCo < sprites.length + 1; loopThruReelTileCo++) {
+        for (int loopThruReelTileCo = 0;
+			 loopThruReelTileCo < sprites.length + 1;
+			 loopThruReelTileCo++) {
         	for (int i = 0; i < sprites.length; i++) {
-        		for(int sY = i * (int) spriteHeight + (loopThruReelTileCo * slotReelScrollTexture.getHeight()); 
-        				sY < i * (int) spriteHeight + (loopThruReelTileCo * slotReelScrollTexture.getHeight()) + 1; sY++) {
+        		for(int sY = i * (int) spriteHeight +
+								(loopThruReelTileCo * slotReelScrollTexture.getHeight());
+        				sY < i * (int) spriteHeight +
+								(loopThruReelTileCo * slotReelScrollTexture.getHeight()) + 1;
+        				sY++) {
         			reelTile.setSy(sY);
         			reelTile.update(0f);
         		}
@@ -116,8 +128,10 @@ public class TestReelTile {
 	}
 
 	private void createSlotReelTexture() {
-        slotReelScrollPixmap = new Pixmap((int) spriteWidth, (int) spriteWidth, Pixmap.Format.RGBA8888);
+        slotReelScrollPixmap = new Pixmap(
+        		(int) spriteWidth, (int) spriteWidth, Pixmap.Format.RGBA8888);
         slotReelScrollPixmap = PixmapProcessors.createPixmapToAnimate(sprites);
+        PixmapProcessors.savePixmap(slotReelScrollPixmap, "mySlotReelScrollPixmap.png");
         slotReelScrollTexture = new Texture(slotReelScrollPixmap);
 	}
 }
