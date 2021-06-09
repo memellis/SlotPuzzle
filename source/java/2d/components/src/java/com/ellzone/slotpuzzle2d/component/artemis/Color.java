@@ -1,4 +1,4 @@
-package com.ellzone.slotpuzzle2d.component.artemisosb;
+package com.ellzone.slotpuzzle2d.component.artemis;
 
 import com.artemis.Component;
 
