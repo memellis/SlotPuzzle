@@ -120,8 +120,12 @@ project(":components") {
     apply plugin: "java"
 
     dependencies {
+        // components to expose
         implementation "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
         implementation "net.mostlyoriginal.artemis-odb:contrib-core:$artemisContribVersion"
+        implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        implementation "net.mostlyoriginal.artemis-odb:contrib-jam:$artemisContribVersion"
+
         implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
     }
 }
@@ -192,6 +196,8 @@ project(":tests") {
         implementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+        implementation "net.dermetfan.libgdx-utils:libgdx-utils:$gdxUtilsVersion"
+        implementation "net.dermetfan.libgdx-utils:libgdx-utils-box2d:$gdxUtilsVersion"
 
         testImplementation 'junit:junit:4.+'
         testImplementation "org.mockito:mockito-all:1.9.+"
