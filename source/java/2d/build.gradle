@@ -160,6 +160,7 @@ project(":core") {
         implementation "net.onedaybeard.artemis:artemis-odb-serializer-json-libgdx:$artemisVersion"
         implementation "net.mostlyoriginal.artemis-odb:contrib-core:$artemisContribVersion"
         implementation "net.mostlyoriginal.artemis-odb:contrib-plugin-profiler:$artemisContribVersion"
+        implementation "net.mostlyoriginal.artemis-odb:contrib-plugin-operations:$artemisContribVersion"
 
         testImplementation "junit:junit:4.+"
         testImplementation 'org.hamcrest:hamcrest-library:1.+'
