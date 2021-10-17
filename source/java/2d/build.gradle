@@ -159,6 +159,7 @@ project(":core") {
         implementation "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
         implementation "net.onedaybeard.artemis:artemis-odb-serializer-json-libgdx:$artemisVersion"
         implementation "net.mostlyoriginal.artemis-odb:contrib-core:$artemisContribVersion"
+        implementation "net.mostlyoriginal.artemis-odb:contrib-jam:$artemisContribVersion"
         implementation "net.mostlyoriginal.artemis-odb:contrib-plugin-profiler:$artemisContribVersion"
         implementation "net.mostlyoriginal.artemis-odb:contrib-plugin-operations:$artemisContribVersion"
 
