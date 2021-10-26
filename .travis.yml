@@ -45,7 +45,7 @@ script:
 - "./gradlew core:test jacocoTestReport"
 - "./gradlew assembleRelease"
 after_success:
-- bash -xv ${TRAVIS_BUILD_DIR}/.set_tags.sh
+- bash ${TRAVIS_BUILD_DIR}/.set_tags.sh
 - bash <(curl -s https://codecov.io/bash)
 deploy:
   skip_cleanup: true
