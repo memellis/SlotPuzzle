@@ -32,9 +32,9 @@ import com.ellzone.slotpuzzle2d.puzzlegrid.GridSize;
 import com.ellzone.slotpuzzle2d.puzzlegrid.PuzzleGridTypeReelTile;
 import com.ellzone.slotpuzzle2d.puzzlegrid.ReelTileGridValue;
 import com.ellzone.slotpuzzle2d.screens.PlayScreen;
-import com.ellzone.slotpuzzle2d.sprites.ReelSprites;
-import com.ellzone.slotpuzzle2d.sprites.ReelTile;
-import com.ellzone.slotpuzzle2d.utils.AssetsAnnotation;
+import com.ellzone.slotpuzzle2d.sprites.reel.ReelSprites;
+import com.ellzone.slotpuzzle2d.sprites.reel.ReelTile;
+import com.ellzone.slotpuzzle2d.utils.assets.AssetsAnnotation;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 
 import net.dermetfan.gdx.assets.AnnotationAssetManager;
@@ -171,8 +171,8 @@ public class TestPuzzleGridTypeReelTile {
                 reelSprites.getReelHeight(),
                 reelSprites.getReelWidth(),
                 reelSprites.getReelHeight(),
-                endReel,
-                null);
+                endReel
+        );
         reel.setX(mapRectangle.getX());
         reel.setY(mapRectangle.getY());
         reel.setDestinationX(mapRectangle.getX());

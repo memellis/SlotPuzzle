@@ -26,7 +26,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.ellzone.slotpuzzle2d.SlotPuzzleConstants;
-import com.ellzone.slotpuzzle2d.sprites.ReelLetter;
+import com.ellzone.slotpuzzle2d.sprites.reel.ReelLetter;
 import com.ellzone.slotpuzzle2d.utils.FileUtils;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import static org.junit.Assert.*;

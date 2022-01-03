@@ -31,7 +31,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.ellzone.slotpuzzle2d.sprites.ReelTile;
+import com.ellzone.slotpuzzle2d.sprites.reel.ReelTile;
 import com.ellzone.slotpuzzle2d.utils.PixmapProcessors;
 import de.tomgrill.gdxtesting.GdxTestRunnerGetAllTestClasses;
 
@@ -69,8 +69,8 @@ public class TestReelTile {
 				0,
 				(int) spriteWidth,
 				(int) spriteHeight,
-				endReel,
-				null);
+				endReel
+        );
         reelTile.setX(0);
         reelTile.setY(0);
         reelTile.setSx(0);
