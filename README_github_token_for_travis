@@ -1,0 +1,13 @@
+The github token used for SlotPuzzle to allow for builds to be deployed
+by travis-ci to github needs to be regenetared every 90 days.
+
+The github tokens are stored in github.com/settings/tokens
+
+An email will be sent by github when the github token is about to expire. 
+When the github token expires:
+	- click on regenerate token, 
+        - click on update token
+        - make a note of the token
+	- use travis encrypt <regenerated github token>
+        - Use encrypted token and update the token in .travis.yml
+		- under api_key: via secure:
