@@ -133,7 +133,9 @@ public class WorldScreen implements Screen {
     private void loadWorld() {
         getMapProperties();
     	levelDoors = new Array<LevelDoor>();
-		for (MapObject mapObject : worldMap.getLayers().get(WORLD_MAP_LEVEL_DOORS).getObjects().getByType(RectangleMapObject.class)) {
+		for (MapObject mapObject : worldMap.
+				getLayers().get(WORLD_MAP_LEVEL_DOORS).getObjects().
+				getByType(RectangleMapObject.class)) {
 			LevelDoor levelDoor = new LevelDoor();
 			levelDoor.levelName = ((RectangleMapObject) mapObject).getName();
 			levelDoor.levelType = (String) ((RectangleMapObject) mapObject).getProperties().get("type");
