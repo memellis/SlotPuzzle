@@ -11,8 +11,35 @@ SlotPuzzle-2d Build Instructions
 
 Assumptions:
 - You have cloned the SlotPuzzle GitHub hosted repository
-- For example:
+- For example if you are me, ie to able to commit changes:
 	git clone git://github.com/memellis/SlotPuzzle
+
+  or if you are not me!
+	git clone https://github.com/memellis/SlotPuzzle.git
+
+  and to get the submodules:
+	git submodule update --init
+
+- To use Android Studio which is what I use:
+
+	Click on File -> Open
+	Navigate to source/java/2d and click OK
+
+- In Andriod Studio to run SlotPuzzle desktop:
+	In the project view in the left hand pane
+	Navigate to desktop/src/com/ellzone/slotpuzzle2d/desktop
+	Right click on DesktopLauncher
+	Select Run DesktopLauncher.main
+	The program will fail with a GdxRuntimeException caused by
+		Couldn't load dependencies of asset: levels/mini slot machine level.tmx
+	Select Run -> Edit Configurations 
+	In the Run Configurations dialog in the left hand pane
+	Select Application DesktopLauncher
+	In the right hand pane for Working Directory click on the folder icon
+	Navigate to desktop/assets
+	Click on Apply and OK
+	Now Click on the Run Icon in the Android Studio tool bar
+
 
 Pre-requisites:
 - Uses libGDX with Gradle and Eclipse, so use the instructions at:
