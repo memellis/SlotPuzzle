@@ -12,39 +12,43 @@ SlotPuzzle-2d Build Instructions
 Assumptions:
 - You have cloned the SlotPuzzle GitHub hosted repository
 - For example if you are me, ie to able to commit changes:
+```
 	git clone git://github.com/memellis/SlotPuzzle
-
+```
   or if you are not me!
+```
 	git clone https://github.com/memellis/SlotPuzzle.git
-
+```
   and to get the submodules:
+```
 	git submodule update --init
-
+```
 - To use Android Studio which is what I use:
 
 	Click on File -> Open
 	Navigate to source/java/2d and click OK
 
 - In Andriod Studio to run SlotPuzzle desktop:
-	In the project view in the left hand pane
-	Navigate to desktop/src/com/ellzone/slotpuzzle2d/desktop
-	Right click on DesktopLauncher
-	Select Run DesktopLauncher.main
-	The program will fail with a GdxRuntimeException caused by
-		Couldn't load dependencies of asset: levels/mini slot machine level.tmx
-	Select Run -> Edit Configurations 
-	In the Run Configurations dialog in the left hand pane
-	Select Application DesktopLauncher
-	In the right hand pane for Working Directory click on the folder icon
-	Navigate to desktop/assets
-	Click on Apply and OK
-	Now Click on the Run Icon in the Android Studio tool bar
+  1. In the project view in the left hand pane
+  2. Navigate to desktop/src/com/ellzone/slotpuzzle2d/desktop
+  3. Right click on DesktopLauncher
+  4. Select Run DesktopLauncher.main
+  5. The program will fail with a:
+  -	 GdxRuntimeException caused by:
 
+		"Couldn't load dependencies of asset: levels/mini slot machine level.tmx"
+  6. Select Run -> Edit Configurations 
+  7. In the Run Configurations dialog in the left hand pane
+  8. Select Application DesktopLauncher
+  9. In the right hand pane for Working Directory click on the folder icon
+ 10. Navigate to desktop/assets
+ 11. Click on Apply and OK
+ 12. Now Click on the Run Icon in the Android Studio tool bar
 
 Pre-requisites:
 - Uses libGDX with Gradle and Eclipse, so use the instructions at:
 
-https://github.com/libgdx/libgdx/wiki/Gradle-and-Eclipse
+  https://github.com/libgdx/libgdx/wiki/Gradle-and-Eclipse
 
 - skip the "You just generated your libgdx project, now it's time to start developing its guts in Eclipse!"
 - because there is a generated project in the SlotPuzzle cloned GIT repository 
