@@ -1,9 +1,13 @@
-# What do when github token needs to be updated
+# What do when a github access token needs to be regenerated
 
 The github token used for SlotPuzzle to allow for builds to be deployed
 by travis-ci to github needs to be regenetared every 90 days.
 
-The github tokens are stored in github.com/settings/tokens
+The github tokens are stored in:
+```
+https://github.com/settings/tokens
+```
+  - Note this is under Settings / Developer settings / Personal access tokens / Tokens (classic) in the GitHub website  
 
 An email will be sent by github when the github token is about to expire. 
 When the github token expires:
