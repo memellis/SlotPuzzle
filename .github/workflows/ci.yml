@@ -26,3 +26,6 @@ jobs:
 
     - run: cd source/java/2d && ./gradlew clean
     - run: cd source/java/2d && ./gradlew desktop:build
+    - run: cd source/java/2d && ./gradlew android:build
+    - run: cd source/java/2d && ./gradlew core:test jacocoTestReport
+    - run: cd source/java/2d && ./gradlew assembleRelease
