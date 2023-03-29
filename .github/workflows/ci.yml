@@ -20,5 +20,6 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v2
 
-    - name: Build SampleApplication
+    - name: Build SlotPuzzle
+      run: keytool -genkey -v -keystore $HOME/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "C=US, O=Android, CN=Android Debug"
       run: cd source/java/2d && ./gradlew --no-daemon build
