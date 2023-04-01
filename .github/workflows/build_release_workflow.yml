@@ -4,9 +4,15 @@ on:
   push:
     branches: [ add_github_actions ]
 
+defaults:
+  run:
+    working-directory:
+      source/java/2d
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
 
     steps:
       - uses: actions/checkout@v2
@@ -16,4 +22,4 @@ jobs:
           java-version: 1.8
 
       - name: Unit tests
-        run: bash cd /source/java/2d && gradlew test --stacktrace
+        run: pwd ; gradlew test --stacktrace
