@@ -36,6 +36,7 @@ output.json
 #NDK
 obj/
 .externalNativeBuild
+*.so
 
 *.log
 *.iml
