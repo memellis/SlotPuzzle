@@ -27,9 +27,9 @@ allprojects {
         appName = "SlotPuzzle2d"
         gdxVersion = '1.11.0'
         roboVMVersion = '1.9.0'
-        box2DLightsVersion = '1.4'
-        ashleyVersion = '1.7.0'
-        aiVersion = '1.8.1'
+        box2DLightsVersion = '1.5'
+        ashleyVersion = '1.7.4'
+        aiVersion = '1.8.2'
         gdxUtilsVersion = '0.13.3'
         artemisVersion = '2.3.0'
         artemisContribVersion = '2.4.0'
