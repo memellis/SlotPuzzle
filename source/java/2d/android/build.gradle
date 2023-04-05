@@ -23,17 +23,17 @@ android {
 
 
 
-    def isRunningOnTravis = System.getenv("CI") == "true"
+    def isRunningOnTravis = System.getenv("TRAVIS") == "true"
     def isRunningOnGithubActions = System.getenv("GITHUB_ACTIONS") == "true"
 
-    if (isRunningOnTravis) {
-        println "I'm configuring the keystore"
-        // configure keystore
-        signingConfigs.release.storeFile = file("../../../../memellis.jks")
-        signingConfigs.release.storePassword = System.getenv("keystore_password")
-        signingConfigs.release.keyAlias = System.getenv("keystore_alias")
-        signingConfigs.release.keyPassword = System.getenv("keystore_alias_password")
-    }
+ //   if (isRunningOnTravis) {
+ //       println "I'm configuring the keystore"
+ //       // configure keystore
+ //       signingConfigs.release.storeFile = file("../../../../memellis.jks")
+ //       signingConfigs.release.storePassword = System.getenv("keystore_password")
+ //       signingConfigs.release.keyAlias = System.getenv("keystore_alias")
+ //       signingConfigs.release.keyPassword = System.getenv("keystore_alias_password")
+ //   }
 
     if (isRunningOnGithubActions) {
         println "I'm configuring the keystore on Github Actions"
