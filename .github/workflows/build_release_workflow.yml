@@ -51,4 +51,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Build Artifacts
-          path: source/java/2d/android/app/build/outputs/
+          path: source/java/2d/android/build/outputs/
