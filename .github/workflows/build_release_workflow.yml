@@ -41,7 +41,7 @@ jobs:
           cd source/java/2d
           bash gradlew bundleRelease
           pwd
-          ls -l andriod
+          ls -l android
         env:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
