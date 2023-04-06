@@ -46,7 +46,7 @@ android {
                 keyPassword System.getenv("SIGNING_KEY_PASSWORD")
             }
         }
-        
+
         buildTypes {
             release {
                 minifyEnabled false
@@ -61,10 +61,8 @@ android {
 
         if (allFilesFromDir != null) {
             def keystoreFile = allFilesFromDir.first()
-            keystoreFile.renameTo("keystore/upload-keystore.jks")
+            keystoreFile.renameTo("source/java/2d/android/keystore/upload-keystore.jks")
         }
-
-
     }
 }
 
