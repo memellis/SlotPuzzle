@@ -66,5 +66,4 @@ jobs:
           prerelease: true
           tag_name: ${{ steps.bump_version.outputs.new_tag }}
           files: |
-            source/java/2d/android/build/outputs/apk/release/app-release.apk
-            source/java/2d/android/build/outputs/bundle/release/app-release.aab
+            source/java/2d/android/build/outputs/apk/release/android-release.apk
