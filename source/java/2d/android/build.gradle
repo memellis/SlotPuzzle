@@ -15,40 +15,39 @@ android {
     //signingConfigs {
     //    release {
     //        storeFile file(System.getenv(SIGNING_STORE_FILE))
-    //       storePassword System.getenv("SIGNING_STORE_PASSWORD")
+    //        storePassword System.getenv("SIGNING_STORE_PASSWORD")
     //        keyAlias System.getenv("SIGNING_KEY_ALIAS")
     //        keyPassword System.getenv("SIGNING_KEY_PASSWORD")
     //    }
     //}
 
-
-
     def isRunningOnTravis = System.getenv("TRAVIS") == "true"
     def isRunningOnGithubActions = System.getenv("GITHUB_ACTIONS") == "true"
 
- //   if (isRunningOnTravis) {
- //       println "I'm configuring the keystore"
- //       // configure keystore
- //       signingConfigs.release.storeFile = file("../../../../memellis.jks")
- //       signingConfigs.release.storePassword = System.getenv("keystore_password")
- //       signingConfigs.release.keyAlias = System.getenv("keystore_alias")
- //       signingConfigs.release.keyPassword = System.getenv("keystore_alias_password")
- //   }
+    if (isRunningOnTravis) {
+        println "I'm configuring the keystore"
+        // configure keystore
+        signingConfigs.release.storeFile = file("../../../../memellis.jks")
+        signingConfigs.release.storePassword = System.getenv("keystore_password")
+        signingConfigs.release.keyAlias = System.getenv("keystore_alias")
+        signingConfigs.release.keyPassword = System.getenv("keystore_alias_password")
+    }
 
     if (isRunningOnGithubActions) {
         println "I'm configuring the keystore on Github Actions"
-
         // configure keystore
         def tmpFilePath = System.getProperty("user.home") + "/work/_temp/keystore/"
         def allFilesFromDir = new File(tmpFilePath).listFiles()
         def keystoreFile = allFilesFromDir.first()
 
-        signingConfigs {
-            release {
-                storeFile = file(keystoreFile)
-                storePassword System.getenv("SIGNING_STORE_PASSWORD")
-                keyAlias System.getenv("SIGNING_KEY_ALIAS")
-                keyPassword System.getenv("SIGNING_KEY_PASSWORD")
+        if (keystoreFile.exists()) {
+            signingConfigs {
+                release {
+                    storeFile = file(keystoreFile)
+                    storePassword System.getenv("SIGNING_STORE_PASSWORD")
+                    keyAlias System.getenv("SIGNING_KEY_ALIAS")
+                    keyPassword System.getenv("SIGNING_KEY_PASSWORD")
+                }
             }
         }
 
@@ -59,8 +58,6 @@ android {
                 signingConfig signingConfigs.release
             }
         }
-
-
     }
 }
 
@@ -69,8 +66,8 @@ android {
 // the natives configuration, and extracts them to the proper libs/ folders
 // so they get packed with the APK.
 task copyAndroidNatives() { 
-    file("libs/armeabi-v7a/").mkdirs();
-    file("libs/x86/").mkdirs();
+    file("libs/armeabi-v7a/").mkdirs()
+    file("libs/x86/").mkdirs()
 
     configurations.natives.files.each { jar ->
         def outputDir = null
