@@ -48,7 +48,7 @@ jobs:
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
 
       - name: Upload Release Build to Artifacts
-        uses: 
+        uses: actions/upload-artifact@v3
         with:
           name: release-artifacts
           path: |
