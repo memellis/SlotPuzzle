@@ -48,9 +48,18 @@ jobs:
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
 
       - name: Upload Release Build to Artifacts
-        uses: actions/upload-artifact@v3
+        uses: 
         with:
           name: release-artifacts
-          paths: |
+          path: |
             source/java/2d/android/build/outputs/apk/release/
             source/java/2d/android/build/outputs/bundle/release/
+
+      - name: Create Github Release
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+          prerelease: true
+          files: |
+            source/java/2d/android/build/outputs/apk/release/app-release.apk
+            source/java/2d/android/build/outputs/bundle/release/app-release.aab
