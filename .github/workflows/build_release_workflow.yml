@@ -28,6 +28,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
+        run: echo $new_tag
 
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
@@ -43,8 +44,6 @@ jobs:
         run: |
           cd source/java/2d
           bash gradlew bundleRelease
-          pwd
-          ls -l android
         env:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
