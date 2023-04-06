@@ -43,7 +43,7 @@ jobs:
         run: |
           cd source/java/2d
           bash gradlew bundleRelease
-          echo "new_tag=${{ steps.vars.outputs.new_tag }}
+          echo "new_tag=${{ steps.vars.outputs.new_tag }}"
         env:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
