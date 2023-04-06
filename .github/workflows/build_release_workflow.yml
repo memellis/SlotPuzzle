@@ -57,7 +57,6 @@ jobs:
           name: release-artifacts
           path: |
             source/java/2d/android/build/outputs/apk/release/
-            source/java/2d/android/build/outputs/bundle/release/
 
       - name: Create Github Release
         uses: softprops/action-gh-release@v1

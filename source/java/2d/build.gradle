@@ -27,11 +27,11 @@ allprojects {
         appName = "SlotPuzzle2d"
         gdxVersion = '1.11.0'
         roboVMVersion = '1.9.0'
-        box2DLightsVersion = '1.4'
-        ashleyVersion = '1.7.0'
-        aiVersion = '1.8.1'
+        box2DLightsVersion = '1.5'
+        ashleyVersion = '1.7.4'
+        aiVersion = '1.8.2'
         gdxUtilsVersion = '0.13.3'
-        artemisVersion = '2.2.0'
+        artemisVersion = '2.3.0'
         artemisContribVersion = '2.4.0'
 		powermockVersion = '1.6.6'
     }
@@ -154,9 +154,9 @@ project(":core") {
         implementation "net.mostlyoriginal.artemis-odb:contrib-plugin-profiler:$artemisContribVersion"
         implementation "net.mostlyoriginal.artemis-odb:contrib-plugin-operations:$artemisContribVersion"
 
-        testImplementation "junit:junit:4.+"
-        testImplementation 'org.hamcrest:hamcrest-library:1.+'
-        testImplementation "org.mockito:mockito-core:1.9.+"
+        //testImplementation "junit:junit:5.7.1"
+        testImplementation 'org.hamcrest:hamcrest-library:2.2'
+        testImplementation "org.mockito:mockito-core:1.10.19"
         testImplementation "org.powermock:powermock:$powermockVersion"
         testImplementation "org.powermock:powermock-module-junit4:$powermockVersion"
         testImplementation "org.powermock:powermock-api-mockito:$powermockVersion"
@@ -164,7 +164,7 @@ project(":core") {
         testImplementation "org.easymock:easymock:3.5.1"
         testImplementation "com.github.stefanbirkner:system-rules:1.16.0"
         testImplementation "pl.pragmatists:JUnitParams:1.1.1"
-        testImplementation "org.junit.platform:junit-platform-runner:1.0.0-M4"
+        testImplementation "org.junit.platform:junit-platform-runner:1.8.1"
 
         testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
         testImplementation "com.badlogicgames.gdx:gdx:$gdxVersion"
@@ -183,8 +183,7 @@ project(":tests") {
     dependencies {
         implementation project(":core")
 
-        implementation "junit:junit:4.+"
-        implementation "org.mockito:mockito-all:1.9.+"
+        implementation "org.mockito:mockito-all:1.9.5"
 
         implementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
@@ -192,8 +191,7 @@ project(":tests") {
         implementation "net.dermetfan.libgdx-utils:libgdx-utils:$gdxUtilsVersion"
         implementation "net.dermetfan.libgdx-utils:libgdx-utils-box2d:$gdxUtilsVersion"
 
-        testImplementation 'junit:junit:4.+'
-        testImplementation "org.mockito:mockito-all:1.9.+"
+        testImplementation "org.mockito:mockito-all:1.9.5"
 
         testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
         testImplementation "com.badlogicgames.gdx:gdx:$gdxVersion"
