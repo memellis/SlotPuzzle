@@ -44,7 +44,7 @@ jobs:
         run: |
           cd source/java/2d
           bash gradlew bundleRelease
-          echo "new_tag=${{ steps.bump_version.output.new_tag }}"
+          echo "new_tag=${{ steps.bump_version.output.* }}"
         env:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
