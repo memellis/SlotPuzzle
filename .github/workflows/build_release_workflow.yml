@@ -25,7 +25,6 @@ jobs:
 
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@1.61.0 
-        id: bump_version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
@@ -41,10 +40,12 @@ jobs:
           bash gradlew core:test --stacktrace
 
       - name: build prod
+        id: build_prod
         run: |
           cd source/java/2d
           bash gradlew bundleRelease
-          echo "new_tag=${{ steps.bump_version.output.* }}"
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+          echo "${LATEST_TAG}" >> $GITHUB_OUTPUT
         env:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
@@ -63,7 +64,7 @@ jobs:
         with:
           generate_release_notes: true
           prerelease: true
-          tag_name: ${{ steps.bump_version.output.new_tag}}
+          tag_name: ${{ steps.build_prod.outputs.LATEST_TAG }}
           files: |
             source/java/2d/android/build/outputs/apk/release/app-release.apk
             source/java/2d/android/build/outputs/bundle/release/app-release.aab
