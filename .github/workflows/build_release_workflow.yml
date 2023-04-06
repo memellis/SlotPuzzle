@@ -40,6 +40,8 @@ jobs:
         run: |
           cd source/java/2d
           bash gradlew bundleRelease
+          pwd
+          ls -l
         env:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
@@ -49,4 +51,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Build Artifacts
-          path: app/build/outputs/
+          path: build/outputs/
