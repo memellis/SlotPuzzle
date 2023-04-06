@@ -44,10 +44,10 @@ jobs:
         id: build_prod
         run: |
           cd source/java/2d
-          bash gradlew bundleRelease
+          bash gradlew assembleRelease
           LATEST_TAG=$(git describe --tags --abbrev=0)
           echo "LATEST_TAG=${LATEST_TAG}" >> $GITHUB_OUTPUT
-          ls -lR android/build
+          ls -lR android/build/output
         env:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
