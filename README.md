@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/memellis/SlotPuzzle.svg?branch=master)](https://travis-ci.org/memellis/SlotPuzzle)
-[![codecov](https://codecov.io/gh/memellis/SlotPuzzle/branch/master/graph/badge.svg)](https://codecov.io/gh/memellis/SlotPuzzle)
+
+![Build Release Workflow](https://github.com/memellis/SlotPuzzle/actions/workflows/build_release_worflow.yml/badge.svg)
 
 SLOTPUZZLE
 ==========
