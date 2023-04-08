@@ -1,5 +1,6 @@
 
 ![Build Release Workflow](https://github.com/memellis/SlotPuzzle/actions/workflows/build_release_workflow.yml/badge.svg)
+![Build Release Workflow](https://github.com/memellis/SlotPuzzle/actions/workflows/build_release_workflow.yml/badge.svg?event=push)
 
 SLOTPUZZLE
 ==========
