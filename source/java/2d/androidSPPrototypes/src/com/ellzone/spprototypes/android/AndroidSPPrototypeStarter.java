@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.ellzone.SPPrototypes.android;
+package com.ellzone.spprototypes.android;
 
 import java.util.List;
 import com.ellzone.slotpuzzle2d.prototypes.SPPrototypes;
