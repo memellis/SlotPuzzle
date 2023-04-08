@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.ellzone.SPPrototypes.android;
+package com.ellzone.spprototypes.android;
 
 import android.os.Bundle;
 
@@ -33,8 +33,8 @@ public class SPPrototypeActivity extends AndroidApplication {
         SPPrototype test = null;
 		try {
             test = SPPrototypes.newSPPrototype(testName);
-        } catch (InstantiationException e) {
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException ignored) {
+        } catch (IllegalAccessException ignored) {
         }
         if (test != null) {
             AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
