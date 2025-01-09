@@ -1,9 +1,0 @@
-[submodule "source/java/2d/core"]
-	path = source/java/2d/core
-	url = https://github.com/memellis/core.git
-[submodule "source/java/2d/android/assets"]
-	path = source/java/2d/android/assets
-	url = https://github.com/memellis/assets.git
-[submodule "source/java/2d/desktop/assets"]
-	path = source/java/2d/desktop/assets
-	url = https://github.com/memellis/assets
