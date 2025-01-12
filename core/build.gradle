@@ -11,6 +11,8 @@ dependencies {
   api "net.onedaybeard.artemis:artemis-odb:$artemisOdbVersion"
   annotationProcessor "org.projectlombok:lombok:$lombokVersion"
   compileOnly "org.projectlombok:lombok:$lombokVersion"
+  implementation "org.mini2Dx:universal-tween-engine:6.3.3"
+  implementation "com.badlogicgames.gdx:gdx-ai:1.8.2"
 
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
