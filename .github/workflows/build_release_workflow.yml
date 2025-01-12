@@ -1,8 +1,6 @@
 name: Android Build Release Workflow
 
-on:
-  push:
-    branches: [ * ]
+on: [push]
 
 jobs:
   build:
