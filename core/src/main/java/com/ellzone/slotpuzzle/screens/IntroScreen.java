@@ -76,6 +76,8 @@ import aurelienribon.tweenengine.equations.Bounce;
 import aurelienribon.tweenengine.equations.Elastic;
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
+import lombok.Getter;
+import lombok.val;
 
 public class IntroScreen extends InputAdapter implements Screen {
     public static final String LIBERATION_MONO_REGULAR_FONT_NAME = "LiberationMono-Regular.ttf";
@@ -100,6 +102,7 @@ public class IntroScreen extends InputAdapter implements Screen {
     private static final String LAUNCH_BUTTON_LABEL = "LAUNCH!";
     public static final float ONE_SECOND = 1.0f;
 
+    @Getter
     private final SlotPuzzleGame game;
     private final OrthographicCamera camera = new OrthographicCamera();
     private Viewport viewport, lightViewport;
@@ -275,15 +278,15 @@ public class IntroScreen extends InputAdapter implements Screen {
     private void initialiseFontReel(String reelText, float x, float y) {
         Texture textTexture = initialiseFontTexture(reelText);
         for (int i = 0; i < reelText.length(); i++) {
-            AnimatedReel reelLetterTile =
+            val reelLetterTile =
                 new AnimatedReel(
                     textTexture,
-                    (float)(x + i * REEL_WIDTH),
+                    x + (i * REEL_WIDTH),
                     y,
-                    (float)REEL_WIDTH,
-                    (float)REEL_HEIGHT,
-                    (float)REEL_WIDTH,
-                    (float)REEL_HEIGHT,
+                    (float) REEL_WIDTH,
+                    (float) REEL_HEIGHT,
+                    (float) REEL_WIDTH,
+                    (float) REEL_HEIGHT,
                     i,
                     game.getTweenManager());
             reelLetterTile.setupSpinning();
@@ -350,7 +353,7 @@ public class IntroScreen extends InputAdapter implements Screen {
 
         launchButton.
             getSprite().
-            setSize((float) (buttonWidth / (float)SlotPuzzleConstants.PIXELS_PER_METER),
+            setSize(buttonWidth / (float)SlotPuzzleConstants.PIXELS_PER_METER,
                 buttonHeight / (float)SlotPuzzleConstants.PIXELS_PER_METER);
     }
 
@@ -568,7 +571,4 @@ public class IntroScreen extends InputAdapter implements Screen {
             fontLarge.dispose();
     }
 
-    public SlotPuzzleGame getGame() {
-        return this.game;
-    }
 }
