@@ -89,7 +89,12 @@ public class IntroScreen extends InputAdapter implements Screen {
     private static final int TEXT_SPACING_SIZE = 30;
     private static final int REEL_WIDTH = 40;
     private static final int REEL_HEIGHT = 40;
-    private static final String COPYRIGHT = "\u00a9";
+    private static final String COPYRIGHT;
+
+    static {
+        COPYRIGHT = "©";
+    }
+
     private static final String SLOT_PUZZLE_REEL_TEXT = "Slot Puzzle";
     private static final String BY_TEXT = "by";
     private static final String LAUNCH_BUTTON_LABEL = "LAUNCH!";
@@ -119,9 +124,9 @@ public class IntroScreen extends InputAdapter implements Screen {
     private ShapeRenderer shapeRenderer;
     private StarField starField;
     private final float sceneWidth =
-        SlotPuzzleConstants.VIRTUAL_WIDTH / SlotPuzzleConstants.PIXELS_PER_METER;
+        (float) SlotPuzzleConstants.VIRTUAL_WIDTH / SlotPuzzleConstants.PIXELS_PER_METER;
     private final float sceneHeight =
-        SlotPuzzleConstants.VIRTUAL_HEIGHT / SlotPuzzleConstants.PIXELS_PER_METER;
+        (float) SlotPuzzleConstants.VIRTUAL_HEIGHT / SlotPuzzleConstants.PIXELS_PER_METER;
     private boolean show = false;
     private MusicManager musicManager;
     private MessageManager messageManager;
@@ -147,6 +152,7 @@ public class IntroScreen extends InputAdapter implements Screen {
         initialiseAudio();
         messageManager = setUpMessages();
         initialiseInput();
+        assert messageManager != null;
         messageManager.dispatchMessage(MessageType.PlayMusic.index, AssetsAnnotation.MUSIC_INTRO_SCREEN);
         isLoaded = true;
     }
@@ -386,10 +392,11 @@ public class IntroScreen extends InputAdapter implements Screen {
             slotReelTexture,
             slotReelTexture.getHeight() / REEL_HEIGHT,
             slotReelTexture.getWidth(),
-            viewport.getScreenHeight() / 2,
+            (float) viewport.getScreenHeight() / 2,
             slotReelTexture.getWidth(),
             viewport.getWorldHeight() / 2,
-            REEL_WIDTH, REEL_HEIGHT,
+            REEL_WIDTH,
+            REEL_HEIGHT,
             0
         );
 
@@ -434,7 +441,7 @@ public class IntroScreen extends InputAdapter implements Screen {
     private void restartReelLettersSpinning() {
         int nextSy;
         int endReel = 0;
-        for (AnimatedReel reel : reelLetterTiles) {
+        for (AnimatedReel reel : new Array.ArrayIterator<>(reelLetterTiles)) {
             reel.setEndReel(endReel++);
             if (endReel == reel.getReel().getNumberOfReelsInTexture())
                 endReel = 0;
@@ -480,7 +487,7 @@ public class IntroScreen extends InputAdapter implements Screen {
         musicPlayer.update(delta);
         game.getTweenManager().update(delta);
         updateTimer(delta);
-        for (AnimatedReel reel : reelLetterTiles)
+        for (AnimatedReel reel : new Array.ArrayIterator<>(reelLetterTiles))
             reel.update(delta);
         reelTile.update(delta);
         if (endOfIntroScreen) {
@@ -504,7 +511,7 @@ public class IntroScreen extends InputAdapter implements Screen {
                 starField.updateStarfield(delta, this.shapeRenderer);
                 game.batch.begin();
                 musicPlayer.draw();
-                for (AnimatedReel reel : reelLetterTiles)
+                for (AnimatedReel reel : new Array.ArrayIterator<>(reelLetterTiles))
                     reel.draw(game.batch);
                 reelTile.draw(game.batch);
                 game.batch.setProjectionMatrix(lightViewport.getCamera().combined);
