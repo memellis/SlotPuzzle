@@ -14,7 +14,7 @@ jobs:
           java-version: 1.11
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
         with:
             cmdline-tools-version: 11.0
 
