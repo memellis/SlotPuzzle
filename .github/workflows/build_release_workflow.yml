@@ -14,7 +14,9 @@ jobs:
           java-version: 1.11
 
       - name: Setup Android SDK
-        uses: amyu/setup-android@v2
+        uses: android-actions/setup-android@v3
+        with:
+            cmdline-tools-version: 11.0
 
       - name: Decode keystore
         env:
