@@ -26,26 +26,27 @@ import com.ellzone.slotpuzzle.utils.PixmapProcessors;
 
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
+import lombok.Getter;
 
 public class LightButtonBuilder {
-    private World world;
-    private RayHandler rayHandler;
-    private BitmapFont buttonFont;
-    private Color buttonFontColor;
-    private Color buttonEdgeColor;
-    private Color buttonBackgroundColor;
-    private Color buttonForegroundColor;
-    private Color buttonTransparentColor;
-    private float buttonPositionX;
-    private float buttonPositionY;
-    private int buttonWidth;
-    private int buttonHeight;
-    private String buttonText;
-    private int startButtonTextX;
-    private int startButtonTextY;
-    private Color buttonLightColor;
+    private final RayHandler rayHandler;
+    private final BitmapFont buttonFont;
+    private final Color buttonFontColor;
+    private final Color buttonEdgeColor;
+    private final Color buttonBackgroundColor;
+    private final Color buttonForegroundColor;
+    private final Color buttonTransparentColor;
+    private final float buttonPositionX;
+    private final float buttonPositionY;
+    private final int buttonWidth;
+    private final int buttonHeight;
+    private final String buttonText;
+    private final int startButtonTextX;
+    private final int startButtonTextY;
+    private final Color buttonLightColor;
+    @Getter
     private PointLight light;
-    private float buttonLightDistance;
+    private final float buttonLightDistance;
     private Sprite lightButtonSprite;
 
     public static class Builder {
@@ -162,7 +163,7 @@ public class LightButtonBuilder {
     }
 
     private LightButtonBuilder(Builder builder) {
-        this.world = builder.world;
+        World world = builder.world;
         this.rayHandler = builder.rayHandler;
         this.buttonFont = builder.buttonFont;
         this.buttonFontColor = builder.buttonFontColor;
@@ -207,10 +208,6 @@ public class LightButtonBuilder {
         button.setColor(this.buttonTransparentColor);
         button.fillRectangle(0, 0, buttonWidth, buttonHeight);
         return new Texture(button);
-    }
-
-    public PointLight getLight() {
-        return this.light;
     }
 
     public Sprite getSprite() {

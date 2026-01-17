@@ -18,6 +18,6 @@ package com.ellzone.slotpuzzle.utils.convert;
 
 import com.ellzone.slotpuzzle.physics.Point;
 
-public interface ConvertInterface {
+public interface WorldConvertInterface {
     public Point convertToWorldPosition(Point point);
 }
